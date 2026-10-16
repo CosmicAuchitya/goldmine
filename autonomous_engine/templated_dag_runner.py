@@ -88,6 +88,12 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
             df = pd.read_csv(file_path, low_memory=False, encoding='latin-1')
 
     df.columns = [str(c).strip() for c in df.columns]
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            s_clean = df[col].astype(str).str.replace(',', '').str.strip()
+            s_num = pd.to_numeric(s_clean, errors='coerce')
+            if s_num.notna().mean() >= 0.85 and s_num.nunique() > 10:
+                df[col] = s_num.fillna(s_num.median())
     return df
 
 def execute_templated_pipeline(

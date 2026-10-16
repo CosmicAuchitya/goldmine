@@ -1,0 +1,37 @@
+{
+  "project_title": "Global Streaming Performance and Cross-Platform Market Penetration Forensic Analysis",
+  "fact_table": "spotify-2023",
+  "target_metric": "streams",
+  "primary_id_column": "fact_surrogate_id",
+  "cardinality_defense_plan": {
+    "dimension_aggregation_strategies": "Generate 'dim_artist' by grouping artist-level attributes (count, genre/style indicators) ensuring a 1:1 mapping to the fact table's unique surrogate ID; use 'MAX' aggregation for binary status flags to avoid unintended multiplication.",
+    "entity_resolution_and_key_cleaning": "Sanitize 'streams' column by coercing non-numeric strings to null/zero; perform trim and casing normalization on 'track_name' and 'artist(s)_name' before generating MD5 hash-based surrogate keys.",
+    "relational_join_sequence": "Start with fact_table (left); join dim_artist on surrogate_id (1:1); join dim_time (release date hierarchies) on date_key (1:1); all joins must be Left-Outer to preserve forensic integrity of non-matched events."
+  },
+  "forensic_enrichment_columns": [
+    "streams_per_playlist_reach = streams / (in_spotify_playlists + in_apple_playlists + in_deezer_playlists)",
+    "velocity_index = streams / (2023 - released_year + 1)",
+    "market_friction_penalty = (in_spotify_charts + in_apple_charts + in_deezer_charts) / NULLIF(streams, 0) * 1000000"
+  ],
+  "assertion_gates": [
+    "assert len(final_fact) == len(initial_fact), 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'",
+    "assert final_fact.duplicated(subset=['fact_surrogate_id']).sum() == 0, 'Duplicate primary IDs detected!'",
+    "assert 'streams' in final_fact.columns, 'Missing expected dimension features!'"
+  ],
+  "bi_deliverables": {
+    "fact_table": "bi_ready_fact.parquet",
+    "dimension_tables": [
+      "bi_dim_artist.csv",
+      "bi_dim_time.csv",
+      "bi_dim_audio_features.csv"
+    ],
+    "dax_measures": [
+      "Total Volume / Records = COUNTROWS('spotify-2023')",
+      "Target Events Count = SUM('spotify-2023'[streams])",
+      "Rate / Percentage % = DIVIDE([Target Events Count], CALCULATE(SUM('spotify-2023'[streams]), ALL('spotify-2023')))",
+      "Total Financial / Operational Friction Loss ($) = SUMX('spotify-2023', [market_friction_penalty])",
+      "Segment Performance / Congestion Index = AVERAGE('spotify-2023'[in_spotify_charts]) / AVERAGE('spotify-2023'[streams])"
+    ]
+  },
+  "dataset_fingerprint": "1bf608f57753bc9e"
+}

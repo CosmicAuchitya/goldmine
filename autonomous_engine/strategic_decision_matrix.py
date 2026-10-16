@@ -173,6 +173,9 @@ class MicroLevelForensicInquiryEngine:
             else:
                 threshold = float(s.median())
             return (s <= threshold).astype(int)
+        elif any(k in self.target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
+            threshold = float(s.quantile(0.25)) if s.quantile(0.25) > 0 else float(s.median())
+            return (s <= threshold).astype(int)
         else:
             med = float(s.median())
             threshold = med if med > 0 else float(s.quantile(0.75))
@@ -474,7 +477,7 @@ class MicroLevelForensicInquiryEngine:
             q4_r = quads["Q4_catastrophic"]["rate"]
             qas.append({
                 "question": f"Can high levels of protective factor '{neg}' compensate for elevated risk factor '{pos}', or does '{pos}' exert an overriding destructive effect?",
-                "data_backed_answer": f"Cross-quadrant analysis reveals that high '{neg}' provides substantial mitigation: within the high '{pos}' cohort, elevating '{neg}' cuts adverse events from {q4_r}% (Compound Catastrophe) down to {q3_r}% (Masked Risk). However, even with high '{neg}', batches with elevated '{pos}' experience {q3_r}% failure—more than double the {q1_r}% failure rate observed when '{pos}' is controlled in the Optimal Zone. Thus, '{pos}' exerts an independent negative drag that '{neg}' cannot fully mask."
+                "data_backed_answer": f"Cross-quadrant analysis reveals that high '{neg}' provides substantial mitigation: within the high '{pos}' cohort, elevating '{neg}' cuts adverse events from {q4_r}% (Compound Catastrophe) down to {q3_r}% (Masked Risk). However, even with high '{neg}', records with elevated '{pos}' experience {q3_r}% failure—more than double the {q1_r}% failure rate observed when '{pos}' is controlled in the Optimal Zone. Thus, '{pos}' exerts an independent negative drag that '{neg}' cannot fully mask."
             })
 
         # Q4: Secondary Spoilage / Protective Buffer Cliff
@@ -529,7 +532,7 @@ class MicroLevelForensicInquiryEngine:
                 eff_narrative = f"Conservative triage delivers the higher marginal defect containment per scrap unit ({eff1:.2f} vs {eff2:.2f} recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects."
             qas.append({
                 "question": "If quality control establishes an intake rejection gate, what is the exact trade-off between defect elimination, scrap volume, and false discard of acceptable product?",
-                "data_backed_answer": f"Under Conservative Triage ({pol1['policy_name']}), {pol1['scrap_count']} batches ({pol1['scrap_pct']}%) are rejected, capturing {pol1['recall_pct']}% of all defects with {pol1['false_discards']} false discards. Under Surgical Triage ({pol2['policy_name']}), scrap expands to {pol2['scrap_count']} batches ({pol2['scrap_pct']}%), capturing {pol2['recall_pct']}% of defects and dropping retained defect rate to {pol2['retained_defect_rate']}%, at the cost of {pol2['false_discards']} false discards ({pol2['false_discard_pct']}% of acceptable stock). {eff_narrative}"
+                "data_backed_answer": f"Under Conservative Triage ({pol1['policy_name']}), {pol1['scrap_count']} records ({pol1['scrap_pct']}%) are rejected, capturing {pol1['recall_pct']}% of all defects with {pol1['false_discards']} false discards. Under Surgical Triage ({pol2['policy_name']}), rejections expand to {pol2['scrap_count']} records ({pol2['scrap_pct']}%), capturing {pol2['recall_pct']}% of defects and dropping retained defect rate to {pol2['retained_defect_rate']}%, at the cost of {pol2['false_discards']} false discards ({pol2['false_discard_pct']}% of acceptable stock). {eff_narrative}"
             })
 
         # Q7: Simpson's Paradox & Confounder Isolation
@@ -546,9 +549,11 @@ class MicroLevelForensicInquiryEngine:
             })
 
         # Q8: Multi-Dimensional Premium Envelope
-        if any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
+        if any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade', 'stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit']):
             s_raw = pd.to_numeric(self.df[self.target_col], errors='coerce').fillna(0)
-            if s_raw.min() > 5.0 or (s_raw.quantile(0.25) > 5.0):
+            if any(k in self.target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit']):
+                threshold = float(s_raw.quantile(0.80))
+            elif s_raw.min() > 5.0 or (s_raw.quantile(0.25) > 5.0):
                 threshold = float(s_raw.quantile(0.80))
             else:
                 threshold = 7.0 if (s_raw.min() >= 1 and s_raw.max() <= 10) else float(s_raw.quantile(0.80))
@@ -626,14 +631,14 @@ class MicroLevelForensicInquiryEngine:
             md += f"""---
 
 ### 2. 2x2 Orthogonal Feature Interaction Matrix (`{pos}` vs. `{neg}`)
-*Testing sensory buffering, compounding toxicity, and cross-variable overrides:*
+*Testing feature buffering, compounding risk, and cross-variable overrides:*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | **{quads['Q1_optimal']['rate']}%** | **Benchmark Sensory Excellence** |
-| **Q2 (Unbuffered Low)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | **{quads['Q2_unbuffered']['rate']}%** | Commercial Table Grade (Flat Body) |
-| **Q3 (Masked Risk)** | High `{pos}` (> {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | **{quads['Q3_masked']['rate']}%** | Partially Masked Pungency (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `{pos}` (> {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | **{quads['Q4_catastrophic']['rate']}%** | **Severe Spoilage / Acetification Failure** |
+| **Q1 (Optimal Zone)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | **{quads['Q1_optimal']['rate']}%** | **Optimal Performance Buffer** |
+| **Q2 (Unbuffered Low)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | **{quads['Q2_unbuffered']['rate']}%** | Baseline Operating Profile |
+| **Q3 (Masked Risk)** | High `{pos}` (> {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | **{quads['Q3_masked']['rate']}%** | Partially Buffered Risk (Elevated Drag) |
+| **Q4 (Catastrophic Zone)** | High `{pos}` (> {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | **{quads['Q4_catastrophic']['rate']}%** | **Compound Maximum Risk Exposure** |
 
 """
 
@@ -754,6 +759,18 @@ class StrategicDecisionEngine:
                 "persona": "Chief Commercial Officer / VP Customer Success"
             }
 
+        # Check Digital Media / Streaming Entertainment
+        media_kw = ['stream', 'streams', 'track', 'artist', 'song', 'spotify', 'movie', 'film', 'cinema', 'video', 'youtube', 'view', 'views', 'listen', 'audio']
+        if any(any(k in c for k in media_kw) for c in cols_lower):
+            return {
+                "domain_key": "digital_media_streaming",
+                "domain_name": "Digital Media, Music Streaming & Algorithmic Audio Forensics",
+                "unit_name": "Underperforming Stream Volume & Audience Engagement Drag",
+                "unit_symbol": "Streams",
+                "is_financial": False,
+                "persona": "Global Head of Editorial & Music Programming / VP of Content Analytics"
+            }
+
         # Default Enterprise Operations
         return {
             "domain_key": "enterprise_operations",
@@ -769,8 +786,12 @@ class StrategicDecisionEngine:
         target = self.blueprint.get("target_metric")
         if target and target in self.df.columns:
             is_bad_target = any(b in target.lower() for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href'])
-            is_high_card_text = (self.df[target].dtype == 'object' and self.df[target].nunique() > 35)
+            s_num = pd.to_numeric(self.df[target].astype(str).str.replace(',', '').str.strip(), errors='coerce')
+            is_convertible_num = (s_num.notna().mean() >= 0.85)
+            is_high_card_text = (self.df[target].dtype == 'object' and self.df[target].nunique() > 35 and not is_convertible_num)
             if not is_bad_target and not is_high_card_text:
+                if is_convertible_num and self.df[target].dtype == 'object':
+                    self.df[target] = s_num.fillna(s_num.median())
                 s = pd.to_numeric(self.df[target], errors='coerce').fillna(0)
                 if self.df[target].nunique() <= 2 and s.max() <= 1:
                     cnt = int(s.sum())
@@ -783,6 +804,10 @@ class StrategicDecisionEngine:
                             threshold = 5.0
                     else:
                         threshold = float(s.median())
+                    cnt = int((s <= threshold).sum())
+                    rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
+                elif any(k in target.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
+                    threshold = float(s.quantile(0.25)) if s.quantile(0.25) > 0 else float(s.median())
                     cnt = int((s <= threshold).sum())
                     rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
                 else:

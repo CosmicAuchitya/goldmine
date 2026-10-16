@@ -60,9 +60,13 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     if blueprint and blueprint.get("target_metric") in cols:
         bp_target = blueprint.get("target_metric")
         is_bad_bp = any(b in bp_target.lower() for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href'])
-        is_high_card_text = (df[bp_target].dtype == 'object' and df[bp_target].nunique() > 35)
+        s_num = pd.to_numeric(df[bp_target].astype(str).str.replace(',', '').str.strip(), errors='coerce')
+        is_convertible_num = (s_num.notna().mean() >= 0.85)
+        is_high_card_text = (df[bp_target].dtype == 'object' and df[bp_target].nunique() > 35 and not is_convertible_num)
         if not is_bad_bp and not is_high_card_text:
             target_col = bp_target
+            if is_convertible_num and df[bp_target].dtype == 'object':
+                df[bp_target] = s_num.fillna(s_num.median())
 
     # 1. Target metric detection (strictly discrete classification / status events, nunique <= 10)
     target_keywords = ['death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke', 'readmit', 'attrition', 'churn', 'fraud', 'default', 'reach', 'ontime', 'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker', 'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality', 'grade', 'rating', 'score']
@@ -264,6 +268,9 @@ def synthesize_deliverables(output_dir: str):
                     threshold = 5.0
             else:
                 threshold = float(s_target.median())
+            df_fact['_is_target_event'] = (s_target <= threshold).astype(int)
+        elif any(k in target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
+            threshold = float(s_target.quantile(0.25)) if s_target.quantile(0.25) > 0 else float(s_target.median())
             df_fact['_is_target_event'] = (s_target <= threshold).astype(int)
         elif pd.api.types.is_numeric_dtype(df_fact[target_col]):
             threshold = s_target.median() if s_target.nunique() > 1 else 0

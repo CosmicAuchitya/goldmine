@@ -1,0 +1,172 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "spotify-2023": {
+      "table_name": "spotify-2023",
+      "filename": "spotify-2023.csv",
+      "selected_sheet": null,
+      "estimated_rows": 953,
+      "delimiter": ",",
+      "encoding": "latin1",
+      "columns": [
+        "track_name",
+        "artist(s)_name",
+        "artist_count",
+        "released_year",
+        "released_month",
+        "released_day",
+        "in_spotify_playlists",
+        "in_spotify_charts",
+        "streams",
+        "in_apple_playlists",
+        "in_apple_charts",
+        "in_deezer_playlists",
+        "in_deezer_charts",
+        "in_shazam_charts",
+        "bpm",
+        "key",
+        "mode",
+        "danceability_%",
+        "valence_%",
+        "energy_%",
+        "acousticness_%",
+        "instrumentalness_%",
+        "liveness_%",
+        "speechiness_%"
+      ],
+      "potential_keys": [
+        "track_name",
+        "in_spotify_playlists",
+        "streams",
+        "key"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "track_name",
+          "dtype": "object",
+          "sample_values": [
+            "[MASKED_TRACK_NAME]",
+            "[MASKED_TRACK_NAME]",
+            "[MASKED_TRACK_NAME]"
+          ],
+          "nunique_in_sample": 943
+        },
+        {
+          "name": "artist(s)_name",
+          "dtype": "object",
+          "sample_values": [
+            "[MASKED_ARTIST(S)_NAME]",
+            "[MASKED_ARTIST(S)_NAME]",
+            "[MASKED_ARTIST(S)_NAME]"
+          ],
+          "nunique_in_sample": 645
+        },
+        {
+          "name": "artist_count",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "1",
+            "3"
+          ],
+          "nunique_in_sample": 8
+        },
+        {
+          "name": "released_year",
+          "dtype": "int64",
+          "sample_values": [
+            "2023",
+            "2019",
+            "2022"
+          ],
+          "nunique_in_sample": 50
+        },
+        {
+          "name": "released_month",
+          "dtype": "int64",
+          "sample_values": [
+            "7",
+            "3",
+            "6"
+          ],
+          "nunique_in_sample": 12
+        },
+        {
+          "name": "released_day",
+          "dtype": "int64",
+          "sample_values": [
+            "14",
+            "23",
+            "30"
+          ],
+          "nunique_in_sample": 31
+        },
+        {
+          "name": "in_spotify_playlists",
+          "dtype": "int64",
+          "sample_values": [
+            "553",
+            "1474",
+            "1397"
+          ],
+          "nunique_in_sample": 879
+        },
+        {
+          "name": "in_spotify_charts",
+          "dtype": "int64",
+          "sample_values": [
+            "147",
+            "48",
+            "113"
+          ],
+          "nunique_in_sample": 82
+        },
+        {
+          "name": "streams",
+          "dtype": "object",
+          "sample_values": [
+            "141381703",
+            "133716286",
+            "140003974"
+          ],
+          "nunique_in_sample": 949
+        },
+        {
+          "name": "in_apple_playlists",
+          "dtype": "int64",
+          "sample_values": [
+            "43",
+            "48",
+            "94"
+          ],
+          "nunique_in_sample": 234
+        },
+        {
+          "name": "in_apple_charts",
+          "dtype": "int64",
+          "sample_values": [
+            "263",
+            "126",
+            "207"
+          ],
+          "nunique_in_sample": 172
+        },
+        {
+          "name": "in_deezer_playlists",
+          "dtype": "object",
+          "sample_values": [
+            "45",
+            "58",
+            "91"
+          ],
+          "nunique_in_sample": 348
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}
