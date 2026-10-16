@@ -1,34 +1,31 @@
 {
-  "project_title": "Oenological Chemical Composition & Quality Forensic Analytics Blueprint",
-  "fact_table": "WineQT",
-  "target_metric": "quality",
-  "primary_id_column": "fact_surrogate_id",
+  "project_title": "Enterprise Analytics & Dimensional Architecture for raw_data",
+  "fact_table": "imdb_top_1000",
+  "target_metric": "Poster_Link",
+  "primary_id_column": "id",
   "cardinality_defense_plan": {
-    "dimension_aggregation_strategies": "The dataset is a flat structure representing individual chemical analysis events. No external 1:N dimensions are currently attached. Any future dimension (e.g., Wine Origin or Batch Audit) must be aggregated to the 'Id' level prior to left-joining to the fact table to maintain a strict 1:1 join granularity.",
-    "entity_resolution_and_key_cleaning": "Generate 'fact_surrogate_id' using a monotonically increasing sequence (or UUID) based on the existing 'Id' column. Cast all floating-point chemical features to normalized scales to ensure stability in aggregation.",
-    "relational_join_sequence": "Start with 'WineQT' fact table (base). If external audit dimensions are introduced, execute Left Joins on 'fact_surrogate_id' using a 'validate_join' function to check for row count variance."
+    "dimension_aggregation_strategies": "Pre-aggregate any 1:N dimensions before merge to preserve 1:1 fact integrity",
+    "entity_resolution_and_key_cleaning": "Sanitize and harmonize join keys with whitespace stripping and case folding",
+    "relational_join_sequence": "Left join 0 dimension tables () onto imdb_top_1000"
   },
   "forensic_enrichment_columns": [
-    "sulfur_ratio = total sulfur dioxide / free sulfur dioxide",
-    "acidity_velocity = (fixed acidity + volatile acidity) / pH",
-    "chemical_impurity_index = (chlorides + sulphates) / alcohol"
+    "Fulfillment & SLA duration variance",
+    "Financial and operational friction ratio"
   ],
   "assertion_gates": [
-    "assert len(final_fact) == len(initial_fact), 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'",
-    "assert final_fact.duplicated(subset=['fact_surrogate_id']).sum() == 0, 'Duplicate primary IDs detected!'",
-    "assert 'quality' in final_fact.columns, 'Missing expected dimension features!'"
+    "assert len(final_fact) == len(initial_fact), 'Zero drift violation: Cartesian explosion detected!'",
+    "assert final_fact.duplicated(subset=['id']).sum() == 0, 'Duplicate primary keys detected in id!'"
   ],
   "bi_deliverables": {
     "fact_table": "bi_ready_fact.parquet",
-    "dimension_tables": [
-      "bi_dim_wine_profile.csv"
-    ],
+    "dimension_tables": [],
     "dax_measures": [
-      "Total Volume / Records = COUNTROWS(WineQT)",
-      "Target Events Count = COUNTROWS(FILTER(WineQT, WineQT[quality] > 6))",
-      "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records])",
-      "Total Financial / Operational Friction Loss ($) = SUMX(WineQT, [chemical_impurity_index] * [total sulfur dioxide])",
-      "Segment Performance / Congestion Index = AVERAGEX(WineQT, [acidity_velocity])"
+      "Total Volume",
+      "Target Events Count",
+      "Target Event Rate %",
+      "Total Operational Loss ($)",
+      "Dimensional Risk Index"
     ]
-  }
+  },
+  "dataset_fingerprint": "fcee9946e79ed6f7"
 }

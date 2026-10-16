@@ -116,9 +116,13 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         nunique = int(s.nunique())
         samples = [str(x) for x in s.unique()[:3]]
         
+        BAD_KEY_KEYWORDS = ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'svg', 'png', 'jpg', 'jpeg', 'body', 'content', 'path', 'href']
         col_lower = str(col).lower()
-        has_key_keyword = any(k in col_lower for k in KEY_SEMANTIC_KEYWORDS)
-        high_uniqueness = (n_sample > 10 and (nunique / float(n_sample)) >= 0.70)
+        has_bad_keyword = any(b in col_lower for b in BAD_KEY_KEYWORDS)
+        is_url_or_long_text = any(str(x).startswith(('http://', 'https://', '//', 'www.')) or len(str(x)) > 60 for x in samples)
+        
+        has_key_keyword = any(k in col_lower for k in KEY_SEMANTIC_KEYWORDS) and not has_bad_keyword
+        high_uniqueness = (n_sample > 10 and (nunique / float(n_sample)) >= 0.70) and not has_bad_keyword and not is_url_or_long_text
         
         if has_key_keyword or high_uniqueness:
             potential_keys.append(col)
@@ -144,7 +148,7 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
                 reader_sql = None
                 
             if reader_sql:
-                for pk_cand in potential_keys[:5]:
+                for pk_cand in potential_keys[:10]:
                     cand_esc = pk_cand.replace('"', '""')
                     row_stat = con.execute(f"SELECT COUNT(*), COUNT(DISTINCT \"{cand_esc}\") FROM {reader_sql}").fetchone()
                     if row_stat and row_stat[0] > 0 and row_stat[0] == row_stat[1]:
@@ -152,7 +156,17 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         except Exception:
             pass
 
-    recommended_pk = strictly_unique_primary_keys[0] if strictly_unique_primary_keys else "fact_surrogate_id"
+    recommended_pk = "fact_surrogate_id"
+    if strictly_unique_primary_keys:
+        true_ids = [c for c in strictly_unique_primary_keys if c.lower() in ['id', 'ident', 'uuid', 'key'] or c.lower().endswith(('_id', '_key', '_uuid'))]
+        code_ids = [c for c in strictly_unique_primary_keys if c.lower().endswith(('_code', '_num', '_no'))]
+        clean_keys = [c for c in strictly_unique_primary_keys if not any(b in c.lower() for b in BAD_KEY_KEYWORDS)]
+        if true_ids:
+            recommended_pk = true_ids[0]
+        elif code_ids:
+            recommended_pk = code_ids[0]
+        elif clean_keys:
+            recommended_pk = clean_keys[0]
 
     meta = {
         "table_name": t_name,

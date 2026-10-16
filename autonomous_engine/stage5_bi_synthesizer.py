@@ -56,16 +56,21 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
 
     cols = list(df.columns)
     
-    # 0. Check explicit Blueprint Target Metric first
+    # 0. Check explicit Blueprint Target Metric first (validate it is not a URL, image link, or free text)
     if blueprint and blueprint.get("target_metric") in cols:
-        target_col = blueprint.get("target_metric")
+        bp_target = blueprint.get("target_metric")
+        is_bad_bp = any(b in bp_target.lower() for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href'])
+        is_high_card_text = (df[bp_target].dtype == 'object' and df[bp_target].nunique() > 35)
+        if not is_bad_bp and not is_high_card_text:
+            target_col = bp_target
 
     # 1. Target metric detection (strictly discrete classification / status events, nunique <= 10)
     target_keywords = ['death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke', 'readmit', 'attrition', 'churn', 'fraud', 'default', 'reach', 'ontime', 'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker', 'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality', 'grade', 'rating', 'score']
     target_candidates = []
     for c in cols:
         c_low = c.lower()
-        if any(k in c_low for k in target_keywords) and df[c].nunique() <= 10 and not c_low.endswith(('_id', '_key', '_code', '_num')):
+        is_rating_scale = any(k in c_low for k in ['rating', 'quality', 'score', 'grade']) and pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() <= 35
+        if any(k in c_low for k in target_keywords) and (df[c].nunique() <= 10 or is_rating_scale) and not c_low.endswith(('_id', '_key', '_code', '_num')):
             # Ignore travel/cabin Class dimension (e.g. Eco, Business, First)
             if c_low == 'class' and any(val in ['eco', 'business', 'first'] for val in df[c].astype(str).str.lower().unique()):
                 continue
@@ -136,6 +141,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     cat_cols = []
     for c in cols:
         if c in [target_col, cost_col] or c.lower().endswith(('_id', '_key')):
+            continue
+        if any(b in c.lower() for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']):
             continue
         nunique = df[c].nunique()
         if 2 <= nunique <= 1000 and (df[c].dtype == 'object' or str(df[c].dtype) == 'category'):
@@ -234,8 +241,10 @@ def synthesize_deliverables(output_dir: str):
     if sec_dim and (pd.api.types.is_float_dtype(df_fact[sec_dim]) or df_fact[sec_dim].nunique() > 20):
         sec_dim = discretize_continuous_dim(df_fact, sec_dim)
 
+    # Save enriched view separately to preserve certified Stage 4 fact table immutability
     try:
-        df_fact.to_parquet(parquet_path, index=False)
+        enriched_fact_path = out / "bi_enriched_fact.parquet"
+        df_fact.to_parquet(enriched_fact_path, index=False)
     except Exception:
         pass
 
@@ -247,7 +256,14 @@ def synthesize_deliverables(output_dir: str):
         if df_fact[target_col].nunique() <= 2 and s_target.max() <= 1:
             df_fact['_is_target_event'] = s_target.astype(int)
         elif any(k in target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
-            threshold = 5 if s_target.min() >= 1 and s_target.max() <= 10 else s_target.median()
+            # Adaptive threshold for truncated distributions (e.g. IMDB ratings 7.6-9.3)
+            if s_target.min() >= 1 and s_target.max() <= 10:
+                if s_target.min() > 5.0 or (s_target.quantile(0.25) > 5.0):
+                    threshold = float(s_target.quantile(0.25))
+                else:
+                    threshold = 5.0
+            else:
+                threshold = float(s_target.median())
             df_fact['_is_target_event'] = (s_target <= threshold).astype(int)
         elif pd.api.types.is_numeric_dtype(df_fact[target_col]):
             threshold = s_target.median() if s_target.nunique() > 1 else 0
@@ -421,7 +437,16 @@ DIVIDE([Total Financial Friction Loss ($)], [Total Records], 0)
 | :--- | :--- | :--- | :--- | :--- | :--- |
 """
     for m in moats:
-        dossier_content += f"| **{m.get(prim_dim, 'N/A')}** | {m.get('volume', 0):,} | {m.get('target_events', 0):,} | **{m.get('reliability_pct', 100.0)}%** | {m.get('event_rate_pct', 0.0)}% | **High Reliability Leader** |\n"
+        rel = m.get('reliability_pct', 100.0)
+        if rel >= 85.0:
+            status = "**High Reliability Leader**"
+        elif rel >= 70.0:
+            status = "**Moderate Stability Buffer**"
+        elif rel >= 50.0:
+            status = "Marginal Stability"
+        else:
+            status = "Sub-Baseline Performer"
+        dossier_content += f"| **{m.get(prim_dim, 'N/A')}** | {m.get('volume', 0):,} | {m.get('target_events', 0):,} | **{rel}%** | {m.get('event_rate_pct', 0.0)}% | {status} |\n"
 
     dossier_content += f"""
 ---
@@ -451,10 +476,29 @@ DIVIDE([Total Financial Friction Loss ($)], [Total Records], 0)
             s_loss = s.get("friction_loss", 0.0)
             dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s.get('target_events', 0):,} | **{s.get('event_rate_pct', 0.0)}%** | ${s_loss:,.2f} |\n"
 
-    # Calculate What-If Counterfactual Capital Recovery
-    save_10 = total_cost * 0.10
-    save_20 = total_cost * 0.20
-    save_30 = total_cost * 0.30
+    # Calculate What-If Counterfactual Capital Recovery or Event Containment
+    if cost_col and total_cost > 0:
+        save_10 = total_cost * 0.10
+        save_20 = total_cost * 0.20
+        save_30 = total_cost * 0.30
+        what_if_table = f"""
+| Capital Friction Scenario | Projected Capital Recovered ($) | Remaining Capital Drag ($) | Operational Feasibility |
+| :--- | :--- | :--- | :--- |
+| **Conservative (10% Fix)** | **${save_10:,.2f}** | ${total_cost - save_10:,.2f} | Immediate (Process hygiene & queue alerts) |
+| **Targeted (20% Fix)** | **${save_20:,.2f}** | ${total_cost - save_20:,.2f} | 30-60 Days (Buffer allocation & SLA caps) |
+| **Aggressive (30% Fix)** | **${save_30:,.2f}** | ${total_cost - save_30:,.2f} | 90+ Days (Structural automation & policy revamp) |
+"""
+    else:
+        save_10_cnt = int(round(target_count * 0.10))
+        save_20_cnt = int(round(target_count * 0.20))
+        save_30_cnt = int(round(target_count * 0.30))
+        what_if_table = f"""
+| Event Mitigation Scenario | Defective Outcomes Averted | Remaining Vulnerability Volume | Operational Feasibility |
+| :--- | :--- | :--- | :--- |
+| **Conservative (10% Fix)** | **{save_10_cnt:,} events** | {target_count - save_10_cnt:,} events | Immediate (Process hygiene & queue alerts) |
+| **Targeted (20% Fix)** | **{save_20_cnt:,} events** | {target_count - save_20_cnt:,} events | 30-60 Days (Dedicated protocol buffer & monitoring) |
+| **Aggressive (30% Fix)** | **{save_30_cnt:,} events** | {target_count - save_30_cnt:,} events | 90+ Days (Structural sensor telemetry & automation) |
+"""
 
     dossier_content += f"""
 ---
@@ -467,15 +511,9 @@ DIVIDE([Total Financial Friction Loss ($)], [Total Records], 0)
 
 ---
 
-### 8. Counterfactual "What-If" Business Simulation & Capital Recovery
-*Simulated ROI from proactive intervention and friction reduction:*
-
-| Friction Reduction Scenario | Projected Capital Recovered ($) | Remaining Exposure ($) | Operational Feasibility |
-| :--- | :--- | :--- | :--- |
-| **Conservative (10% Fix)** | **${save_10:,.2f}** | ${total_cost - save_10:,.2f} | Immediate (Process hygiene & queue alerts) |
-| **Targeted (20% Fix)** | **${save_20:,.2f}** | ${total_cost - save_20:,.2f} | 30-60 Days (Buffer allocation & SLA caps) |
-| **Aggressive (30% Fix)** | **${save_30:,.2f}** | ${total_cost - save_30:,.2f} | 90+ Days (Structural automation & policy revamp) |
-
+### 8. Counterfactual "What-If" Business Simulation & Sensitivity Horizons
+*Standardized sensitivity projections modeling 10%, 20%, and 30% reduction targets (cross-referenced with empirical triage options in Section 3):*
+{what_if_table}
 ---
 """
 
@@ -498,7 +536,7 @@ DIVIDE([Total Financial Friction Loss ($)], [Total Records], 0)
         f"> *\"Good morning. Across our audited footprint of **{total_records:,} physical records**, "
         f"our system identified **{target_count:,} critical events ({target_rate_pct}%)**, driving {drag_str}.*\n> \n"
         f"> *Our root-cause forensic analysis proves that this drag is heavily concentrated: the top leak segment accounts for **{share_str}**.*\n> \n"
-        f"> *Rather than speculative intuition, we recommend an initial targeted 10% operational remediation, which will {remedy_str} with zero disruption to core operations.\"*\n"
+        f"> *Rather than speculative intuition, we recommend an initial targeted 10% operational remediation, which models a projected reduction of {remedy_str} as an initial proof-of-concept.\"*\n"
     )
     dossier_content += briefing_script
 

@@ -1,93 +1,107 @@
-import pandas as pd
-import numpy as np
 import sys
 import os
+import pandas as pd
+import numpy as np
 import json
 from pathlib import Path
 
-# Enforce UTF-8 on Windows
-if sys.platform == 'win32':
+# Enforce encoding for Windows
+if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
 
-def setup_directories(paths):
-    for p in paths:
-        p.mkdir(parents=True, exist_ok=True)
-
 def run_etl():
-    # 1. Configuration & Directories
-    BASE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/wine_quality')
-    RAW_DIR = BASE_DIR / 'raw_data'
-    CACHE_DIR = BASE_DIR / 'cache'
-    OUTPUT_DIR = BASE_DIR / 'output'
+    # 1. Configuration & Paths
+    RAW_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/raw_data')
+    CACHE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/cache')
+    OUT_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/output')
     
-    setup_directories([CACHE_DIR, OUTPUT_DIR])
+    for d in [CACHE_DIR, OUT_DIR]:
+        d.mkdir(parents=True, exist_ok=True)
 
     # 2. Ingestion
-    file_path = RAW_DIR / "WineQT.csv"
-    df = pd.read_csv(file_path, sep=',', encoding='utf-8', na_values=['?'], low_memory=False)
-    
-    # Standardize Column Names
-    df.columns = [c.strip() for c in df.columns]
+    print("Ingesting imdb_top_1000...")
+    df = pd.read_csv(
+        RAW_DIR / 'imdb_top_1000.csv', 
+        sep=',', 
+        encoding='utf-8', 
+        na_values=['?'], 
+        low_memory=False
+    )
     
     initial_fact_count = len(df)
     
-    # 3. Entity Resolution & Cardinality Defense
-    # Generate unique surrogate ID
-    df['fact_surrogate_id'] = (df.index + 1).astype(str)
+    # 3. Key Normalization & Primary Key Enforcement
+    # Generate unique primary ID
+    df['id'] = (df.index + 1).astype(str)
     
-    # Impute missing values strictly preserving row count
-    for col in df.select_dtypes(include=[np.number]).columns:
-        df[col] = df[col].fillna(df[col].median())
-    for col in df.select_dtypes(include=['object']).columns:
-        df[col] = df[col].fillna('UNKNOWN')
+    # Sanitization
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            df[col] = df[col].astype(str).str.strip()
+    
+    # Fill Missing Values (No row dropping allowed)
+    num_cols = df.select_dtypes(include=[np.number]).columns
+    df[num_cols] = df[num_cols].fillna(0)
+    
+    cat_cols = df.select_dtypes(include=['object']).columns
+    df[cat_cols] = df[cat_cols].fillna('UNKNOWN')
 
-    # 4. Forensic Enrichments
-    # sulfur_ratio = total sulfur dioxide / free sulfur dioxide
-    # Note: Handle division by zero
-    df['sulfur_ratio'] = np.where(df['free sulfur dioxide'] != 0, 
-                                  df['total sulfur dioxide'] / df['free sulfur dioxide'], 0)
+    # 4. Forensic Enrichments (Vectorized)
+    # Fix: Pre-process 'Runtime' column to remove non-numeric chars before float conversion
+    # Ensure Runtime is string before regex replacement
+    df['Runtime_Numeric'] = pd.to_numeric(df['Runtime'].astype(str).replace(r'[^\d.]', '', regex=True), errors='coerce').fillna(0)
     
-    # acidity_velocity = (fixed acidity + volatile acidity) / pH
-    df['acidity_velocity'] = (df['fixed acidity'] + df['volatile acidity']) / df['pH'].replace(0, 1)
+    # Fulfillment & SLA duration variance: Mock calculation based on runtime/votes
+    df['Fulfillment & SLA duration variance'] = np.abs(df['Runtime_Numeric'] - df['Runtime_Numeric'].mean())
     
-    # chemical_impurity_index = (chlorides + sulphates) / alcohol
-    df['chemical_impurity_index'] = (df['chlorides'] + df['sulphates']) / df['alcohol'].replace(0, 1)
+    # Financial and operational friction ratio: Gross / No_of_Votes (handle div by zero)
+    df['Gross_Numeric'] = pd.to_numeric(df['Gross'].astype(str).replace(r'[^\d.]', '', regex=True), errors='coerce').fillna(0)
+    df['Financial and operational friction ratio'] = df['Gross_Numeric'] / (df['No_of_Votes'].replace(0, 1))
 
-    # 5. Final Preparation
-    # Cast to string for parquet compatibility
-    df['fact_surrogate_id'] = df['fact_surrogate_id'].astype(str)
+    # 5. Assertion Gates
+    final_fact = df.copy()
     
-    final_fact = df.loc[:, ~df.columns.duplicated()]
+    # Ensure all identifiers are strings for parquet compatibility
+    for col in final_fact.columns:
+        if final_fact[col].dtype == 'object':
+            final_fact[col] = final_fact[col].astype(str)
+            
+    assert len(final_fact) == initial_fact_count, 'Zero drift violation: Cartesian explosion detected!'
+    assert final_fact.duplicated(subset=['id']).sum() == 0, 'Duplicate primary keys detected in id!'
+    assert 'Poster_Link' in final_fact.columns, 'Target metric Poster_Link missing!'
 
-    # 6. Assertion Gates
-    assert len(final_fact) == initial_fact_count, 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'
-    assert final_fact['fact_surrogate_id'].duplicated().sum() == 0, 'Duplicate primary IDs detected!'
-    assert 'quality' in final_fact.columns, 'Missing expected dimension features!'
-
-    # 7. Exports
-    # Export Fact Table
-    final_fact.to_parquet(OUTPUT_DIR / 'bi_ready_fact.parquet', engine='pyarrow', index=False)
+    # 6. Deliverables Export
+    # Deduplicate columns
+    final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
     
-    # Export Dimension (subset of fact as per blueprint request)
-    dim_df = final_fact[['fact_surrogate_id', 'quality']]
-    dim_df.to_csv(OUTPUT_DIR / 'bi_dim_wine_profile.csv', index=False)
+    # Save to Parquet
+    final_fact.to_parquet(OUT_DIR / 'bi_ready_fact.parquet', engine='pyarrow', index=False)
     
-    # Export Diagnostic Dossier
+    # Forensic Dossier
     dossier = {
-        "status": "SUCCESS",
-        "processed_rows": len(final_fact),
-        "columns_processed": list(final_fact.columns),
-        "dax_spec_reference": "Embedded in blueprint logic"
+        "total_rows": len(final_fact),
+        "columns": list(final_fact.columns),
+        "dax_specs": [
+            "Total Volume := COUNTROWS('bi_ready_fact')",
+            "Target Events Count := SUM('bi_ready_fact'[No_of_Votes])",
+            "Target Event Rate % := DIVIDE([Target Events Count], [Total Volume])",
+            "Total Operational Loss ($) := SUM('bi_ready_fact'[Financial and operational friction ratio])",
+            "Dimensional Risk Index := AVERAGE('bi_ready_fact'[Fulfillment & SLA duration variance])"
+        ]
     }
-    with open(OUTPUT_DIR / 'forensic_dossier.json', 'w') as f:
+    
+    with open(OUT_DIR / 'forensic_dossier.json', 'w') as f:
         json.dump(dossier, f, indent=4)
 
-    # 8. Execution Summary
-    print("-" * 30)
-    print("ETL JOB COMPLETED SUCCESSFULLY")
-    print(f"Total Records Processed: {len(final_fact)}")
-    print(f"Fact Table Artifact: {OUTPUT_DIR / 'bi_ready_fact.parquet'}")
-    print("-" * 30)
+    # 7. Summary Table
+    summary = pd.DataFrame({
+        "Metric": ["Initial Rows", "Final Rows", "Target Metric Present", "Status"],
+        "Value": [initial_fact_count, len(final_fact), True, "SUCCESS"]
+    })
+    
+    print("\n--- Execution Summary ---")
+    print(summary.to_string(index=False))
+    print(f"\nFiles exported to: {OUT_DIR}")
 
 if __name__ == "__main__":
     run_etl()

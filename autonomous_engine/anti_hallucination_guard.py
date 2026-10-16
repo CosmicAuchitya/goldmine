@@ -31,7 +31,8 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
     if not parquet_files:
         return {"status": "FAILED", "reason": "No fact Parquet table found to audit"}
 
-    fact_parquet = parquet_files[0]
+    ready_facts = [f for f in parquet_files if f.name == "bi_ready_fact.parquet"]
+    fact_parquet = ready_facts[0] if ready_facts else parquet_files[0]
     con = duckdb.connect()
     con.execute(f"CREATE VIEW fact AS SELECT * FROM read_parquet('{fact_parquet.as_posix().replace("'", "''")}')")
 
@@ -228,6 +229,63 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
             physics_violations.append(
                 f"Synthetic confounder conflation in MQ7: ('{c1}', '{c2}') contains synthetic ETL feature."
             )
+
+    # AUDIT CHECK 6: Deep Narrative & Micro-Forensic Verification
+    # 6.1 Check Root Bottleneck Lineage (No self-referential or synthetic root causes)
+    bottleneck_matches = re.findall(r'Highest-Friction Root Bottleneck:\s*\*\*`?([^`*\n]+)`?\*\*', dossier_text)
+    for bn in bottleneck_matches:
+        bn_clean = bn.strip().lower()
+        if "_is_target" in bn_clean or "is_target" in bn_clean:
+            physics_violations.append(
+                f"Circular root cause leakage: Highest-Friction Root Bottleneck is '{bn}', which is the target outcome itself!"
+            )
+        col_cand = bn.split("=")[0].split("in")[0].strip()
+        if any(col_cand.lower().endswith(s) for s in synthetic_suffixes) or col_cand.lower().startswith(('fact_', '_', 'surrogate_')):
+            physics_violations.append(
+                f"Synthetic root bottleneck: Bottleneck '{bn}' uses synthetic/derived column '{col_cand}' instead of raw physical feature."
+            )
+
+    # 6.2 Physical DuckDB Correlation Verification
+    for c1, c2 in confounder_matches:
+        if c1 in fact_cols and c2 in fact_cols:
+            try:
+                duck_r = con.execute(f"SELECT corr(\"{c1}\", \"{c2}\") FROM fact").fetchone()[0]
+                r_match = re.search(r'Collinearity Audit between `' + re.escape(c1) + r'` and `' + re.escape(c2) + r'`[\s\S]*?Pearson Correlation:\s*\*\*r\s*=\s*([0-9.-]+)\*\*', dossier_text)
+                if r_match and duck_r is not None:
+                    claimed_r = float(r_match.group(1))
+                    if abs(claimed_r - float(duck_r)) > 0.05:
+                        physics_violations.append(
+                            f"Pearson correlation discrepancy: Claimed r = {claimed_r} between '{c1}' and '{c2}', physical DuckDB calculates r = {float(duck_r):.3f}"
+                        )
+            except Exception:
+                pass
+
+    # 6.3 MQ5 Compound Failure Narrative Direction Check
+    mq5_match = re.search(r'MQ5:[\s\S]*?reveals that (?:only )?([0-9.]+)%\s*breach two or more critical parameters([\s\S]*?)(?:MQ6|\n\n\n)', dossier_text)
+    if mq5_match:
+        compound_pct = float(mq5_match.group(1))
+        ans_tail = mq5_match.group(2).lower()
+        if compound_pct < 50.0 and "overwhelmingly an emergent compound" in ans_tail:
+            physics_violations.append(
+                f"Narrative contradiction in MQ5: Text claims 'overwhelmingly an emergent compound phenomenon' but empirical multi-breach percentage is only {compound_pct}% (< 50%)"
+            )
+        elif compound_pct >= 50.0 and "predominantly driven by single-variable" in ans_tail:
+            physics_violations.append(
+                f"Narrative contradiction in MQ5: Text claims 'predominantly driven by single-variable' but empirical multi-breach percentage is {compound_pct}% (>= 50%)"
+            )
+
+    # 6.4 MQ8 Lift Calculation Check (Reject fake inverse-base-rate lifts)
+    mq8_match = re.search(r'MQ8:[\s\S]*?\(Quality >= [0-9.]+\)[\s\S]*?elevates premium probability by ([0-9.]+)x', dossier_text, re.IGNORECASE)
+    if mq8_match:
+        lift_val = float(mq8_match.group(1))
+        prem_pct_match = re.search(r'MQ8:[\s\S]*?([0-9.]+)%\)\s*achieve Premium', dossier_text)
+        if prem_pct_match:
+            prem_pct = float(prem_pct_match.group(1))
+            inv_base_rate = round(100.0 / max(prem_pct, 1.0), 1)
+            if abs(lift_val - inv_base_rate) < 0.05 and "empirical conditional lift" not in dossier_text:
+                physics_violations.append(
+                    f"Fake lift calculation in MQ8: Claimed {lift_val}x matches inverse base rate (100 / {prem_pct}%), not true conditional lift P(Prem|Criteria)/P(Prem)!"
+                )
 
     # Compute Hallucination Score
     is_hallucination_detected = len(hallucinated_columns) > 0 or len(physics_violations) > 0

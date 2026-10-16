@@ -1,160 +1,168 @@
 {
   "dataset_name": "raw_data",
   "tables": {
-    "WineQT": {
-      "table_name": "WineQT",
-      "filename": "WineQT.csv",
+    "imdb_top_1000": {
+      "table_name": "imdb_top_1000",
+      "filename": "imdb_top_1000.csv",
       "selected_sheet": null,
-      "estimated_rows": 1143,
+      "estimated_rows": 1000,
       "delimiter": ",",
       "encoding": "utf-8",
       "columns": [
-        "fixed acidity",
-        "volatile acidity",
-        "citric acid",
-        "residual sugar",
-        "chlorides",
-        "free sulfur dioxide",
-        "total sulfur dioxide",
-        "density",
-        "pH",
-        "sulphates",
-        "alcohol",
-        "quality",
-        "Id"
+        "Poster_Link",
+        "Series_Title",
+        "Released_Year",
+        "Certificate",
+        "Runtime",
+        "Genre",
+        "IMDB_Rating",
+        "Overview",
+        "Meta_score",
+        "Director",
+        "Star1",
+        "Star2",
+        "Star3",
+        "Star4",
+        "No_of_Votes",
+        "Gross"
       ],
       "potential_keys": [
-        "fixed acidity",
-        "volatile acidity",
-        "citric acid",
-        "residual sugar",
-        "chlorides",
-        "free sulfur dioxide",
-        "total sulfur dioxide",
-        "Id"
+        "Poster_Link",
+        "Series_Title",
+        "Runtime",
+        "Overview",
+        "Director",
+        "Star2",
+        "Star3",
+        "Star4",
+        "No_of_Votes",
+        "Gross"
       ],
-      "strictly_unique_primary_keys": [],
-      "recommended_primary_key": "fact_surrogate_id",
+      "strictly_unique_primary_keys": [
+        "Poster_Link",
+        "Overview"
+      ],
+      "recommended_primary_key": "Poster_Link",
       "sample_columns": [
         {
-          "name": "fixed acidity",
-          "dtype": "float64",
+          "name": "Poster_Link",
+          "dtype": "object",
           "sample_values": [
-            "7.4",
-            "7.8",
-            "11.2"
+            "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_UX67_CR0,0,67,98_AL_.jpg",
+            "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UY98_CR1,0,67,98_AL_.jpg",
+            "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_UX67_CR0,0,67,98_AL_.jpg"
           ],
-          "nunique_in_sample": 91
+          "nunique_in_sample": 1000
         },
         {
-          "name": "volatile acidity",
-          "dtype": "float64",
+          "name": "Series_Title",
+          "dtype": "object",
           "sample_values": [
-            "0.7",
-            "0.88",
-            "0.76"
+            "The Shawshank Redemption",
+            "The Godfather",
+            "The Dark Knight"
           ],
-          "nunique_in_sample": 135
+          "nunique_in_sample": 999
         },
         {
-          "name": "citric acid",
-          "dtype": "float64",
+          "name": "Released_Year",
+          "dtype": "object",
           "sample_values": [
-            "0.0",
-            "0.04",
-            "0.56"
+            "1994",
+            "1972",
+            "2008"
           ],
-          "nunique_in_sample": 77
+          "nunique_in_sample": 100
         },
         {
-          "name": "residual sugar",
-          "dtype": "float64",
+          "name": "Certificate",
+          "dtype": "object",
           "sample_values": [
-            "1.9",
-            "2.6",
-            "2.3"
+            "A",
+            "UA",
+            "U"
           ],
-          "nunique_in_sample": 80
+          "nunique_in_sample": 16
         },
         {
-          "name": "chlorides",
-          "dtype": "float64",
+          "name": "Runtime",
+          "dtype": "object",
           "sample_values": [
-            "0.076",
-            "0.098",
-            "0.092"
+            "142 min",
+            "175 min",
+            "152 min"
           ],
-          "nunique_in_sample": 131
+          "nunique_in_sample": 140
         },
         {
-          "name": "free sulfur dioxide",
-          "dtype": "float64",
+          "name": "Genre",
+          "dtype": "object",
           "sample_values": [
-            "11.0",
-            "25.0",
-            "15.0"
+            "Drama",
+            "Crime, Drama",
+            "Action, Crime, Drama"
           ],
-          "nunique_in_sample": 53
+          "nunique_in_sample": 202
         },
         {
-          "name": "total sulfur dioxide",
+          "name": "IMDB_Rating",
           "dtype": "float64",
           "sample_values": [
-            "34.0",
-            "67.0",
-            "54.0"
+            "9.3",
+            "9.2",
+            "9.0"
           ],
-          "nunique_in_sample": 138
+          "nunique_in_sample": 17
         },
         {
-          "name": "density",
+          "name": "Overview",
+          "dtype": "object",
+          "sample_values": [
+            "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+            "An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.",
+            "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."
+          ],
+          "nunique_in_sample": 1000
+        },
+        {
+          "name": "Meta_score",
           "dtype": "float64",
           "sample_values": [
-            "0.9978",
-            "0.9968",
-            "0.997"
+            "80.0",
+            "100.0",
+            "84.0"
           ],
-          "nunique_in_sample": 388
+          "nunique_in_sample": 63
         },
         {
-          "name": "pH",
-          "dtype": "float64",
+          "name": "Director",
+          "dtype": "object",
           "sample_values": [
-            "3.51",
-            "3.2",
-            "3.26"
+            "Frank Darabont",
+            "Francis Ford Coppola",
+            "Christopher Nolan"
           ],
-          "nunique_in_sample": 87
+          "nunique_in_sample": 548
         },
         {
-          "name": "sulphates",
-          "dtype": "float64",
+          "name": "Star1",
+          "dtype": "object",
           "sample_values": [
-            "0.56",
-            "0.68",
-            "0.65"
+            "Tim Robbins",
+            "Marlon Brando",
+            "Christian Bale"
           ],
-          "nunique_in_sample": 89
+          "nunique_in_sample": 660
         },
         {
-          "name": "alcohol",
-          "dtype": "float64",
+          "name": "Star2",
+          "dtype": "object",
           "sample_values": [
-            "9.4",
-            "9.8",
-            "10.0"
+            "Morgan Freeman",
+            "Al Pacino",
+            "Heath Ledger"
           ],
-          "nunique_in_sample": 61
-        },
-        {
-          "name": "quality",
-          "dtype": "int64",
-          "sample_values": [
-            "5",
-            "6",
-            "7"
-          ],
-          "nunique_in_sample": 6
+          "nunique_in_sample": 841
         }
       ]
     }

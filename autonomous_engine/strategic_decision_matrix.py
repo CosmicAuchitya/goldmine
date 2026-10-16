@@ -28,7 +28,47 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 import pandas as pd
 import numpy as np
-from scipy.stats import chi2_contingency, pearsonr
+from scipy.stats import chi2_contingency, pearsonr, norm
+
+
+def calculate_wilson_ci(k: int, n: int, confidence: float = 0.95) -> Tuple[float, float]:
+    """
+    Calculates exact Wilson score confidence interval for a binomial proportion.
+    k: number of events/successes
+    n: total trials/volume
+    """
+    if n <= 0:
+        return (0.0, 0.0)
+    z = 1.95996 if abs(confidence - 0.95) < 0.01 else float(norm.ppf(1.0 - (1.0 - confidence) / 2.0))
+    p = float(k) / float(n)
+    denom = 1.0 + (z**2) / n
+    center = (p + (z**2) / (2.0 * n)) / denom
+    spread = (z / denom) * np.sqrt((p * (1.0 - p) / n) + (z**2) / (4.0 * (n**2)))
+    lower = 0.0 if k <= 0 else max(0.0, float(center - spread))
+    upper = 1.0 if k >= n else min(1.0, float(center + spread))
+    return (lower, upper)
+
+
+def calculate_two_proportion_z_test(k1: int, n1: int, k0: int, n0: int) -> Tuple[float, float]:
+    """
+    Performs a two-proportion pooled z-test.
+    Cohort 1: k1 / n1
+    Cohort 0: k0 / n0
+    Returns (z_stat, p_val).
+    """
+    if n1 <= 0 or n0 <= 0:
+        return (0.0, 1.0)
+    p1 = float(k1) / float(n1)
+    p0 = float(k0) / float(n0)
+    p_pool = float(k1 + k0) / float(n1 + n0)
+    if p_pool <= 0.0 or p_pool >= 1.0:
+        return (0.0, 1.0)
+    se = np.sqrt(p_pool * (1.0 - p_pool) * (1.0 / n1 + 1.0 / n0))
+    if se <= 0:
+        return (0.0, 1.0)
+    z = (p1 - p0) / se
+    p_val = float(2.0 * (1.0 - norm.cdf(abs(z))))
+    return (float(z), float(p_val))
 
 if sys.platform == "win32":
     try:
@@ -84,11 +124,19 @@ class MicroLevelForensicInquiryEngine:
                 return True
             return False
 
-        # Check if schema_topology.json exists to identify true raw source columns
+        # Scoped topology resolution: identify true raw source columns without unbounded directory scanning
         raw_source_cols = set()
-        search_dirs = [Path("."), Path(".."), WORKSPACE_ROOT]
-        for p in search_dirs:
-            for top_file in p.glob("**/schema_topology.json"):
+        topo_candidates = []
+        if self.blueprint.get("_topology_path"):
+            topo_candidates.append(Path(self.blueprint["_topology_path"]))
+        if self.blueprint.get("_output_dir"):
+            topo_candidates.append(Path(self.blueprint["_output_dir"]) / "schema_topology.json")
+        topo_candidates.extend([
+            Path("schema_topology.json"),
+            Path("autonomous_engine/schema_topology.json")
+        ])
+        for top_file in topo_candidates:
+            if top_file.exists():
                 try:
                     with open(top_file, "r", encoding="utf-8") as f:
                         top_data = json.load(f)
@@ -99,8 +147,6 @@ class MicroLevelForensicInquiryEngine:
                     pass
                 if raw_source_cols:
                     break
-            if raw_source_cols:
-                break
 
         num_candidates = [
             c for c in self.df.select_dtypes(include=[np.number]).columns
@@ -118,11 +164,18 @@ class MicroLevelForensicInquiryEngine:
         if self.df[self.target_col].nunique() <= 2 and s.max() <= 1:
             return s.astype(int)
         elif any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
-            threshold = 5 if s.min() >= 1 and s.max() <= 10 else s.median()
+            # Adaptive threshold for truncated distributions (e.g. IMDB 7.6-9.3 where standard threshold 5 yields 0 events)
+            if s.min() >= 1 and s.max() <= 10:
+                if s.min() > 5.0 or (s.quantile(0.25) > 5.0):
+                    threshold = float(s.quantile(0.25))
+                else:
+                    threshold = 5.0
+            else:
+                threshold = float(s.median())
             return (s <= threshold).astype(int)
         else:
-            med = s.median()
-            threshold = med if med > 0 else s.quantile(0.75)
+            med = float(s.median())
+            threshold = med if med > 0 else float(s.quantile(0.75))
             return (s > threshold).astype(int)
 
     def analyze_quantile_cliffs(self) -> List[Dict[str, Any]]:
@@ -138,6 +191,10 @@ class MicroLevelForensicInquiryEngine:
                 rates = grp['mean'].tolist()
                 deltas = [abs(rates[i] - rates[i-1]) for i in range(1, len(rates))]
                 max_delta = max(deltas) if deltas else 0.0
+                mean_delta = float(np.mean(deltas)) if deltas else 0.0
+                step_ratio = round(max_delta / max(mean_delta, 0.001), 2)
+                # A discrete cliff requires a sharp step jump (>= 1.8x mean delta and >= 10 percentage points)
+                is_cliff = bool(max_delta >= 1.8 * max(mean_delta, 0.01) and max_delta >= 0.10)
                 
                 cont_table = pd.crosstab(temp['bin'], temp['target'])
                 chi2, p_val, _, _ = chi2_contingency(cont_table) if cont_table.shape == (4, 2) else (0.0, 1.0, 0, None)
@@ -146,6 +203,9 @@ class MicroLevelForensicInquiryEngine:
                 results.append({
                     "column": col,
                     "max_delta": max_delta,
+                    "mean_delta": mean_delta,
+                    "step_ratio": step_ratio,
+                    "is_cliff": is_cliff,
                     "correlation": corr,
                     "chi2": round(float(chi2), 2),
                     "p_value": float(p_val),
@@ -164,12 +224,15 @@ class MicroLevelForensicInquiryEngine:
         return results
 
     def analyze_bivariate_interactions(self) -> Optional[Dict[str, Any]]:
+        if self.target_series.std() == 0 or len(self.numeric_features) < 2:
+            return None
         corrs = {}
         for c in self.numeric_features:
             try:
-                r = float(self.df[c].corr(self.target_series))
-                if not np.isnan(r):
-                    corrs[c] = r
+                if self.df[c].std() > 0:
+                    r = float(self.df[c].corr(self.target_series))
+                    if not np.isnan(r):
+                        corrs[c] = r
             except Exception:
                 pass
         if len(corrs) < 2:
@@ -228,9 +291,15 @@ class MicroLevelForensicInquiryEngine:
     def analyze_tail_risk(self) -> Dict[str, Any]:
         s_raw = pd.to_numeric(self.df[self.target_col], errors='coerce').fillna(0)
         if any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
-            tail_mask = s_raw <= 4
-            if tail_mask.sum() < 5:
-                tail_mask = s_raw <= 5
+            # For truncated distributions (e.g. IMDB 7.6-9.3), standard threshold <= 4 yields 0 rows
+            if s_raw.min() > 5.0 or (s_raw.quantile(0.25) > 5.0):
+                tail_mask = s_raw <= s_raw.quantile(0.10)
+                if tail_mask.sum() < 5:
+                    tail_mask = s_raw <= s_raw.quantile(0.25)
+            else:
+                tail_mask = s_raw <= 4
+                if tail_mask.sum() < 5:
+                    tail_mask = s_raw <= 5
         else:
             tail_mask = self.target_series == 1
         
@@ -262,7 +331,14 @@ class MicroLevelForensicInquiryEngine:
         }
 
     def simulate_operational_triage(self) -> List[Dict[str, Any]]:
-        corrs = {c: float(self.df[c].corr(self.target_series)) for c in self.numeric_features if not np.isnan(self.df[c].corr(self.target_series))}
+        if self.target_series.std() == 0 or not self.numeric_features:
+            return []
+        corrs = {}
+        for c in self.numeric_features:
+            if self.df[c].std() > 0:
+                r = float(self.df[c].corr(self.target_series))
+                if not np.isnan(r):
+                    corrs[c] = r
         sorted_pos = sorted([c for c, r in corrs.items() if r > 0], key=lambda c: corrs[c], reverse=True)
         sorted_neg = sorted([c for c, r in corrs.items() if r < 0], key=lambda c: corrs[c])
         
@@ -278,15 +354,15 @@ class MicroLevelForensicInquiryEngine:
         
         policies = [
             (
-                f"Policy 1: Conservative ({pos_driver} <= {q75_pos:.2f})",
+                f"Policy 1: Conservative (Scrap if {pos_driver} > {q75_pos:.2f})",
                 self.df[pos_driver] > q75_pos
             ),
             (
-                f"Policy 2: Surgical ({pos_driver} <= {med_pos:.2f})",
+                f"Policy 2: Surgical (Scrap if {pos_driver} > {med_pos:.2f})",
                 self.df[pos_driver] > med_pos
             ),
             (
-                f"Policy 3: Compound ({pos_driver} <= {med_pos:.2f} & {neg_driver} >= {med_neg:.2f})",
+                f"Policy 3: Compound (Scrap if {pos_driver} > {med_pos:.2f} OR {neg_driver} < {med_neg:.2f})",
                 (self.df[pos_driver] > med_pos) | (self.df[neg_driver] < med_neg)
             )
         ]
@@ -331,7 +407,11 @@ class MicroLevelForensicInquiryEngine:
         qbins = pd.qcut(self.df[c1], q=4, duplicates='drop')
         strata_corrs = []
         for b_name, grp in self.df.groupby(qbins, observed=False):
-            sub_r = grp[c2].corr(self.target_series.loc[grp.index])
+            t_slice = self.target_series.loc[grp.index]
+            if len(grp) > 1 and grp[c2].nunique() > 1 and t_slice.nunique() > 1:
+                sub_r = grp[c2].corr(t_slice)
+            else:
+                sub_r = 0.0
             strata_corrs.append((str(b_name), round(float(sub_r), 3) if not np.isnan(sub_r) else 0.0))
             
         return {
@@ -360,9 +440,13 @@ class MicroLevelForensicInquiryEngine:
             q1_r = b_list[0]['rate_pct']
             q4_r = b_list[-1]['rate_pct']
             direction_desc = f"escalate from {q1_r}% in Q1 ({b_list[0]['range']}) to {q4_r}% in Q4 ({b_list[-1]['range']})" if q4_r >= q1_r else f"drop from {q1_r}% in Q1 ({b_list[0]['range']}) down to {q4_r}% in Q4 ({b_list[-1]['range']})"
+            if top_cliff.get("is_cliff", False):
+                cliff_nature = f"This establishes that '{col}' operates as an acute non-linear cliff (step increase of {top_cliff['max_delta']*100:.2f} percentage points, {top_cliff.get('step_ratio', 1.0)}x mean delta) rather than a benign linear drift."
+            else:
+                cliff_nature = f"This establishes that '{col}' exhibits a progressive gradient across quartiles (step ratio {top_cliff.get('step_ratio', 1.0)}x mean progression) rather than an isolated singular cliff."
             qas.append({
                 "question": f"At what exact physical threshold does '{col}' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?",
-                "data_backed_answer": f"Physical quantile profiling identifies a non-linear inflection cliff in '{col}'. Across the 4 quartiles, event failure rates {direction_desc} (Max Delta: {top_cliff['max_delta']*100:.2f} percentage points, Chi-Square p {p_val_str}). This establishes that '{col}' operates as a discrete structural cliff rather than a benign linear drift."
+                "data_backed_answer": f"Physical quantile profiling identifies inflection dynamics in '{col}'. Across the 4 quartiles, event failure rates {direction_desc} (Max Delta: {top_cliff['max_delta']*100:.2f} percentage points, Chi-Square p {p_val_str}). {cliff_nature}"
             })
 
         # Q2: Critical Protective Floor
@@ -420,18 +504,32 @@ class MicroLevelForensicInquiryEngine:
 
         # Q5: Tail Anomaly & Multi-Factor Compound Violations
         if tail:
+            if tail['multi_violation_pct'] >= 50.0:
+                ans5 = (f"Tail risk audit across the lowest {tail['tail_count']} catastrophic records reveals that {tail['multi_violation_pct']}% "
+                        f"breach two or more critical parameters ({', '.join(tail['watch_features'])}) simultaneously. "
+                        f"Catastrophic degradation is an emergent compound phenomenon rather than a single isolated defect.")
+            else:
+                ans5 = (f"Tail risk audit across the lowest {tail['tail_count']} catastrophic records reveals that only {tail['multi_violation_pct']}% "
+                        f"breach two or more critical parameters ({', '.join(tail['watch_features'])}) simultaneously. "
+                        f"Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.")
             qas.append({
                 "question": "Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?",
-                "data_backed_answer": f"Tail risk audit across the lowest {tail['tail_count']} catastrophic records reveals that {tail['multi_violation_pct']}% breach two or more critical parameters ({', '.join(tail['watch_features'])}) simultaneously. Catastrophic degradation is overwhelmingly an emergent compound phenomenon rather than a single isolated defect."
+                "data_backed_answer": ans5
             })
 
         # Q6: Operational Triage Scrap vs Purity Yield Boundary
         if len(triage) >= 2:
             pol1 = triage[0]
             pol2 = triage[1]
+            eff1 = pol1['recall_pct'] / max(pol1['scrap_pct'], 0.1)
+            eff2 = pol2['recall_pct'] / max(pol2['scrap_pct'], 0.1)
+            if eff2 > eff1:
+                eff_narrative = f"Surgical triage delivers the higher marginal defect containment per scrap unit ({eff2:.2f} vs {eff1:.2f} recall/scrap ratio)."
+            else:
+                eff_narrative = f"Conservative triage delivers the higher marginal defect containment per scrap unit ({eff1:.2f} vs {eff2:.2f} recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects."
             qas.append({
                 "question": "If quality control establishes an intake rejection gate, what is the exact trade-off between defect elimination, scrap volume, and false discard of acceptable product?",
-                "data_backed_answer": f"Under Conservative Triage ({pol1['policy_name']}), {pol1['scrap_count']} batches ({pol1['scrap_pct']}%) are rejected, capturing {pol1['recall_pct']}% of all defects with {pol1['false_discards']} false discards. Under Surgical Triage ({pol2['policy_name']}), scrap expands to {pol2['scrap_count']} batches ({pol2['scrap_pct']}%), capturing {pol2['recall_pct']}% of defects and dropping retained defect rate to {pol2['retained_defect_rate']}%, at the cost of {pol2['false_discards']} false discards ({pol2['false_discard_pct']}% of acceptable stock). Surgical triage delivers the highest marginal defect containment per scrap unit."
+                "data_backed_answer": f"Under Conservative Triage ({pol1['policy_name']}), {pol1['scrap_count']} batches ({pol1['scrap_pct']}%) are rejected, capturing {pol1['recall_pct']}% of all defects with {pol1['false_discards']} false discards. Under Surgical Triage ({pol2['policy_name']}), scrap expands to {pol2['scrap_count']} batches ({pol2['scrap_pct']}%), capturing {pol2['recall_pct']}% of defects and dropping retained defect rate to {pol2['retained_defect_rate']}%, at the cost of {pol2['false_discards']} false discards ({pol2['false_discard_pct']}% of acceptable stock). {eff_narrative}"
             })
 
         # Q7: Simpson's Paradox & Confounder Isolation
@@ -450,12 +548,16 @@ class MicroLevelForensicInquiryEngine:
         # Q8: Multi-Dimensional Premium Envelope
         if any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
             s_raw = pd.to_numeric(self.df[self.target_col], errors='coerce').fillna(0)
-            threshold = 7 if (s_raw.min() >= 1 and s_raw.max() <= 10) else s_raw.quantile(0.80)
+            if s_raw.min() > 5.0 or (s_raw.quantile(0.25) > 5.0):
+                threshold = float(s_raw.quantile(0.80))
+            else:
+                threshold = 7.0 if (s_raw.min() >= 1 and s_raw.max() <= 10) else float(s_raw.quantile(0.80))
             prem_mask = s_raw >= threshold
             prem_cnt = int(prem_mask.sum())
             prem_pct = round((prem_cnt / self.total_records) * 100, 2)
             
             param_insights = []
+            joint_condition = pd.Series(True, index=self.df.index)
             if prem_cnt > 0 and len(self.numeric_features) > 0:
                 df_prem = self.df[prem_mask]
                 df_base = self.df[~prem_mask]
@@ -470,12 +572,23 @@ class MicroLevelForensicInquiryEngine:
                 for feat, p_med, b_med, p_diff in feat_diffs[:3]:
                     direction_str = "elevated" if p_diff > 0 else "reduced"
                     param_insights.append(f"{direction_str} '{feat}' (median {p_med:.2f} vs {b_med:.2f} baseline)")
+                    if p_diff > 0:
+                        joint_condition &= (self.df[feat] >= b_med)
+                    else:
+                        joint_condition &= (self.df[feat] <= b_med)
             
             param_summary = ", ".join(param_insights) if param_insights else "tight multi-dimensional tolerance control"
-            multiplier = round((100.0 / max(prem_pct, 1.0)), 1)
+            joint_volume = int(joint_condition.sum())
+            joint_prem_events = int((prem_mask & joint_condition).sum())
+            joint_prem_rate = round((joint_prem_events / max(joint_volume, 1)) * 100.0, 2)
+            
+            base_prem_prob = max(prem_pct / 100.0, 0.001)
+            joint_prem_prob = joint_prem_events / max(joint_volume, 1)
+            empirical_lift = round(joint_prem_prob / base_prem_prob, 2) if joint_volume > 0 else 1.0
+            
             qas.append({
                 "question": f"What precise multi-dimensional parameters define Premium / Top-Tier status ({self.target_col} >= {threshold}), and what is the feasibility envelope across total volume?",
-                "data_backed_answer": f"Across {self.total_records:,} physical records, {prem_cnt:,} ({prem_pct}%) achieve Premium / Top-Tier status ({self.target_col} >= {threshold}). Empirical distribution profiling demonstrates that top-tier records require tight alignment across key drivers: {param_summary}. Meeting these physical criteria concurrently elevates premium probability by {multiplier}x above standard baseline."
+                "data_backed_answer": f"Across {self.total_records:,} physical records, {prem_cnt:,} ({prem_pct}%) achieve Premium / Top-Tier status ({self.target_col} >= {threshold}). Empirical distribution profiling demonstrates that top-tier records require tight alignment across key drivers: {param_summary}. Meeting these physical criteria concurrently yields a premium concentration of {joint_prem_rate}% (vs {prem_pct}% overall), establishing a true empirical conditional lift of {empirical_lift}x across {joint_volume:,} matching records."
             })
 
         return qas
@@ -655,23 +768,32 @@ class StrategicDecisionEngine:
         """Resolves target metric strictly adhering to blueprint or high-certainty targets."""
         target = self.blueprint.get("target_metric")
         if target and target in self.df.columns:
-            s = pd.to_numeric(self.df[target], errors='coerce').fillna(0)
-            if self.df[target].nunique() <= 2 and s.max() <= 1:
-                cnt = int(s.sum())
-                rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
-            elif any(k in target.lower() for k in ['quality', 'score', 'rating', 'grade']):
-                threshold = 5 if s.min() >= 1 and s.max() <= 10 else s.median()
-                cnt = int((s <= threshold).sum())
-                rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
-            else:
-                med = s.median()
-                threshold = med if med > 0 else s.quantile(0.75)
-                cnt = int((s > threshold).sum())
-                rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
-            return target, cnt, rate
+            is_bad_target = any(b in target.lower() for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href'])
+            is_high_card_text = (self.df[target].dtype == 'object' and self.df[target].nunique() > 35)
+            if not is_bad_target and not is_high_card_text:
+                s = pd.to_numeric(self.df[target], errors='coerce').fillna(0)
+                if self.df[target].nunique() <= 2 and s.max() <= 1:
+                    cnt = int(s.sum())
+                    rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
+                elif any(k in target.lower() for k in ['quality', 'score', 'rating', 'grade']):
+                    if s.min() >= 1 and s.max() <= 10:
+                        if s.min() > 5.0 or (s.quantile(0.25) > 5.0):
+                            threshold = float(s.quantile(0.25))
+                        else:
+                            threshold = 5.0
+                    else:
+                        threshold = float(s.median())
+                    cnt = int((s <= threshold).sum())
+                    rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
+                else:
+                    med = float(s.median())
+                    threshold = med if med > 0 else float(s.quantile(0.75))
+                    cnt = int((s > threshold).sum())
+                    rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
+                return target, cnt, rate
 
         # Priority keyword search
-        priority_kw = ['death_event', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'readmit', 'attrition', 'delay', 'quality', 'grade', 'score']
+        priority_kw = ['death_event', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'readmit', 'attrition', 'delay', 'quality', 'rating', 'grade', 'score']
         for pkw in priority_kw:
             for c in self.columns:
                 if pkw in c.lower() and not c.endswith(('_id', '_key')):
@@ -679,7 +801,13 @@ class StrategicDecisionEngine:
                     if self.df[c].nunique() <= 2 and s.max() <= 1:
                         cnt = int(s.sum())
                     elif any(k in c.lower() for k in ['quality', 'score', 'rating', 'grade']):
-                        threshold = 5 if s.min() >= 1 and s.max() <= 10 else s.median()
+                        if s.min() >= 1 and s.max() <= 10:
+                            if s.min() > 5.0 or (s.quantile(0.25) > 5.0):
+                                threshold = float(s.quantile(0.25))
+                            else:
+                                threshold = 5.0
+                        else:
+                            threshold = float(s.median())
                         cnt = int((s <= threshold).sum())
                     else:
                         cnt = int((s > s.median()).sum())
@@ -717,12 +845,31 @@ class StrategicDecisionEngine:
         target_series = self.micro_engine.target_series
         temp_df = pd.DataFrame({'segment': None, 'is_target': target_series})
 
+        synthetic_tokens = [
+            '_velocity', '_ratio', '_diff', '_log', '_scaled', '_pct', '_tier',
+            '_bin', '_bucket', '_norm', '_normed', '_sq', '_zscore', '_score_',
+            '_flag', '_surrogate', '_index', '_impurity', '_is_target', '_event'
+        ]
+        def is_invalid_feature(c: str) -> bool:
+            cl = c.lower()
+            if cl == self.target_col.lower():
+                return True
+            if cl in ['id', 'fact_surrogate_id', '_is_target_event']:
+                return True
+            if cl.startswith(('fact_', '_', 'surrogate_')):
+                return True
+            if any(tok in cl for tok in synthetic_tokens):
+                return True
+            if cl.endswith(('_id', '_key', '_is_target_event', '_event', '_target')):
+                return True
+            return False
+
         for col in self.columns:
-            if col == self.target_col or col.endswith(('_id', '_key')):
+            if is_invalid_feature(col):
                 continue
             if self.df[col].nunique() <= 5:
                 temp_df['segment'] = self.df[col]
-                grp = temp_df.groupby('segment')['is_target'].agg(['count', 'sum'])
+                grp = temp_df.groupby('segment', observed=False)['is_target'].agg(['count', 'sum'])
                 for val, row in grp.iterrows():
                     r_pct = round((row['sum'] / max(row['count'], 1)) * 100.0, 2)
                     if r_pct > high_risk_rate and row['count'] >= max(5, int(self.total_records * 0.05)):
@@ -748,9 +895,24 @@ class StrategicDecisionEngine:
         unit = self.domain_profile["unit_symbol"]
         is_fin = self.domain_profile["is_financial"]
 
+        # Real Wilson score confidence interval calculation for binomial event proportion
+        p_low, p_high = calculate_wilson_ci(high_risk_events, high_risk_volume, confidence=0.95)
+
         path_a_reduction = int(round(high_risk_events * 0.15))
+        ci_a_low = max(0, int(round(p_low * high_risk_volume * 0.15)))
+        ci_a_high = max(ci_a_low, int(round(p_high * high_risk_volume * 0.15)))
+
         path_b_reduction = int(round(high_risk_events * 0.35))
+        ci_b_low = max(0, int(round(p_low * high_risk_volume * 0.35)))
+        ci_b_high = max(ci_b_low, int(round(p_high * high_risk_volume * 0.35)))
+
         path_c_reduction = int(round(high_risk_events * 0.65))
+        ci_c_low = max(0, int(round(p_low * high_risk_volume * 0.65)))
+        ci_c_high = max(ci_c_low, int(round(p_high * high_risk_volume * 0.65)))
+
+        ci_a_str = f"[{ci_a_low:,} to {ci_a_high:,} {unit}] (95% Wilson CI)" if not is_fin else f"[${ci_a_low*1000:,.2f} to ${ci_a_high*1000:,.2f}] (95% Wilson CI)"
+        ci_b_str = f"[{ci_b_low:,} to {ci_b_high:,} {unit}] (95% Wilson CI)" if not is_fin else f"[${ci_b_low*1000:,.2f} to ${ci_b_high*1000:,.2f}] (95% Wilson CI)"
+        ci_c_str = f"[{ci_c_low:,} to {ci_c_high:,} {unit}] (95% Wilson CI)" if not is_fin else f"[${ci_c_low*1000:,.2f} to ${ci_c_high*1000:,.2f}] (95% Wilson CI)"
 
         pathways = [
             {
@@ -758,8 +920,8 @@ class StrategicDecisionEngine:
                 "strategy_type": "Low CapEx / Immediate Operational Triage",
                 "implementation_cost": "$5,000 - $15,000" if is_fin else "Internal Staff Hours (No CapEx)",
                 "time_to_impact": "1 - 2 Weeks",
-                "projected_friction_reduction": f"{path_a_reduction} {unit} saved" if not is_fin else f"${path_a_reduction * 1000:,.2f} risk averted",
-                "statistical_confidence_interval": f"[{max(1, path_a_reduction - 2)} to {path_a_reduction + 3} {unit}] (95% CI)",
+                "projected_friction_reduction": f"{path_a_reduction:,} {unit} saved" if not is_fin else f"${path_a_reduction * 1000:,.2f} risk averted",
+                "statistical_confidence_interval": ci_a_str,
                 "fayda_pros": "Zero organizational disruption; requires no new software procurement; immediate early-warning queue alerts.",
                 "nuksan_cons": "Treats symptoms rather than root physiological/operational causes; long-term exposure remains ~85% active.",
                 "collateral_friction": "Minor alert-fatigue among frontline staff if threshold rules are too sensitive."
@@ -769,8 +931,8 @@ class StrategicDecisionEngine:
                 "strategy_type": "Moderate CapEx / Targeted Clinical or Operational Protocol",
                 "implementation_cost": "$25,000 - $50,000" if is_fin else "Dedicated Protocol Buffer & Daily Monitoring",
                 "time_to_impact": "30 - 45 Days",
-                "projected_friction_reduction": f"{path_b_reduction} {unit} saved" if not is_fin else f"${path_b_reduction * 1000:,.2f} risk averted",
-                "statistical_confidence_interval": f"[{max(2, path_b_reduction - 4)} to {path_b_reduction + 5} {unit}] (95% CI)",
+                "projected_friction_reduction": f"{path_b_reduction:,} {unit} saved" if not is_fin else f"${path_b_reduction * 1000:,.2f} risk averted",
+                "statistical_confidence_interval": ci_b_str,
                 "fayda_pros": f"Highest Return on Invested Effort; directly targets the concentrated {high_risk_segment} bottleneck where risk is {relative_risk_multiplier}x baseline.",
                 "nuksan_cons": "Leaves secondary low-volume nodes unmonitored; requires training frontline staff on custom triage.",
                 "collateral_friction": "Requires cross-departmental coordination; minor initial resistance during protocol adoption."
@@ -780,22 +942,37 @@ class StrategicDecisionEngine:
                 "strategy_type": "High CapEx / Infrastructure & Automated Remediation",
                 "implementation_cost": "$100,000 - $250,000" if is_fin else "Dedicated Telemetry / Automated Infrastructure Revamp",
                 "time_to_impact": "90 - 180 Days",
-                "projected_friction_reduction": f"{path_c_reduction} {unit} saved" if not is_fin else f"${path_c_reduction * 1000:,.2f} risk averted",
-                "statistical_confidence_interval": f"[{max(5, path_c_reduction - 6)} to {path_c_reduction + 8} {unit}] (95% CI)",
+                "projected_friction_reduction": f"{path_c_reduction:,} {unit} saved" if not is_fin else f"${path_c_reduction * 1000:,.2f} risk averted",
+                "statistical_confidence_interval": ci_c_str,
                 "fayda_pros": "Permanent architectural defense; eliminates human triage latency; delivers maximum risk eradication.",
                 "nuksan_cons": "High upfront capital expenditure and long payback horizon; risk of project fatigue.",
                 "collateral_friction": "Heavy operational friction during system migration; requires ongoing engineering maintenance."
             }
         ]
 
+        # Physical Two-Proportion z-Test between high risk segment and rest of dataset
+        n1 = high_risk_volume
+        k1 = high_risk_events
+        n0 = max(1, self.total_records - n1)
+        k0 = max(0, self.target_events - k1)
+        rest_rate = round((k0 / n0) * 100.0, 2)
+        z_stat, p_val = calculate_two_proportion_z_test(k1, n1, k0, n0)
+
+        if z_stat >= 3.0:
+            stat_evidence_str = f"The empirical separation yields z = {z_stat:.2f} (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence."
+        elif z_stat >= 1.96:
+            stat_evidence_str = f"The empirical separation yields z = {z_stat:.2f} (p = {p_val:.4f}), which is statistically significant at the 95% confidence level."
+        else:
+            stat_evidence_str = f"The empirical separation yields z = {z_stat:.2f} (p = {p_val:.4f}), indicating that this difference is within random sampling variation at 95% confidence."
+
         counter_questions = [
             {
                 "question": f"Is the concentration in '{high_risk_segment}' statistically genuine or just random cohort noise?",
-                "data_backed_answer": f"It is statistically genuine. The event rate in '{high_risk_segment}' is {high_risk_rate:.2f}% compared to the baseline rate of {self.target_rate:.2f}% (Relative Risk Multiplier: {relative_risk_multiplier}x across {high_risk_volume} physical records). The empirical separation exceeds 3 standard deviations."
+                "data_backed_answer": f"It is statistically evaluated. The event rate in '{high_risk_segment}' is {high_risk_rate:.2f}% compared to {rest_rate:.2f}% across the remainder of the population (Relative Risk Multiplier: {relative_risk_multiplier}x across {high_risk_volume:,} physical records). {stat_evidence_str}"
             },
             {
                 "question": "If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?",
-                "data_backed_answer": f"Out of {high_risk_volume} records in this high-risk partition, {high_risk_events} were confirmed adverse events ({high_risk_rate:.2f}% precision). The false-positive rate is {100.0 - high_risk_rate:.2f}%. Frontline capacity will only absorb {high_risk_volume - high_risk_events} false alarms over the cohort cycle, which is well within operational buffer capacity."
+                "data_backed_answer": f"Out of {high_risk_volume:,} records in this high-risk partition, {high_risk_events:,} were confirmed adverse events ({high_risk_rate:.2f}% precision). The false-positive rate is {100.0 - high_risk_rate:.2f}%. Frontline capacity will only absorb {high_risk_volume - high_risk_events:,} false alarms over the cohort cycle, which is well within operational buffer capacity."
             },
             {
                 "question": "Why should we not immediately jump to Pathway C (Full System Re-architecture)?",

@@ -16,11 +16,21 @@ import os
 import sys
 import re
 import json
+import hashlib
 from pathlib import Path
 from dotenv import load_dotenv
 
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
+
+def calculate_topology_fingerprint(topology: dict) -> str:
+    """Computes a deterministic hash fingerprint of table names and columns."""
+    parts = []
+    for tname in sorted(topology.get("tables", {}).keys()):
+        cols = sorted([str(c).lower() for c in topology["tables"][tname].get("columns", [])])
+        parts.append(f"{tname.lower()}:{','.join(cols)}")
+    raw = "|".join(parts)
+    return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]
 
 # Robust imports supporting both package and direct script execution
 try:
@@ -71,20 +81,53 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
     
     # 2. Identify Primary Key in Fact
     cols = fact_meta.get("columns", [])
-    pk = "id"
-    for c in cols:
-        if c.lower().endswith('_id') or c.lower() in ['id', 'ident', 'uuid', 'key']:
-            pk = c
-            break
+    pk = fact_meta.get("recommended_primary_key", "fact_surrogate_id")
+    if pk not in cols or any(b in pk.lower() for b in ['link', 'url', 'poster', 'overview', 'description']):
+        pk = "fact_surrogate_id"
+        for c in cols:
+            if c.lower().endswith(('_id', '_key', '_uuid')) or c.lower() in ['id', 'ident', 'uuid', 'key']:
+                pk = c
+                break
             
     # 3. Identify Target Metric
+    BAD_TARGET_KEYWORDS = ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']
+    clean_cols = [c for c in cols if not any(b in c.lower() for b in BAD_TARGET_KEYWORDS) and not c.lower().endswith(('_id', '_key', '_uuid'))]
+    
     target = None
-    for c in cols:
-        if any(k in c.lower() for k in ['delay', 'status', 'target', 'churn', 'cancel', 'fraud', 'error']):
-            target = c
+    # Priority 1: High priority adverse / event outcomes
+    adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+    for kw in adverse_kws:
+        for c in clean_cols:
+            if kw in c.lower():
+                target = c
+                break
+        if target:
             break
+            
+    # Priority 2: Quality / Rating / Performance scales
     if not target:
-        target = cols[0] if cols else "record_status"
+        rating_kws = ['rating', 'quality', 'grade', 'score', 'star', 'status', 'target', 'label', 'class', 'outcome', 'result']
+        for kw in rating_kws:
+            for c in clean_cols:
+                if kw in c.lower():
+                    target = c
+                    break
+            if target:
+                break
+                
+    # Priority 3: Financial or volume metrics
+    if not target:
+        fin_kws = ['revenue', 'sales', 'profit', 'yield', 'conversion', 'gross', 'amount']
+        for kw in fin_kws:
+            for c in clean_cols:
+                if kw in c.lower():
+                    target = c
+                    break
+            if target:
+                break
+
+    if not target:
+        target = clean_cols[0] if clean_cols else "record_status"
         
     dimensions = [t for t, _ in sorted_tables[1:]]
     
@@ -136,7 +179,8 @@ def generate_relational_blueprint(topology_json_path: str, output_blueprint_path
         "4. Enforce strict Star Schema for Power BI / Tableau.\n"
         "5. Formulate Confounder & Counterfactual defenses: Ensure forensic enrichment columns include normalized ratios (e.g. per-transaction cost, utilization velocity) to separate correlation from underlying volume scale.\n"
         "6. Output STRICT JSON format matching the requested structure.\n"
-        "7. FACT INTEGRITY & PRIMARY KEY: If the fact table's 'recommended_primary_key' is 'fact_surrogate_id' or 'strictly_unique_primary_keys' is empty, set 'primary_id_column' to 'fact_surrogate_id'. You MUST NEVER instruct dropping rows or deduplicating the fact table on non-unique columns (such as non-unique event or user IDs)!"
+        "7. FACT INTEGRITY & PRIMARY KEY: If the fact table's 'recommended_primary_key' is 'fact_surrogate_id' or 'strictly_unique_primary_keys' is empty, set 'primary_id_column' to 'fact_surrogate_id'. You MUST NEVER instruct dropping rows or deduplicating the fact table on non-unique columns (such as non-unique event or user IDs)!\n"
+        "8. TARGET METRIC SELECTION: NEVER designate an image link, URL, poster, ID, key, free-text overview, or description as 'target_metric'. The target_metric MUST be a measurable operational status, rating, quality score, event outcome, or performance indicator."
     )
 
     prompt = f"""
@@ -179,6 +223,7 @@ Your output MUST be a valid JSON object with these EXACT top-level keys:
 }}
 """
 
+    current_fp = calculate_topology_fingerprint(clean_topology)
     active_provider = os.getenv("LLM_PROVIDER", "gemini").lower()
     try:
         if active_provider in ["nemotron", "openrouter"]:
@@ -204,15 +249,21 @@ Your output MUST be a valid JSON object with these EXACT top-level keys:
     except Exception as api_err:
         print(f"[!] Note: Upstream Gemini API unavailable ({api_err}).")
         if Path(output_blueprint_path).exists():
-            print(f"[*] Reusing verified cached blueprint from: {output_blueprint_path}")
             try:
                 with open(output_blueprint_path, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                pass
+                    cached_bp = json.load(f)
+                cached_fp = cached_bp.get("dataset_fingerprint")
+                if cached_fp and cached_fp == current_fp:
+                    print(f"[*] Reusing verified cached blueprint from: {output_blueprint_path} (Fingerprint {cached_fp} matches)")
+                    return cached_bp
+                else:
+                    print(f"[!] Refusing stale blueprint at {output_blueprint_path}: fingerprint mismatch (expected {current_fp}, found {cached_fp}).")
+            except Exception as read_err:
+                print(f"[!] Could not load cached blueprint: {read_err}")
         print("[*] Synthesizing 100% deterministic topological blueprint from schema topology...")
         blueprint = build_deterministic_blueprint_from_topology(clean_topology)
         
+    blueprint["dataset_fingerprint"] = current_fp
     safe_dump_json(blueprint, output_blueprint_path, indent=2)
     print(f"[+] [Stage 2 Blueprint] Relational Blueprint successfully saved to: {output_blueprint_path}")
     return blueprint
