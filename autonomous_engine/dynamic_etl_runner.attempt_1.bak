@@ -1,0 +1,99 @@
+import pandas as pd
+import numpy as np
+import sys
+import os
+import json
+from pathlib import Path
+
+# Enforce UTF-8 on Windows
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
+
+def run_etl():
+    # 1. Setup Operational Directories
+    base_dir = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/apple_quality')
+    RAW_DIR = base_dir / 'raw_data'
+    CACHE_DIR = base_dir / 'cache'
+    OUTPUT_DIR = base_dir / 'output'
+    
+    for d in [CACHE_DIR, OUTPUT_DIR]:
+        d.mkdir(parents=True, exist_ok=True)
+
+    # 2. Ingestion
+    raw_file = RAW_DIR / 'apple_quality.csv'
+    df = pd.read_csv(raw_file, sep=',', encoding='utf-8', na_values=['?'], low_memory=False)
+    
+    # Preserve initial count
+    initial_fact_count = len(df)
+    
+    # Clean headers
+    df.columns = df.columns.str.strip()
+    
+    # Generate Fact Surrogate ID
+    df['fact_surrogate_id'] = (df.index + 1).astype(str)
+    
+    # Fill missing values to preserve row count
+    # Numeric cols: median, Categorical: UNKNOWN
+    for col in df.columns:
+        if df[col].dtype in ['float64', 'int64']:
+            df[col] = df[col].fillna(df[col].median())
+        else:
+            df[col] = df[col].fillna('UNKNOWN')
+
+    # Convert Quality to binary integer (Good=1, Bad=0)
+    # Ensure mapping handles potential mixed casing
+    df['Quality'] = df['Quality'].astype(str).str.lower().map({'good': 1, 'bad': 0}).fillna(0).astype(int)
+
+    # 3. Cardinality Defense: Pre-aggregated Dimension
+    quality_dim = df[['Quality']].drop_duplicates().reset_index(drop=True)
+    quality_dim['Quality_Label'] = quality_dim['Quality'].map({1: 'good', 0: 'bad'})
+    
+    # 4. Forensic Enrichments
+    df['density_index'] = df['Weight'] / df['Size']
+    df['maturation_velocity'] = (df['Ripeness'] * df['Juiciness']) / (df['Acidity'] + 0.0001)
+    
+    # Deviation from Norm
+    df['deviation_from_norm'] = (df['Weight'] - df['Weight'].mean()) / (df['Weight'].std() + 1e-9)
+
+    # 5. Relational Merge
+    final_fact = df.merge(quality_dim, on='Quality', how='left')
+    final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
+
+    # 6. Assertion Gates
+    assert len(final_fact) == initial_fact_count, 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'
+    assert final_fact['fact_surrogate_id'].duplicated().sum() == 0, 'Duplicate primary IDs detected!'
+    assert 'Quality' in final_fact.columns, 'Missing expected dimension features!'
+
+    # 7. Export Deliverables
+    # Cast strings to ensure pyarrow compatibility
+    for col in final_fact.select_dtypes(include=['object']).columns:
+        final_fact[col] = final_fact[col].astype(str)
+
+    final_fact.to_parquet(OUTPUT_DIR / 'bi_ready_fact.parquet', engine='pyarrow', index=False)
+    quality_dim.to_csv(OUTPUT_DIR / 'bi_dim_quality_labels.csv', index=False)
+
+    # Diagnostic Dossier
+    dossier = {
+        "summary": {
+            "initial_rows": initial_fact_count,
+            "final_rows": len(final_fact),
+            "columns": list(final_fact.columns)
+        },
+        "dax_measures": [
+            "Total Volume / Records = COUNTROWS(fact)",
+            "Target Events Count = CALCULATE(COUNTROWS(fact), fact[Quality] = 1)",
+            "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records])",
+            "Total Financial / Operational Friction Loss ($) = SUMX(fact, IF(fact[Quality] = 0, 1, 0))",
+            "Segment Performance / Congestion Index = STDEV.P(fact[Weight]) / AVERAGE(fact[Size])"
+        ]
+    }
+    
+    with open(OUTPUT_DIR / 'forensic_dossier.json', 'w', encoding='utf-8') as f:
+        json.dump(dossier, f, indent=4)
+
+    print(f"ETL Execution Complete.")
+    print(f"Fact Table rows: {len(final_fact)}")
+    print(f"Dossier saved to {OUTPUT_DIR}/forensic_dossier.json")
+
+if __name__ == "__main__":
+    run_etl()

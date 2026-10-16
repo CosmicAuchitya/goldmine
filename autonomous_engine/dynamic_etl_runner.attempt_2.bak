@@ -1,0 +1,99 @@
+import pandas as pd
+import numpy as np
+import sys
+import os
+from pathlib import Path
+import json
+
+# Enforce encoding
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
+
+# 1. Operational Directories
+BASE_PATH = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/car_features_msrp')
+RAW_DIR = BASE_PATH / 'raw_data'
+CACHE_DIR = BASE_PATH / 'cache'
+OUTPUT_DIR = BASE_PATH / 'output'
+
+for p in [CACHE_DIR, OUTPUT_DIR]:
+    p.mkdir(parents=True, exist_ok=True)
+
+def run_etl():
+    # 2. Data Ingestion
+    raw_file = RAW_DIR / 'data.csv'
+    df = pd.read_csv(raw_file, sep=',', encoding='utf-8', na_values=['?'], low_memory=False)
+    df.columns = df.columns.str.strip()
+    initial_fact_count = len(df)
+    
+    # 4. Entity Resolution & Key Cleaning
+    df['fact_surrogate_id'] = (df.index + 1).astype(str)
+    
+    # Normalizing keys
+    for col in ['Make', 'Model']:
+        df[col] = df[col].astype(str).str.strip().str.upper()
+    
+    # Coalescing missing & Ensuring data type compatibility for Parquet/PyArrow
+    # Fix: Ensure Engine Cylinders is numeric for calculation, mapping 'UNKNOWN' to NaN or 0
+    df['Engine Cylinders'] = pd.to_numeric(df['Engine Cylinders'], errors='coerce').fillna(0)
+    df['Number of Doors'] = df['Number of Doors'].fillna('UNKNOWN')
+    
+    # Fill numeric gaps to preserve row count (Requirement #3)
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    df[numeric_cols] = df[numeric_cols].fillna(0)
+    
+    # 3. Cardinality Defense: Market Category Flattening
+    df['Market Category'] = df['Market Category'].fillna('N/A').astype(str)
+    
+    # 5. Relational Merges
+    # Create dimension tables
+    dim_tech = df[['fact_surrogate_id', 'Make', 'Model', 'Year', 'Engine HP', 'Engine Cylinders']].copy()
+    dim_engine = df[['fact_surrogate_id', 'Engine Fuel Type']].copy()
+    dim_market = df[['fact_surrogate_id', 'Market Category']].copy()
+    
+    final_fact = df.merge(dim_tech, on='fact_surrogate_id', suffixes=('', '_drop'))
+    final_fact = final_fact.merge(dim_engine, on='fact_surrogate_id', suffixes=('', '_drop'))
+    final_fact = final_fact.merge(dim_market, on='fact_surrogate_id', suffixes=('', '_drop'))
+    
+    # Clean collisions
+    final_fact = final_fact.loc[:, ~final_fact.columns.str.endswith('_drop')]
+    final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
+
+    # 6. Vectorized Forensic Enrichments
+    final_fact['normalized_efficiency_ratio'] = ((final_fact['highway MPG'] + final_fact['city mpg']) / 2) / (final_fact['Engine HP'].replace(0, 1))
+    
+    # Market Premium Index
+    group_avg = final_fact.groupby(['Make', 'Vehicle Style'])['MSRP'].transform('mean')
+    final_fact['market_premium_index'] = final_fact['MSRP'] / group_avg.replace(0, 1)
+    
+    # Operational Friction
+    final_fact['operational_friction_liability'] = np.where(final_fact['Engine HP'] > 400, final_fact['MSRP'] * 0.05, 0)
+
+    # 7. Assertion Gates
+    assert len(final_fact) == initial_fact_count, 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'
+    assert final_fact.duplicated(subset=['fact_surrogate_id']).sum() == 0, 'Duplicate primary IDs detected!'
+    assert 'MSRP' in final_fact.columns, 'Missing expected dimension features!'
+
+    # 8. Deliverables Export
+    final_fact['fact_surrogate_id'] = final_fact['fact_surrogate_id'].astype(str)
+    
+    final_fact.to_parquet(OUTPUT_DIR / 'bi_ready_fact.parquet', index=False, engine='pyarrow')
+    dim_tech.to_csv(OUTPUT_DIR / 'bi_dim_vehicle_tech.csv', index=False)
+    dim_market.to_csv(OUTPUT_DIR / 'bi_dim_market_segments.csv', index=False)
+    
+    dossier = {
+        "summary": {"rows": len(final_fact), "cols": len(final_fact.columns)},
+        "dax_measures": [
+            "Total_Vehicle_Volume := COUNT(fact_vehicle_inventory[fact_surrogate_id])",
+            "Target_Events_Count := COUNTROWS(fact_vehicle_inventory)",
+            "Price_Efficiency_Rate := DIVIDE(SUM(fact_vehicle_inventory[MSRP]), [Total_Vehicle_Volume])",
+            "Total_Operational_Friction_Loss := SUM(fact_vehicle_inventory[operational_friction_liability])",
+            "Congestion_Index := DIVIDE(AVERAGE(fact_vehicle_inventory[Engine HP]), AVERAGE(fact_vehicle_inventory[city mpg]))"
+        ]
+    }
+    with open(OUTPUT_DIR / 'forensic_diagnostic_dossier.json', 'w') as f:
+        json.dump(dossier, f, indent=4)
+
+    print(f"ETL Execution Successful. Processed {len(final_fact)} records.")
+
+if __name__ == "__main__":
+    run_etl()

@@ -1,0 +1,417 @@
+#!/usr/bin/env python3
+"""
+Dynamic ETL Runner: Aviation Fleet On-Time Integrity and Runway Infrastructure Congestion Forensics
+
+Architecture & Execution Specifications:
+- Ingestion with multi-format raw probing (CSV, Parquet, Excel) and parquet caching.
+- Cardinality defense: deterministic pre-aggregation of runways and strict 1:1 deduplication of airports.
+- Dual role-playing dimension joins (Origin and Destination).
+- Vectorized forensic enrichments.
+- Strict assertion validation gates.
+- BI deliverables export (Parquet fact, CSV dimension tables, forensic dossier JSON).
+"""
+
+import os
+import sys
+import json
+import logging
+from pathlib import Path
+from typing import Dict, Any, Optional
+
+import numpy as np
+import pandas as pd
+
+# Enforce UTF-8 stdout encoding on Windows platforms
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+
+# Configure structured logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+logger = logging.getLogger("DynamicETLRunner")
+
+# Operational Directories
+BASE_DIR = Path("error")
+RAW_DATA_DIR = BASE_DIR / "raw_data"
+CACHE_DIR = BASE_DIR / "cache"
+OUTPUT_DIR = BASE_DIR / "output"
+
+
+def ensure_directories() -> None:
+    """Create operational directories if they do not exist."""
+    for p in [RAW_DATA_DIR, CACHE_DIR, OUTPUT_DIR]:
+        p.mkdir(parents=True, exist_ok=True)
+    logger.info("Operational directories verified: raw_data, cache, output.")
+
+
+def find_raw_file(table_name: str) -> Optional[Path]:
+    """
+    Search for a table file in raw_data matching various extensions and casing.
+    """
+    extensions = [".parquet", ".csv", ".xlsx", ".xls"]
+    candidates = [
+        table_name,
+        table_name.lower(),
+        table_name.upper(),
+        table_name.replace(" ", "_"),
+        table_name.replace(" ", "")
+    ]
+    
+    for cand in candidates:
+        for ext in extensions:
+            target = RAW_DATA_DIR / f"{cand}{ext}"
+            if target.exists():
+                return target
+
+    # Case-insensitive scan
+    if RAW_DATA_DIR.exists():
+        for f in RAW_DATA_DIR.iterdir():
+            if f.is_file():
+                for cand in candidates:
+                    if f.stem.lower() == cand.lower() and f.suffix.lower() in extensions:
+                        return f
+    return None
+
+
+def load_or_cache_table(table_name: str) -> pd.DataFrame:
+    """
+    Loads table from cache parquet if available.
+    Otherwise loads from raw file, standardizes columns and IDs, and caches to parquet.
+    """
+    clean_cache_name = table_name.replace(" ", "_").lower()
+    cache_file = CACHE_DIR / f"{clean_cache_name}.parquet"
+
+    if cache_file.exists():
+        logger.info(f"Loading cached parquet for '{table_name}' from: {cache_file}")
+        df = pd.read_parquet(cache_file)
+        return df
+
+    raw_path = find_raw_file(table_name)
+    if raw_path is None:
+        raise FileNotFoundError(
+            f"Unable to find raw data file for '{table_name}' in {RAW_DATA_DIR}. "
+            f"Please ensure file exists with .csv, .parquet, or .xlsx extension."
+        )
+
+    logger.info(f"Ingesting raw data for '{table_name}' from: {raw_path}")
+    ext = raw_path.suffix.lower()
+    if ext == ".parquet":
+        df = pd.read_parquet(raw_path)
+    elif ext in [".xlsx", ".xls"]:
+        df = pd.read_excel(raw_path)
+    elif ext == ".csv":
+        df = pd.read_csv(raw_path, low_memory=False)
+    else:
+        raise ValueError(f"Unsupported file format '{ext}' for file {raw_path}")
+
+    # Standardize column headers: strip whitespace
+    df.columns = [str(col).strip() for col in df.columns]
+
+    # Normalize mixed identifier columns to trimmed strings
+    identifier_cols = [
+        "id", "ident", "airport_ident", "airport_ref", "Flight",
+        "AirportFrom", "AirportTo", "iata_code", "gps_code", "local_code"
+    ]
+    for col in identifier_cols:
+        if col in df.columns:
+            df[col] = df[col].astype(str).str.strip()
+
+    # Persist to cache
+    logger.info(f"Caching sanitized dataframe for '{table_name}' to: {cache_file}")
+    df.to_parquet(cache_file, engine="pyarrow", index=False)
+    return df
+
+
+def execute_etl() -> None:
+    """Main ETL orchestration pipeline."""
+    ensure_directories()
+
+    # ---------------------------------------------------------
+    # 1. Ingestion & Caching
+    # ---------------------------------------------------------
+    logger.info("Starting ingestion of topological datasets...")
+    df_airlines = load_or_cache_table("Airlines")
+    df_airports = load_or_cache_table("airports")
+    df_runways = load_or_cache_table("runways")
+    
+    # Data dictionary is loaded and cataloged, decoupled from joins
+    try:
+        df_data_dict = load_or_cache_table("Data Dictionary")
+        logger.info(f"Data Dictionary loaded successfully: {len(df_data_dict)} entries.")
+    except FileNotFoundError:
+        logger.warning("Data Dictionary not found in raw storage; continuing without catalog metadata.")
+        df_data_dict = pd.DataFrame()
+
+    initial_fact_count = len(df_airlines)
+    logger.info(f"Initial Airlines fact records: {initial_fact_count:,}")
+
+    # ---------------------------------------------------------
+    # 2. Cardinality Defense & Pre-Aggregations: Runways
+    # ---------------------------------------------------------
+    logger.info("Executing Cardinality Defense: Aggregating runways by airport_ident...")
+    # Clean runways keys and numeric types
+    df_runways["airport_ident"] = df_runways["airport_ident"].astype(str).str.strip().str.upper()
+    df_runways["length_ft"] = pd.to_numeric(df_runways["length_ft"], errors="coerce")
+    df_runways["lighted"] = pd.to_numeric(df_runways["lighted"], errors="coerce").fillna(0).astype(int)
+    df_runways["closed"] = pd.to_numeric(df_runways["closed"], errors="coerce").fillna(0).astype(int)
+
+    # Compute deterministic 1:1 airport-level aggregates
+    agg_runways = df_runways.groupby("airport_ident", as_index=False).agg(
+        total_runways=("id", "count"),
+        max_runway_length_ft=("length_ft", "max"),
+        avg_runway_length_ft=("length_ft", "mean"),
+        total_lighted_runways=("lighted", lambda s: int((s == 1).sum())),
+        has_closed_runway=("closed", "max")
+    )
+    logger.info(f"Runways aggregated to {len(agg_runways):,} unique airport identifiers.")
+
+    # ---------------------------------------------------------
+    # 3. Entity Resolution & Deduplication: Airports
+    # ---------------------------------------------------------
+    logger.info("Standardizing and deduplicating airports on iata_code...")
+    # Harmonize airports.ident and iata_code
+    df_airports["ident"] = df_airports["ident"].astype(str).str.strip().str.upper()
+    df_airports["iata_code"] = df_airports["iata_code"].astype(str).str.strip().str.upper()
+
+    # Filter out empty or invalid IATA codes
+    valid_iata_mask = (
+        df_airports["iata_code"].notna() &
+        (df_airports["iata_code"] != "") &
+        (df_airports["iata_code"] != "NAN") &
+        (df_airports["iata_code"].str.len() == 3)
+    )
+    airports_valid = df_airports[valid_iata_mask].copy()
+
+    # Left join runway aggregates to airports
+    airports_enriched = airports_valid.merge(
+        agg_runways,
+        left_on="ident",
+        right_on="airport_ident",
+        how="left"
+    )
+
+    # Deduplication defense:
+    # Prioritize scheduled_service == 'yes', then highest elevation_ft, then id
+    airports_enriched["scheduled_service_flag"] = (
+        airports_enriched["scheduled_service"].astype(str).str.strip().str.lower() == "yes"
+    ).astype(int)
+    airports_enriched["elevation_ft_num"] = pd.to_numeric(airports_enriched["elevation_ft"], errors="coerce").fillna(-9999)
+
+    airports_enriched.sort_values(
+        by=["iata_code", "scheduled_service_flag", "elevation_ft_num", "id"],
+        ascending=[True, False, False, False],
+        inplace=True
+    )
+    dim_airports = airports_enriched.drop_duplicates(subset=["iata_code"], keep="first").copy()
+    dim_airports.drop(columns=["scheduled_service_flag", "elevation_ft_num"], inplace=True)
+    logger.info(f"Deduplicated dim_airports count: {len(dim_airports):,} unique IATA records.")
+
+    # ---------------------------------------------------------
+    # 4. Role-Playing Dimension Cloning
+    # ---------------------------------------------------------
+    # Drop redundant join artifacts if present
+    if "airport_ident" in dim_airports.columns:
+        dim_airports.drop(columns=["airport_ident"], inplace=True)
+
+    # Dimension Origin Airport
+    dim_origin = dim_airports.copy()
+    dim_origin.columns = [f"origin_{col}" for col in dim_origin.columns]
+
+    # Dimension Destination Airport
+    dim_dest = dim_airports.copy()
+    dim_dest.columns = [f"dest_{col}" for col in dim_dest.columns]
+
+    # ---------------------------------------------------------
+    # 5. Relational Merges with Fact (Airlines)
+    # ---------------------------------------------------------
+    logger.info("Executing relational role-playing joins with Airlines Fact table...")
+    # Standardize Airlines foreign keys and primary keys
+    df_airlines["id"] = df_airlines["id"].astype(str).str.strip()
+    df_airlines["AirportFrom"] = df_airlines["AirportFrom"].astype(str).str.strip().str.upper()
+    df_airlines["AirportTo"] = df_airlines["AirportTo"].astype(str).str.strip().str.upper()
+    df_airlines["Delay"] = pd.to_numeric(df_airlines["Delay"], errors="coerce").fillna(0).astype(int)
+    df_airlines["Time"] = pd.to_numeric(df_airlines["Time"], errors="coerce").fillna(0.0)
+    df_airlines["Length"] = pd.to_numeric(df_airlines["Length"], errors="coerce").fillna(0.0)
+
+    # Step 4: Left join to origin airport
+    fact_joined = df_airlines.merge(
+        dim_origin,
+        left_on="AirportFrom",
+        right_on="origin_iata_code",
+        how="left"
+    )
+
+    # Step 5: Left join to destination airport
+    final_fact = fact_joined.merge(
+        dim_dest,
+        left_on="AirportTo",
+        right_on="dest_iata_code",
+        how="left"
+    )
+
+    # ---------------------------------------------------------
+    # 6. Vectorized Forensic Enrichments
+    # ---------------------------------------------------------
+    logger.info("Computing vectorized forensic enrichment metrics...")
+    time_series = final_fact["Time"].values
+    length_series = final_fact["Length"].values
+    delay_series = final_fact["Delay"].values
+    origin_runways_series = final_fact["origin_total_runways"].fillna(0).values
+
+    # flight_departure_hour = FLOOR(Airlines.Time / 60)
+    final_fact["flight_departure_hour"] = np.floor(time_series / 60.0).astype(int)
+
+    # flight_speed_proxy_ratio = Airlines.Length / NULLIF(Airlines.Time, 0)
+    final_fact["flight_speed_proxy_ratio"] = np.where(
+        time_series > 0,
+        np.round(length_series / time_series, 4),
+        np.nan
+    )
+
+    # estimated_delay_friction_cost_usd = Airlines.Delay * (Airlines.Length * 1.25 + 74.20)
+    final_fact["estimated_delay_friction_cost_usd"] = np.round(
+        delay_series * (length_series * 1.25 + 74.20), 2
+    )
+
+    # runway_capacity_stress_index = (1.0 / NULLIF(dim_origin_airport.origin_total_runways, 0)) * Airlines.Length
+    final_fact["runway_capacity_stress_index"] = np.where(
+        origin_runways_series > 0,
+        np.round((1.0 / origin_runways_series) * length_series, 4),
+        np.nan
+    )
+
+    # ---------------------------------------------------------
+    # 7. Strict Assertion Gates
+    # ---------------------------------------------------------
+    logger.info("Executing strict assertion gates...")
+    assert len(final_fact) == initial_fact_count, (
+        f"Row count mismatch: Cartesian duplicate explosion or row loss occurred during dimension joins! "
+        f"Expected {initial_fact_count}, got {len(final_fact)}"
+    )
+    assert final_fact.duplicated(subset=["id"]).sum() == 0, (
+        "Duplicate primary IDs detected in fact table!"
+    )
+    assert "origin_max_runway_length_ft" in final_fact.columns, (
+        "Missing expected origin runway dimension metrics!"
+    )
+    assert "dest_municipality" in final_fact.columns, (
+        "Missing expected destination airport dimension attributes!"
+    )
+    assert final_fact["Delay"].isin([0, 1]).all(), (
+        "Target metric Delay contains invalid non-binary values!"
+    )
+    logger.info("All 5 assertion gates passed successfully with 100% data integrity.")
+
+    # ---------------------------------------------------------
+    # 8. Deliverables Export
+    # ---------------------------------------------------------
+    logger.info("Exporting BI-ready deliverables...")
+
+    # String cast for pyarrow stability
+    for col in final_fact.columns:
+        if final_fact[col].dtype == "object":
+            final_fact[col] = final_fact[col].astype(str)
+
+    # 8a. Parquet Fact Export
+    fact_parquet_path = OUTPUT_DIR / "bi_ready_fact_flights.parquet"
+    final_fact.to_parquet(fact_parquet_path, engine="pyarrow", index=False)
+    logger.info(f"Exported Fact Parquet: {fact_parquet_path} ({len(final_fact):,} rows)")
+
+    # 8b. Dimension Deliverables Export
+    # Dim Carrier
+    dim_carrier = final_fact[["Airline"]].drop_duplicates().sort_values("Airline").copy()
+    dim_carrier.rename(columns={"Airline": "carrier_code"}, inplace=True)
+    carrier_path = OUTPUT_DIR / "bi_dim_carrier.csv"
+    dim_carrier.to_csv(carrier_path, index=False)
+
+    # Dim Origin Airport
+    dim_origin_export = dim_origin.drop_duplicates(subset=["origin_iata_code"]).copy()
+    origin_path = OUTPUT_DIR / "bi_dim_origin_airport.csv"
+    dim_origin_export.to_csv(origin_path, index=False)
+
+    # Dim Destination Airport
+    dim_dest_export = dim_dest.drop_duplicates(subset=["dest_iata_code"]).copy()
+    dest_path = OUTPUT_DIR / "bi_dim_destination_airport.csv"
+    dim_dest_export.to_csv(dest_path, index=False)
+
+    # Dim Temporal Schedule
+    dim_temporal = final_fact[["DayOfWeek", "flight_departure_hour"]].drop_duplicates().sort_values(
+        ["DayOfWeek", "flight_departure_hour"]
+    ).copy()
+    temporal_path = OUTPUT_DIR / "bi_dim_temporal_schedule.csv"
+    dim_temporal.to_csv(temporal_path, index=False)
+
+    logger.info("Exported all 4 dimension CSV deliverables.")
+
+    # 8c. Forensic Diagnostic Dossier JSON
+    total_delayed = int(final_fact["Delay"].sum())
+    total_flights = int(len(final_fact))
+    delay_rate = round(float(total_delayed / total_flights), 4) if total_flights > 0 else 0.0
+    total_friction_cost = round(float(final_fact["estimated_delay_friction_cost_usd"].sum()), 2)
+    avg_stress_index = round(float(final_fact["runway_capacity_stress_index"].dropna().mean()), 4)
+
+    dossier = {
+        "project_title": "Aviation Fleet On-Time Integrity and Runway Infrastructure Congestion Forensics",
+        "fact_table_name": "bi_ready_fact_flights",
+        "summary_metrics": {
+            "total_flights": total_flights,
+            "total_delayed_flights": total_delayed,
+            "delay_incident_rate_pct": round(delay_rate * 100.0, 2),
+            "total_operational_friction_cost_usd": total_friction_cost,
+            "average_runway_capacity_stress_index": avg_stress_index
+        },
+        "dimension_counts": {
+            "bi_dim_carrier_rows": len(dim_carrier),
+            "bi_dim_origin_airport_rows": len(dim_origin_export),
+            "bi_dim_destination_airport_rows": len(dim_dest_export),
+            "bi_dim_temporal_schedule_rows": len(dim_temporal)
+        },
+        "dax_measures": [
+            "Total Flights = COUNTROWS('bi_ready_fact_flights')",
+            "Total Delayed Flights = CALCULATE(COUNTROWS('bi_ready_fact_flights'), 'bi_ready_fact_flights'[Delay] = 1)",
+            "Delay Incident Rate % = DIVIDE([Total Delayed Flights], [Total Flights], 0)",
+            "Total Operational Friction Delay Cost ($) = SUM('bi_ready_fact_flights'[estimated_delay_friction_cost_usd])",
+            "Airport Infrastructure Congestion Index = AVERAGE('bi_ready_fact_flights'[runway_capacity_stress_index])"
+        ]
+    }
+
+    dossier_path = OUTPUT_DIR / "forensic_diagnostic_dossier.json"
+    with open(dossier_path, "w", encoding="utf-8") as f:
+        json.dump(dossier, f, indent=2)
+    logger.info(f"Forensic Diagnostic Dossier written to: {dossier_path}")
+
+    # ---------------------------------------------------------
+    # 9. Console Summary Table
+    # ---------------------------------------------------------
+    summary_table = f"""
+========================================================================================
+                          AVIATION FORENSICS ETL SUMMARY
+========================================================================================
+Metric / Artifact                                Value
+----------------------------------------------------------------------------------------
+Input Fact Flight Records                        {initial_fact_count:,}
+Final Fact Flight Records                        {len(final_fact):,}
+Total Delayed Flights                            {total_delayed:,} ({delay_rate * 100:.2f}%)
+Total Friction Delay Cost ($ USD)                ${total_friction_cost:,.2f}
+Average Runway Capacity Stress Index             {avg_stress_index:.4f}
+----------------------------------------------------------------------------------------
+Deliverable: Fact Parquet                        {fact_parquet_path.name}
+Deliverable: Dim Carrier                         {carrier_path.name} ({len(dim_carrier)} rows)
+Deliverable: Dim Origin Airport                  {origin_path.name} ({len(dim_origin_export)} rows)
+Deliverable: Dim Destination Airport             {dest_path.name} ({len(dim_dest_export)} rows)
+Deliverable: Dim Temporal Schedule               {temporal_path.name} ({len(dim_temporal)} rows)
+Deliverable: Diagnostic Dossier                  {dossier_path.name}
+========================================================================================
+All assertions satisfied. Pipeline completed successfully.
+"""
+    print(summary_table)
+
+
+if __name__ == "__main__":
+    execute_etl()
