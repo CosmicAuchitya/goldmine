@@ -256,9 +256,21 @@ def synthesize_deliverables(output_dir: str):
 
     # 100% Deterministic Binary Event Flag (0 or 1) across all groupings
     if target_col:
+        is_num = pd.api.types.is_numeric_dtype(df_fact[target_col])
         s_target = pd.to_numeric(df_fact[target_col], errors='coerce').fillna(0)
-        if df_fact[target_col].nunique() <= 2 and s_target.max() <= 1:
+        if is_num and df_fact[target_col].nunique() <= 2 and s_target.max() <= 1:
             df_fact['_is_target_event'] = s_target.astype(int)
+        elif not is_num:
+            s_str = df_fact[target_col].astype(str).str.lower().str.strip()
+            adverse_pattern = r'\b(?:bad|fail|failure|failed|fraud|churn|churned|cancel|cancelled|cancellation|late|delay|delayed|default|defaulted|dissatisfied|attrit|attrited|attrition|death|dead|stroke|malignant|substandard|unacceptable|poor|high|high_risk|yes|y|true|t|1)\b'
+            is_adv = s_str.str.contains(adverse_pattern, regex=True)
+            if is_adv.sum() > 0:
+                df_fact['_is_target_event'] = is_adv.astype(int)
+            elif df_fact[target_col].nunique() == 2:
+                min_val = df_fact[target_col].value_counts().index[-1]
+                df_fact['_is_target_event'] = (df_fact[target_col] == min_val).astype(int)
+            else:
+                df_fact['_is_target_event'] = 0
         elif any(k in target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
             # Adaptive threshold for truncated distributions (e.g. IMDB ratings 7.6-9.3)
             if s_target.min() >= 1 and s_target.max() <= 10:
@@ -272,15 +284,11 @@ def synthesize_deliverables(output_dir: str):
         elif any(k in target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
             threshold = float(s_target.quantile(0.25)) if s_target.quantile(0.25) > 0 else float(s_target.median())
             df_fact['_is_target_event'] = (s_target <= threshold).astype(int)
-        elif pd.api.types.is_numeric_dtype(df_fact[target_col]):
+        elif is_num:
             threshold = s_target.median() if s_target.nunique() > 1 else 0
             df_fact['_is_target_event'] = (s_target > threshold).astype(int)
         else:
-            s_str = df_fact[target_col].astype(str).str.lower()
-            df_fact['_is_target_event'] = s_str.str.contains(
-                r'\b(?:y|yes|true|t|1|fraud|churn|cancel|late|delay|fail|positive|pos|default|dissatisfied|attrit|attrited|attrition)\b|delay|late|cancel|fraud|fail|churn|dissatisfied|attrit',
-                regex=True
-            ).astype(int)
+            df_fact['_is_target_event'] = 0
     else:
         df_fact['_is_target_event'] = 0
 

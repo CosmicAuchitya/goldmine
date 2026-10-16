@@ -1,0 +1,9 @@
+{
+    "record_count": 1000,
+    "dax_measures": [
+        "Total Volume / Records = COUNTROWS(fact_table)",
+        "Target Events Count = CALCULATE(COUNTROWS(fact_table), fact_table[Risk] = 'bad')",
+        "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records])",
+        "Total Financial / Operational Friction Loss ($) = SUM(fact_table[capital_friction_liability])"
+    ]
+}

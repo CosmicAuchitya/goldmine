@@ -160,9 +160,21 @@ class MicroLevelForensicInquiryEngine:
             self.numeric_features = [c for c in num_candidates if not is_synthetic(c)]
 
     def _build_binary_target(self) -> pd.Series:
+        is_num = pd.api.types.is_numeric_dtype(self.df[self.target_col])
         s = pd.to_numeric(self.df[self.target_col], errors='coerce').fillna(0)
-        if self.df[self.target_col].nunique() <= 2 and s.max() <= 1:
+        if is_num and self.df[self.target_col].nunique() <= 2 and s.max() <= 1:
             return s.astype(int)
+        elif not is_num:
+            s_str = self.df[self.target_col].astype(str).str.lower().str.strip()
+            adverse_pattern = r'\b(?:bad|fail|failure|failed|fraud|churn|churned|cancel|cancelled|cancellation|late|delay|delayed|default|defaulted|dissatisfied|attrit|attrited|attrition|death|dead|stroke|malignant|substandard|unacceptable|poor|high|high_risk|yes|y|true|t|1)\b'
+            is_adv = s_str.str.contains(adverse_pattern, regex=True)
+            if is_adv.sum() > 0:
+                return is_adv.astype(int)
+            elif self.df[self.target_col].nunique() == 2:
+                min_val = self.df[self.target_col].value_counts().index[-1]
+                return (self.df[self.target_col] == min_val).astype(int)
+            else:
+                return pd.Series(0, index=self.df.index)
         elif any(k in self.target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
             # Adaptive threshold for truncated distributions (e.g. IMDB 7.6-9.3 where standard threshold 5 yields 0 events)
             if s.min() >= 1 and s.max() <= 10:
@@ -176,10 +188,12 @@ class MicroLevelForensicInquiryEngine:
         elif any(k in self.target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
             threshold = float(s.quantile(0.25)) if s.quantile(0.25) > 0 else float(s.median())
             return (s <= threshold).astype(int)
-        else:
+        elif is_num:
             med = float(s.median())
             threshold = med if med > 0 else float(s.quantile(0.75))
             return (s > threshold).astype(int)
+        else:
+            return pd.Series(0, index=self.df.index)
 
     def analyze_quantile_cliffs(self) -> List[Dict[str, Any]]:
         results = []
@@ -792,9 +806,22 @@ class StrategicDecisionEngine:
             if not is_bad_target and not is_high_card_text:
                 if is_convertible_num and self.df[target].dtype == 'object':
                     self.df[target] = s_num.fillna(s_num.median())
+                is_num = pd.api.types.is_numeric_dtype(self.df[target])
                 s = pd.to_numeric(self.df[target], errors='coerce').fillna(0)
-                if self.df[target].nunique() <= 2 and s.max() <= 1:
+                if is_num and self.df[target].nunique() <= 2 and s.max() <= 1:
                     cnt = int(s.sum())
+                    rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
+                elif not is_num:
+                    s_str = self.df[target].astype(str).str.lower().str.strip()
+                    adverse_pattern = r'\b(?:bad|fail|failure|failed|fraud|churn|churned|cancel|cancelled|cancellation|late|delay|delayed|default|defaulted|dissatisfied|attrit|attrited|attrition|death|dead|stroke|malignant|substandard|unacceptable|poor|high|high_risk|yes|y|true|t|1)\b'
+                    is_adv = s_str.str.contains(adverse_pattern, regex=True)
+                    if is_adv.sum() > 0:
+                        cnt = int(is_adv.sum())
+                    elif self.df[target].nunique() == 2:
+                        min_val = self.df[target].value_counts().index[-1]
+                        cnt = int((self.df[target] == min_val).sum())
+                    else:
+                        cnt = 0
                     rate = round((cnt / max(self.total_records, 1)) * 100.0, 2)
                 elif any(k in target.lower() for k in ['quality', 'score', 'rating', 'grade']):
                     if s.min() >= 1 and s.max() <= 10:
@@ -818,13 +845,25 @@ class StrategicDecisionEngine:
                 return target, cnt, rate
 
         # Priority keyword search
-        priority_kw = ['death_event', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'readmit', 'attrition', 'delay', 'quality', 'rating', 'grade', 'score']
+        priority_kw = ['death_event', 'mortality', 'churn', 'fraud', 'default', 'risk', 'stroke', 'readmit', 'attrition', 'delay', 'quality', 'rating', 'grade', 'score']
         for pkw in priority_kw:
             for c in self.columns:
                 if pkw in c.lower() and not c.endswith(('_id', '_key')):
+                    is_num = pd.api.types.is_numeric_dtype(self.df[c])
                     s = pd.to_numeric(self.df[c], errors='coerce').fillna(0)
-                    if self.df[c].nunique() <= 2 and s.max() <= 1:
+                    if is_num and self.df[c].nunique() <= 2 and s.max() <= 1:
                         cnt = int(s.sum())
+                    elif not is_num:
+                        s_str = self.df[c].astype(str).str.lower().str.strip()
+                        adverse_pattern = r'\b(?:bad|fail|failure|failed|fraud|churn|churned|cancel|cancelled|cancellation|late|delay|delayed|default|defaulted|dissatisfied|attrit|attrited|attrition|death|dead|stroke|malignant|substandard|unacceptable|poor|high|high_risk|yes|y|true|t|1)\b'
+                        is_adv = s_str.str.contains(adverse_pattern, regex=True)
+                        if is_adv.sum() > 0:
+                            cnt = int(is_adv.sum())
+                        elif self.df[c].nunique() == 2:
+                            min_val = self.df[c].value_counts().index[-1]
+                            cnt = int((self.df[c] == min_val).sum())
+                        else:
+                            cnt = 0
                     elif any(k in c.lower() for k in ['quality', 'score', 'rating', 'grade']):
                         if s.min() >= 1 and s.max() <= 10:
                             if s.min() > 5.0 or (s.quantile(0.25) > 5.0):

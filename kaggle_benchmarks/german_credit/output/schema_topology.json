@@ -1,0 +1,147 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "german_credit_data": {
+      "table_name": "german_credit_data",
+      "filename": "german_credit_data.csv",
+      "selected_sheet": null,
+      "estimated_rows": 1000,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Unnamed: 0",
+        "Age",
+        "Sex",
+        "Job",
+        "Housing",
+        "Saving accounts",
+        "Checking account",
+        "Credit amount",
+        "Duration",
+        "Purpose",
+        "Risk"
+      ],
+      "potential_keys": [
+        "Unnamed: 0",
+        "Saving accounts",
+        "Checking account",
+        "Credit amount"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "Unnamed: 0",
+          "dtype": "int64",
+          "sample_values": [
+            "[MASKED_UNNAMED: 0]",
+            "[MASKED_UNNAMED: 0]",
+            "[MASKED_UNNAMED: 0]"
+          ],
+          "nunique_in_sample": 1000
+        },
+        {
+          "name": "Age",
+          "dtype": "int64",
+          "sample_values": [
+            "67",
+            "22",
+            "49"
+          ],
+          "nunique_in_sample": 53
+        },
+        {
+          "name": "Sex",
+          "dtype": "object",
+          "sample_values": [
+            "male",
+            "female"
+          ],
+          "nunique_in_sample": 2
+        },
+        {
+          "name": "Job",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "1",
+            "3"
+          ],
+          "nunique_in_sample": 4
+        },
+        {
+          "name": "Housing",
+          "dtype": "object",
+          "sample_values": [
+            "own",
+            "free",
+            "rent"
+          ],
+          "nunique_in_sample": 3
+        },
+        {
+          "name": "Saving accounts",
+          "dtype": "object",
+          "sample_values": [
+            "little",
+            "quite rich",
+            "rich"
+          ],
+          "nunique_in_sample": 4
+        },
+        {
+          "name": "Checking account",
+          "dtype": "object",
+          "sample_values": [
+            "little",
+            "moderate",
+            "rich"
+          ],
+          "nunique_in_sample": 3
+        },
+        {
+          "name": "Credit amount",
+          "dtype": "int64",
+          "sample_values": [
+            "1169",
+            "5951",
+            "2096"
+          ],
+          "nunique_in_sample": 921
+        },
+        {
+          "name": "Duration",
+          "dtype": "int64",
+          "sample_values": [
+            "6",
+            "48",
+            "12"
+          ],
+          "nunique_in_sample": 33
+        },
+        {
+          "name": "Purpose",
+          "dtype": "object",
+          "sample_values": [
+            "radio/TV",
+            "education",
+            "furniture/equipment"
+          ],
+          "nunique_in_sample": 8
+        },
+        {
+          "name": "Risk",
+          "dtype": "object",
+          "sample_values": [
+            "good",
+            "bad"
+          ],
+          "nunique_in_sample": 2
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

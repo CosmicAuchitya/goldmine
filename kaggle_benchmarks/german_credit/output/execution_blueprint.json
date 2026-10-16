@@ -1,0 +1,37 @@
+{
+  "project_title": "German Credit Forensic Risk & Economic Exposure Analysis",
+  "fact_table": "german_credit_data",
+  "target_metric": "Risk",
+  "primary_id_column": "fact_surrogate_id",
+  "cardinality_defense_plan": {
+    "dimension_aggregation_strategies": "Pre-aggregate categorical attributes (Saving accounts, Checking account, Purpose) into distinct reference tables using 'GROUP BY' to ensure 1:1 cardinality before joining to fact table. Nulls in accounts are mapped to 'unknown' to prevent join failure.",
+    "entity_resolution_and_key_cleaning": "Generate 'fact_surrogate_id' using UUID or auto-increment index from 'Unnamed: 0' to enforce strict 1:1 primary key identity. Strip whitespace from 'Risk' and 'Housing' strings; cast 'Job' to ordinal integer category.",
+    "relational_join_sequence": "Left Join (fact) -> Dim_Account_Status (on Checking/Saving codes); Left Join (fact) -> Dim_Demographic (on Age/Sex/Job); Left Join (fact) -> Dim_Contract (on Purpose/Duration/Amount)."
+  },
+  "forensic_enrichment_columns": [
+    "credit_utilization_intensity = Credit amount / Duration",
+    "risk_weighted_exposure = (Credit amount * 1.0) if Risk == 'bad' else 0",
+    "capital_friction_liability = (Credit amount / Age) * (Duration / 10)"
+  ],
+  "assertion_gates": [
+    "assert len(final_fact) == len(initial_fact), 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'",
+    "assert final_fact.duplicated(subset=['fact_surrogate_id']).sum() == 0, 'Duplicate primary IDs detected!'",
+    "assert 'Risk' in final_fact.columns, 'Missing expected dimension features!'"
+  ],
+  "bi_deliverables": {
+    "fact_table": "bi_ready_fact.parquet",
+    "dimension_tables": [
+      "bi_dim_accounts.csv",
+      "bi_dim_demographics.csv",
+      "bi_dim_purpose.csv"
+    ],
+    "dax_measures": [
+      "Total Volume / Records = COUNTROWS(fact_table)",
+      "Target Events Count = CALCULATE(COUNTROWS(fact_table), fact_table[Risk] = 'bad')",
+      "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records])",
+      "Total Financial / Operational Friction Loss ($) = SUM(fact_table[capital_friction_liability])",
+      "Segment Performance / Congestion Index = DIVIDE(SUM(fact_table[Credit amount]), AVERAGE(fact_table[Duration]))"
+    ]
+  },
+  "dataset_fingerprint": "537c0d73c2b744b1"
+}
