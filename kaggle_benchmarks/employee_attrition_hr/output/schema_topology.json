@@ -1,0 +1,208 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "emp_attrition": {
+      "table_name": "emp_attrition",
+      "filename": "emp_attrition.csv",
+      "selected_sheet": null,
+      "estimated_rows": 1470,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Age",
+        "Attrition",
+        "BusinessTravel",
+        "DailyRate",
+        "Department",
+        "DistanceFromHome",
+        "Education",
+        "EducationField",
+        "EmployeeCount",
+        "EmployeeNumber",
+        "EnvironmentSatisfaction",
+        "Gender",
+        "HourlyRate",
+        "JobInvolvement",
+        "JobLevel",
+        "JobRole",
+        "JobSatisfaction",
+        "MaritalStatus",
+        "MonthlyIncome",
+        "MonthlyRate",
+        "NumCompaniesWorked",
+        "Over18",
+        "OverTime",
+        "PercentSalaryHike",
+        "PerformanceRating",
+        "RelationshipSatisfaction",
+        "StandardHours",
+        "StockOptionLevel",
+        "TotalWorkingYears",
+        "TrainingTimesLastYear",
+        "WorkLifeBalance",
+        "YearsAtCompany",
+        "YearsInCurrentRole",
+        "YearsSinceLastPromotion",
+        "YearsWithCurrManager"
+      ],
+      "potential_keys": [
+        "DistanceFromHome",
+        "EmployeeNumber",
+        "MonthlyIncome",
+        "MonthlyRate",
+        "NumCompaniesWorked",
+        "OverTime",
+        "StockOptionLevel",
+        "TotalWorkingYears",
+        "TrainingTimesLastYear"
+      ],
+      "strictly_unique_primary_keys": [
+        "EmployeeNumber"
+      ],
+      "recommended_primary_key": "EmployeeNumber",
+      "sample_columns": [
+        {
+          "name": "Age",
+          "dtype": "int64",
+          "sample_values": [
+            "41",
+            "49",
+            "37"
+          ],
+          "nunique_in_sample": 43,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Attrition",
+          "dtype": "str",
+          "sample_values": [
+            "Yes",
+            "No"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "BusinessTravel",
+          "dtype": "str",
+          "sample_values": [
+            "Travel_Rarely",
+            "Travel_Frequently",
+            "Non-Travel"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "DailyRate",
+          "dtype": "int64",
+          "sample_values": [
+            "1102",
+            "279",
+            "1373"
+          ],
+          "nunique_in_sample": 886,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Department",
+          "dtype": "str",
+          "sample_values": [
+            "Sales",
+            "Research & Development",
+            "Human Resources"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "DistanceFromHome",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "8",
+            "2"
+          ],
+          "nunique_in_sample": 29,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Education",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "1",
+            "4"
+          ],
+          "nunique_in_sample": 5,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "EducationField",
+          "dtype": "str",
+          "sample_values": [
+            "Life Sciences",
+            "Other",
+            "Medical"
+          ],
+          "nunique_in_sample": 6,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "EmployeeCount",
+          "dtype": "int64",
+          "sample_values": [
+            "1"
+          ],
+          "nunique_in_sample": 1,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "EmployeeNumber",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "2",
+            "4"
+          ],
+          "nunique_in_sample": 1470,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "EnvironmentSatisfaction",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "3",
+            "4"
+          ],
+          "nunique_in_sample": 4,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Gender",
+          "dtype": "str",
+          "sample_values": [
+            "Female",
+            "Male"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [
+    {
+      "table_pair": [
+        "emp_attrition",
+        "Dimension_Lookup"
+      ],
+      "hazard": "DUAL/MULTI FOREIGN KEY REFERENCE IN 'emp_attrition'",
+      "rule": "Table 'emp_attrition' references dimensions with paired roles (DistanceFromHome & StockOptionLevel).",
+      "defense_action": "Requires dual joins with role prefixes (e.g. 'from_' and 'to_')."
+    }
+  ],
+  "composite_key_relations": []
+}

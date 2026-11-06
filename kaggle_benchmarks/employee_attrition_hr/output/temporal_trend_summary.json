@@ -1,0 +1,8 @@
+{
+  "is_temporal_dataset": false,
+  "date_column": null,
+  "granularity": null,
+  "period_count": 0,
+  "summary_note": "Cross-sectional snapshot dataset \u2014 no physical event timestamp column present.",
+  "periods": []
+}

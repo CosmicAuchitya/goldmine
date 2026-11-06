@@ -1,0 +1,277 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 1,470"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Attrition] = "Yes")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 237"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[MonthlyIncome]), 'bi_ready_fact'[Attrition] = "Yes")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $1,134,541.00"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[MonthlyIncome])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $9,559,309.00"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column Age
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Age
+		lineageTag: col-fact-Age
+		formatString: #,0
+
+	column Attrition
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Attrition
+		lineageTag: col-fact-Attrition
+
+	column BusinessTravel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: BusinessTravel
+		lineageTag: col-fact-BusinessTravel
+
+	column DailyRate
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: DailyRate
+		lineageTag: col-fact-DailyRate
+		formatString: #,0
+
+	column Department
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Department
+		lineageTag: col-fact-Department
+
+	column DistanceFromHome
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: DistanceFromHome
+		lineageTag: col-fact-DistanceFromHome
+		formatString: #,0
+
+	column Education
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Education
+		lineageTag: col-fact-Education
+		formatString: #,0
+
+	column EducationField
+		dataType: string
+		summarizeBy: none
+		sourceColumn: EducationField
+		lineageTag: col-fact-EducationField
+
+	column EmployeeCount
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: EmployeeCount
+		lineageTag: col-fact-EmployeeCount
+		formatString: #,0
+
+	column EmployeeNumber
+		dataType: string
+		summarizeBy: none
+		sourceColumn: EmployeeNumber
+		lineageTag: col-fact-EmployeeNumber
+
+	column EnvironmentSatisfaction
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: EnvironmentSatisfaction
+		lineageTag: col-fact-EnvironmentSatisfaction
+		formatString: #,0
+
+	column Gender
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Gender
+		lineageTag: col-fact-Gender
+
+	column HourlyRate
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: HourlyRate
+		lineageTag: col-fact-HourlyRate
+		formatString: #,0
+
+	column JobInvolvement
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: JobInvolvement
+		lineageTag: col-fact-JobInvolvement
+		formatString: #,0
+
+	column JobLevel
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: JobLevel
+		lineageTag: col-fact-JobLevel
+		formatString: #,0
+
+	column JobRole
+		dataType: string
+		summarizeBy: none
+		sourceColumn: JobRole
+		lineageTag: col-fact-JobRole
+
+	column JobSatisfaction
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: JobSatisfaction
+		lineageTag: col-fact-JobSatisfaction
+		formatString: #,0
+
+	column MaritalStatus
+		dataType: string
+		summarizeBy: none
+		sourceColumn: MaritalStatus
+		lineageTag: col-fact-MaritalStatus
+
+	column MonthlyIncome
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: MonthlyIncome
+		lineageTag: col-fact-MonthlyIncome
+		formatString: #,0
+
+	column MonthlyRate
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: MonthlyRate
+		lineageTag: col-fact-MonthlyRate
+		formatString: #,0
+
+	column NumCompaniesWorked
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: NumCompaniesWorked
+		lineageTag: col-fact-NumCompaniesWorked
+		formatString: #,0
+
+	column Over18
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Over18
+		lineageTag: col-fact-Over18
+
+	column OverTime
+		dataType: string
+		summarizeBy: none
+		sourceColumn: OverTime
+		lineageTag: col-fact-OverTime
+
+	column PercentSalaryHike
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: PercentSalaryHike
+		lineageTag: col-fact-PercentSalaryHike
+		formatString: #,0
+
+	column PerformanceRating
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: PerformanceRating
+		lineageTag: col-fact-PerformanceRating
+		formatString: #,0
+
+	column RelationshipSatisfaction
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: RelationshipSatisfaction
+		lineageTag: col-fact-RelationshipSatisfaction
+		formatString: #,0
+
+	column StandardHours
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: StandardHours
+		lineageTag: col-fact-StandardHours
+		formatString: #,0
+
+	column StockOptionLevel
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: StockOptionLevel
+		lineageTag: col-fact-StockOptionLevel
+		formatString: #,0
+
+	column TotalWorkingYears
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: TotalWorkingYears
+		lineageTag: col-fact-TotalWorkingYears
+		formatString: #,0
+
+	column TrainingTimesLastYear
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: TrainingTimesLastYear
+		lineageTag: col-fact-TrainingTimesLastYear
+		formatString: #,0
+
+	column WorkLifeBalance
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: WorkLifeBalance
+		lineageTag: col-fact-WorkLifeBalance
+		formatString: #,0
+
+	column YearsAtCompany
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: YearsAtCompany
+		lineageTag: col-fact-YearsAtCompany
+		formatString: #,0
+
+	column YearsInCurrentRole
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: YearsInCurrentRole
+		lineageTag: col-fact-YearsInCurrentRole
+		formatString: #,0
+
+	column YearsSinceLastPromotion
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: YearsSinceLastPromotion
+		lineageTag: col-fact-YearsSinceLastPromotion
+		formatString: #,0
+
+	column YearsWithCurrManager
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: YearsWithCurrManager
+		lineageTag: col-fact-YearsWithCurrManager
+		formatString: #,0
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source
