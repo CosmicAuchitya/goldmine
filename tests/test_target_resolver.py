@@ -87,3 +87,52 @@ def test_pandas3_string_dtype_and_deterministic_target_leakage():
     assert prim_dim == "Type"
     assert sec_dim != "HDF"
 
+
+def test_benchmarks_88_89_90_target_and_cost_resolution():
+    """Verify target and cost detection on schemas matching Benchmarks 88, 89, 90."""
+    from autonomous_engine.target_resolver import is_deterministic_target_leakage
+
+    # Benchmark 88: Medical Insurance Underwriting
+    df_ins = pd.DataFrame({
+        "age": [19, 18, 28, 33],
+        "sex": ["female", "male", "male", "male"],
+        "bmi": [27.9, 33.77, 33.0, 22.705],
+        "children": [0, 1, 3, 0],
+        "smoker": ["yes", "no", "no", "no"],
+        "region": ["southwest", "southeast", "southeast", "northwest"],
+        "charges": [16884.92, 1725.55, 4449.46, 21984.47]
+    })
+    res_ins = resolve_canonical_target_and_cost(df_ins)
+    assert res_ins["target_col"] == "smoker"
+    assert res_ins["cost_col"] == "charges"
+    assert res_ins["is_financial"] is True
+
+    # Benchmark 89: Hotel Bookings Cancellation with reservation_status leakage
+    df_hotel = pd.DataFrame({
+        "hotel": ["Resort", "City", "City", "Resort"],
+        "is_canceled": [0, 1, 1, 0],
+        "lead_time": [342, 737, 7, 13],
+        "adr": [100.5, 120.0, 85.0, 150.0],
+        "reservation_status": ["Check-Out", "Canceled", "Canceled", "Check-Out"]
+    })
+    res_hotel = resolve_canonical_target_and_cost(df_hotel)
+    assert res_hotel["target_col"] == "is_canceled"
+    assert res_hotel["cost_col"] == "adr"
+    assert res_hotel["is_financial"] is True
+    assert is_deterministic_target_leakage("reservation_status", df_hotel["reservation_status"], df_hotel["is_canceled"], "is_canceled") is True
+
+    # Benchmark 90: Bank Marketing with Macro Indicators and no currency ledger
+    df_bank = pd.DataFrame({
+        "age": [56, 57, 37, 40],
+        "job": ["housemaid", "services", "services", "admin."],
+        "default": ["no", "unknown", "no", "no"],
+        "cons_price_idx": [93.994, 93.994, 93.994, 93.994],
+        "euribor3m": [4.857, 4.857, 4.857, 4.857],
+        "y": ["no", "no", "yes", "no"]
+    })
+    res_bank = resolve_canonical_target_and_cost(df_bank)
+    assert res_bank["target_col"] == "y"
+    assert res_bank["cost_col"] is None
+    assert res_bank["is_financial"] is False
+
+

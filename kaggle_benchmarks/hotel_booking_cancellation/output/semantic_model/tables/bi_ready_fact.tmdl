@@ -1,0 +1,260 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 119,390"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[is_canceled] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 44,224"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[adr]), 'bi_ready_fact'[is_canceled] = 1)
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $4,641,942.67"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[adr])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $12,157,617.60"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column hotel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: hotel
+		lineageTag: col-fact-hotel
+
+	column is_canceled
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: is_canceled
+		lineageTag: col-fact-is_canceled
+		formatString: #,0
+
+	column lead_time
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: lead_time
+		lineageTag: col-fact-lead_time
+		formatString: #,0
+
+	column arrival_date_year
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: arrival_date_year
+		lineageTag: col-fact-arrival_date_year
+		formatString: #,0
+
+	column arrival_date_month
+		dataType: string
+		summarizeBy: none
+		sourceColumn: arrival_date_month
+		lineageTag: col-fact-arrival_date_month
+
+	column arrival_date_week_number
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: arrival_date_week_number
+		lineageTag: col-fact-arrival_date_week_number
+		formatString: #,0
+
+	column arrival_date_day_of_month
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: arrival_date_day_of_month
+		lineageTag: col-fact-arrival_date_day_of_month
+		formatString: #,0
+
+	column stays_in_weekend_nights
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: stays_in_weekend_nights
+		lineageTag: col-fact-stays_in_weekend_nights
+		formatString: #,0
+
+	column stays_in_week_nights
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: stays_in_week_nights
+		lineageTag: col-fact-stays_in_week_nights
+		formatString: #,0
+
+	column adults
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: adults
+		lineageTag: col-fact-adults
+		formatString: #,0
+
+	column children
+		dataType: double
+		summarizeBy: average
+		sourceColumn: children
+		lineageTag: col-fact-children
+		formatString: 0.00
+
+	column babies
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: babies
+		lineageTag: col-fact-babies
+		formatString: #,0
+
+	column meal
+		dataType: string
+		summarizeBy: none
+		sourceColumn: meal
+		lineageTag: col-fact-meal
+
+	column country
+		dataType: string
+		summarizeBy: none
+		sourceColumn: country
+		lineageTag: col-fact-country
+
+	column market_segment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: market_segment
+		lineageTag: col-fact-market_segment
+
+	column distribution_channel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: distribution_channel
+		lineageTag: col-fact-distribution_channel
+
+	column is_repeated_guest
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: is_repeated_guest
+		lineageTag: col-fact-is_repeated_guest
+		formatString: #,0
+
+	column previous_cancellations
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: previous_cancellations
+		lineageTag: col-fact-previous_cancellations
+		formatString: #,0
+
+	column previous_bookings_not_canceled
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: previous_bookings_not_canceled
+		lineageTag: col-fact-previous_bookings_not_canceled
+		formatString: #,0
+
+	column reserved_room_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: reserved_room_type
+		lineageTag: col-fact-reserved_room_type
+
+	column assigned_room_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: assigned_room_type
+		lineageTag: col-fact-assigned_room_type
+
+	column booking_changes
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: booking_changes
+		lineageTag: col-fact-booking_changes
+		formatString: #,0
+
+	column deposit_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: deposit_type
+		lineageTag: col-fact-deposit_type
+
+	column agent
+		dataType: double
+		summarizeBy: average
+		sourceColumn: agent
+		lineageTag: col-fact-agent
+		formatString: 0.00
+
+	column company
+		dataType: double
+		summarizeBy: average
+		sourceColumn: company
+		lineageTag: col-fact-company
+		formatString: 0.00
+
+	column days_in_waiting_list
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: days_in_waiting_list
+		lineageTag: col-fact-days_in_waiting_list
+		formatString: #,0
+
+	column customer_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customer_type
+		lineageTag: col-fact-customer_type
+
+	column adr
+		dataType: double
+		summarizeBy: average
+		sourceColumn: adr
+		lineageTag: col-fact-adr
+		formatString: 0.00
+
+	column required_car_parking_spaces
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: required_car_parking_spaces
+		lineageTag: col-fact-required_car_parking_spaces
+		formatString: #,0
+
+	column total_of_special_requests
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: total_of_special_requests
+		lineageTag: col-fact-total_of_special_requests
+		formatString: #,0
+
+	column reservation_status
+		dataType: string
+		summarizeBy: none
+		sourceColumn: reservation_status
+		lineageTag: col-fact-reservation_status
+
+	column reservation_status_date
+		dataType: string
+		summarizeBy: none
+		sourceColumn: reservation_status_date
+		lineageTag: col-fact-reservation_status_date
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

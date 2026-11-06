@@ -1,0 +1,171 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 41,188"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[y] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 4,640"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column age
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: age
+		lineageTag: col-fact-age
+		formatString: #,0
+
+	column job
+		dataType: string
+		summarizeBy: none
+		sourceColumn: job
+		lineageTag: col-fact-job
+
+	column marital
+		dataType: string
+		summarizeBy: none
+		sourceColumn: marital
+		lineageTag: col-fact-marital
+
+	column education
+		dataType: string
+		summarizeBy: none
+		sourceColumn: education
+		lineageTag: col-fact-education
+
+	column default
+		dataType: string
+		summarizeBy: none
+		sourceColumn: default
+		lineageTag: col-fact-default
+
+	column housing
+		dataType: string
+		summarizeBy: none
+		sourceColumn: housing
+		lineageTag: col-fact-housing
+
+	column loan
+		dataType: string
+		summarizeBy: none
+		sourceColumn: loan
+		lineageTag: col-fact-loan
+
+	column contact
+		dataType: string
+		summarizeBy: none
+		sourceColumn: contact
+		lineageTag: col-fact-contact
+
+	column month
+		dataType: string
+		summarizeBy: none
+		sourceColumn: month
+		lineageTag: col-fact-month
+
+	column day_of_week
+		dataType: string
+		summarizeBy: none
+		sourceColumn: day_of_week
+		lineageTag: col-fact-day_of_week
+
+	column duration
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: duration
+		lineageTag: col-fact-duration
+		formatString: #,0
+
+	column campaign
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: campaign
+		lineageTag: col-fact-campaign
+		formatString: #,0
+
+	column pdays
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: pdays
+		lineageTag: col-fact-pdays
+		formatString: #,0
+
+	column previous
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: previous
+		lineageTag: col-fact-previous
+		formatString: #,0
+
+	column poutcome
+		dataType: string
+		summarizeBy: none
+		sourceColumn: poutcome
+		lineageTag: col-fact-poutcome
+
+	column emp_var_rate
+		dataType: double
+		summarizeBy: average
+		sourceColumn: emp_var_rate
+		lineageTag: col-fact-emp_var_rate
+		formatString: 0.00%
+
+	column cons_price_idx
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: cons_price_idx
+		lineageTag: col-fact-cons_price_idx
+		formatString: $#,0.00
+
+	column cons_conf_idx
+		dataType: double
+		summarizeBy: average
+		sourceColumn: cons_conf_idx
+		lineageTag: col-fact-cons_conf_idx
+		formatString: 0.00
+
+	column euribor3m
+		dataType: double
+		summarizeBy: average
+		sourceColumn: euribor3m
+		lineageTag: col-fact-euribor3m
+		formatString: 0.00
+
+	column nr_employed
+		dataType: double
+		summarizeBy: average
+		sourceColumn: nr_employed
+		lineageTag: col-fact-nr_employed
+		formatString: 0.00
+
+	column y
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: y
+		lineageTag: col-fact-y
+		formatString: #,0
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

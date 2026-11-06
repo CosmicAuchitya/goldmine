@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</title>
+    <style>
+        /* =====================================================================
+           BESPOKE DESIGN SYSTEM: SWISS INSTITUTIONAL RISK TERMINAL
+           Zero External CDNs & Dynamic CSS Variable Palettes
+           ===================================================================== */
+        :root {
+            --canvas-bg: #090D16;
+            --card-bg: #111827;
+            --border-color: #1F2937;
+            --accent-primary: #D4AF37;
+            --accent-secondary: #F43F5E;
+            --text-main: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --font-display: 'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --card-radius: 8px;
+            --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="light"] {
+            --canvas-bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --accent-primary: #B45309;
+            --accent-secondary: #E11D48;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--canvas-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            padding: 24px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Command Bar */
+        .cmd-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .brand-meta h1 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .brand-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-verified {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        .badge-circuit-breaker {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+        }
+        .badge-persona {
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Header Controls */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-ctrl {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-ctrl:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Slicer Ribbon */
+        .slicer-ribbon {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-elevation);
+        }
+        .slicer-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+        .chips-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .chip {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .chip:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+        .chip.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .slicer-select {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Executive Banner */
+        .exec-banner {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(244, 63, 94, 0.04));
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 var(--card-radius) var(--card-radius) 0;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .exec-banner.cb-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.06));
+            border-left-color: #f59e0b;
+        }
+
+        /* Hero KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-elevation);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border-color);
+        }
+        .kpi-card.accent-red::after { background: #f43f5e; }
+        .kpi-card.accent-green::after { background: #10b981; }
+        .kpi-card.accent-gold::after { background: var(--accent-primary); }
+        .kpi-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .kpi-val {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Main 12-Column Responsive Bento Grid & Archetype Structural Geometry */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .panel-card {
+            grid-column: span 6;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-elevation);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .panel-card.span-12, .panel-card.full-width { grid-column: span 12; }
+        .panel-card.span-8 { grid-column: span 8; }
+        .panel-card.span-7 { grid-column: span 7; }
+        .panel-card.span-6 { grid-column: span 6; }
+        .panel-card.span-5 { grid-column: span 5; }
+        .panel-card.span-4 { grid-column: span 4; }
+        @media (max-width: 1100px) {
+            .panel-card, .panel-card.span-8, .panel-card.span-7, .panel-card.span-5, .panel-card.span-4 {
+                grid-column: span 12;
+            }
+        }
+
+        /* Bespoke Structural Differentiation per Executive Archetype */
+        body[data-archetype="swiss_institutional_terminal"] {
+            --card-radius: 2px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .cmd-bar {
+            border-top: 3px double var(--accent-primary);
+            padding-top: 16px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .kpi-val {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+        }
+
+        body[data-archetype="nordic_saas_command"] {
+            --card-radius: 12px;
+        }
+        body[data-archetype="nordic_saas_command"] .panel-card {
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(6, 182, 212, 0.28);
+        }
+
+        body[data-archetype="editorial_commerce_studio"] {
+            --card-radius: 14px;
+        }
+        body[data-archetype="editorial_commerce_studio"] .cmd-bar {
+            border-bottom: 3px double var(--border-color);
+        }
+        body[data-archetype="editorial_commerce_studio"] .brand-meta h1 {
+            font-size: 27px;
+            letter-spacing: -0.01em;
+        }
+
+        body[data-archetype="industrial_scada_telemetry"] {
+            --card-radius: 3px;
+        }
+        body[data-archetype="industrial_scada_telemetry"] .panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            border-top: 2px solid var(--accent-primary);
+            border-right: 2px solid var(--accent-primary);
+            pointer-events: none;
+        }
+        .scada-led {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            margin-right: 6px;
+        }
+
+        body[data-archetype="clinical_diagnostic_clarity"] {
+            --card-radius: 10px;
+        }
+        body[data-archetype="clinical_diagnostic_clarity"] .panel-card {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Ontology & Governance Drawer */
+        .ont-strip {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .ont-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 3px 9px;
+        }
+        details.gov-drawer {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-top: 12px;
+        }
+        details.gov-drawer summary {
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .pathway-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .pathway-card {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 12px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .panel-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .svg-container {
+            width: 100%;
+            min-height: 280px;
+            position: relative;
+            flex: 1;
+        }
+
+        /* Tooltip */
+        #chart-tooltip {
+            position: fixed;
+            display: none;
+            background: rgba(15, 23, 42, 0.95);
+            color: #ffffff;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            max-width: 280px;
+        }
+
+        /* What-If Simulator */
+        .sim-box {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+        .sim-slider-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .sim-slider {
+            flex: 1;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+        }
+        .sim-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .btn-preset {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-preset:hover {
+            border-color: var(--accent-primary);
+        }
+        .sim-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .sim-res-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* Worklist Explorer */
+        .worklist-ctrls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .worklist-tabs {
+            display: flex;
+            gap: 8px;
+        }
+        .wl-tab {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .wl-tab.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+        }
+        .wl-search {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 240px;
+            outline: none;
+        }
+        .table-wrap {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        .worklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .worklist-table th {
+            background: var(--canvas-bg);
+            position: sticky;
+            top: 0;
+            padding: 8px 12px;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+        .worklist-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .worklist-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Print Media */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
+            .cmd-bar button, .slicer-ribbon, .sim-slider-row, .sim-buttons, .worklist-ctrls { display: none !important; }
+            .panel-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            #chart-tooltip { display: none !important; }
+        }
+    </style>
+</head>
+<body data-archetype="swiss_institutional_terminal">
+    <div id="chart-tooltip"></div>
+
+    <!-- Top Command Bar -->
+    <header class="cmd-bar">
+        <div class="brand-meta">
+            <h1 id="ui-title">Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</h1>
+            <div class="brand-badges">
+                <span class="badge badge-persona">Chief Risk Officer (CRO) &amp; Credit Committee</span>
+                <span class="badge badge-persona">Swiss Institutional Risk Terminal</span>
+                <span class="badge badge-verified">&check; 100% DuckDB Ground Truth (0 Drift)</span>
+                
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-ctrl" id="lang-btn" onclick="toggleLanguage()">🇮🇳 Hinglish Switch</button>
+            <button class="btn-ctrl" id="theme-btn" onclick="toggleTheme()">☀️ Light / 🌙 Dark</button>
+            <button class="btn-ctrl" onclick="window.print()">🖨️ Print / PDF</button>
+        </div>
+    </header>
+
+    <!-- Domain Ontology Intelligence Strip -->
+    <div class="ont-strip">
+        <span class="ont-pill"><strong>Ontology:</strong> FinTech, Lending &amp; Credit Operations (NBFCs) (FINTECH_LEND)</span>
+        <span class="ont-pill"><strong>Layout:</strong> 3-column asymmetric risk cockpit with compact tabular command bar</span>
+        <span class="ont-pill"><strong>DFII Score:</strong> 19 / 19 (8 Adaptive Panels)</span>
+    </div>
+
+    <!-- Cross-Filter Slicer Ribbon -->
+    <div class="slicer-ribbon">
+        <div class="slicer-label" data-en="Filter by job:" data-hi="job Se Filter Karein:">
+            Filter by job:
+        </div>
+        <div class="chips-container" id="prim-chips">
+            <button class="chip active" onclick="setPrimaryFilter('All')">All Segments</button>
+        </div>
+        
+        <div class="slicer-label" style="margin-left: 12px;" data-en="poutcome:" data-hi="poutcome:">
+            poutcome:
+        </div>
+        <select class="slicer-select" id="sec-select" onchange="setSecondaryFilter(this.value)">
+            <option value="All">All poutcome</option>
+        </select>
+        
+        <button class="btn-ctrl" style="padding: 4px 10px; font-size: 11px;" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <!-- Executive Insight Strip -->
+    <div class="exec-banner " id="exec-banner">
+        <div>
+            <strong id="exec-banner-tag" data-en="Executive Bottleneck Insight:" data-hi="Karyakari Bottleneck Jankari:">
+                Executive Bottleneck Insight:
+            </strong>
+            <span id="exec-banner-text">Group `contact = cellular` exhibits the highest statistically verified adverse concentration at 14.74% (vs 5.23% rest-of-business baseline, 2.82x lift, z = 29.38, 2485.3 excess events).</span>
+        </div>
+        <div style="font-size: 12px; font-weight: 700; white-space: nowrap;">
+            Status: 🟢 Statistically Validated
+        </div>
+    </div>
+
+    <!-- Hero KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card accent-gold">
+            <div class="kpi-title" data-en="Audited Records" data-hi="Kul Records">Audited Records</div>
+            <div class="kpi-val" id="kpi-records">41,188</div>
+            <div class="kpi-sub" data-en="Zero Cartesian Drift" data-hi="100% Asli Records">Zero Cartesian Drift</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Events" data-hi="Failure / Nuksan Events">Adverse Events</div>
+            <div class="kpi-val" id="kpi-events">4,640</div>
+            <div class="kpi-sub" id="kpi-rate-sub">Failure Rate: 11.27%</div>
+        </div>
+        <div class="kpi-card accent-green">
+            <div class="kpi-title" data-en="System Reliability" data-hi="System Ki Suraksha">System Reliability</div>
+            <div class="kpi-val" id="kpi-reliability">88.73%</div>
+            <div class="kpi-sub" data-en="Unbreached Operating Profile" data-hi="Surakshit Operating Profile">Unbreached Operating Profile</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Capital Drag" data-hi="Direct Financial Nuksan">
+                Adverse Failure Share
+            </div>
+            <div class="kpi-val" id="kpi-drag">
+                4,640 units
+            </div>
+            <div class="kpi-sub" id="kpi-drag-sub">
+                Physical Adverse Units
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Visual Panels Grid -->
+    <div class="dashboard-grid" id="main-panels-container">
+        <!-- Panels are injected and rendered via native SVG engine -->
+    </div>
+
+    <!-- Collapsible Statistical Proof, Pathways & Design Governance Drawer -->
+    <details class="gov-drawer" id="gov-drawer">
+        <summary data-en="🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit" data-hi="🔬 Statistical Saboot, 3 Raste (A/B/C) Aur Design Governance Audit">
+            🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit
+        </summary>
+        <div id="gov-drawer-body" style="margin-top: 12px;"></div>
+    </details>
+
+    <!-- Footer -->
+    <footer>
+        <div>Generated Autonomously by DataX-Ray Stage 7 Bespoke Dashboard Architect &bull; Verified Physical Ground Truth</div>
+        <div>Engine Version: V5.5 &bull; Archetype: swiss_institutional_terminal &bull; DFII Impact Index: 19/19 &bull; Zero External CDNs</div>
+    </footer>
+
+    <!-- =====================================================================
+         CLIENT-SIDE APPLICATION LOGIC & ZERO-CDN NATIVE SVG RENDERERS
+         ===================================================================== -->
+    <script>
+        const DASHBOARD_PAYLOAD = /*__DXR_PAYLOAD_START__*/{"meta": {"dataset_name": "bank_telemarketing", "engine": "DataX-Ray Bespoke Architecture V5.5", "archetype": "swiss_institutional_terminal", "archetype_name": "Swiss Institutional Risk Terminal", "executive_persona": "Chief Risk Officer (CRO) \u0026 Credit Committee", "title_en": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit", "title_hi": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit", "generated_timestamp": "2026-11-06 21:27:08"}, "ontology": {"ontology_key": "fintech_lending", "domain_code": "FINTECH_LEND", "domain_name": "FinTech, Lending \u0026 Credit Operations (NBFCs)", "key_metrics_kpis": ["Net Interest Margin (NIM = Lending_Rate - Borrowing_Cost)", "Gross \u0026 Net NPA % (Non-Performing Assets - 90+ DPD \u0921\u093f\u092b\u0949\u0932\u094d\u091f)", "Days Past Due (DPD) Bucket Distribution (30 DPD, 60 DPD, 90 DPD)", "Collection Efficiency Ratio (%)"], "hidden_leakage_risks": ["Willful Defaults (\u0932\u094b\u0928 \u0932\u0947\u0915\u0930 \u092d\u093e\u0917 \u091c\u093e\u0928\u093e)", "Collateral Value Depreciation (\u0917\u093f\u0930\u0935\u0940 \u0930\u0916\u0940 \u0938\u0902\u092a\u0924\u094d\u0924\u093f \u0915\u0940 \u0915\u0940\u092e\u0924 \u0917\u093f\u0930\u0928\u093e)", "Over-leveraged Borrowers taking multiple loans"]}, "dfii": {"aesthetic_impact": 5, "context_fit": 5, "implementation_feasibility": 5, "performance_safety": 5, "consistency_risk": 1, "dfii": 19}, "design_system": {"layout_concept": "3-column asymmetric risk cockpit with compact tabular command bar", "default_theme": "dark", "font_display": "'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace", "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"}, "selected_panels": ["segment_vulnerability_lollipop", "nonlinear_cliff_step_area", "exposure_vs_risk_bubble", "orthogonal_2x2_quadrant", "secondary_cross_tab_heatmap", "triage_efficiency_frontier", "what_if_counterfactual_simulator", "actionable_worklist_explorer"], "selected_panels_detail": [{"id": "segment_vulnerability_lollipop", "name": "Primary Segment Vulnerability \u0026 Wilson 95% CIs", "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.", "priority": 2}, {"id": "nonlinear_cliff_step_area", "name": "Non-Linear Parameter Threshold Cliff \u0026 Danger Zone", "justification": "Isolates discrete physical inflection points across 10 continuous driver(s).", "priority": 3}, {"id": "exposure_vs_risk_bubble", "name": "Exposure Volume vs Adverse Risk Bubble Dispersion", "justification": "Separates high-volume systemic friction from low-volume niche outliers.", "priority": 5}, {"id": "orthogonal_2x2_quadrant", "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix", "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.", "priority": 6}, {"id": "secondary_cross_tab_heatmap", "name": "2D Cross-Tabulation Risk Concentration Heatmap", "justification": "Bivariate categorical cross-tab (job x poutcome) exposes sub-node vulnerability hubs.", "priority": 7}, {"id": "triage_efficiency_frontier", "name": "Operational Intake Screening Yield Frontier", "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.", "priority": 8}, {"id": "what_if_counterfactual_simulator", "name": "What-If Counterfactual ROI \u0026 Excess-Risk Simulator", "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.", "priority": 9}, {"id": "actionable_worklist_explorer", "name": "Actionable Priority Worklist \u0026 Incident Triage Table", "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.", "priority": 10}], "rejected_panels_detail": [{"id": "temporal_momentum_ribbon", "name": "Temporal Failure Rate \u0026 Volume Momentum", "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."}, {"id": "pareto_loss_waterfall", "name": "Pareto Cumulative Financial Loss Waterfall", "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."}], "global_kpis": {"total_records": 41188, "adverse_events": 4640, "adverse_rate_pct": 11.27, "system_reliability_pct": 88.73, "has_monetary_ledger": false, "currency_unit": "events", "cost_column": "None (Unit Counts)", "adverse_capital_drag": 0.0, "total_portfolio_volume": 0.0}, "circuit_breaker": {"active": false, "p_value": 0.0, "z_stat": 29.38, "relative_risk_multiplier": 2.82, "excess_events": 2485.3}, "bottleneck": {"segment": "contact = cellular", "volume": 26144, "events": 3853, "rate_pct": 14.74, "rest_rate_pct": 5.23, "excess_events": 2485.3, "narrative_en": "Group `contact = cellular` exhibits the highest statistically verified adverse concentration at 14.74% (vs 5.23% rest-of-business baseline, 2.82x lift, z = 29.38, 2485.3 excess events).", "narrative_hi": "Group `contact = cellular` mein sabse zyada parmanit nuksan dar 14.74% hai (baaki business mein 5.23%, 2.82x zyada jokhim, 2485.3 roke ja sakne wale excess events)."}, "what_if_model": {"excess_events": 2485.3, "excess_ci_low": 2339.5, "excess_ci_high": 2631.2, "avg_cost_per_event": 0.0, "cohort_adverse_dollars": 0.0, "bottleneck_segment": "contact = cellular", "bottleneck_rate_pct": 14.74, "rest_rate_pct": 5.23}, "pathways": [{"path_name": "Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)", "strategy_type": "Low CapEx / Immediate Operational Triage", "implementation_cost": "Internal Staff Hours (No CapEx)", "time_to_impact": "1 - 2 Weeks", "projected_friction_reduction": "621 events prevented (25% Excess-Risk Compression)", "statistical_confidence_interval": "[585 to 658 events] (95% Attributable Risk CI)", "fayda_pros": "Zero organizational disruption; captures initial 25% of the 2485.3 attributable excess events in `contact = cellular` via lightweight queue alerts.", "nuksan_cons": "Leaves 75% of cohort excess risk (1,864 excess events) and baseline systemic friction unaddressed.", "collateral_friction": "Minor alert-fatigue among frontline staff if threshold rules are too sensitive."}, {"path_name": "Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)", "strategy_type": "Moderate CapEx / Targeted Clinical or Operational Protocol", "implementation_cost": "Dedicated Protocol Buffer \u0026 Daily Monitoring", "time_to_impact": "30 - 45 Days", "projected_friction_reduction": "1,491 events prevented (60% Excess-Risk Compression)", "statistical_confidence_interval": "[1,404 to 1,579 events] (95% Attributable Risk CI)", "fayda_pros": "Highest Return on Invested Effort; directly targets the statistically verified `contact = cellular` bottleneck (14.74% vs 5.23% rest-of-system, p = 0.0000e+00, +9.51% attributable excess risk).", "nuksan_cons": "Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.", "collateral_friction": "Requires cross-departmental coordination; minor initial resistance during protocol adoption."}, {"path_name": "Pathway C: Structural (100% Excess-Risk Elimination \u2014 Full Cohort Parity with Baseline)", "strategy_type": "High CapEx / Infrastructure \u0026 Automated Remediation", "implementation_cost": "Dedicated Telemetry / Automated Infrastructure Revamp", "time_to_impact": "90 - 180 Days", "projected_friction_reduction": "2,485 events prevented (100% Baseline Parity)", "statistical_confidence_interval": "[2,339 to 2,631 events] (95% Attributable Risk CI)", "fayda_pros": "Brings `contact = cellular` from 14.74% down to exact statistical parity with the rest-of-population baseline (5.23%), eliminating all 2,485 attributable excess failures.", "nuksan_cons": "High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.", "collateral_friction": "Heavy operational friction during system migration; requires ongoing engineering maintenance."}], "cube_slices": [{"prim_val": "admin.", "sec_val": "failure", "volume": 1091, "adverse_events": 165, "adverse_rate_pct": 15.12, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "admin.", "sec_val": "nonexistent", "volume": 8903, "adverse_events": 901, "adverse_rate_pct": 10.12, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "admin.", "sec_val": "success", "volume": 428, "adverse_events": 286, "adverse_rate_pct": 66.82, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "failure", "volume": 886, "adverse_events": 70, "adverse_rate_pct": 7.9, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "nonexistent", "volume": 8249, "adverse_events": 509, "adverse_rate_pct": 6.17, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "success", "volume": 119, "adverse_events": 59, "adverse_rate_pct": 49.58, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "failure", "volume": 154, "adverse_events": 11, "adverse_rate_pct": 7.14, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "nonexistent", "volume": 1277, "adverse_events": 102, "adverse_rate_pct": 7.99, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "success", "volume": 25, "adverse_events": 11, "adverse_rate_pct": 44.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "failure", "volume": 74, "adverse_events": 12, "adverse_rate_pct": 16.22, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "nonexistent", "volume": 948, "adverse_events": 67, "adverse_rate_pct": 7.07, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "success", "volume": 38, "adverse_events": 27, "adverse_rate_pct": 71.05, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "management", "sec_val": "failure", "volume": 331, "adverse_events": 43, "adverse_rate_pct": 12.99, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "management", "sec_val": "nonexistent", "volume": 2498, "adverse_events": 219, "adverse_rate_pct": 8.77, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "management", "sec_val": "success", "volume": 95, "adverse_events": 66, "adverse_rate_pct": 69.47, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "retired", "sec_val": "failure", "volume": 230, "adverse_events": 63, "adverse_rate_pct": 27.39, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "retired", "sec_val": "nonexistent", "volume": 1332, "adverse_events": 254, "adverse_rate_pct": 19.07, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "retired", "sec_val": "success", "volume": 158, "adverse_events": 117, "adverse_rate_pct": 74.05, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "failure", "volume": 145, "adverse_events": 18, "adverse_rate_pct": 12.41, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "nonexistent", "volume": 1246, "adverse_events": 115, "adverse_rate_pct": 9.23, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "success", "volume": 30, "adverse_events": 16, "adverse_rate_pct": 53.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "services", "sec_val": "failure", "volume": 448, "adverse_events": 42, "adverse_rate_pct": 9.38, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "services", "sec_val": "nonexistent", "volume": 3451, "adverse_events": 239, "adverse_rate_pct": 6.93, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "services", "sec_val": "success", "volume": 70, "adverse_events": 42, "adverse_rate_pct": 60.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "student", "sec_val": "failure", "volume": 163, "adverse_events": 43, "adverse_rate_pct": 26.38, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "student", "sec_val": "nonexistent", "volume": 594, "adverse_events": 148, "adverse_rate_pct": 24.92, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "student", "sec_val": "success", "volume": 118, "adverse_events": 84, "adverse_rate_pct": 71.19, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "technician", "sec_val": "failure", "volume": 618, "adverse_events": 110, "adverse_rate_pct": 17.8, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "technician", "sec_val": "nonexistent", "volume": 5914, "adverse_events": 481, "adverse_rate_pct": 8.13, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "technician", "sec_val": "success", "volume": 211, "adverse_events": 139, "adverse_rate_pct": 65.88, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unemployed", "sec_val": "failure", "volume": 94, "adverse_events": 19, "adverse_rate_pct": 20.21, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unemployed", "sec_val": "nonexistent", "volume": 858, "adverse_events": 84, "adverse_rate_pct": 9.79, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unemployed", "sec_val": "success", "volume": 62, "adverse_events": 41, "adverse_rate_pct": 66.13, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unknown", "sec_val": "failure", "volume": 18, "adverse_events": 9, "adverse_rate_pct": 50.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unknown", "sec_val": "nonexistent", "volume": 293, "adverse_events": 22, "adverse_rate_pct": 7.51, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "unknown", "sec_val": "success", "volume": 19, "adverse_events": 6, "adverse_rate_pct": 31.58, "adverse_cost": 0.0, "total_cost": 0.0}], "prim_dim_name": "job", "sec_dim_name": "poutcome", "prim_segments": ["admin.", "blue-collar", "entrepreneur", "housemaid", "management", "retired", "self-employed", "services", "student", "technician", "unemployed", "unknown"], "sec_segments": ["failure", "nonexistent", "success"], "widgets_data": {"temporal": {"is_temporal": false, "date_column": "", "pop_delta_pp": 0.0, "trend_direction": "STABLE", "periods": []}, "pareto": [], "lollipop": [{"segment": "student", "volume": 875, "events": 275, "rate_pct": 31.43, "ci_low": 28.44, "ci_high": 34.58, "adverse_cost": 0.0}, {"segment": "retired", "volume": 1720, "events": 434, "rate_pct": 25.23, "ci_low": 23.24, "ci_high": 27.34, "adverse_cost": 0.0}, {"segment": "unemployed", "volume": 1014, "events": 144, "rate_pct": 14.2, "ci_low": 12.19, "ci_high": 16.48, "adverse_cost": 0.0}, {"segment": "admin.", "volume": 10422, "events": 1352, "rate_pct": 12.97, "ci_low": 12.34, "ci_high": 13.63, "adverse_cost": 0.0}, {"segment": "management", "volume": 2924, "events": 328, "rate_pct": 11.22, "ci_low": 10.12, "ci_high": 12.41, "adverse_cost": 0.0}, {"segment": "unknown", "volume": 330, "events": 37, "rate_pct": 11.21, "ci_low": 8.24, "ci_high": 15.07, "adverse_cost": 0.0}, {"segment": "technician", "volume": 6743, "events": 730, "rate_pct": 10.83, "ci_low": 10.11, "ci_high": 11.59, "adverse_cost": 0.0}, {"segment": "self-employed", "volume": 1421, "events": 149, "rate_pct": 10.49, "ci_low": 9.0, "ci_high": 12.19, "adverse_cost": 0.0}, {"segment": "housemaid", "volume": 1060, "events": 106, "rate_pct": 10.0, "ci_low": 8.34, "ci_high": 11.95, "adverse_cost": 0.0}, {"segment": "entrepreneur", "volume": 1456, "events": 124, "rate_pct": 8.52, "ci_low": 7.19, "ci_high": 10.06, "adverse_cost": 0.0}, {"segment": "services", "volume": 3969, "events": 323, "rate_pct": 8.14, "ci_low": 7.33, "ci_high": 9.03, "adverse_cost": 0.0}, {"segment": "blue-collar", "volume": 9254, "events": 638, "rate_pct": 6.89, "ci_low": 6.4, "ci_high": 7.43, "adverse_cost": 0.0}], "heatmap": {"has_heatmap": true, "prim_dim": "job", "sec_dim": "poutcome", "rows": ["admin.", "blue-collar", "entrepreneur", "housemaid", "management", "retired", "self-employed", "services", "student", "technician"], "cols": ["failure", "nonexistent", "success"], "cells": [{"prim_val": "admin.", "sec_val": "failure", "volume": 1091, "events": 165, "rate_pct": 15.12, "adverse_cost": 0.0}, {"prim_val": "admin.", "sec_val": "nonexistent", "volume": 8903, "events": 901, "rate_pct": 10.12, "adverse_cost": 0.0}, {"prim_val": "admin.", "sec_val": "success", "volume": 428, "events": 286, "rate_pct": 66.82, "adverse_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "failure", "volume": 886, "events": 70, "rate_pct": 7.9, "adverse_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "nonexistent", "volume": 8249, "events": 509, "rate_pct": 6.17, "adverse_cost": 0.0}, {"prim_val": "blue-collar", "sec_val": "success", "volume": 119, "events": 59, "rate_pct": 49.58, "adverse_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "failure", "volume": 154, "events": 11, "rate_pct": 7.14, "adverse_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "nonexistent", "volume": 1277, "events": 102, "rate_pct": 7.99, "adverse_cost": 0.0}, {"prim_val": "entrepreneur", "sec_val": "success", "volume": 25, "events": 11, "rate_pct": 44.0, "adverse_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "failure", "volume": 74, "events": 12, "rate_pct": 16.22, "adverse_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "nonexistent", "volume": 948, "events": 67, "rate_pct": 7.07, "adverse_cost": 0.0}, {"prim_val": "housemaid", "sec_val": "success", "volume": 38, "events": 27, "rate_pct": 71.05, "adverse_cost": 0.0}, {"prim_val": "management", "sec_val": "failure", "volume": 331, "events": 43, "rate_pct": 12.99, "adverse_cost": 0.0}, {"prim_val": "management", "sec_val": "nonexistent", "volume": 2498, "events": 219, "rate_pct": 8.77, "adverse_cost": 0.0}, {"prim_val": "management", "sec_val": "success", "volume": 95, "events": 66, "rate_pct": 69.47, "adverse_cost": 0.0}, {"prim_val": "retired", "sec_val": "failure", "volume": 230, "events": 63, "rate_pct": 27.39, "adverse_cost": 0.0}, {"prim_val": "retired", "sec_val": "nonexistent", "volume": 1332, "events": 254, "rate_pct": 19.07, "adverse_cost": 0.0}, {"prim_val": "retired", "sec_val": "success", "volume": 158, "events": 117, "rate_pct": 74.05, "adverse_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "failure", "volume": 145, "events": 18, "rate_pct": 12.41, "adverse_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "nonexistent", "volume": 1246, "events": 115, "rate_pct": 9.23, "adverse_cost": 0.0}, {"prim_val": "self-employed", "sec_val": "success", "volume": 30, "events": 16, "rate_pct": 53.33, "adverse_cost": 0.0}, {"prim_val": "services", "sec_val": "failure", "volume": 448, "events": 42, "rate_pct": 9.38, "adverse_cost": 0.0}, {"prim_val": "services", "sec_val": "nonexistent", "volume": 3451, "events": 239, "rate_pct": 6.93, "adverse_cost": 0.0}, {"prim_val": "services", "sec_val": "success", "volume": 70, "events": 42, "rate_pct": 60.0, "adverse_cost": 0.0}, {"prim_val": "student", "sec_val": "failure", "volume": 163, "events": 43, "rate_pct": 26.38, "adverse_cost": 0.0}, {"prim_val": "student", "sec_val": "nonexistent", "volume": 594, "events": 148, "rate_pct": 24.92, "adverse_cost": 0.0}, {"prim_val": "student", "sec_val": "success", "volume": 118, "events": 84, "rate_pct": 71.19, "adverse_cost": 0.0}, {"prim_val": "technician", "sec_val": "failure", "volume": 618, "events": 110, "rate_pct": 17.8, "adverse_cost": 0.0}, {"prim_val": "technician", "sec_val": "nonexistent", "volume": 5914, "events": 481, "rate_pct": 8.13, "adverse_cost": 0.0}, {"prim_val": "technician", "sec_val": "success", "volume": 211, "events": 139, "rate_pct": 65.88, "adverse_cost": 0.0}]}, "bubble": [{"segment": "student", "volume": 875, "events": 275, "rate_pct": 31.43, "ci_low": 28.44, "ci_high": 34.58, "adverse_cost": 0.0}, {"segment": "retired", "volume": 1720, "events": 434, "rate_pct": 25.23, "ci_low": 23.24, "ci_high": 27.34, "adverse_cost": 0.0}, {"segment": "unemployed", "volume": 1014, "events": 144, "rate_pct": 14.2, "ci_low": 12.19, "ci_high": 16.48, "adverse_cost": 0.0}, {"segment": "admin.", "volume": 10422, "events": 1352, "rate_pct": 12.97, "ci_low": 12.34, "ci_high": 13.63, "adverse_cost": 0.0}, {"segment": "management", "volume": 2924, "events": 328, "rate_pct": 11.22, "ci_low": 10.12, "ci_high": 12.41, "adverse_cost": 0.0}, {"segment": "unknown", "volume": 330, "events": 37, "rate_pct": 11.21, "ci_low": 8.24, "ci_high": 15.07, "adverse_cost": 0.0}, {"segment": "technician", "volume": 6743, "events": 730, "rate_pct": 10.83, "ci_low": 10.11, "ci_high": 11.59, "adverse_cost": 0.0}, {"segment": "self-employed", "volume": 1421, "events": 149, "rate_pct": 10.49, "ci_low": 9.0, "ci_high": 12.19, "adverse_cost": 0.0}, {"segment": "housemaid", "volume": 1060, "events": 106, "rate_pct": 10.0, "ci_low": 8.34, "ci_high": 11.95, "adverse_cost": 0.0}, {"segment": "entrepreneur", "volume": 1456, "events": 124, "rate_pct": 8.52, "ci_low": 7.19, "ci_high": 10.06, "adverse_cost": 0.0}, {"segment": "services", "volume": 3969, "events": 323, "rate_pct": 8.14, "ci_low": 7.33, "ci_high": 9.03, "adverse_cost": 0.0}, {"segment": "blue-collar", "volume": 9254, "events": 638, "rate_pct": 6.89, "ci_low": 6.4, "ci_high": 7.43, "adverse_cost": 0.0}], "cliffs": [{"column": "nr_employed", "max_delta": 0.2135499887847835, "mean_delta": 0.11883700658668778, "spread": 0.2135499887847835, "step_ratio": 1.8, "is_significant": true, "is_cliff": true, "correlation": -0.3546782959214346, "chi2": 3526.93, "p_value": 0.0, "bins": [{"range": "(4963.599, 5099.1]", "count": 13498, "events": 3301, "rate_pct": 24.46}, {"range": "(5099.1, 5191.0]", "count": 7773, "events": 241, "rate_pct": 3.1}, {"range": "(5191.0, 5228.1]", "count": 19917, "events": 1098, "rate_pct": 5.51}]}, {"column": "duration", "max_delta": 0.18594204572412296, "mean_delta": 0.09437513029926599, "spread": 0.283125390897798, "step_ratio": 1.97, "is_significant": true, "is_cliff": true, "correlation": 0.40527380067931257, "chi2": 4882.37, "p_value": 0.0, "bins": [{"range": "(-0.001, 102.0]", "count": 10313, "events": 87, "rate_pct": 0.84}, {"range": "(102.0, 180.0]", "count": 10392, "events": 477, "rate_pct": 4.59}, {"range": "(180.0, 319.0]", "count": 10197, "events": 1077, "rate_pct": 10.56}, {"range": "(319.0, 4918.0]", "count": 10286, "events": 2999, "rate_pct": 29.16}]}, {"column": "euribor3m", "max_delta": 0.1712951138186072, "mean_delta": 0.06905898963947564, "spread": 0.20297205561597625, "step_ratio": 2.48, "is_significant": true, "is_cliff": true, "correlation": -0.307771403940719, "chi2": 2888.27, "p_value": 0.0, "bins": [{"range": "(0.633, 1.344]", "count": 10543, "events": 2676, "rate_pct": 25.38}, {"range": "(1.344, 4.857]", "count": 11512, "events": 950, "rate_pct": 8.25}, {"range": "(4.857, 4.961]", "count": 9342, "events": 475, "rate_pct": 5.08}, {"range": "(4.961, 5.045]", "count": 9791, "events": 539, "rate_pct": 5.51}]}, {"column": "emp_var_rate", "max_delta": 0.12330997771687467, "mean_delta": 0.08073039632431112, "spread": 0.16146079264862223, "step_ratio": 1.53, "is_significant": true, "is_cliff": true, "correlation": -0.2983344261593761, "chi2": 1890.91, "p_value": 0.0, "bins": [{"range": "(-3.401, -1.8]", "count": 12090, "events": 2597, "rate_pct": 21.48}, {"range": "(-1.8, 1.1]", "count": 12864, "events": 1177, "rate_pct": 9.15}, {"range": "(1.1, 1.4]", "count": 16234, "events": 866, "rate_pct": 5.33}]}, {"column": "cons_price_idx", "max_delta": 0.11795778543143623, "mean_delta": 0.07960217508899614, "spread": 0.13960356805356766, "step_ratio": 1.48, "is_significant": true, "is_cliff": false, "correlation": -0.13621121281924806, "chi2": 1478.49, "p_value": 0.0, "bins": [{"range": "(92.19999999999999, 93.075]", "count": 11450, "events": 2229, "rate_pct": 19.47}, {"range": "(93.075, 93.749]", "count": 9229, "events": 708, "rate_pct": 7.67}, {"range": "(93.749, 93.994]", "count": 14727, "events": 811, "rate_pct": 5.51}, {"range": "(93.994, 94.767]", "count": 5782, "events": 892, "rate_pct": 15.43}]}, {"column": "cons_conf_idx", "max_delta": 0.07686456438289141, "mean_delta": 0.06319803158095555, "spread": 0.130804651380602, "step_ratio": 1.22, "is_significant": true, "is_cliff": false, "correlation": 0.054877946053195625, "chi2": 695.56, "p_value": 1.9256651947903048e-150, "bins": [{"range": "(-50.800999999999995, -42.7]", "count": 15561, "events": 1651, "rate_pct": 10.61}, {"range": "(-42.7, -41.8]", "count": 7990, "events": 378, "rate_pct": 4.73}, {"range": "(-41.8, -36.4]", "count": 9833, "events": 1221, "rate_pct": 12.42}, {"range": "(-36.4, -26.9]", "count": 7804, "events": 1390, "rate_pct": 17.81}]}, {"column": "age", "max_delta": 0.055298264287816215, "mean_delta": 0.03783960808829579, "spread": 0.058220559977071165, "step_ratio": 1.46, "is_significant": true, "is_cliff": false, "correlation": 0.03039880304000355, "chi2": 244.52, "p_value": 1.0015466976149268e-52, "bins": [{"range": "(16.999, 32.0]", "count": 11176, "events": 1528, "rate_pct": 13.67}, {"range": "(32.0, 38.0]", "count": 9999, "events": 995, "rate_pct": 9.95}, {"range": "(38.0, 47.0]", "count": 10140, "events": 796, "rate_pct": 7.85}, {"range": "(47.0, 98.0]", "count": 9873, "events": 1321, "rate_pct": 13.38}]}, {"column": "campaign", "max_delta": 0.03477895907736754, "mean_delta": 0.025879518169615014, "spread": 0.05175903633923003, "step_ratio": 1.34, "is_significant": true, "is_cliff": false, "correlation": -0.06635741475467066, "chi2": 162.69, "p_value": 4.713369442545198e-36, "bins": [{"range": "(0.999, 2.0]", "count": 28212, "events": 3511, "rate_pct": 12.45}, {"range": "(2.0, 3.0]", "count": 5341, "events": 574, "rate_pct": 10.75}, {"range": "(3.0, 56.0]", "count": 7635, "events": 555, "rate_pct": 7.27}]}, {"column": "pdays", "max_delta": 0.0, "mean_delta": 0.0, "spread": 0.0, "step_ratio": 0.0, "is_significant": false, "is_cliff": false, "correlation": -0.32491447761662834, "chi2": 0.0, "p_value": 1.0, "bins": [{"range": "(-0.001, 999.0]", "count": 41188, "events": 4640, "rate_pct": 11.27}]}, {"column": "previous", "max_delta": 0.0, "mean_delta": 0.0, "spread": 0.0, "step_ratio": 0.0, "is_significant": false, "is_cliff": false, "correlation": 0.23018100321659027, "chi2": 0.0, "p_value": 1.0, "bins": [{"range": "(-0.001, 7.0]", "count": 41188, "events": 4640, "rate_pct": 11.27}]}], "interaction": {"pos_driver": "duration", "neg_driver": "nr_employed", "med_pos": 180.0, "med_neg": 5191.0, "op_pos_hi": "\u003e", "op_pos_lo": "\u003c=", "op_neg_hi": "\u003e", "op_neg_lo": "\u003c=", "p_value": 0.0, "quad_spread": 25.58, "is_significant": true, "quadrants": {"Q1_optimal": {"name": "Optimal Zone (Low duration \u0026 High nr_employed)", "count": 11067, "events": 32, "rate": 0.29}, "Q2_unbuffered": {"name": "Unbuffered Baseline (Low duration \u0026 Low nr_employed)", "count": 9638, "events": 532, "rate": 5.52}, "Q3_masked": {"name": "Masked Risk (High duration \u0026 High nr_employed)", "count": 8850, "events": 1066, "rate": 12.05}, "Q4_catastrophic": {"name": "Compound Catastrophe (High duration \u0026 Low nr_employed)", "count": 11633, "events": 3010, "rate": 25.87}}}, "triage": [{"policy_name": "Policy 1: Conservative (Underwriting Audit if duration \u003e 319.00)", "scrap_count": 10286, "scrap_pct": 24.97, "defects_caught": 2999, "recall_pct": 64.63, "false_discards": 7287, "false_discard_pct": 19.94, "retained_count": 30902, "retained_defect_rate": 5.31}, {"policy_name": "Policy 2: Surgical (Underwriting Audit if duration \u003e 180.00)", "scrap_count": 20483, "scrap_pct": 49.73, "defects_caught": 4076, "recall_pct": 87.84, "false_discards": 16407, "false_discard_pct": 44.89, "retained_count": 20705, "retained_defect_rate": 2.72}, {"policy_name": "Policy 3: Compound (Underwriting Audit if duration \u003e 180.00 OR nr_employed \u003c 5191.00)", "scrap_count": 26577, "scrap_pct": 64.53, "defects_caught": 4608, "recall_pct": 99.31, "false_discards": 21969, "false_discard_pct": 60.11, "retained_count": 14611, "retained_defect_rate": 0.22}], "worklist_rows": [{"fact_surrogate_id": 18128, "priority_rank": 1, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 40, "duration": 639}, {"fact_surrogate_id": 204, "priority_rank": 2, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 43, "duration": 319}, {"fact_surrogate_id": 350, "priority_rank": 3, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 324}, {"fact_surrogate_id": 3086, "priority_rank": 4, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 42, "duration": 632}, {"fact_surrogate_id": 39896, "priority_rank": 5, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 38, "duration": 620}, {"fact_surrogate_id": 10928, "priority_rank": 6, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 41, "duration": 435}, {"fact_surrogate_id": 5063, "priority_rank": 7, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 55, "duration": 401}, {"fact_surrogate_id": 22899, "priority_rank": 8, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 25, "duration": 420}, {"fact_surrogate_id": 20001, "priority_rank": 9, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 30, "duration": 706}, {"fact_surrogate_id": 30857, "priority_rank": 10, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 54, "duration": 325}, {"fact_surrogate_id": 15136, "priority_rank": 11, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 34, "duration": 1152}, {"fact_surrogate_id": 114, "priority_rank": 12, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 34, "duration": 492}, {"fact_surrogate_id": 17379, "priority_rank": 13, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 81, "duration": 327}, {"fact_surrogate_id": 39117, "priority_rank": 14, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 64, "duration": 501}, {"fact_surrogate_id": 24213, "priority_rank": 15, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 1011}, {"fact_surrogate_id": 29709, "priority_rank": 16, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 366}, {"fact_surrogate_id": 35232, "priority_rank": 17, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 347}, {"fact_surrogate_id": 34899, "priority_rank": 18, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 22, "duration": 814}, {"fact_surrogate_id": 35226, "priority_rank": 19, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 52, "duration": 332}, {"fact_surrogate_id": 8072, "priority_rank": 20, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 62, "duration": 435}, {"fact_surrogate_id": 5160, "priority_rank": 21, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 372}, {"fact_surrogate_id": 3521, "priority_rank": 22, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 42, "duration": 520}, {"fact_surrogate_id": 30182, "priority_rank": 23, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 1563}, {"fact_surrogate_id": 1998, "priority_rank": 24, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 631}, {"fact_surrogate_id": 2001, "priority_rank": 25, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 395}, {"fact_surrogate_id": 1988, "priority_rank": 26, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 510}, {"fact_surrogate_id": 26392, "priority_rank": 27, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 384}, {"fact_surrogate_id": 23366, "priority_rank": 28, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 378}, {"fact_surrogate_id": 23327, "priority_rank": 29, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 370}, {"fact_surrogate_id": 14762, "priority_rank": 30, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 407}, {"fact_surrogate_id": 29851, "priority_rank": 31, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 24, "duration": 329}, {"fact_surrogate_id": 32522, "priority_rank": 32, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 26, "duration": 682}, {"fact_surrogate_id": 7534, "priority_rank": 33, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 768}, {"fact_surrogate_id": 39288, "priority_rank": 34, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 370}, {"fact_surrogate_id": 26167, "priority_rank": 35, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 45, "duration": 363}, {"fact_surrogate_id": 11827, "priority_rank": 36, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 54, "duration": 352}, {"fact_surrogate_id": 30309, "priority_rank": 37, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 25, "duration": 350}, {"fact_surrogate_id": 28801, "priority_rank": 38, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 31, "duration": 664}, {"fact_surrogate_id": 12203, "priority_rank": 39, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 57, "duration": 374}, {"fact_surrogate_id": 37527, "priority_rank": 40, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 44, "duration": 336}, {"fact_surrogate_id": 29159, "priority_rank": 41, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 40, "duration": 475}, {"fact_surrogate_id": 19788, "priority_rank": 42, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 36, "duration": 422}, {"fact_surrogate_id": 8537, "priority_rank": 43, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 562}, {"fact_surrogate_id": 35654, "priority_rank": 44, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 60, "duration": 347}, {"fact_surrogate_id": 14990, "priority_rank": 45, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 513}, {"fact_surrogate_id": 6804, "priority_rank": 46, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 419}, {"fact_surrogate_id": 24040, "priority_rank": 47, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 844}, {"fact_surrogate_id": 29869, "priority_rank": 48, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 62, "duration": 366}, {"fact_surrogate_id": 25015, "priority_rank": 49, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 752}, {"fact_surrogate_id": 11567, "priority_rank": 50, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 3509}, {"fact_surrogate_id": 32852, "priority_rank": 51, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 622}, {"fact_surrogate_id": 8227, "priority_rank": 52, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 38, "duration": 346}, {"fact_surrogate_id": 35831, "priority_rank": 53, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 409}, {"fact_surrogate_id": 326, "priority_rank": 54, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 387}, {"fact_surrogate_id": 11380, "priority_rank": 55, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 78, "duration": 463}, {"fact_surrogate_id": 21471, "priority_rank": 56, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 38, "duration": 344}, {"fact_surrogate_id": 39635, "priority_rank": 57, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 33, "duration": 804}, {"fact_surrogate_id": 26901, "priority_rank": 58, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 407}, {"fact_surrogate_id": 14460, "priority_rank": 59, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 36, "duration": 427}, {"fact_surrogate_id": 29982, "priority_rank": 60, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 52, "duration": 498}, {"fact_surrogate_id": 17845, "priority_rank": 61, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 58, "duration": 867}, {"fact_surrogate_id": 25272, "priority_rank": 62, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 25, "duration": 1139}, {"fact_surrogate_id": 31992, "priority_rank": 63, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 24, "duration": 663}, {"fact_surrogate_id": 13597, "priority_rank": 64, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 329}, {"fact_surrogate_id": 17962, "priority_rank": 65, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 342}, {"fact_surrogate_id": 5440, "priority_rank": 66, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 49, "duration": 364}, {"fact_surrogate_id": 6594, "priority_rank": 67, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 51, "duration": 354}, {"fact_surrogate_id": 29122, "priority_rank": 68, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 49, "duration": 846}, {"fact_surrogate_id": 16040, "priority_rank": 69, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 385}, {"fact_surrogate_id": 26820, "priority_rank": 70, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 421}, {"fact_surrogate_id": 17565, "priority_rank": 71, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 25, "duration": 431}, {"fact_surrogate_id": 35373, "priority_rank": 72, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 333}, {"fact_surrogate_id": 22412, "priority_rank": 73, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 1472}, {"fact_surrogate_id": 3531, "priority_rank": 74, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 57, "duration": 388}, {"fact_surrogate_id": 13887, "priority_rank": 75, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 24, "duration": 485}, {"fact_surrogate_id": 17783, "priority_rank": 76, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 28, "duration": 326}, {"fact_surrogate_id": 34121, "priority_rank": 77, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 527}, {"fact_surrogate_id": 9396, "priority_rank": 78, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 23, "duration": 638}, {"fact_surrogate_id": 11646, "priority_rank": 79, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 30, "duration": 1616}, {"fact_surrogate_id": 3443, "priority_rank": 80, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 41, "duration": 322}, {"fact_surrogate_id": 38216, "priority_rank": 81, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 66, "duration": 489}, {"fact_surrogate_id": 36389, "priority_rank": 82, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 17, "duration": 432}, {"fact_surrogate_id": 28149, "priority_rank": 83, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 23, "duration": 421}, {"fact_surrogate_id": 40341, "priority_rank": 84, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 366}, {"fact_surrogate_id": 27404, "priority_rank": 85, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 606}, {"fact_surrogate_id": 22633, "priority_rank": 86, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 377}, {"fact_surrogate_id": 4453, "priority_rank": 87, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 38, "duration": 1002}, {"fact_surrogate_id": 22645, "priority_rank": 88, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 56, "duration": 392}, {"fact_surrogate_id": 24291, "priority_rank": 89, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 31, "duration": 911}, {"fact_surrogate_id": 2490, "priority_rank": 90, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 329}, {"fact_surrogate_id": 6195, "priority_rank": 91, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 1121}, {"fact_surrogate_id": 30221, "priority_rank": 92, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 34, "duration": 485}, {"fact_surrogate_id": 25460, "priority_rank": 93, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 365}, {"fact_surrogate_id": 36178, "priority_rank": 94, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 61, "duration": 574}, {"fact_surrogate_id": 37197, "priority_rank": 95, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 540}, {"fact_surrogate_id": 31757, "priority_rank": 96, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 51, "duration": 1057}, {"fact_surrogate_id": 28186, "priority_rank": 97, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 451}, {"fact_surrogate_id": 5289, "priority_rank": 98, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 23, "duration": 409}, {"fact_surrogate_id": 38278, "priority_rank": 99, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 80.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk); duration \u003e= 319.00 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 59, "duration": 646}, {"fact_surrogate_id": 21501, "priority_rank": 100, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 112}, {"fact_surrogate_id": 27289, "priority_rank": 101, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 49, "duration": 157}, {"fact_surrogate_id": 36914, "priority_rank": 102, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 62, "duration": 237}, {"fact_surrogate_id": 1776, "priority_rank": 103, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 55, "duration": 317}, {"fact_surrogate_id": 1841, "priority_rank": 104, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 133}, {"fact_surrogate_id": 36903, "priority_rank": 105, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 25, "duration": 32}, {"fact_surrogate_id": 3379, "priority_rank": 106, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 87}, {"fact_surrogate_id": 29127, "priority_rank": 107, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 63, "duration": 235}, {"fact_surrogate_id": 18750, "priority_rank": 108, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 51, "duration": 208}, {"fact_surrogate_id": 30985, "priority_rank": 109, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 52, "duration": 242}, {"fact_surrogate_id": 9323, "priority_rank": 110, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 34, "duration": 193}, {"fact_surrogate_id": 30995, "priority_rank": 111, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 45, "duration": 293}, {"fact_surrogate_id": 13688, "priority_rank": 112, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 154}, {"fact_surrogate_id": 17365, "priority_rank": 113, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 47, "duration": 149}, {"fact_surrogate_id": 17401, "priority_rank": 114, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 270}, {"fact_surrogate_id": 39722, "priority_rank": 115, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 33, "duration": 128}, {"fact_surrogate_id": 36971, "priority_rank": 116, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 256}, {"fact_surrogate_id": 39858, "priority_rank": 117, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 36, "duration": 192}, {"fact_surrogate_id": 3432, "priority_rank": 118, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 115}, {"fact_surrogate_id": 39698, "priority_rank": 119, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 40, "duration": 316}, {"fact_surrogate_id": 8891, "priority_rank": 120, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 90}, {"fact_surrogate_id": 21354, "priority_rank": 121, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 250}, {"fact_surrogate_id": 15108, "priority_rank": 122, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 93}, {"fact_surrogate_id": 18785, "priority_rank": 123, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 41, "duration": 269}, {"fact_surrogate_id": 33122, "priority_rank": 124, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 58, "duration": 82}, {"fact_surrogate_id": 573, "priority_rank": 125, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 29, "duration": 112}, {"fact_surrogate_id": 1797, "priority_rank": 126, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 26, "duration": 129}, {"fact_surrogate_id": 7271, "priority_rank": 127, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 52, "duration": 131}, {"fact_surrogate_id": 3407, "priority_rank": 128, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 44, "duration": 306}, {"fact_surrogate_id": 30905, "priority_rank": 129, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 45, "duration": 249}, {"fact_surrogate_id": 36517, "priority_rank": 130, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 78}, {"fact_surrogate_id": 18584, "priority_rank": 131, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 242}, {"fact_surrogate_id": 18570, "priority_rank": 132, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 69, "duration": 258}, {"fact_surrogate_id": 36397, "priority_rank": 133, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 45, "duration": 167}, {"fact_surrogate_id": 15934, "priority_rank": 134, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 31, "duration": 140}, {"fact_surrogate_id": 21101, "priority_rank": 135, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 50, "duration": 77}, {"fact_surrogate_id": 24285, "priority_rank": 136, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 70, "duration": 111}, {"fact_surrogate_id": 12447, "priority_rank": 137, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 81, "duration": 189}, {"fact_surrogate_id": 24273, "priority_rank": 138, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 253}, {"fact_surrogate_id": 13841, "priority_rank": 139, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 43, "duration": 76}, {"fact_surrogate_id": 10185, "priority_rank": 140, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 32, "duration": 33}, {"fact_surrogate_id": 36286, "priority_rank": 141, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 22, "duration": 53}, {"fact_surrogate_id": 36313, "priority_rank": 142, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 214}, {"fact_surrogate_id": 14903, "priority_rank": 143, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 277}, {"fact_surrogate_id": 1826, "priority_rank": 144, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 49, "duration": 104}, {"fact_surrogate_id": 26962, "priority_rank": 145, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 37, "duration": 73}, {"fact_surrogate_id": 36125, "priority_rank": 146, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 153}, {"fact_surrogate_id": 6957, "priority_rank": 147, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 64, "duration": 78}, {"fact_surrogate_id": 36133, "priority_rank": 148, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 35, "duration": 225}, {"fact_surrogate_id": 26912, "priority_rank": 149, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 56, "duration": 164}, {"fact_surrogate_id": 4520, "priority_rank": 150, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 59, "duration": 251}, {"fact_surrogate_id": 18485, "priority_rank": 151, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 30, "duration": 291}, {"fact_surrogate_id": 40051, "priority_rank": 152, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 69}, {"fact_surrogate_id": 4416, "priority_rank": 153, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 46, "duration": 184}, {"fact_surrogate_id": 13885, "priority_rank": 154, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 48, "duration": 115}, {"fact_surrogate_id": 29402, "priority_rank": 155, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 31, "duration": 212}, {"fact_surrogate_id": 7013, "priority_rank": 156, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 40, "duration": 133}, {"fact_surrogate_id": 33567, "priority_rank": 157, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 39, "duration": 214}, {"fact_surrogate_id": 14890, "priority_rank": 158, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 38, "duration": 269}, {"fact_surrogate_id": 21157, "priority_rank": 159, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 31, "duration": 201}, {"fact_surrogate_id": 36375, "priority_rank": 160, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.11, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort poutcome='success' (65.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "poutcome": "success", "age": 27, "duration": 131}]}}/*__DXR_PAYLOAD_END__*/;
+
+        let currentLang = 'en';
+        let currentTheme = 'dark';
+        let activePrim = 'All';
+        let activeSec = 'All';
+        let currentSimPct = 60;
+        let currentCliffIdx = 0;
+        let currentWlSearch = '';
+        let TOOLTIP_REGISTRY = [];
+
+        function escHtml(s) {
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function regTip(htmlContent) {
+            const id = TOOLTIP_REGISTRY.length;
+            TOOLTIP_REGISTRY.push(htmlContent);
+            return id;
+        }
+
+        function wilsonCI95(events, n) {
+            if (!n || n <= 0) return [0, 0];
+            const z = 1.959964;
+            const p = events / n;
+            const denom = 1 + (z * z) / n;
+            const center = (p + (z * z) / (2 * n)) / denom;
+            const half = (z * Math.sqrt((p * (1 - p) + (z * z) / (4 * n)) / n)) / denom;
+            return [Math.max(0, (center - half) * 100), Math.min(100, (center + half) * 100)];
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            renderAllCharts();
+        }
+
+        // Bilingual Toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('lang-btn').textContent = currentLang === 'en' ? '🇮🇳 Hinglish Switch' : '🇬🇧 English Switch';
+            document.getElementById('ui-title').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.meta.title_en : DASHBOARD_PAYLOAD.meta.title_hi;
+            document.getElementById('exec-banner-text').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.bottleneck.narrative_en : DASHBOARD_PAYLOAD.bottleneck.narrative_hi;
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = currentLang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-hi');
+            });
+
+            renderAllCharts();
+            renderGovernanceDrawer();
+        }
+
+        // Safe Delegated Tooltip & Cross-Filter Event Listeners (100% Immune to Quotes/XSS)
+        const tooltip = document.getElementById('chart-tooltip');
+        function showTooltip(evt, htmlContent) {
+            tooltip.innerHTML = htmlContent;
+            tooltip.style.display = 'block';
+            const x = Math.min(window.innerWidth - 295, evt.clientX + 14);
+            const y = Math.min(window.innerHeight - 130, evt.clientY + 14);
+            tooltip.style.left = Math.max(8, x) + 'px';
+            tooltip.style.top = Math.max(8, y) + 'px';
+        }
+        function hideTooltip() {
+            tooltip.style.display = 'none';
+        }
+
+        function bindDelegatedPanelEvents() {
+            const panelHost = document.getElementById('main-panels-container');
+            if (!panelHost || panelHost.dataset.delegated === '1') return;
+            panelHost.dataset.delegated = '1';
+
+            panelHost.addEventListener('mousemove', (evt) => {
+                const el = evt.target.closest('[data-tip-id]');
+                if (!el) { hideTooltip(); return; }
+                const tid = Number(el.getAttribute('data-tip-id'));
+                if (!Number.isNaN(tid) && TOOLTIP_REGISTRY[tid]) {
+                    showTooltip(evt, TOOLTIP_REGISTRY[tid]);
+                }
+            });
+            panelHost.addEventListener('mouseleave', hideTooltip);
+
+            panelHost.addEventListener('click', (evt) => {
+                const el = evt.target.closest('[data-prim-seg], [data-sec-seg]');
+                if (!el) return;
+                const pSeg = el.getAttribute('data-prim-seg');
+                const sSeg = el.getAttribute('data-sec-seg');
+                if (pSeg) {
+                    activePrim = (activePrim === pSeg && !sSeg) ? 'All' : pSeg;
+                    document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                        c.classList.toggle('active', c.dataset.segVal === activePrim);
+                    });
+                }
+                if (sSeg) {
+                    activeSec = sSeg;
+                    const secSel = document.getElementById('sec-select');
+                    if (secSel) secSel.value = sSeg;
+                }
+                recalcMicroCube();
+            });
+        }
+
+        // Slicer Filtering & Micro-Cube Recalculation
+        function initSlicers() {
+            const chipsBox = document.getElementById('prim-chips');
+            chipsBox.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.className = 'chip active';
+            allBtn.dataset.segVal = 'All';
+            allBtn.textContent = 'All Segments';
+            allBtn.onclick = () => setPrimaryFilter('All');
+            chipsBox.appendChild(allBtn);
+
+            DASHBOARD_PAYLOAD.prim_segments.forEach(seg => {
+                const btn = document.createElement('button');
+                btn.className = 'chip';
+                btn.dataset.segVal = seg;
+                btn.textContent = seg;
+                btn.onclick = () => setPrimaryFilter(seg);
+                chipsBox.appendChild(btn);
+            });
+
+            const secSelect = document.getElementById('sec-select');
+            if (secSelect) {
+                secSelect.innerHTML = '<option value="All">All ' + escHtml(DASHBOARD_PAYLOAD.sec_dim_name) + '</option>';
+                DASHBOARD_PAYLOAD.sec_segments.forEach(seg => {
+                    const opt = document.createElement('option');
+                    opt.value = seg;
+                    opt.textContent = seg;
+                    secSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function setPrimaryFilter(val) {
+            activePrim = val;
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === val);
+            });
+            recalcMicroCube();
+        }
+
+        function setSecondaryFilter(val) {
+            activeSec = val;
+            recalcMicroCube();
+        }
+
+        function resetFilters() {
+            activePrim = 'All';
+            activeSec = 'All';
+            const secSel = document.getElementById('sec-select');
+            if (secSel) secSel.value = 'All';
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === 'All');
+            });
+            recalcMicroCube();
+        }
+
+        function getActiveSegmentBreakdown() {
+            if (activeSec === 'All') {
+                return DASHBOARD_PAYLOAD.widgets_data.lollipop || [];
+            }
+            const bySeg = {};
+            DASHBOARD_PAYLOAD.cube_slices.filter(s => s.sec_val === activeSec).forEach(s => {
+                if (!bySeg[s.prim_val]) bySeg[s.prim_val] = { segment: s.prim_val, volume: 0, events: 0, adverse_cost: 0 };
+                bySeg[s.prim_val].volume += s.volume;
+                bySeg[s.prim_val].events += s.adverse_events;
+                bySeg[s.prim_val].adverse_cost += s.adverse_cost;
+            });
+            return Object.values(bySeg).map(d => {
+                const r = d.volume > 0 ? (d.events / d.volume) * 100 : 0;
+                const [lo, hi] = wilsonCI95(d.events, d.volume);
+                return { segment: d.segment, volume: d.volume, events: d.events, rate_pct: r, ci_low: lo, ci_high: hi, adverse_cost: d.adverse_cost };
+            }).sort((a, b) => b.rate_pct - a.rate_pct);
+        }
+
+        function recalcMicroCube() {
+            const slices = DASHBOARD_PAYLOAD.cube_slices.filter(s => {
+                const matchP = (activePrim === 'All' || s.prim_val === activePrim);
+                const matchS = (activeSec === 'All' || s.sec_val === activeSec);
+                return matchP && matchS;
+            });
+
+            let totRec = 0, totEv = 0, totAdvCost = 0, totCost = 0;
+            slices.forEach(s => {
+                totRec += s.volume;
+                totEv += s.adverse_events;
+                totAdvCost += s.adverse_cost;
+                totCost += s.total_cost;
+            });
+
+            const rPct = totRec > 0 ? (totEv / totRec) * 100.0 : 0.0;
+            const relPct = 100.0 - rPct;
+
+            document.getElementById('kpi-records').textContent = totRec.toLocaleString();
+            document.getElementById('kpi-events').textContent = totEv.toLocaleString();
+            document.getElementById('kpi-rate-sub').textContent = 'Failure Rate: ' + rPct.toFixed(2) + '%';
+            document.getElementById('kpi-reliability').textContent = relPct.toFixed(2) + '%';
+
+            if (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                document.getElementById('kpi-drag').textContent = '$' + totAdvCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('kpi-drag-sub').textContent = 'Out of $' + totCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' total';
+            } else {
+                document.getElementById('kpi-drag').textContent = totEv.toLocaleString() + ' units';
+            }
+
+            renderAllCharts();
+        }
+
+        // =====================================================================
+        // NATIVE INTERACTIVE SVG CHART RENDERERS (ALL 10 CATALOG WIDGETS)
+        // =====================================================================
+        function renderLollipopChart(container) {
+            const data = getActiveSegmentBreakdown();
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No segment data.</p>'; return; }
+
+            const maxRate = Math.max(...data.map(d => d.ci_high), 10);
+            const baseline = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+            const w = 540, h = Math.max(250, data.length * 34 + 34);
+            const padL = 135, padR = 48, padT = 22, padB = 24;
+            const chartW = w - padL - padR;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+
+            const bx = padL + Math.min(1, baseline / maxRate) * chartW;
+            svg += `<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${h - padB}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" />`;
+            svg += `<text x="${bx}" y="${padT - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Baseline ${baseline.toFixed(1)}%</text>`;
+
+            data.slice(0, 14).forEach((d, i) => {
+                const y = padT + i * 34 + 16;
+                const cx = padL + (d.rate_pct / maxRate) * chartW;
+                const xLow = padL + (d.ci_low / maxRate) * chartW;
+                const xHigh = padL + (d.ci_high / maxRate) * chartW;
+                const isHighlighted = (activePrim === 'All' || activePrim === d.segment);
+                const opacity = isHighlighted ? 1.0 : 0.28;
+                const shortLbl = d.segment.length > 18 ? d.segment.substring(0, 17) + '…' : d.segment;
+
+                svg += `<text x="${padL - 10}" y="${y + 4}" fill="var(--text-main)" font-size="11" font-weight="600" text-anchor="end" opacity="${opacity}">${escHtml(shortLbl)}</text>`;
+                svg += `<line x1="${xLow}" y1="${y}" x2="${xHigh}" y2="${y}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xLow}" y1="${y - 4}" x2="${xLow}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xHigh}" y1="${y - 4}" x2="${xHigh}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${padL}" y1="${y}" x2="${cx}" y2="${y}" stroke="var(--accent-primary)" stroke-width="2.5" opacity="${opacity}" />`;
+
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Wilson 95% CI: [${d.ci_low.toFixed(1)}% to ${d.ci_high.toFixed(1)}%]<br>Volume: ${d.volume.toLocaleString()}<br>Adverse Events: ${d.events.toLocaleString()}` +
+                    (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${y}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" opacity="${opacity}" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${xHigh + 7}" y="${y + 4}" fill="var(--accent-primary)" font-size="11" font-weight="700" opacity="${opacity}">${d.rate_pct.toFixed(1)}%</text>`;
+            });
+
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderParetoChart(container) {
+            if (!DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>';
+                return;
+            }
+            const segs = getActiveSegmentBreakdown().slice().sort((a, b) => b.adverse_cost - a.adverse_cost).slice(0, 12);
+            const totDrag = Math.max(segs.reduce((acc, x) => acc + x.adverse_cost, 0), 0.01);
+            let cum = 0;
+            const data = segs.map(s => {
+                cum += s.adverse_cost;
+                return { segment: s.segment, adverse_cost: s.adverse_cost, cumulative_pct: (cum / totDrag) * 100.0 };
+            });
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>'; return; }
+
+            const w = 520, h = 260;
+            const padL = 56, padR = 38, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxDrag = Math.max(...data.map(d => d.adverse_cost), 1);
+            const n = data.length;
+            const barW = Math.max(12, (chartW / n) - 8);
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const y80 = padT + (1 - 0.8) * chartH;
+            svg += `<line x1="${padL}" y1="${y80}" x2="${w - padR}" y2="${y80}" stroke="#f43f5e" stroke-dasharray="3,3" stroke-width="1.5" />`;
+            svg += `<text x="${w - padR}" y="${y80 - 4}" fill="#f43f5e" font-size="10" text-anchor="end">80% Pareto Line</text>`;
+
+            let polyPoints = [];
+            data.forEach((d, i) => {
+                const x = padL + i * (chartW / n) + 4;
+                const barH = (d.adverse_cost / maxDrag) * chartH;
+                const y = padT + chartH - barH;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Adverse Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<br>Cumulative Share: ${d.cumulative_pct.toFixed(1)}%`);
+
+                svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="var(--accent-primary)" opacity="${isHi ? '0.88' : '0.28'}" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${x + barW/2}" y="${h - padB + 14}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(d.segment.substring(0, 9))}</text>`;
+
+                const cx = x + barW / 2;
+                const cy = padT + (1 - (d.cumulative_pct / 100)) * chartH;
+                polyPoints.push(`${cx},${cy}`);
+            });
+
+            if (polyPoints.length > 1) {
+                svg += `<polyline points="${polyPoints.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="2.5" />`;
+                polyPoints.forEach((pt, i) => {
+                    const [px, py] = pt.split(',');
+                    const d = data[i];
+                    const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Cumulative Loss Concentration: ${d.cumulative_pct.toFixed(1)}%`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4" fill="#f43f5e" stroke="var(--card-bg)" stroke-width="1.5" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTemporalChart(container) {
+            const tempObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+            const periods = tempObj.periods || [];
+            if (!periods.length) return;
+
+            const w = 520, h = 260;
+            const padL = 48, padR = 36, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...periods.map(p => Number(p.adverse_rate_pct || 0)), 5);
+            const maxVol = Math.max(...periods.map(p => Number(p.total_records ?? p.total_volume ?? 1)), 1);
+            const n = periods.length;
+            const barW = Math.max(6, Math.min(28, (chartW / n) * 0.55));
+            const stepLabel = Math.max(1, Math.ceil(n / 8));
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            let pts = [];
+
+            periods.forEach((p, i) => {
+                const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                const rate = Number(p.adverse_rate_pct || 0);
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (rate / maxRate)) * chartH;
+                const vH = (vol / maxVol) * (chartH * 0.65);
+                pts.push(`${x},${y}`);
+
+                svg += `<rect x="${x - barW/2}" y="${padT + chartH - vH}" width="${barW}" height="${vH}" fill="var(--accent-primary)" opacity="0.18" rx="2" />`;
+                if (i % stepLabel === 0 || i === n - 1) {
+                    svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(p.period)}</text>`;
+                }
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(99, 102, 241, 0.12)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-secondary)" stroke-width="3" />`;
+                periods.forEach((p, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                    const ev = Number(p.adverse_events || 0);
+                    const rate = Number(p.adverse_rate_pct || 0);
+                    const tipId = regTip(`<strong>Period: ${escHtml(p.period)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4.5" fill="var(--accent-secondary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCrossTabHeatmap(container) {
+            const hm = DASHBOARD_PAYLOAD.widgets_data.heatmap || {};
+            const rows = hm.rows || [], cols = hm.cols || [], cells = hm.cells || [];
+            if (!rows.length || !cols.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient secondary cross-tab dimensions.</p>';
+                return;
+            }
+            const cellMap = {};
+            let maxRate = 5;
+            cells.forEach(c => {
+                cellMap[c.prim_val + '|||' + c.sec_val] = c;
+                if (c.rate_pct > maxRate) maxRate = c.rate_pct;
+            });
+
+            const w = 540, h = Math.max(250, rows.length * 28 + 64);
+            const padL = 128, padR = 18, padT = 44, padB = 16;
+            const cellW = (w - padL - padR) / cols.length;
+            const cellH = (h - padT - padB) / rows.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            cols.forEach((colVal, ci) => {
+                const cx = padL + ci * cellW + cellW / 2;
+                const lbl = colVal.length > 10 ? colVal.substring(0, 9) + '…' : colVal;
+                svg += `<text x="${cx}" y="${padT - 10}" fill="var(--text-muted)" font-size="9.5" font-weight="600" text-anchor="middle">${escHtml(lbl)}</text>`;
+            });
+
+            rows.forEach((rowVal, ri) => {
+                const ry = padT + ri * cellH;
+                const rLbl = rowVal.length > 17 ? rowVal.substring(0, 16) + '…' : rowVal;
+                svg += `<text x="${padL - 8}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="10" font-weight="600" text-anchor="end">${escHtml(rLbl)}</text>`;
+                cols.forEach((colVal, ci) => {
+                    const rx = padL + ci * cellW;
+                    const c = cellMap[rowVal + '|||' + colVal];
+                    const vol = c ? c.volume : 0;
+                    const rate = c ? c.rate_pct : 0;
+                    const ev = c ? c.events : 0;
+                    const alpha = vol > 0 ? Math.min(0.90, 0.14 + (rate / maxRate) * 0.76) : 0.04;
+                    const fillCol = vol > 0 ? `rgba(244, 63, 94, ${alpha.toFixed(2)})` : 'var(--canvas-bg)';
+                    const tipId = regTip(
+                        `<strong>${escHtml(rowVal)} &times; ${escHtml(colVal)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}` +
+                        (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger && c ? `<br>Drag: $${c.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                    );
+                    svg += `<rect x="${rx + 1.5}" y="${ry + 1.5}" width="${Math.max(4, cellW - 3)}" height="${Math.max(4, cellH - 3)}" fill="${fillCol}" stroke="var(--border-color)" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(rowVal)}" data-sec-seg="${escHtml(colVal)}" />`;
+                    if (vol > 0 && cellW >= 38) {
+                        svg += `<text x="${rx + cellW / 2}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="9.5" font-weight="700" text-anchor="middle" pointer-events="none">${rate.toFixed(1)}%</text>`;
+                    }
+                });
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderExposureBubbleChart(container) {
+            const data = getActiveSegmentBreakdown().slice(0, 14);
+            if (data.length < 2) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient cohort dispersion for bubble plot.</p>';
+                return;
+            }
+            const w = 520, h = 260;
+            const padL = 52, padR = 36, padT = 26, padB = 38;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxVol = Math.max(...data.map(d => d.volume), 1);
+            const maxRate = Math.max(...data.map(d => d.rate_pct), 10) * 1.12;
+            const isMon = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const maxImpact = Math.max(...data.map(d => isMon ? d.adverse_cost : d.events), 1);
+            const baseRate = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const by = padT + (1 - Math.min(1, baseRate / maxRate)) * chartH;
+            svg += `<line x1="${padL}" y1="${by}" x2="${w - padR}" y2="${by}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.2" />`;
+            svg += `<text x="${w - padR}" y="${by - 5}" fill="var(--text-muted)" font-size="9.5" text-anchor="end">Mean Rate ${baseRate.toFixed(1)}%</text>`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Cohort Volume (Records) &rarr;</text>`;
+
+            data.forEach(d => {
+                const cx = padL + (d.volume / maxVol) * (chartW * 0.90) + chartW * 0.04;
+                const cy = padT + (1 - (d.rate_pct / maxRate)) * chartH;
+                const impact = isMon ? d.adverse_cost : d.events;
+                const r = 6 + Math.sqrt(Math.max(0, impact) / maxImpact) * 18;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const fill = d.rate_pct >= baseRate ? '#f43f5e' : 'var(--accent-primary)';
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Volume: ${d.volume.toLocaleString()}<br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Events: ${d.events.toLocaleString()}` +
+                    (isMon ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="${fill}" fill-opacity="${isHi ? '0.68' : '0.20'}" stroke="${fill}" stroke-width="2" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${cx}" y="${cy - r - 4}" fill="var(--text-main)" font-size="9.5" font-weight="600" text-anchor="middle" opacity="${isHi ? '1' : '0.35'}" pointer-events="none">${escHtml(d.segment.substring(0, 12))}</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCliffChart(container, selectedIndex = 0) {
+            const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+            if (!cliffs.length) return;
+            const cliff = cliffs[selectedIndex] || cliffs[0];
+            const bins = cliff.bins || [];
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...bins.map(b => b.rate_pct), 10) * 1.1;
+            const n = bins.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const pTxt = cliff.p_value < 0.0001 ? 'p < 0.0001' : ('p = ' + Number(cliff.p_value).toFixed(4));
+            svg += `<text x="${w - padR}" y="16" fill="#f43f5e" font-size="10" font-weight="700" text-anchor="end">${escHtml(cliff.column)} &bull; Max Jump +${(cliff.max_delta * 100).toFixed(1)}pp (${pTxt})</text>`;
+
+            let pts = [];
+            bins.forEach((b, i) => {
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (b.rate_pct / maxRate)) * chartH;
+                pts.push(`${x},${y}`);
+                svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">Q${i+1}: ${escHtml(String(b.range).substring(0, 13))}</text>`;
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(244, 63, 94, 0.16)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="3" />`;
+
+                bins.forEach((b, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const tipId = regTip(`<strong>${escHtml(cliff.column)} (Q${i+1})</strong><br>Range: ${escHtml(b.range)}<br>Failure Rate: ${b.rate_pct.toFixed(2)}%<br>Volume: ${b.count.toLocaleString()}<br>Events: ${b.events.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="5.5" fill="#f43f5e" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 9}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${b.rate_pct.toFixed(1)}%</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function render2x2Quadrant(container) {
+            const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+            const q = inter.quadrants;
+            if (!q) return;
+
+            const posName = inter.pos_driver || 'Risk Driver';
+            const negName = inter.neg_driver || 'Buffer';
+            const medPos = inter.med_pos !== undefined ? Number(inter.med_pos).toFixed(2) : '';
+            const medNeg = inter.med_neg !== undefined ? Number(inter.med_neg).toFixed(2) : '';
+
+            const w = 480, h = 260;
+            const pad = 18;
+            const boxW = (w - pad * 3) / 2;
+            const boxH = (h - pad * 3) / 2;
+
+            const quadBoxes = [
+                { key: 'Q1_optimal', title: 'Q1: Optimal Zone', x: pad, y: pad, color: '#10b981', desc: `Low ${posName} (≤${medPos}) & High ${negName}` },
+                { key: 'Q2_unbuffered', title: 'Q2: Unbuffered Baseline', x: pad * 2 + boxW, y: pad, color: '#38bdf8', desc: `Low ${posName} & Low ${negName} (≤${medNeg})` },
+                { key: 'Q3_masked', title: 'Q3: Masked Risk', x: pad, y: pad * 2 + boxH, color: '#f59e0b', desc: `High ${posName} (>${medPos}) & High ${negName}` },
+                { key: 'Q4_catastrophic', title: 'Q4: Compound Catastrophe', x: pad * 2 + boxW, y: pad * 2 + boxH, color: '#f43f5e', desc: `High ${posName} & Low ${negName}` }
+            ];
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            quadBoxes.forEach(qb => {
+                const d = q[qb.key] || { count: 0, events: 0, rate: 0.0 };
+                const tipId = regTip(`<strong>${escHtml(qb.title)}</strong><br>${escHtml(qb.desc)}<br>Volume: ${d.count.toLocaleString()}<br>Events: ${d.events.toLocaleString()}<br>Failure Rate: ${d.rate.toFixed(2)}%`);
+                const shortDesc = qb.desc.length > 36 ? qb.desc.substring(0, 35) + '…' : qb.desc;
+
+                svg += `<rect x="${qb.x}" y="${qb.y}" width="${boxW}" height="${boxH}" fill="var(--card-bg)" stroke="${qb.color}" stroke-width="2" rx="6" data-tip-id="${tipId}" />`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 22}" fill="${qb.color}" font-size="11.5" font-weight="700" pointer-events="none">${escHtml(qb.title)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 40}" fill="var(--text-muted)" font-size="9.5" pointer-events="none">${escHtml(shortDesc)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 72}" fill="var(--text-main)" font-size="19" font-weight="800" pointer-events="none">${d.rate.toFixed(2)}%</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 90}" fill="var(--text-muted)" font-size="10" pointer-events="none">${d.count.toLocaleString()} records (${d.events.toLocaleString()} events)</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTriageYieldChart(container) {
+            const triage = DASHBOARD_PAYLOAD.widgets_data.triage || [];
+            if (!triage.length) return;
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 40;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Flagged / Intake Hold % &rarr;</text>`;
+            let pts = [];
+
+            triage.forEach(t => {
+                const x = padL + (t.scrap_pct / 100) * chartW;
+                const y = padT + (1 - (t.recall_pct / 100)) * chartH;
+                pts.push(`${x},${y}`);
+            });
+
+            if (pts.length > 1) {
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-primary)" stroke-width="3" stroke-dasharray="4,3" />`;
+                triage.forEach((t, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const polName = t.policy_name.split('(')[0].trim();
+                    const tipId = regTip(`<strong>${escHtml(t.policy_name)}</strong><br>Flagged/Scrap: ${t.scrap_pct.toFixed(1)}%<br>Defect Recall: ${t.recall_pct.toFixed(1)}%<br>Retained Defect Rate: ${t.retained_defect_rate.toFixed(2)}%<br>False Alarms: ${t.false_discards.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 10}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${escHtml(polName)} (${t.recall_pct.toFixed(0)}% recall)</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        // =====================================================================
+        // WHAT-IF COUNTERFACTUAL SIMULATOR (100% PHYSICAL EXCESS-RISK MATH)
+        // =====================================================================
+        function initWhatIfSimulator(container) {
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const pathways = Array.isArray(DASHBOARD_PAYLOAD.pathways) ? DASHBOARD_PAYLOAD.pathways : [];
+
+            let pathCardsHtml = '';
+            if (pathways.length) {
+                pathCardsHtml = `<div class="pathway-grid">` + pathways.map(pw => `
+                    <div class="pathway-card">
+                        <div style="font-weight:700;color:var(--accent-primary);margin-bottom:4px;">${escHtml(pw.path_name)}</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+                            <strong>Cost:</strong> ${escHtml(pw.implementation_cost)} &bull; <strong>Timeline:</strong> ${escHtml(pw.time_to_impact)}
+                        </div>
+                        <div style="font-size:11px;margin-bottom:4px;"><strong>Impact:</strong> ${escHtml(pw.projected_friction_reduction)}</div>
+                        <div style="font-size:11px;color:#10b981;margin-bottom:3px;"><strong>Pros (Fayda):</strong> ${escHtml(pw.fayda_pros)}</div>
+                        <div style="font-size:11px;color:#f59e0b;"><strong>Cons / Friction:</strong> ${escHtml(pw.nuksan_cons)}</div>
+                    </div>
+                `).join('') + `</div>`;
+            }
+
+            let htmlStr = `
+                <div class="sim-box">
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-en="Simulate Excess-Risk Mitigation (% Parity with Baseline):" data-hi="Excess-Risk Bachav Ka Live Simulation Karein (% Parity):">
+                        Simulate Excess-Risk Mitigation (% Parity with Baseline):
+                    </div>
+                    ${cbActive ? `
+                    <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:10px;border-radius:6px;font-size:12px;color:#f59e0b;margin-bottom:12px;">
+                        🛑 <strong>Statistical Circuit-Breaker Active ($0 CapEx Freeze):</strong> Observed difference is within random sampling noise (p &ge; 0.05). Targeted CapEx is frozen to protect capital.
+                    </div>
+                    ` : `
+                    <div class="sim-buttons">
+                        <button class="btn-preset" onclick="setSimValue(25)">Pathway A: 25% (Conservative)</button>
+                        <button class="btn-preset" onclick="setSimValue(60)">Pathway B: 60% (Surgical)</button>
+                        <button class="btn-preset" onclick="setSimValue(100)">Pathway C: 100% (Structural Parity)</button>
+                    </div>
+                    <div class="sim-slider-row">
+                        <span style="font-size:12px;color:var(--text-muted);">0%</span>
+                        <input type="range" min="0" max="100" value="${currentSimPct}" class="sim-slider" id="sim-slider" oninput="updateWhatIfDisplay()" />
+                        <span style="font-size:12px;font-weight:700;width:45px;" id="sim-val-display">${currentSimPct}%</span>
+                    </div>
+                    `}
+                    <div class="sim-results">
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Averted Excess Events" data-hi="Roke Gaye Excess Events">Averted Excess Events</div>
+                            <div class="kpi-val" id="sim-averted-ev" style="font-size:20px;color:#10b981;">0</div>
+                            <div class="kpi-sub" id="sim-ev-ci">95% CI: [0 to 0]</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Projected Risk Averted" data-hi="Bachaya Gaya Financial Nuksan">Projected Risk Averted</div>
+                            <div class="kpi-val" id="sim-averted-drag" style="font-size:20px;color:var(--accent-primary);">$0.00</div>
+                            <div class="kpi-sub" id="sim-drag-ci">Physical Ledger Grounded</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Post-Mitigation Bottleneck Rate" data-hi="Sudhaar Ke Baad Bottleneck Dar">Post-Mitigation Bottleneck Rate</div>
+                            <div class="kpi-val" id="sim-post-rate" style="font-size:20px;color:var(--text-main);">0.00%</div>
+                            <div class="kpi-sub" id="sim-post-sub">Target Cohort Compression</div>
+                        </div>
+                    </div>
+                    ${pathCardsHtml}
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            updateWhatIfDisplay();
+        }
+
+        function setSimValue(v) {
+            currentSimPct = Number(v);
+            const slider = document.getElementById('sim-slider');
+            if (slider) {
+                slider.value = currentSimPct;
+                updateWhatIfDisplay();
+            }
+        }
+
+        function updateWhatIfDisplay() {
+            const slider = document.getElementById('sim-slider');
+            if (slider) currentSimPct = Number(slider.value);
+            const pct = currentSimPct;
+            const valDisp = document.getElementById('sim-val-display');
+            if (valDisp) valDisp.textContent = pct + '%';
+
+            const elEv = document.getElementById('sim-averted-ev');
+            const elEvCi = document.getElementById('sim-ev-ci');
+            const elDrag = document.getElementById('sim-averted-drag');
+            const elDragCi = document.getElementById('sim-drag-ci');
+            const elPost = document.getElementById('sim-post-rate');
+            const elPostSub = document.getElementById('sim-post-sub');
+            if (!elEv || !elDrag) return;
+
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const isMonetary = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const wm = DASHBOARD_PAYLOAD.what_if_model || {};
+            const excessEv = Number(wm.excess_events ?? DASHBOARD_PAYLOAD.bottleneck.excess_events ?? 0);
+            const ciLo = Number(wm.excess_ci_low ?? 0);
+            const ciHi = Number(wm.excess_ci_high ?? 0);
+            const avgCost = Number(wm.avg_cost_per_event ?? 0);
+            const botRate = Number(wm.bottleneck_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rate_pct ?? 0);
+            const restRate = Number(wm.rest_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rest_rate_pct ?? 0);
+
+            if (cbActive) {
+                elEv.textContent = '0 events';
+                if (elEvCi) elEvCi.textContent = 'Noise Gate Active (p >= 0.05)';
+                elDrag.textContent = isMonetary ? '$0.00 ($0 Freeze)' : '0 units ($0 Freeze)';
+                if (elDragCi) elDragCi.textContent = 'CapEx Frozen — Random Variation';
+                if (elPost) elPost.textContent = botRate.toFixed(2) + '%';
+                if (elPostSub) elPostSub.textContent = 'No cohort intervention advised';
+                return;
+            }
+
+            const avertedEv = pct === 0 ? 0 : Math.max(1, Math.round(excessEv * (pct / 100)));
+            const evLo = Math.max(0, Math.round(ciLo * (pct / 100)));
+            const evHi = Math.max(evLo, Math.round(ciHi * (pct / 100)));
+
+            elEv.textContent = avertedEv.toLocaleString() + ' events';
+            if (elEvCi) elEvCi.textContent = `95% CI: [${evLo.toLocaleString()} to ${evHi.toLocaleString()} events]`;
+
+            if (isMonetary) {
+                const avertedDol = avertedEv * avgCost;
+                const dolLo = evLo * avgCost;
+                const dolHi = evHi * avgCost;
+                elDrag.textContent = '$' + avertedDol.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (elDragCi) elDragCi.textContent = `95% CI: [$${dolLo.toLocaleString(undefined, {maximumFractionDigits:0})} to $${dolHi.toLocaleString(undefined, {maximumFractionDigits:0})}]`;
+            } else {
+                elDrag.textContent = avertedEv.toLocaleString() + ' physical units';
+                if (elDragCi) elDragCi.textContent = 'Zero fabricated currency (*1000 ban)';
+            }
+
+            const newRate = Math.max(restRate, botRate - (botRate - restRate) * (pct / 100));
+            if (elPost) elPost.textContent = newRate.toFixed(2) + '%';
+            if (elPostSub) elPostSub.textContent = `Down from ${botRate.toFixed(2)}% toward ${restRate.toFixed(2)}% baseline`;
+        }
+
+        // =====================================================================
+        // ACTIONABLE WORKLIST EXPLORER TABLE
+        // =====================================================================
+        let currentWlQueue = 'PREVENTIVE_RETENTION_WATCH';
+        function initWorklistExplorer(container) {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            if (!rows.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No priority worklist rows discovered.</p>';
+                return;
+            }
+            const nPrev = rows.filter(r => r.action_queue === 'PREVENTIVE_RETENTION_WATCH').length;
+            const nRec = rows.filter(r => r.action_queue === 'REALIZED_LOSS_RECOVERY_AUDIT').length;
+
+            let htmlStr = `
+                <div class="worklist-ctrls">
+                    <div class="worklist-tabs">
+                        <button class="wl-tab ${currentWlQueue === 'PREVENTIVE_RETENTION_WATCH' ? 'active' : ''}" id="tab-prev" onclick="switchWlQueue('PREVENTIVE_RETENTION_WATCH')">Preventive Retention Watch (${nPrev})</button>
+                        <button class="wl-tab ${currentWlQueue === 'REALIZED_LOSS_RECOVERY_AUDIT' ? 'active' : ''}" id="tab-rec" onclick="switchWlQueue('REALIZED_LOSS_RECOVERY_AUDIT')">Realized Loss Recovery (${nRec})</button>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" class="wl-search" id="wl-search" value="${escHtml(currentWlSearch)}" placeholder="Search ID, cohort, reason..." oninput="filterWorklistTable()" />
+                        <button class="btn-ctrl" onclick="downloadWorklistCSV()">⬇️ Export CSV</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="worklist-table" id="worklist-table">
+                        <thead id="wl-thead"></thead>
+                        <tbody id="wl-tbody"></tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            renderWorklistTable();
+        }
+
+        function switchWlQueue(queueName) {
+            currentWlQueue = queueName;
+            document.getElementById('tab-prev')?.classList.toggle('active', queueName === 'PREVENTIVE_RETENTION_WATCH');
+            document.getElementById('tab-rec')?.classList.toggle('active', queueName === 'REALIZED_LOSS_RECOVERY_AUDIT');
+            renderWorklistTable();
+        }
+
+        function getFilteredWorklistRows() {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            const pCol = DASHBOARD_PAYLOAD.prim_dim_name;
+            const query = currentWlSearch.toLowerCase();
+            return rows.filter(r => {
+                if (r.action_queue !== currentWlQueue) return false;
+                if (activePrim !== 'All' && pCol && Object.prototype.hasOwnProperty.call(r, pCol) && String(r[pCol]) !== activePrim) return false;
+                if (!query) return true;
+                return Object.values(r).some(v => String(v ?? '').toLowerCase().includes(query));
+            });
+        }
+
+        function renderWorklistTable() {
+            const searchEl = document.getElementById('wl-search');
+            if (searchEl) currentWlSearch = searchEl.value || '';
+            const filtered = getFilteredWorklistRows();
+
+            const thead = document.getElementById('wl-thead');
+            const tbody = document.getElementById('wl-tbody');
+            if (!thead || !tbody) return;
+
+            if (!filtered.length) {
+                thead.innerHTML = '';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">No matching records in this queue for active filter.</td></tr>';
+                return;
+            }
+
+            const cols = Object.keys(filtered[0]).filter(c => c !== '_is_target_event' && c !== 'action_queue').slice(0, 7);
+            let thHtml = '<tr>';
+            cols.forEach(c => thHtml += '<th>' + escHtml(c.replace(/_/g, ' ')) + '</th>');
+            thHtml += '</tr>';
+            thead.innerHTML = thHtml;
+
+            let trHtml = '';
+            filtered.slice(0, 60).forEach(r => {
+                trHtml += '<tr>';
+                cols.forEach(c => {
+                    const v = r[c];
+                    const disp = (v === null || v === undefined || v === '') ? '—' : v;
+                    trHtml += '<td>' + escHtml(disp) + '</td>';
+                });
+                trHtml += '</tr>';
+            });
+            tbody.innerHTML = trHtml;
+        }
+
+        function filterWorklistTable() {
+            renderWorklistTable();
+        }
+
+        function downloadWorklistCSV() {
+            const rows = getFilteredWorklistRows();
+            const exportRows = rows.length ? rows : (DASHBOARD_PAYLOAD.widgets_data.worklist_rows || []);
+            if (!exportRows.length) return;
+            const cols = Object.keys(exportRows[0]);
+            let csv = cols.join(',') + '\n';
+            exportRows.forEach(r => {
+                csv += cols.map(c => '"' + String(r[c] ?? '').replace(/"/g, '""') + '"').join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'actionable_priority_worklist.csv';
+            a.click();
+        }
+
+        // =====================================================================
+        // GOVERNANCE PROOF DRAWER & ARCHETYPE BENTO SPAN ENGINE
+        // =====================================================================
+        function getArchetypeSpanClass(pId, idx) {
+            if (pId === 'actionable_worklist_explorer' || pId === 'what_if_counterfactual_simulator') return 'span-12 full-width';
+            const arch = DASHBOARD_PAYLOAD.meta.archetype;
+            if (arch === 'nordic_saas_command' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'swiss_institutional_terminal' && idx < 2) return idx === 0 ? 'span-7' : 'span-5';
+            if (arch === 'industrial_scada_telemetry' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'editorial_commerce_studio' && idx === 0 && pId === 'temporal_momentum_ribbon') return 'span-12';
+            return 'span-6';
+        }
+
+        function renderGovernanceDrawer() {
+            const box = document.getElementById('gov-drawer-body');
+            if (!box) return;
+            const cb = DASHBOARD_PAYLOAD.circuit_breaker || {};
+            const dfii = DASHBOARD_PAYLOAD.dfii || {};
+            const ont = DASHBOARD_PAYLOAD.ontology || {};
+            const sel = DASHBOARD_PAYLOAD.selected_panels_detail || [];
+            const rej = DASHBOARD_PAYLOAD.rejected_panels_detail || [];
+
+            const kpiList = (ont.key_metrics_kpis || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const leakList = (ont.hidden_leakage_risks || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const selRows = sel.map(p => `<tr><td><strong>${escHtml(p.name)}</strong></td><td style="color:#10b981;">SELECTED (P${p.priority})</td><td>${escHtml(p.justification)}</td></tr>`).join('');
+            const rejRows = rej.map(p => `<tr><td>${escHtml(p.name)}</td><td style="color:var(--text-muted);">REJECTED</td><td>${escHtml(p.reason)}</td></tr>`).join('');
+
+            box.innerHTML = `
+                <div class="pathway-grid" style="margin-bottom:14px;">
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Statistical Hypothesis Proof</div>
+                        <div>Two-Proportion z-Stat: <strong>${Number(cb.z_stat || 0).toFixed(2)}</strong></div>
+                        <div>Two-Tailed p-Value: <strong>${Number(cb.p_value ?? 1).toExponential(3)}</strong></div>
+                        <div>Relative Risk Lift: <strong>${Number(cb.relative_risk_multiplier || 1).toFixed(2)}x</strong></div>
+                        <div>Attributable Excess Events: <strong>${Number(cb.excess_events || 0).toFixed(1)}</strong></div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">DFII Design Score (${dfii.dfii || 16} / 19)</div>
+                        <div>Aesthetic Impact: ${dfii.aesthetic_impact || 5}/5 &bull; Context Fit: ${dfii.context_fit || 5}/5</div>
+                        <div>Feasibility: ${dfii.implementation_feasibility || 5}/5 &bull; Perf Safety: ${dfii.performance_safety || 5}/5</div>
+                        <div>Consistency Risk Penalty: -${dfii.consistency_risk || 1}</div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Ontology Watchpoints (${escHtml(ont.domain_code || 'GEN')})</div>
+                        <ul style="padding-left:16px;margin-top:4px;">${leakList || kpiList}</ul>
+                    </div>
+                </div>
+                <div class="table-wrap" style="max-height:240px;">
+                    <table class="worklist-table">
+                        <thead><tr><th>Catalog Widget</th><th>Decision</th><th>Mathematical / Shape Justification</th></tr></thead>
+                        <tbody>${selRows}${rejRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function onCliffFeatureChange(val) {
+            currentCliffIdx = Number(val) || 0;
+            const cBox = document.getElementById('chart-cliff');
+            if (cBox) renderCliffChart(cBox, currentCliffIdx);
+        }
+
+        // =====================================================================
+        // ASSEMBLE ALL 10 CATALOG PANELS & INITIALIZE
+        // =====================================================================
+        function renderAllCharts() {
+            const container = document.getElementById('main-panels-container');
+            if (!container) return;
+            TOOLTIP_REGISTRY = [];
+            container.innerHTML = '';
+
+            const panels = DASHBOARD_PAYLOAD.selected_panels || [];
+
+            panels.forEach((pId, idx) => {
+                const card = document.createElement('div');
+                card.className = 'panel-card ' + getArchetypeSpanClass(pId, idx);
+
+                if (pId === 'segment_vulnerability_lollipop') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Primary Segment Vulnerability &amp; Wilson 95% CIs' : 'Segments Ki Kamzori Aur 95% Confidence Bounds'}</div>
+                                <div class="panel-desc">Ranked failure rate across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} cohorts (click any node to cross-filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-lollipop"></div>
+                    `;
+                    container.appendChild(card);
+                    renderLollipopChart(card.querySelector('#chart-lollipop'));
+                }
+                else if (pId === 'pareto_loss_waterfall') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Pareto 80/20 Cumulative Financial Loss Waterfall' : 'Pareto 80/20 Financial Nuksan Waterfall'}</div>
+                                <div class="panel-desc">Cumulative adverse capital concentration across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-pareto"></div>
+                    `;
+                    container.appendChild(card);
+                    renderParetoChart(card.querySelector('#chart-pareto'));
+                }
+                else if (pId === 'temporal_momentum_ribbon') {
+                    const tObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+                    const popStr = tObj.pop_delta_pp !== undefined ? ` (${tObj.pop_delta_pp >= 0 ? '+' : ''}${Number(tObj.pop_delta_pp).toFixed(2)}pp PoP &bull; ${escHtml(tObj.trend_direction || 'STABLE')})` : '';
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Temporal Failure Rate &amp; Volume Momentum' : 'Samay Ke Sath Failure Rate Aur Volume Trend'}</div>
+                                <div class="panel-desc">Dual-axis volume bars &amp; adverse rate trajectory via ${escHtml(tObj.date_column || 'Date')}${popStr}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-temporal"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTemporalChart(card.querySelector('#chart-temporal'));
+                }
+                else if (pId === 'secondary_cross_tab_heatmap') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2D Cross-Tabulation Risk Concentration Heatmap' : '2D Cross-Tab Risk Concentration Heatmap'}</div>
+                                <div class="panel-desc">Intersectional hotspot matrix: ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} &times; ${escHtml(DASHBOARD_PAYLOAD.sec_dim_name)} (click cell to filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-heatmap"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCrossTabHeatmap(card.querySelector('#chart-heatmap'));
+                }
+                else if (pId === 'exposure_vs_risk_bubble') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Exposure Volume vs Adverse Risk Bubble Dispersion' : 'Volume Banam Nuksan Dar Bubble Dispersion'}</div>
+                                <div class="panel-desc">Separates high-volume systemic friction from low-volume niche outliers.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-bubble"></div>
+                    `;
+                    container.appendChild(card);
+                    renderExposureBubbleChart(card.querySelector('#chart-bubble'));
+                }
+                else if (pId === 'nonlinear_cliff_step_area') {
+                    const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+                    let selHtml = '';
+                    if (cliffs.length >= 2) {
+                        selHtml = `<select class="slicer-select" onchange="onCliffFeatureChange(this.value)">` +
+                            cliffs.slice(0, 6).map((c, ci) => `<option value="${ci}" ${ci === currentCliffIdx ? 'selected' : ''}>${escHtml(c.column)}</option>`).join('') +
+                            `</select>`;
+                    }
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Non-Linear Parameter Threshold Cliff &amp; Danger Zone' : 'Khatre Ki Laal Rekha (Parameter Threshold Cliff)'}</div>
+                                <div class="panel-desc">Empirical quartile discretization exposing acute tipping points.</div>
+                            </div>
+                            ${selHtml}
+                        </div>
+                        <div class="svg-container" id="chart-cliff"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCliffChart(card.querySelector('#chart-cliff'), currentCliffIdx);
+                }
+                else if (pId === 'orthogonal_2x2_quadrant') {
+                    const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2x2 Orthogonal Risk vs Protective Buffer Matrix' : '2x2 Risk Banam Protective Buffer Matrix'}</div>
+                                <div class="panel-desc">${escHtml(inter.pos_driver || 'Risk')} vs ${escHtml(inter.neg_driver || 'Buffer')} interaction quadrants.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-quadrant"></div>
+                    `;
+                    container.appendChild(card);
+                    render2x2Quadrant(card.querySelector('#chart-quadrant'));
+                }
+                else if (pId === 'triage_efficiency_frontier') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Operational Intake Screening Yield Frontier' : 'Intake Screening Aur Defect Recall Curve'}</div>
+                                <div class="panel-desc">Trade-off curve between intake hold/scrap % and defect containment recall %.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-triage"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTriageYieldChart(card.querySelector('#chart-triage'));
+                }
+                else if (pId === 'what_if_counterfactual_simulator') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'What-If Counterfactual ROI &amp; Excess-Risk Simulator' : 'Agar Hum Faisla Badlein Toh Kitna Bachav Hoga (What-If ROI)?'}</div>
+                                <div class="panel-desc">Interactive epidemiological excess-risk compression with 95% confidence bounds &amp; 3-pathway advisory.</div>
+                            </div>
+                        </div>
+                        <div id="sim-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWhatIfSimulator(card.querySelector('#sim-container'));
+                }
+                else if (pId === 'actionable_worklist_explorer') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Actionable Priority Worklist &amp; Incident Triage' : 'Aaj Subah Team Ke Liye Actionable Priority List'}</div>
+                                <div class="panel-desc">Two-Queue row-level prioritization for preventive retention and realized loss recovery.</div>
+                            </div>
+                        </div>
+                        <div id="worklist-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWorklistExplorer(card.querySelector('#worklist-container'));
+                }
+            });
+        }
+
+        // Window onload
+        window.addEventListener('DOMContentLoaded', () => {
+            bindDelegatedPanelEvents();
+            initSlicers();
+            renderAllCharts();
+            renderGovernanceDrawer();
+        });
+    </script>
+</body>
+</html>

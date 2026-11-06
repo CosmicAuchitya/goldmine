@@ -469,6 +469,10 @@ class MicroLevelForensicInquiryEngine:
             verb = "Clinical Screen if"
         elif dom_key == "fintech_banking":
             verb = "Underwriting Audit if"
+        elif dom_key == "hospitality_travel":
+            verb = "Cancellation Review if"
+        elif dom_key == "insurance_underwriting":
+            verb = "Underwriting Audit if"
         elif dom_key == "food_beverage_manufacturing":
             verb = "Scrap if"
         elif dom_key == "hr_workforce":
@@ -1001,6 +1005,9 @@ class StrategicDecisionEngine:
         self.target_col = self.micro_engine.target_col
         self.cost_col = self.micro_engine.cost_col
         self.cost_metric = self.cost_col
+        if not self.cost_col:
+            self.domain_profile["is_financial"] = False
+            self.domain_profile["unit_symbol"] = "Events"
         self.target_events = int(self.micro_engine.target_series.sum())
         self.target_rate = round((self.target_events / max(self.total_records, 1)) * 100.0, 2)
         self.dossier: Optional[Dict[str, Any]] = None
@@ -1092,11 +1099,42 @@ class StrategicDecisionEngine:
                 "persona": "Chief Medical Officer / Clinical Operations Board"
             }
 
-        # 5. Check FinTech / Banking / Fraud / Credit
+        # 5. Check Insurance Underwriting & Actuarial Risk
+        insurance_kw = [
+            'insurance', 'smoker', 'bmi', 'premium', 'premiums', 'policy',
+            'underwriting', 'actuary', 'actuarial', 'coverage'
+        ]
+        if _matches_domain(insurance_kw):
+            return {
+                "domain_key": "insurance_underwriting",
+                "domain_name": "Insurance Underwriting & Actuarial Risk",
+                "unit_name": "High-Risk Loss Claims Exposure",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "Chief Underwriting Officer / Chief Actuary"
+            }
+
+        # 6. Check Hospitality & Travel / Lodging Revenue Management
+        hospitality_kw = [
+            'hotel', 'hotels', 'booking', 'bookings', 'reservation', 'reservations',
+            'guest', 'guests', 'adr', 'room', 'rooms', 'checkin', 'checkout'
+        ]
+        if _matches_domain(hospitality_kw):
+            return {
+                "domain_key": "hospitality_travel",
+                "domain_name": "Hospitality & Lodging Revenue Management",
+                "unit_name": "Booking Cancellations & Revenue Exposure",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Revenue Management & Hotel Operations"
+            }
+
+        # 7. Check FinTech / Banking / Fraud / Credit
         fintech_kw = [
             'fraud', 'default', 'loan', 'loans', 'credit', 'chargeback',
             'transaction', 'transactions', 'debt', 'mortgage',
-            'account balance', 'bank balance', 'checking account', 'saving accounts'
+            'account balance', 'bank balance', 'checking account', 'saving accounts',
+            'euribor', 'deposit', 'subscribed'
         ]
         has_financial_balance = ('balance' in all_tokens) and not _matches_domain(['work life balance'])
         if _matches_domain(fintech_kw) or has_financial_balance:
@@ -1223,6 +1261,16 @@ class StrategicDecisionEngine:
                 continue
             nunq = self.df[col].nunique(dropna=True)
             if 2 <= nunq <= 25:
+                col_omnibus_p = 0.0
+                if nunq >= 3:
+                    try:
+                        cont_tab = pd.crosstab(self.df[col], target_series)
+                        if cont_tab.shape[0] >= 2 and cont_tab.shape[1] == 2 and (cont_tab.sum(axis=0) > 0).all():
+                            _, col_omnibus_p, _, _ = scipy_stats.chi2_contingency(cont_tab)
+                            col_omnibus_p = float(col_omnibus_p)
+                    except Exception:
+                        col_omnibus_p = 1.0
+
                 is_demo = is_demographic_attribute(col)
                 temp_df['segment'] = self.df[col]
                 grp = temp_df.groupby('segment', observed=False)['is_target'].agg(['count', 'sum'])
@@ -1236,7 +1284,7 @@ class StrategicDecisionEngine:
                     k0_cand = max(0, self.target_events - sum_v)
                     z_cand, p_cand = calculate_two_proportion_z_test(sum_v, cnt_v, k0_cand, n0_cand)
                     r0_pct = (k0_cand / n0_cand) * 100.0
-                    is_sig_cand = (p_cand < 0.05) and (r_pct > r0_pct * 1.10)
+                    is_sig_cand = (p_cand < 0.05) and (col_omnibus_p < 0.05 if nunq >= 3 else True) and (r_pct > r0_pct * 1.10)
                     candidates.append({
                         "segment": f"{col} = {val}",
                         "col": col,
@@ -1244,6 +1292,7 @@ class StrategicDecisionEngine:
                         "is_quantile": False,
                         "is_demo": is_demo,
                         "is_sig": is_sig_cand,
+                        "omnibus_p": col_omnibus_p if nunq >= 3 else p_cand,
                         "volume": cnt_v,
                         "events": sum_v,
                         "rate_pct": r_pct,
@@ -1271,6 +1320,7 @@ class StrategicDecisionEngine:
                     "is_quantile": True,
                     "is_demo": False,
                     "is_sig": is_sig_cand,
+                    "omnibus_p": p_cand,
                     "volume": cnt_v,
                     "events": sum_v,
                     "rate_pct": r_pct,
@@ -1330,9 +1380,12 @@ class StrategicDecisionEngine:
         excess_ci_high = excess_metrics["excess_events_ci_high"]
         excess_rate_pct = round(excess_metrics["excess_rate"] * 100.0, 2)
 
-        # Statistical Circuit-Breaker Gate: Requires p < 0.05 AND >= 1.10x lift AND >= 3 excess events
+        # Statistical Circuit-Breaker Gate: Requires p < 0.05 AND >= 1.10x lift AND >= 3 excess events AND candidate significance
+        cand_is_sig = best_c.get("is_sig", True) if candidates else True
+        if not cand_is_sig:
+            p_val = max(p_val, best_c.get("omnibus_p", 0.06))
         is_statistically_significant = bool(
-            p_val < 0.05 and relative_risk_multiplier >= 1.10 and excess_events >= 3.0
+            cand_is_sig and p_val < 0.05 and relative_risk_multiplier >= 1.10 and excess_events >= 3.0
         )
 
         is_fin = bool(self.cost_metric and self.cost_metric in self.df.columns)

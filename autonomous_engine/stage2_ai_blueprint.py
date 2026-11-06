@@ -101,15 +101,26 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
     clean_cols = [c for c in cols if not any(b in c.lower() for b in BAD_TARGET_KEYWORDS) and not c.lower().endswith(('_id', '_key', '_uuid'))]
     
     target = None
-    # Priority 1: High priority adverse / event outcomes
-    adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
-    for kw in adverse_kws:
+    # Priority 0: Exact canonical response / outcome columns (e.g. 'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'smoker')
+    canonical_response = ['y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit', 'subscribed', 'smoker']
+    for cr in canonical_response:
         for c in clean_cols:
-            if kw in c.lower():
+            if c.lower() == cr:
                 target = c
                 break
         if target:
             break
+
+    # Priority 1: High priority adverse / event outcomes
+    if not target:
+        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+        for kw in adverse_kws:
+            for c in clean_cols:
+                if kw in c.lower():
+                    target = c
+                    break
+            if target:
+                break
             
     # Priority 2: Quality / Rating / Performance scales
     if not target:

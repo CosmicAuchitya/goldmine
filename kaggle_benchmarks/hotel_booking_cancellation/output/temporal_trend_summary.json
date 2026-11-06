@@ -1,0 +1,293 @@
+{
+  "is_temporal_dataset": true,
+  "date_column": "reservation_status_date",
+  "granularity": "monthly",
+  "period_count": 35,
+  "period_over_period_rate_delta_pp": -9.36,
+  "first_to_last_rate_delta_pp": -100.0,
+  "peak_risk_period": "2014-10",
+  "trend_direction": "IMPROVING",
+  "summary_note": "Temporal series audited across 35 monthly periods via 'reservation_status_date'.",
+  "periods": [
+    {
+      "period": "2014-10",
+      "total_records": 180,
+      "adverse_events": 180,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 11304.0,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2014-11",
+      "total_records": 1,
+      "adverse_events": 1,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 0.0,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-01",
+      "total_records": 948,
+      "adverse_events": 948,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 55870.86,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-02",
+      "total_records": 44,
+      "adverse_events": 44,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 4528.78,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-03",
+      "total_records": 85,
+      "adverse_events": 85,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 6829.35,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-04",
+      "total_records": 151,
+      "adverse_events": 151,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 14727.84,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-05",
+      "total_records": 275,
+      "adverse_events": 275,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 24717.51,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-06",
+      "total_records": 666,
+      "adverse_events": 666,
+      "adverse_rate_pct": 100.0,
+      "adverse_capital_drag": 59535.09,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-07",
+      "total_records": 3615,
+      "adverse_events": 2294,
+      "adverse_rate_pct": 63.46,
+      "adverse_capital_drag": 191203.21,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-08",
+      "total_records": 3247,
+      "adverse_events": 1023,
+      "adverse_rate_pct": 31.51,
+      "adverse_capital_drag": 108746.81,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-09",
+      "total_records": 4017,
+      "adverse_events": 1031,
+      "adverse_rate_pct": 25.67,
+      "adverse_capital_drag": 101427.61,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-10",
+      "total_records": 5742,
+      "adverse_events": 2438,
+      "adverse_rate_pct": 42.46,
+      "adverse_capital_drag": 169296.39,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-11",
+      "total_records": 3077,
+      "adverse_events": 1090,
+      "adverse_rate_pct": 35.42,
+      "adverse_capital_drag": 88601.36,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2015-12",
+      "total_records": 3062,
+      "adverse_events": 1422,
+      "adverse_rate_pct": 46.44,
+      "adverse_capital_drag": 117514.63,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-01",
+      "total_records": 4482,
+      "adverse_events": 2497,
+      "adverse_rate_pct": 55.71,
+      "adverse_capital_drag": 223988.5,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-02",
+      "total_records": 4596,
+      "adverse_events": 2161,
+      "adverse_rate_pct": 47.02,
+      "adverse_capital_drag": 209606.68,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-03",
+      "total_records": 5319,
+      "adverse_events": 2125,
+      "adverse_rate_pct": 39.95,
+      "adverse_capital_drag": 211194.0,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-04",
+      "total_records": 5214,
+      "adverse_events": 1867,
+      "adverse_rate_pct": 35.81,
+      "adverse_capital_drag": 207240.47,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-05",
+      "total_records": 5023,
+      "adverse_events": 1430,
+      "adverse_rate_pct": 28.47,
+      "adverse_capital_drag": 166692.03,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-06",
+      "total_records": 4552,
+      "adverse_events": 1384,
+      "adverse_rate_pct": 30.4,
+      "adverse_capital_drag": 173967.8,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-07",
+      "total_records": 4453,
+      "adverse_events": 1373,
+      "adverse_rate_pct": 30.83,
+      "adverse_capital_drag": 174068.06,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-08",
+      "total_records": 4585,
+      "adverse_events": 1345,
+      "adverse_rate_pct": 29.33,
+      "adverse_capital_drag": 163193.4,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-09",
+      "total_records": 4993,
+      "adverse_events": 1645,
+      "adverse_rate_pct": 32.95,
+      "adverse_capital_drag": 174100.72,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-10",
+      "total_records": 5221,
+      "adverse_events": 1527,
+      "adverse_rate_pct": 29.25,
+      "adverse_capital_drag": 150556.48,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-11",
+      "total_records": 5021,
+      "adverse_events": 1969,
+      "adverse_rate_pct": 39.22,
+      "adverse_capital_drag": 192766.54,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2016-12",
+      "total_records": 4338,
+      "adverse_events": 2105,
+      "adverse_rate_pct": 48.52,
+      "adverse_capital_drag": 202054.9,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-01",
+      "total_records": 5251,
+      "adverse_events": 2616,
+      "adverse_rate_pct": 49.82,
+      "adverse_capital_drag": 291401.81,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-02",
+      "total_records": 4858,
+      "adverse_events": 2153,
+      "adverse_rate_pct": 44.32,
+      "adverse_capital_drag": 239180.3,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-03",
+      "total_records": 4826,
+      "adverse_events": 1610,
+      "adverse_rate_pct": 33.36,
+      "adverse_capital_drag": 206962.01,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-04",
+      "total_records": 4634,
+      "adverse_events": 1452,
+      "adverse_rate_pct": 31.33,
+      "adverse_capital_drag": 203444.92,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-05",
+      "total_records": 5006,
+      "adverse_events": 1433,
+      "adverse_rate_pct": 28.63,
+      "adverse_capital_drag": 200028.54,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-06",
+      "total_records": 4060,
+      "adverse_events": 862,
+      "adverse_rate_pct": 21.23,
+      "adverse_capital_drag": 126186.0,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-07",
+      "total_records": 4038,
+      "adverse_events": 702,
+      "adverse_rate_pct": 17.38,
+      "adverse_capital_drag": 117159.35,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-08",
+      "total_records": 3417,
+      "adverse_events": 320,
+      "adverse_rate_pct": 9.36,
+      "adverse_capital_drag": 53846.72,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2017-09",
+      "total_records": 393,
+      "adverse_events": 0,
+      "adverse_rate_pct": 0.0,
+      "adverse_capital_drag": 0.0,
+      "has_monetary_column": true
+    }
+  ]
+}

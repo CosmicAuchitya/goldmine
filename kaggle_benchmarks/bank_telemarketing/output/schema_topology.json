@@ -1,0 +1,178 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "banking": {
+      "table_name": "banking",
+      "filename": "banking.csv",
+      "selected_sheet": null,
+      "estimated_rows": 41188,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "age",
+        "job",
+        "marital",
+        "education",
+        "default",
+        "housing",
+        "loan",
+        "contact",
+        "month",
+        "day_of_week",
+        "duration",
+        "campaign",
+        "pdays",
+        "previous",
+        "poutcome",
+        "emp_var_rate",
+        "cons_price_idx",
+        "cons_conf_idx",
+        "euribor3m",
+        "nr_employed",
+        "y"
+      ],
+      "potential_keys": [
+        "cons_price_idx",
+        "cons_conf_idx"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "age",
+          "dtype": "int64",
+          "sample_values": [
+            "44",
+            "53",
+            "28"
+          ],
+          "nunique_in_sample": 59,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "job",
+          "dtype": "str",
+          "sample_values": [
+            "blue-collar",
+            "technician",
+            "management"
+          ],
+          "nunique_in_sample": 12,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "marital",
+          "dtype": "str",
+          "sample_values": [
+            "married",
+            "single",
+            "divorced"
+          ],
+          "nunique_in_sample": 4,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "education",
+          "dtype": "str",
+          "sample_values": [
+            "basic.4y",
+            "unknown",
+            "university.degree"
+          ],
+          "nunique_in_sample": 7,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "default",
+          "dtype": "str",
+          "sample_values": [
+            "unknown",
+            "no",
+            "yes"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "housing",
+          "dtype": "str",
+          "sample_values": [
+            "yes",
+            "no",
+            "unknown"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "loan",
+          "dtype": "str",
+          "sample_values": [
+            "no",
+            "yes",
+            "unknown"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "contact",
+          "dtype": "str",
+          "sample_values": [
+            "cellular",
+            "telephone"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "month",
+          "dtype": "str",
+          "sample_values": [
+            "aug",
+            "nov",
+            "jun"
+          ],
+          "nunique_in_sample": 10,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "day_of_week",
+          "dtype": "str",
+          "sample_values": [
+            "thu",
+            "fri",
+            "tue"
+          ],
+          "nunique_in_sample": 5,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "duration",
+          "dtype": "int64",
+          "sample_values": [
+            "210",
+            "138",
+            "339"
+          ],
+          "nunique_in_sample": 627,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "campaign",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "3",
+            "2"
+          ],
+          "nunique_in_sample": 27,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}
