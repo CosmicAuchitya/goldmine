@@ -1,0 +1,115 @@
+{
+  "dataset_name": "predictive_maintenance_ai4i",
+  "matched_ontology": {
+    "ontology_key": "manufacturing_industrial",
+    "domain_code": "MFG",
+    "domain_name": "Manufacturing & Industrial Operations",
+    "key_metrics_kpis": [
+      "Overall Equipment Effectiveness (OEE = Availability * Performance * Quality)",
+      "Scrap Rate (% of produced parts defective)",
+      "First Pass Yield (FPY %)",
+      "Mean Time Between Failures (MTBF) & Mean Time to Repair (MTTR)"
+    ],
+    "hidden_leakage_risks": [
+      "Unplanned Machine Breakdown (\u092e\u0936\u0940\u0928 \u0905\u091a\u093e\u0928\u0915 \u0916\u0930\u093e\u092c \u0939\u094b\u0928\u093e, \u092a\u0942\u0930\u0940 \u0932\u093e\u0907\u0928 \u0930\u0941\u0915\u0928\u093e)",
+      "Raw Material Price Volatility (\u0915\u091a\u094d\u091a\u0947 \u092e\u093e\u0932 \u0915\u093e \u092e\u0939\u0902\u0917\u093e \u0939\u094b\u0928\u093e)",
+      "Batch Contamination / Recall (\u092a\u0942\u0930\u0940 \u0932\u0949\u091f \u0916\u0930\u093e\u092c \u0928\u093f\u0915\u0932\u0928\u093e)"
+    ]
+  },
+  "archetype": "industrial_scada_telemetry",
+  "archetype_name": "Industrial SCADA Process Telemetry",
+  "executive_persona": "VP Operations, Plant Director & Head of QA",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "Process control layout leading with parameter cliffs & tolerance frontier",
+    "default_theme": "dark",
+    "font_display": "'Consolas', 'Courier New', monospace",
+    "font_body": "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 10000,
+    "total_columns": 14,
+    "is_temporal": false,
+    "has_monetary_ledger": false,
+    "has_secondary_dim": true,
+    "cliffs_count": 5,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 5 continuous driver(s).",
+      "priority": 1
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 2
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 3
+    },
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 4
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (HDF x OSF) exposes sub-node vulnerability hubs.",
+      "priority": 6
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "reason": "Insufficient categorical depth (< 3 cohorts) for multi-dimensional bubble dispersion."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "ai4i2020": {
+      "table_name": "ai4i2020",
+      "filename": "ai4i2020.csv",
+      "selected_sheet": null,
+      "estimated_rows": 10000,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "UDI",
+        "Product ID",
+        "Type",
+        "Air temperature [K]",
+        "Process temperature [K]",
+        "Rotational speed [rpm]",
+        "Torque [Nm]",
+        "Tool wear [min]",
+        "Machine failure",
+        "TWF",
+        "HDF",
+        "PWF",
+        "OSF",
+        "RNF"
+      ],
+      "potential_keys": [
+        "UDI",
+        "Product ID",
+        "Torque [Nm]",
+        "Tool wear [min]"
+      ],
+      "strictly_unique_primary_keys": [
+        "UDI",
+        "Product ID"
+      ],
+      "recommended_primary_key": "UDI",
+      "sample_columns": [
+        {
+          "name": "UDI",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Product ID",
+          "dtype": "str",
+          "sample_values": [
+            "M14860",
+            "L47181",
+            "L47182"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Type",
+          "dtype": "str",
+          "sample_values": [
+            "M",
+            "L",
+            "H"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Air temperature [K]",
+          "dtype": "float64",
+          "sample_values": [
+            "298.1",
+            "298.2",
+            "298.3"
+          ],
+          "nunique_in_sample": 39,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Process temperature [K]",
+          "dtype": "float64",
+          "sample_values": [
+            "308.6",
+            "308.7",
+            "308.5"
+          ],
+          "nunique_in_sample": 48,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Rotational speed [rpm]",
+          "dtype": "int64",
+          "sample_values": [
+            "1551",
+            "1408",
+            "1498"
+          ],
+          "nunique_in_sample": 616,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Torque [Nm]",
+          "dtype": "float64",
+          "sample_values": [
+            "42.8",
+            "46.3",
+            "49.4"
+          ],
+          "nunique_in_sample": 448,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Tool wear [min]",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "3",
+            "5"
+          ],
+          "nunique_in_sample": 236,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Machine failure",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "TWF",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "HDF",
+          "dtype": "int64",
+          "sample_values": [
+            "0"
+          ],
+          "nunique_in_sample": 1,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "PWF",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

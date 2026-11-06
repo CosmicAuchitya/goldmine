@@ -1,0 +1,123 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 10,000"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Machine failure] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 339"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column UDI
+		dataType: string
+		summarizeBy: none
+		sourceColumn: UDI
+		lineageTag: col-fact-UDI
+
+	column Product ID
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Product ID
+		lineageTag: col-fact-Product ID
+
+	column Type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Type
+		lineageTag: col-fact-Type
+
+	column Air temperature [K]
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Air temperature [K]
+		lineageTag: col-fact-Air temperature [K]
+		formatString: 0.00
+
+	column Process temperature [K]
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Process temperature [K]
+		lineageTag: col-fact-Process temperature [K]
+		formatString: 0.00
+
+	column Rotational speed [rpm]
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Rotational speed [rpm]
+		lineageTag: col-fact-Rotational speed [rpm]
+		formatString: #,0
+
+	column Torque [Nm]
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Torque [Nm]
+		lineageTag: col-fact-Torque [Nm]
+		formatString: 0.00
+
+	column Tool wear [min]
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Tool wear [min]
+		lineageTag: col-fact-Tool wear [min]
+		formatString: #,0
+
+	column Machine failure
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Machine failure
+		lineageTag: col-fact-Machine failure
+		formatString: #,0
+
+	column TWF
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: TWF
+		lineageTag: col-fact-TWF
+		formatString: #,0
+
+	column HDF
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: HDF
+		lineageTag: col-fact-HDF
+		formatString: #,0
+
+	column PWF
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: PWF
+		lineageTag: col-fact-PWF
+		formatString: #,0
+
+	column OSF
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: OSF
+		lineageTag: col-fact-OSF
+		formatString: #,0
+
+	column RNF
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: RNF
+		lineageTag: col-fact-RNF
+		formatString: #,0
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

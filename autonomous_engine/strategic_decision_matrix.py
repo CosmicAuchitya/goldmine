@@ -1157,8 +1157,8 @@ class StrategicDecisionEngine:
             p_val < 0.05 and relative_risk_multiplier >= 1.10 and excess_events >= 3.0
         )
 
-        unit = self.domain_profile["unit_symbol"]
         is_fin = bool(self.cost_metric and self.cost_metric in self.df.columns)
+        unit = self.domain_profile.get("unit_symbol", "$") if is_fin else "events"
         cohort_adverse_dollars = 0.0
         avg_cost_per_event = 0.0
         if is_fin:
@@ -1205,9 +1205,9 @@ class StrategicDecisionEngine:
                 ci_b_str = f"[{ci_b_low:,} to {ci_b_high:,} {unit}] (95% Attributable Risk CI)"
                 ci_c_str = f"[{ci_c_low:,} to {ci_c_high:,} {unit}] (95% Attributable Risk CI)"
 
-                proj_a = f"{path_a_reduction:,} {unit} saved (25% Excess-Risk Compression)"
-                proj_b = f"{path_b_reduction:,} {unit} saved (60% Excess-Risk Compression)"
-                proj_c = f"{path_c_reduction:,} {unit} saved (100% Baseline Parity)"
+                proj_a = f"{path_a_reduction:,} {unit} prevented (25% Excess-Risk Compression)"
+                proj_b = f"{path_b_reduction:,} {unit} prevented (60% Excess-Risk Compression)"
+                proj_c = f"{path_c_reduction:,} {unit} prevented (100% Baseline Parity)"
 
             pathways = [
                 {
