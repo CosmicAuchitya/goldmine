@@ -23,7 +23,7 @@ COUNTROWS('bi_ready_fact')
 Target Events = 
 CALCULATE(
     COUNTROWS('bi_ready_fact'),
-    'bi_ready_fact'[Risk] = 1
+    'bi_ready_fact'[Risk] = "bad"
 )
 
 // 3. System Target Event Vulnerability Rate %
@@ -34,13 +34,20 @@ DIVIDE([Target Events], [Total Records], 0) * 100
 System Reliability Rate % = 
 100 - [Event Vulnerability Rate %]
 
-// 5. Total Financial Friction Loss ($)
-Total Financial Friction Loss ($) = 
+// 5. Total Adverse Capital Drag ($) (Direct Financial Drag on Adverse Cohort)
+Total Adverse Capital Drag ($) = 
+CALCULATE(
+    SUM('bi_ready_fact'[Credit amount]),
+    'bi_ready_fact'[Risk] = "bad"
+)
+
+// 5b. Total Baseline Portfolio Volume ($)
+Total Portfolio Volume ($) = 
 SUM('bi_ready_fact'[Credit amount])
 
-// 6. Average Financial Impact Per Event
+// 6. Average Financial Impact Per Adverse Event
 Avg Friction Impact ($) = 
-DIVIDE([Total Financial Friction Loss ($)], [Total Records], 0)
+DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
 ```
 
 ---

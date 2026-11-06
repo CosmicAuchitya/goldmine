@@ -1,0 +1,490 @@
+fact_surrogate_id,priority_rank,action_queue,_is_target_event,empirical_cohort_risk_pct,monetary_exposure,exposure_column_source,primary_risk_reason,recommended_next_step,released_day,artist_count,released_year
+823,1,PREVENTIVE_RETENTION_WATCH,0,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2019
+37,2,PREVENTIVE_RETENTION_WATCH,0,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,2,2023
+598,3,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,3,2021
+505,4,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2022
+502,5,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2022
+512,6,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2022
+919,7,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2022
+478,8,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2000
+564,9,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,3,2022
+634,10,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2019
+236,11,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2023
+626,12,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2019
+503,13,PREVENTIVE_RETENTION_WATCH,0,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,1,2022
+861,14,PREVENTIVE_RETENTION_WATCH,0,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+862,15,PREVENTIVE_RETENTION_WATCH,0,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+386,16,PREVENTIVE_RETENTION_WATCH,0,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,2,2023
+182,17,PREVENTIVE_RETENTION_WATCH,0,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,2,2023
+112,18,PREVENTIVE_RETENTION_WATCH,0,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+335,19,PREVENTIVE_RETENTION_WATCH,0,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+858,20,PREVENTIVE_RETENTION_WATCH,0,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+817,21,PREVENTIVE_RETENTION_WATCH,0,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+415,22,PREVENTIVE_RETENTION_WATCH,0,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,9,3,2022
+826,23,PREVENTIVE_RETENTION_WATCH,0,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+319,24,PREVENTIVE_RETENTION_WATCH,0,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,26,1,2022
+905,25,PREVENTIVE_RETENTION_WATCH,0,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,26,1,2022
+343,26,PREVENTIVE_RETENTION_WATCH,0,49.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2023
+274,27,PREVENTIVE_RETENTION_WATCH,0,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2023
+704,28,PREVENTIVE_RETENTION_WATCH,0,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2022
+447,29,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2013
+322,30,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,2,2022
+909,31,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+47,32,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+501,33,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2021
+769,34,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+799,35,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+162,36,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2004
+606,37,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,4,2021
+317,38,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+190,39,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2013
+552,40,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,3,2020
+889,41,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2019
+772,42,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+764,43,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2022
+751,44,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2019
+757,45,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,1,2019
+766,46,PREVENTIVE_RETENTION_WATCH,0,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,3,2022
+150,47,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2023
+156,48,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,3,2023
+893,49,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+602,50,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2021
+269,51,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+620,52,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,27,3,2021
+806,53,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+902,54,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+267,55,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2023
+930,56,PREVENTIVE_RETENTION_WATCH,0,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,22,3,2022
+132,57,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2023
+880,58,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+68,59,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+102,60,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2022
+262,61,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,2,2023
+422,62,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2022
+137,63,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2022
+168,64,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2015
+154,65,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,2,2023
+612,66,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,2,2021
+222,67,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+549,68,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2020
+299,69,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2023
+404,70,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,2,2017
+913,71,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,1,2022
+33,72,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2022
+220,73,PREVENTIVE_RETENTION_WATCH,0,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,2,3,2022
+436,74,PREVENTIVE_RETENTION_WATCH,0,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2022
+250,75,PREVENTIVE_RETENTION_WATCH,0,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2023
+646,76,PREVENTIVE_RETENTION_WATCH,0,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,14,2,2021
+98,77,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+742,78,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+116,79,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2014
+85,80,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,2,2021
+763,81,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2015
+275,82,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+42,83,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,2,2018
+901,84,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+331,85,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+325,86,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2016
+393,87,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+310,88,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+417,89,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+351,90,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2022
+546,91,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2018
+640,92,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+517,93,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,2,2021
+192,94,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+638,95,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,1,2021
+827,96,PREVENTIVE_RETENTION_WATCH,0,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,1,2022
+828,97,PREVENTIVE_RETENTION_WATCH,0,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,1,2022
+41,98,PREVENTIVE_RETENTION_WATCH,0,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,2,2023
+636,99,PREVENTIVE_RETENTION_WATCH,0,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,1,2022
+747,100,PREVENTIVE_RETENTION_WATCH,0,39.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,8,1,2022
+896,101,PREVENTIVE_RETENTION_WATCH,0,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,15,2,2022
+860,102,PREVENTIVE_RETENTION_WATCH,0,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,15,1,2021
+679,103,PREVENTIVE_RETENTION_WATCH,0,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,15,2,2022
+712,104,PREVENTIVE_RETENTION_WATCH,0,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,15,1,2022
+377,105,PREVENTIVE_RETENTION_WATCH,0,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,12,1,2022
+175,106,PREVENTIVE_RETENTION_WATCH,0,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,12,1,2023
+431,107,PREVENTIVE_RETENTION_WATCH,0,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,12,1,2022
+43,108,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,2,2022
+298,109,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,2,2002
+641,110,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,2,2002
+521,111,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,1,2019
+58,112,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,1,2022
+812,113,PREVENTIVE_RETENTION_WATCH,0,38.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,26,2,2022
+651,114,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,11,1,2022
+537,115,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,30,3,2021
+276,116,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,30,2,2022
+628,117,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,11,2,2021
+125,118,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,11,1,2021
+743,119,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,30,3,2022
+427,120,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,11,1,2022
+208,121,PREVENTIVE_RETENTION_WATCH,0,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,30,2,2023
+541,122,PREVENTIVE_RETENTION_WATCH,0,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,4,2022
+426,123,PREVENTIVE_RETENTION_WATCH,0,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,1,1973
+737,124,PREVENTIVE_RETENTION_WATCH,0,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,1,2022
+4,125,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2019
+755,126,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2016
+818,127,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2022
+35,128,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,2,2023
+411,129,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,2,2021
+216,130,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2023
+600,131,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2020
+511,132,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2017
+271,133,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2019
+631,134,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2003
+596,135,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,2,2021
+915,136,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2016
+161,137,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,2,2023
+731,138,PREVENTIVE_RETENTION_WATCH,0,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,23,1,2022
+863,139,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,1986
+877,140,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,3,2022
+86,141,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2023
+703,142,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2022
+716,143,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2021
+62,144,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2023
+851,145,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2022
+420,146,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2022
+296,147,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2021
+430,148,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2020
+481,149,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2021
+573,150,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,3,2021
+548,151,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2021
+618,152,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,3,2021
+362,153,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2022
+907,154,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,1,2022
+368,155,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2022
+366,156,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,4,2021
+627,157,PREVENTIVE_RETENTION_WATCH,0,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,2,2021
+676,158,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2017
+664,159,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2019
+660,160,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2022
+680,161,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2021
+835,162,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,3,2022
+89,163,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2015
+940,164,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+938,165,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+882,166,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2022
+82,167,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+78,168,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+662,169,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2019
+700,170,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+707,171,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2004
+725,172,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2017
+720,173,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2020
+690,174,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2019
+692,175,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2019
+839,176,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,2,2022
+801,177,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+163,178,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,3,2016
+160,179,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2019
+687,180,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2019
+455,181,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,1963
+241,182,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2023
+472,183,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,1963
+554,184,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2021
+533,185,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2021
+630,186,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,2,2021
+614,187,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2010
+635,188,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,2,2018
+283,189,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2022
+531,190,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2021
+544,191,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,3,2021
+246,192,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+434,193,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,2,2020
+312,194,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+326,195,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2015
+389,196,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2022
+390,197,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2016
+407,198,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,3,2022
+413,199,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,1,2015
+414,200,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+418,201,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2022
+423,202,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,1,2021
+936,203,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+932,204,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,2,2022
+292,205,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+371,206,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2023
+933,207,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,3,2022
+916,208,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,22,2,2022
+46,209,PREVENTIVE_RETENTION_WATCH,0,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,27,1,2020
+439,210,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,3,2022
+384,211,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,1,2022
+288,212,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,1,2023
+587,213,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,1,2021
+922,214,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,1,2022
+750,215,PREVENTIVE_RETENTION_WATCH,0,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,17,4,2022
+20,216,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,1,2023
+666,217,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,3,2020
+287,218,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,2,2022
+688,219,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,1,2021
+294,220,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,1,2023
+869,221,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,1,2022
+820,222,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,2,2022
+307,223,PREVENTIVE_RETENTION_WATCH,0,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,24,1,2021
+796,224,PREVENTIVE_RETENTION_WATCH,0,32.39,,NONE_PHYSICAL_UNITS,Cohort released_day='29' (17.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,29,2,2022
+350,225,PREVENTIVE_RETENTION_WATCH,0,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,31,1,2022
+214,226,PREVENTIVE_RETENTION_WATCH,0,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,31,1,2023
+346,227,PREVENTIVE_RETENTION_WATCH,0,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,31,1,2022
+483,228,PREVENTIVE_RETENTION_WATCH,0,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,31,1,2022
+744,229,PREVENTIVE_RETENTION_WATCH,0,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,31,3,2022
+683,230,PREVENTIVE_RETENTION_WATCH,0,29.29,,NONE_PHYSICAL_UNITS,Cohort released_day='28' (14.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,28,1,2022
+945,231,PREVENTIVE_RETENTION_WATCH,0,29.29,,NONE_PHYSICAL_UNITS,Cohort released_day='28' (14.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,28,1,2022
+868,232,PREVENTIVE_RETENTION_WATCH,0,27.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,1,2022
+809,233,PREVENTIVE_RETENTION_WATCH,0,27.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,2,2022
+785,234,PREVENTIVE_RETENTION_WATCH,0,27.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,1,2022
+586,235,PREVENTIVE_RETENTION_WATCH,0,27.0,,NONE_PHYSICAL_UNITS,Cohort released_day='19' (12.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,19,2,2021
+40,236,PREVENTIVE_RETENTION_WATCH,0,27.0,,NONE_PHYSICAL_UNITS,Cohort released_day='19' (12.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,19,1,2023
+247,237,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2021
+689,238,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,2,2022
+514,239,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2021
+103,240,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2023
+765,241,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2022
+608,242,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2021
+668,243,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,7,2022
+242,244,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2023
+453,245,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2011
+788,246,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,2,2022
+448,247,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,1963
+437,248,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,2,2022
+14,249,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2023
+446,250,PREVENTIVE_RETENTION_WATCH,0,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,14,1,2011
+8,1,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+12,2,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+22,3,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+105,4,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+114,5,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+84,6,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+70,7,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+328,8,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+300,9,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,2,2023
+194,10,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+583,11,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,2,2022
+578,12,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+542,13,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+553,14,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+588,15,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+644,16,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,2,2022
+522,17,REALIZED_LOSS_RECOVERY_AUDIT,1,81.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+510,18,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+539,19,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+518,20,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,2,2022
+515,21,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,3,2022
+516,22,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+524,23,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+509,24,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2022
+741,25,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,2,2022
+261,26,REALIZED_LOSS_RECOVERY_AUDIT,1,66.67,,NONE_PHYSICAL_UNITS,Cohort released_day='7' (66.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,1,2023
+815,27,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+31,28,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2023
+18,29,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2023
+914,30,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+917,31,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+145,32,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,3,2023
+211,33,REALIZED_LOSS_RECOVERY_AUDIT,1,63.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2023
+172,34,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,3,2023
+206,35,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,1,2023
+215,36,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,3,2023
+229,37,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2023
+213,38,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2023
+295,39,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2023
+209,40,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2023
+201,41,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,4,2023
+239,42,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,5,2023
+249,43,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2023
+499,44,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2022
+480,45,REALIZED_LOSS_RECOVERY_AUDIT,1,61.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,1,2022
+100,46,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2023
+124,47,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,2,2022
+498,48,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+475,49,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+468,50,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+485,51,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+227,52,REALIZED_LOSS_RECOVERY_AUDIT,1,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,26,2,2023
+219,53,REALIZED_LOSS_RECOVERY_AUDIT,1,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,26,2,2023
+224,54,REALIZED_LOSS_RECOVERY_AUDIT,1,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,26,2,2023
+207,55,REALIZED_LOSS_RECOVERY_AUDIT,1,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,26,1,2023
+152,56,REALIZED_LOSS_RECOVERY_AUDIT,1,53.46,,NONE_PHYSICAL_UNITS,Cohort released_day='26' (38.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,26,1,2023
+83,57,REALIZED_LOSS_RECOVERY_AUDIT,1,49.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,2,2023
+352,58,REALIZED_LOSS_RECOVERY_AUDIT,1,49.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,2,2023
+365,59,REALIZED_LOSS_RECOVERY_AUDIT,1,49.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,2,2022
+708,60,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,2,2022
+951,61,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,2,2022
+348,62,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,2,2023
+374,63,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+380,64,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+356,65,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+338,66,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+334,67,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,2,2023
+337,68,REALIZED_LOSS_RECOVERY_AUDIT,1,49.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+781,69,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,3,2022
+803,70,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+775,71,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+784,72,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+798,73,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+795,74,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+786,75,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,3,2022
+780,76,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+805,77,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+802,78,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+770,79,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+810,80,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,2,2022
+808,81,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+777,82,REALIZED_LOSS_RECOVERY_AUDIT,1,48.84,,NONE_PHYSICAL_UNITS,Cohort released_day='13' (48.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,1,2022
+302,83,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,2,2023
+290,84,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2023
+113,85,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,2,2023
+226,86,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,1,2023
+286,87,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,2,2023
+255,88,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,3,2023
+138,89,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,5,2023
+121,90,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,2,2023
+479,91,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+405,92,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,1,2023
+392,93,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,1,2016
+953,94,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,1,2022
+394,95,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,6,2022
+943,96,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+727,97,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,1,2022
+21,98,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,3,2023
+61,99,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2023
+80,100,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,1,2023
+221,101,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2023
+26,102,REALIZED_LOSS_RECOVERY_AUDIT,1,48.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,1,2023
+51,103,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,3,2023
+657,104,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2022
+482,105,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2022
+854,106,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,2,2022
+136,107,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,4,2023
+25,108,REALIZED_LOSS_RECOVERY_AUDIT,1,46.15,,NONE_PHYSICAL_UNITS,Cohort released_day='2' (46.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,3,2023
+1,109,REALIZED_LOSS_RECOVERY_AUDIT,1,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,2,2023
+69,110,REALIZED_LOSS_RECOVERY_AUDIT,1,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,1,2023
+59,111,REALIZED_LOSS_RECOVERY_AUDIT,1,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,1,2023
+920,112,REALIZED_LOSS_RECOVERY_AUDIT,1,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,2,2022
+314,113,REALIZED_LOSS_RECOVERY_AUDIT,1,41.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,2,2023
+456,114,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+845,115,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+486,116,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+465,117,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+473,118,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+464,119,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,2,2022
+474,120,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+457,121,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+558,122,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort released_day='9' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,1,2022
+800,123,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2022
+831,124,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2022
+836,125,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2022
+632,126,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2022
+881,127,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,3,2022
+265,128,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2023
+629,129,REALIZED_LOSS_RECOVERY_AUDIT,1,39.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,1,2022
+494,130,REALIZED_LOSS_RECOVERY_AUDIT,1,39.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,1,2022
+360,131,REALIZED_LOSS_RECOVERY_AUDIT,1,39.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,1,2022
+198,132,REALIZED_LOSS_RECOVERY_AUDIT,1,39.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,4,2023
+205,133,REALIZED_LOSS_RECOVERY_AUDIT,1,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,3,2023
+131,134,REALIZED_LOSS_RECOVERY_AUDIT,1,38.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,1,2023
+399,135,REALIZED_LOSS_RECOVERY_AUDIT,1,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,3,2023
+892,136,REALIZED_LOSS_RECOVERY_AUDIT,1,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,1,2022
+403,137,REALIZED_LOSS_RECOVERY_AUDIT,1,38.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,6,2022
+259,138,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,30,2,2023
+248,139,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,2,2023
+151,140,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,30,1,2023
+681,141,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,2,2022
+753,142,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,30,1,2022
+746,143,REALIZED_LOSS_RECOVERY_AUDIT,1,37.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,30,3,2022
+345,144,REALIZED_LOSS_RECOVERY_AUDIT,1,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,2,2022
+761,145,REALIZED_LOSS_RECOVERY_AUDIT,1,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,1,2022
+233,146,REALIZED_LOSS_RECOVERY_AUDIT,1,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,2,2023
+256,147,REALIZED_LOSS_RECOVERY_AUDIT,1,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,1,2023
+95,148,REALIZED_LOSS_RECOVERY_AUDIT,1,35.0,,NONE_PHYSICAL_UNITS,Cohort released_day='5' (20.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,1,2020
+71,149,REALIZED_LOSS_RECOVERY_AUDIT,1,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,2,2023
+918,150,REALIZED_LOSS_RECOVERY_AUDIT,1,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,1,2022
+2,151,REALIZED_LOSS_RECOVERY_AUDIT,1,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,1,2023
+339,152,REALIZED_LOSS_RECOVERY_AUDIT,1,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,3,2023
+45,153,REALIZED_LOSS_RECOVERY_AUDIT,1,34.78,,NONE_PHYSICAL_UNITS,Cohort released_day='23' (34.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,23,3,2023
+349,154,REALIZED_LOSS_RECOVERY_AUDIT,1,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2023
+949,155,REALIZED_LOSS_RECOVERY_AUDIT,1,34.38,,NONE_PHYSICAL_UNITS,Cohort released_day='3' (34.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,1,2022
+303,156,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,2,2023
+944,157,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+819,158,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='22' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,22,1,2022
+946,159,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,1,2022
+693,160,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+705,161,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,1,2022
+691,162,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+382,163,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,3,2023
+381,164,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,1,2023
+383,165,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='27' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,27,1,2023
+947,166,REALIZED_LOSS_RECOVERY_AUDIT,1,33.33,,NONE_PHYSICAL_UNITS,Cohort released_day='4' (33.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,2,2022
+306,167,REALIZED_LOSS_RECOVERY_AUDIT,1,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='25' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,25,1,2023
+277,168,REALIZED_LOSS_RECOVERY_AUDIT,1,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='25' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,25,2,2023
+92,169,REALIZED_LOSS_RECOVERY_AUDIT,1,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,1,2023
+748,170,REALIZED_LOSS_RECOVERY_AUDIT,1,32.86,,NONE_PHYSICAL_UNITS,Cohort released_day='25' (17.9% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,25,1,2022
+879,171,REALIZED_LOSS_RECOVERY_AUDIT,1,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,1,2022
+264,172,REALIZED_LOSS_RECOVERY_AUDIT,1,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,1,2023
+870,173,REALIZED_LOSS_RECOVERY_AUDIT,1,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,2,2022
+268,174,REALIZED_LOSS_RECOVERY_AUDIT,1,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,1,2023
+308,175,REALIZED_LOSS_RECOVERY_AUDIT,1,32.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,2,2023
+28,176,REALIZED_LOSS_RECOVERY_AUDIT,1,32.39,,NONE_PHYSICAL_UNITS,Cohort released_day='29' (17.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,29,2,2023
+212,177,REALIZED_LOSS_RECOVERY_AUDIT,1,32.39,,NONE_PHYSICAL_UNITS,Cohort released_day='29' (17.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,29,2,2022
+313,178,REALIZED_LOSS_RECOVERY_AUDIT,1,32.39,,NONE_PHYSICAL_UNITS,Cohort released_day='29' (17.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,29,1,2023
+344,179,REALIZED_LOSS_RECOVERY_AUDIT,1,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,31,1,2023
+305,180,REALIZED_LOSS_RECOVERY_AUDIT,1,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,31,2,2023
+340,181,REALIZED_LOSS_RECOVERY_AUDIT,1,30.79,,NONE_PHYSICAL_UNITS,Cohort released_day='31' (15.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,31,1,2023
+361,182,REALIZED_LOSS_RECOVERY_AUDIT,1,29.29,,NONE_PHYSICAL_UNITS,Cohort released_day='28' (14.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,28,1,2022
+32,183,REALIZED_LOSS_RECOVERY_AUDIT,1,29.29,,NONE_PHYSICAL_UNITS,Cohort released_day='28' (14.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,28,2,2023
+739,184,REALIZED_LOSS_RECOVERY_AUDIT,1,27.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,1,2022
+186,185,REALIZED_LOSS_RECOVERY_AUDIT,1,27.0,,NONE_PHYSICAL_UNITS,Cohort released_day='19' (12.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,19,1,2023
+142,186,REALIZED_LOSS_RECOVERY_AUDIT,1,27.0,,NONE_PHYSICAL_UNITS,Cohort released_day='19' (12.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,19,4,2023
+273,187,REALIZED_LOSS_RECOVERY_AUDIT,1,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,2,2023
+929,188,REALIZED_LOSS_RECOVERY_AUDIT,1,26.92,,NONE_PHYSICAL_UNITS,Cohort released_day='14' (26.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,1,2022
+130,189,REALIZED_LOSS_RECOVERY_AUDIT,1,26.36,,NONE_PHYSICAL_UNITS,Cohort released_day='21' (11.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,21,2,2023
+258,190,REALIZED_LOSS_RECOVERY_AUDIT,1,26.36,,NONE_PHYSICAL_UNITS,Cohort released_day='21' (11.4% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,21,1,2023
+440,191,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,3,1930
+143,192,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,2,2023
+257,193,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,2,2023
+266,194,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,1,1997
+202,195,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,5,2023
+928,196,REALIZED_LOSS_RECOVERY_AUDIT,1,25.53,,NONE_PHYSICAL_UNITS,Cohort released_day='18' (10.5% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,18,2,2020
+106,197,REALIZED_LOSS_RECOVERY_AUDIT,1,25.26,,NONE_PHYSICAL_UNITS,Cohort released_day='20' (10.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,20,1,2022
+90,198,REALIZED_LOSS_RECOVERY_AUDIT,1,25.26,,NONE_PHYSICAL_UNITS,Cohort released_day='20' (10.3% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,20,2,2012
+278,199,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,,NONE_PHYSICAL_UNITS,Cohort released_day='16' (10.0% risk); in_spotify_playlists <= 875.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,16,1,2022
+476,200,REALIZED_LOSS_RECOVERY_AUDIT,1,24.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,2,2017
+834,201,REALIZED_LOSS_RECOVERY_AUDIT,1,24.32,,NONE_PHYSICAL_UNITS,Cohort released_day='10' (24.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,4,2022
+822,202,REALIZED_LOSS_RECOVERY_AUDIT,1,24.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,1,2022
+745,203,REALIZED_LOSS_RECOVERY_AUDIT,1,24.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,1,2022
+459,204,REALIZED_LOSS_RECOVERY_AUDIT,1,24.0,,NONE_PHYSICAL_UNITS,Cohort released_day='8' (24.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,2,2022
+895,205,REALIZED_LOSS_RECOVERY_AUDIT,1,23.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,4,2022
+54,206,REALIZED_LOSS_RECOVERY_AUDIT,1,23.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,1,2023
+9,207,REALIZED_LOSS_RECOVERY_AUDIT,1,23.81,,NONE_PHYSICAL_UNITS,Cohort released_day='15' (23.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,1,2023
+119,208,REALIZED_LOSS_RECOVERY_AUDIT,1,23.53,,NONE_PHYSICAL_UNITS,Cohort released_day='12' (23.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,3,2023
+682,209,REALIZED_LOSS_RECOVERY_AUDIT,1,22.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,1,2022
+3,210,REALIZED_LOSS_RECOVERY_AUDIT,1,22.73,,NONE_PHYSICAL_UNITS,Cohort released_day='30' (22.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,30,1,2023
+203,211,REALIZED_LOSS_RECOVERY_AUDIT,1,22.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,1,2023
+656,212,REALIZED_LOSS_RECOVERY_AUDIT,1,22.73,,NONE_PHYSICAL_UNITS,Cohort released_day='11' (22.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,3,2022
+30,213,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='25' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,25,1,2023
+760,214,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='25' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,25,6,2022
+301,215,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,1,2023
+97,216,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,1,2023
+421,217,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,3,2022
+210,218,REALIZED_LOSS_RECOVERY_AUDIT,1,17.86,,NONE_PHYSICAL_UNITS,Cohort released_day='17' (17.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,2,2023
+816,219,REALIZED_LOSS_RECOVERY_AUDIT,1,17.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,1,2021
+752,220,REALIZED_LOSS_RECOVERY_AUDIT,1,17.5,,NONE_PHYSICAL_UNITS,Cohort released_day='24' (17.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,24,2,1996
+814,221,REALIZED_LOSS_RECOVERY_AUDIT,1,17.39,,NONE_PHYSICAL_UNITS,Cohort released_day='29' (17.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,29,2,2022
+489,222,REALIZED_LOSS_RECOVERY_AUDIT,1,14.29,,NONE_PHYSICAL_UNITS,Cohort released_day='28' (14.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,28,4,2022
+878,223,REALIZED_LOSS_RECOVERY_AUDIT,1,12.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,3,2022
+824,224,REALIZED_LOSS_RECOVERY_AUDIT,1,12.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,1,2022
+813,225,REALIZED_LOSS_RECOVERY_AUDIT,1,12.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,2,2022
+513,226,REALIZED_LOSS_RECOVERY_AUDIT,1,12.82,,NONE_PHYSICAL_UNITS,Cohort released_day='6' (12.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,1,2021
+237,227,REALIZED_LOSS_RECOVERY_AUDIT,1,12.0,,NONE_PHYSICAL_UNITS,Cohort released_day='19' (12.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,19,2,2023
+235,228,REALIZED_LOSS_RECOVERY_AUDIT,1,11.36,,NONE_PHYSICAL_UNITS,Cohort released_day='21' (11.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,21,2,2023
+950,229,REALIZED_LOSS_RECOVERY_AUDIT,1,11.36,,NONE_PHYSICAL_UNITS,Cohort released_day='21' (11.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,21,1,2022
+270,230,REALIZED_LOSS_RECOVERY_AUDIT,1,11.36,,NONE_PHYSICAL_UNITS,Cohort released_day='21' (11.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,21,2,2023
+36,231,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,8,2023
+230,232,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,2,2023
+234,233,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='18' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,18,2,2023
+575,234,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,1,1970
+484,235,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,1,1959
+876,236,REALIZED_LOSS_RECOVERY_AUDIT,1,10.53,,NONE_PHYSICAL_UNITS,Cohort released_day='1' (10.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,3,2022
+859,237,REALIZED_LOSS_RECOVERY_AUDIT,1,10.26,,NONE_PHYSICAL_UNITS,Cohort released_day='20' (10.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,20,1,2022
+952,238,REALIZED_LOSS_RECOVERY_AUDIT,1,10.26,,NONE_PHYSICAL_UNITS,Cohort released_day='20' (10.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,20,3,2022
+714,239,REALIZED_LOSS_RECOVERY_AUDIT,1,10.0,,NONE_PHYSICAL_UNITS,Cohort released_day='16' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,16,2,2013

@@ -12,68 +12,79 @@
 ### 2. Macro Operational Financial Impact
 - **Total Monitored Records**: `1,000`
 - **Negative / Target Events (Risk)**: `300` (`30.0%`)
-- **Total Friction / Capital Drag**: **$3,271,258.00**
+- **Total Friction / Capital Drag**: **$1,181,438.00**
 
 ---
 
 ### 3. Economic Moats (Core Value Drivers & Operational Excellence)
 *Top performers demonstrating minimum friction and maximum operational stability:*
 
-| Sex | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
+| Checking account | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **male** | 690 | 191 | **72.32%** | 27.68% | **Moderate Stability Buffer** |
-| **female** | 310 | 109 | **64.84%** | 35.16% | Marginal Stability |
+| **UNKNOWN** | 394 | 46 | **88.32%** | 11.68% | **High Reliability Leader** |
+| **rich** | 63 | 14 | **77.78%** | 22.22% | **Moderate Stability Buffer** |
+| **moderate** | 269 | 105 | **60.97%** | 39.03% | Marginal Stability |
+| **little** | 274 | 135 | **50.73%** | 49.27% | Marginal Stability |
 
 ---
 
 ### 4. Capital Leaks & Financial Vulnerabilities
 *Concentrated operational drag where operational friction bleeds capital:*
 
-| Sex | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
+| Checking account | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **male** | 690 | 191 | **27.68%** | **$2,379,148.00** | **72.73%** |
-| **female** | 310 | 109 | **35.16%** | **$892,110.00** | **27.27%** |
+| **moderate** | 269 | 105 | **39.03%** | **$499,249.00** | **42.26%** |
+| **little** | 274 | 135 | **49.27%** | **$460,837.00** | **39.01%** |
+| **UNKNOWN** | 394 | 46 | **11.68%** | **$197,192.00** | **16.69%** |
+| **rich** | 63 | 14 | **22.22%** | **$24,160.00** | **2.04%** |
 
 ---
 
-### 5. Secondary Segment / Node Bottlenecks (Housing)
+### 5. Secondary Segment / Node Bottlenecks (Saving accounts)
 *Sub-nodes exhibiting concentrated friction:*
 
-| Housing | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| Saving accounts | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
 | :--- | :--- | :--- | :--- | :--- |
-| **own** | 713 | 186 | **26.09%** | $2,182,450.00 |
-| **rent** | 179 | 70 | **39.11%** | $558,937.00 |
-| **free** | 108 | 44 | **40.74%** | $529,871.00 |
+| **little** | 603 | 217 | **35.99%** | $851,846.00 |
+| **UNKNOWN** | 183 | 32 | **17.49%** | $139,586.00 |
+| **moderate** | 103 | 34 | **33.01%** | $136,237.00 |
+| **quite rich** | 63 | 11 | **17.46%** | $33,581.00 |
+| **rich** | 48 | 6 | **12.5%** | $20,188.00 |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `Sex` may be confounded by underlying volume distributions, scale effects, or `Housing` concentration.
+> - Observed risk in `Checking account` may be confounded by underlying volume distributions, scale effects, or `Saving accounts` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
 
 ### 8. Counterfactual "What-If" Business Simulation & Sensitivity Horizons
-*Standardized sensitivity projections modeling 10%, 20%, and 30% reduction targets (cross-referenced with empirical triage options in Section 3):*
+*Standardized sensitivity projections modeling 10%, 20%, and 30% global baseline reduction targets (see Strategic Decision Matrix below for cohort-specific Attributable Excess-Risk ROI):*
 
-| Capital Friction Scenario | Projected Capital Recovered ($) | Remaining Capital Drag ($) | Operational Feasibility |
+| Metric Scope | Physical Volume | Dollar Exposure ($) | Operational Meaning |
 | :--- | :--- | :--- | :--- |
-| **Conservative (10% Fix)** | **$327,125.80** | $2,944,132.20 | Immediate (Process hygiene & queue alerts) |
-| **Targeted (20% Fix)** | **$654,251.60** | $2,617,006.40 | 30-60 Days (Buffer allocation & SLA caps) |
-| **Aggressive (30% Fix)** | **$981,377.40** | $2,289,880.60 | 90+ Days (Structural automation & policy revamp) |
+| **Total Portfolio Footprint** | **1,000 physical records** | **$3,271,258.00** | Total baseline portfolio volume |
+| **Adverse Capital at Risk (`_is_target_event == 1`)** | **300 records (30.0%)** | **$1,181,438.00** | Direct financial exposure on defaulted/adverse events |
+
+| Global System Friction Mitigation Scenario | Projected Capital Recovered ($) | Remaining Capital Drag ($) | Operational Feasibility |
+| :--- | :--- | :--- | :--- |
+| **Conservative (10% Global Fix)** | **$118,143.80** | $1,063,294.20 | Immediate (Process hygiene & queue alerts) |
+| **Targeted (20% Global Fix)** | **$236,287.60** | $945,150.40 | 30-60 Days (Buffer allocation & SLA caps) |
+| **Aggressive (30% Global Fix)** | **$354,431.40** | $827,006.60 | 90+ Days (Structural automation & policy revamp) |
 
 ---
 
 ### 9. Data Analyst Executive Boardroom Briefing Script
 *Use this verbatim script when presenting these forensic findings to the CFO, VP, or Board:*
 
-> *"Good morning. Across our audited footprint of **1,000 physical records**, our system identified **300 critical events (30.0%)**, driving an aggregate financial drag of **$3,271,258.00**.*
+> *"Good morning. Across our audited footprint of **1,000 physical records**, our system identified **300 critical events (30.0%)**, driving an aggregate adverse financial liability / capital at risk of **$1,181,438.00** (across 300 defaulted/adverse events out of $3,271,258.00 total portfolio volume).*
 > 
-> *Our root-cause forensic analysis proves that this drag is heavily concentrated: the top leak segment accounts for **72.7% of total financial friction**.*
+> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `Checking account` (rate spread: 37.59 percentage points, Chi-Square p = 1.2189e-26): the top leak segment accounts for **42.3% of total adverse financial liability ($1,181,438.00)**.*
 > 
-> *Rather than speculative intuition, we recommend an initial targeted 10% operational remediation, which models a projected reduction of autonomously unlock **$327,125.80 in direct capital recovery** within the next fiscal quarter as an initial proof-of-concept."*
+> *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously unlock **$118,143.80 in direct capital recovery** within the next fiscal quarter."*
 
 
 ---
@@ -85,10 +96,11 @@
 - **Domain Context**: **Financial Services & Risk Operations**
 - **Monitored Population**: **1,000 physical records**
 - **Target Adverse Events (`Risk`)**: **300 events (30.0%)**
-- **Highest-Friction Root Bottleneck**: **`Checking account = little`**
+- **Highest-Observed Candidate Segment**: **`Checking account = little`**
   - **Cohort Volume**: 274 records
   - **Adverse Events in Segment**: 135 events
-  - **Segment Failure Rate**: **49.27%** (vs. 30.0% baseline — **1.64x Risk Multiplier**)
+  - **Segment Failure Rate**: **49.27%** (vs. 22.73% rest-of-population baseline — **1.64x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 8.17, p = 2.2204e-16`)** — **72.7 Attributable Excess Events (+26.54% above 22.73% rest-of-system baseline)**
 
 ---
 
@@ -97,28 +109,28 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (Process Hygiene & Early Warning Alerts)** | $5,000 - $15,000 | 1 - 2 Weeks | **$20,000.00 risk averted** | [$18,000.00 to $23,000.00] (95% Wilson CI) | Treats symptoms rather than root physiological/operational causes; long-term exposure remains ~85% active. |
-| **Pathway B: Surgical (Dedicated Protocol for High-Risk Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$47,000.00 risk averted** | [$42,000.00 to $53,000.00] (95% Wilson CI) | Leaves secondary low-volume nodes unmonitored; requires training frontline staff on custom triage. |
-| **Pathway C: Structural (Full Systemic Modernization & Automated Intervention)** | $100,000 - $250,000 | 90 - 180 Days | **$88,000.00 risk averted** | [$77,000.00 to $98,000.00] (95% Wilson CI) | High upfront capital expenditure and long payback horizon; risk of project fatigue. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$61,444.93 risk averted (18 excess adverse events — 25% Excess-Risk Compression)** | [$47,790.50 to $78,512.97] (14 to 23 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (55 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$150,198.73 risk averted (44 excess adverse events — 60% Excess-Risk Compression)** | [$112,649.04 to $187,748.41] (33 to 55 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$249,193.34 risk averted (73 excess adverse events — 100% Baseline Parity)** | [$184,334.80 to $310,638.27] (54 to 91 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
 ### 3. Brutal Pros & Cons Matrix (Har Faisle Ka Fayda Aur Nuksan)
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
-#### 🔹 Pathway A: Conservative (Process Hygiene & Early Warning Alerts)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; requires no new software procurement; immediate early-warning queue alerts.
-- **Nuksan (Downside & Limitations)**: Treats symptoms rather than root physiological/operational causes; long-term exposure remains ~85% active.
+#### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 72.7 attributable excess events in `Checking account = little` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (55 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
-#### 🔹 Pathway B: Surgical (Dedicated Protocol for High-Risk Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the concentrated Checking account = little bottleneck where risk is 1.64x baseline.
-- **Nuksan (Downside & Limitations)**: Leaves secondary low-volume nodes unmonitored; requires training frontline staff on custom triage.
+#### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `Checking account = little` bottleneck (49.27% vs 22.73% rest-of-system, p = 2.2204e-16, +26.54% attributable excess risk).
+- **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
-#### 🔹 Pathway C: Structural (Full Systemic Modernization & Automated Intervention)
-- **Fayda (Upside & Benefits)**: Permanent architectural defense; eliminates human triage latency; delivers maximum risk eradication.
-- **Nuksan (Downside & Limitations)**: High upfront capital expenditure and long payback horizon; risk of project fatigue.
+#### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
+- **Fayda (Upside & Benefits)**: Brings `Checking account = little` from 49.27% down to exact statistical parity with the rest-of-population baseline (22.73%), eliminating all 73 attributable excess failures.
+- **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
 ---
@@ -127,13 +139,13 @@
 *Board ya leadership (Chief Risk Officer / CFO) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'Checking account = little' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Checking account = little' is 49.27% compared to 22.73% across the remainder of the population (Relative Risk Multiplier: 1.64x across 274 physical records). The empirical separation yields z = 8.17 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence.
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Checking account = little' is 49.27% compared to 22.73% across the remainder of the population (Relative Risk Multiplier: 1.64x across 274 physical records). The empirical separation yields z = 8.17 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 72.7 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 274 records in this high-risk partition, 135 were confirmed adverse events (49.27% precision). The false-positive rate is 50.73%. Frontline capacity will only absorb 139 false alarms over the cohort cycle, which is well within operational buffer capacity.
+> **Empirical Data Answer**: Out of 274 records in this high-risk partition, 135 were confirmed adverse events (49.27% precision vs 22.73% rest-of-system baseline, +26.54% excess risk). Targeting this cohort addresses 72.7 attributable excess events while absorbing 139 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C requires significant capital and 90-180 days implementation time. Pathway B captures 53.4% of Pathway C's benefit at less than 20% of the cost. We recommend validating Pathway B first before committing to structural CapEx.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (73 excess events, bringing `Checking account = little` to exact 22.73% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (44 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---
@@ -144,15 +156,15 @@
 ### 1. Non-Linear Quantile Threshold Cliffs (Top Operational Drivers)
 *Discretized quartile breakdown exposing where gradual performance transitions into structural failure:*
 
-#### 📊 Feature: `Credit amount` (Max Inflection Delta: 19.60%, Chi-Square p: 5.0585e-06)
+#### 📊 Feature: `Credit amount` (Max Inflection Delta: 19.60%, Chi-Square p: 5.0585e-06 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(249.999, 1365.5]` | 250 | 77 | **30.8%** | **Optimal Baseline** |
+| **Q1** | `(249.999, 1365.5]` | 250 | 77 | **30.8%** | Transitional Tier |
 | **Q2** | `(1365.5, 2319.5]` | 250 | 62 | **24.8%** | Transitional Tier |
-| **Q3** | `(2319.5, 3972.25]` | 250 | 56 | **22.4%** | Transitional Tier |
+| **Q3** | `(2319.5, 3972.25]` | 250 | 56 | **22.4%** | **Optimal Baseline** |
 | **Q4** | `(3972.25, 18424.0]` | 250 | 105 | **42.0%** | **Structural Cliff Breach** |
 
-#### 📊 Feature: `Duration` (Max Inflection Delta: 14.88%, Chi-Square p: 7.8364e-08)
+#### 📊 Feature: `Duration` (Max Inflection Delta: 14.88%, Chi-Square p: 7.8364e-08 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Q1** | `(3.999, 12.0]` | 359 | 76 | **21.17%** | **Optimal Baseline** |
@@ -160,18 +172,18 @@
 | **Q3** | `(18.0, 24.0]` | 224 | 66 | **29.46%** | Transitional Tier |
 | **Q4** | `(24.0, 72.0]` | 230 | 102 | **44.35%** | **Structural Cliff Breach** |
 
-#### 📊 Feature: `Age` (Max Inflection Delta: 9.19%, Chi-Square p: 2.6541e-03)
+#### 📊 Feature: `Age` (Max Inflection Delta: 9.19%, Chi-Square p: 2.6541e-03 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(18.999, 27.0]` | 291 | 107 | **36.77%** | **Optimal Baseline** |
+| **Q1** | `(18.999, 27.0]` | 291 | 107 | **36.77%** | **Structural Cliff Breach** |
 | **Q2** | `(27.0, 33.0]` | 225 | 74 | **32.89%** | Transitional Tier |
-| **Q3** | `(33.0, 42.0]` | 249 | 59 | **23.69%** | Transitional Tier |
-| **Q4** | `(42.0, 75.0]` | 235 | 60 | **25.53%** | **Structural Cliff Breach** |
+| **Q3** | `(33.0, 42.0]` | 249 | 59 | **23.69%** | **Optimal Baseline** |
+| **Q4** | `(42.0, 75.0]` | 235 | 60 | **25.53%** | Transitional Tier |
 
 ---
 
 ### 2. 2x2 Orthogonal Feature Interaction Matrix (`Duration` vs. `Age`)
-*Testing feature buffering, compounding risk, and cross-variable overrides:*
+*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 5.5298e-07):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -182,14 +194,14 @@
 
 ---
 
-### 3. Operational Triage Scrap vs. Purity Yield Curve
-*Empirical evaluation of intake filter policies, defect capture recall, and false discard scrap:*
+### 3. Operational Triage Screening vs. Purity Yield Curve
+*Empirical evaluation of pre-screening filter policies, adverse recall, and false-alarm friction:*
 
-| Triage Policy | Cutoff Rule | Discarded Scrap | Scrap % | Defect Recall (Caught) | Retained Defect % | False Discards (Good Scrapped) | False Discard % |
+| Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Scrap if Duration > 24.00)** | Operational Filter | 230 | 23.0% | **34.0%** | **25.71%** | 128 | 18.29% |
-| **Policy 2: Surgical (Scrap if Duration > 18.00)** | Operational Filter | 454 | 45.4% | **56.0%** | **24.18%** | 286 | 40.86% |
-| **Policy 3: Compound (Scrap if Duration > 18.00 OR Age < 33.00)** | Operational Filter | 709 | 70.9% | **80.67%** | **19.93%** | 467 | 66.71% |
+| **Policy 1: Conservative (Underwriting Audit if Duration > 24.00)** | Operational Filter | 230 | 23.0% | **34.0%** | **25.71%** | 128 | 18.29% |
+| **Policy 2: Surgical (Underwriting Audit if Duration > 18.00)** | Operational Filter | 454 | 45.4% | **56.0%** | **24.18%** | 286 | 40.86% |
+| **Policy 3: Compound (Underwriting Audit if Duration > 18.00 OR Age < 33.00)** | Operational Filter | 709 | 70.9% | **80.67%** | **19.93%** | 467 | 66.71% |
 
 ---
 
@@ -214,22 +226,22 @@
 > **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'Credit amount'. Across the 4 quartiles, event failure rates escalate from 30.8% in Q1 ((249.999, 1365.5]) to 42.0% in Q4 ((3972.25, 18424.0]) (Max Delta: 19.60 percentage points, Chi-Square p < 0.0001). This establishes that 'Credit amount' operates as an acute non-linear cliff (step increase of 19.60 percentage points, 2.1x mean delta) rather than a benign linear drift.
 
 **MQ2: What is the critical operational boundary for secondary driver 'Duration', and does breach of this threshold alter failure probability?**  
-> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'Duration' quartile threshold. In high-risk Q4 ((24.0, 72.0]), the adverse rate is 44.35%, compared to 21.17% in favorable Q1 ((3.999, 12.0]). Managing 'Duration' into its favorable operating window delivers a 23.18 percentage point risk reduction.
+> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'Duration' quartile threshold (Chi-Square p = 7.8364e-08). In high-risk Q4 ((24.0, 72.0]), the adverse rate is 44.35%, compared to 21.17% in favorable Q1 ((3.999, 12.0]). Managing 'Duration' into its favorable operating window delivers a 23.18 percentage point risk reduction.
 
 **MQ3: Can high levels of protective factor 'Age' compensate for elevated risk factor 'Duration', or does 'Duration' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis reveals that high 'Age' provides substantial mitigation: within the high 'Duration' cohort, elevating 'Age' cuts adverse events from 41.08% (Compound Catastrophe) down to 32.39% (Masked Risk). However, even with high 'Age', records with elevated 'Duration' experience 32.39% failure—more than double the 18.45% failure rate observed when 'Duration' is controlled in the Optimal Zone. Thus, 'Duration' exerts an independent negative drag that 'Age' cannot fully mask.
+> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 5.5298e-07) reveals that within the high 'Duration' cohort, elevating 'Age' shifts adverse events from 41.08% (Compound Catastrophe) to 32.39% (Masked Risk). Records with elevated 'Duration' and high 'Age' experience 32.39% failure—13.94 percentage points (1.76x) higher than the 18.45% failure rate observed when 'Duration' is controlled in the Optimal Zone. Thus, 'Duration' retains a residual risk drag even when 'Age' is elevated.
 
 **MQ4: How significantly does third-order metric 'Age' buffer against failure, and what is the minimum safe threshold?**  
-> **Empirical Data Answer**: Quartile breakdown shows that lower levels of 'Age' pose acute vulnerability (36.77% adverse events in Q1 [(18.999, 27.0]] and 32.89% in Q2), but elevating 'Age' drives a dramatic recovery down to 25.53% in Q4 ((42.0, 75.0]). This isolates Q1 as the vulnerability breach zone and proves that maintaining 'Age' in upper quartiles (Q3/Q4) serves as an essential protective buffer.
+> **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 2.6541e-03) shows that lower levels of 'Age' incur 36.77% adverse events in Q1 ((18.999, 27.0]), whereas elevating 'Age' into Q4 ((42.0, 75.0]) reduces adverse events by 11.24 percentage points down to 25.53%. This isolates Q1 as the primary vulnerability stratum.
 
 **MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
 > **Empirical Data Answer**: Tail risk audit across the lowest 300 catastrophic records reveals that only 27.33% breach two or more critical parameters (Duration, Credit amount, Age) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
-**MQ6: If quality control establishes an intake rejection gate, what is the exact trade-off between defect elimination, scrap volume, and false discard of acceptable product?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Scrap if Duration > 24.00)), 230 records (23.0%) are rejected, capturing 34.0% of all defects with 128 false discards. Under Surgical Triage (Policy 2: Surgical (Scrap if Duration > 18.00)), rejections expand to 454 records (45.4%), capturing 56.0% of defects and dropping retained defect rate to 24.18%, at the cost of 286 false discards (40.86% of acceptable stock). Conservative triage delivers the higher marginal defect containment per scrap unit (1.48 vs 1.23 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
+**MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Underwriting Audit if Duration > 24.00)), 230 records (23.0%) are flagged, capturing 34.0% of all adverse events with 128 false alarms. Under Surgical Triage (Policy 2: Surgical (Underwriting Audit if Duration > 18.00)), flagged volume expands to 454 records (45.4%), capturing 56.0% of adverse events and shifting the unflagged adverse rate to 24.18%, at the cost of 286 false alarms (40.86% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (1.48 vs 1.23 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
 
 **MQ7: Does 'Duration' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'Credit amount' (Simpson's Paradox)?**  
 > **Empirical Data Answer**: At the unadjusted level, 'Duration' shows correlation r = 0.215 with the target. However, 'Duration' is strongly co-linear with 'Credit amount' (r = 0.625). When stratifying across 'Credit amount' quartiles, the correlation of 'Duration' within strata shifts to ((249.999, 1365.5]: r=0.239, (1365.5, 2319.5]: r=0.314, (2319.5, 3972.25]: r=0.221). This proves that much of 'Duration's macro effect is mediated through its relationship with 'Credit amount', warning against isolated policy changes on 'Duration' alone.
 
 ---
-*Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V3.5 (Zero Bias Guardrail Verified)*
+*Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*
