@@ -1,0 +1,125 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 299"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[DEATH_EVENT] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 96"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column age
+		dataType: double
+		summarizeBy: average
+		sourceColumn: age
+		lineageTag: col-fact-age
+		formatString: 0.00
+
+	column anaemia
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: anaemia
+		lineageTag: col-fact-anaemia
+		formatString: #,0
+
+	column creatinine_phosphokinase
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: creatinine_phosphokinase
+		lineageTag: col-fact-creatinine_phosphokinase
+		formatString: #,0
+
+	column diabetes
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: diabetes
+		lineageTag: col-fact-diabetes
+		formatString: #,0
+
+	column ejection_fraction
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: ejection_fraction
+		lineageTag: col-fact-ejection_fraction
+		formatString: #,0
+
+	column high_blood_pressure
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: high_blood_pressure
+		lineageTag: col-fact-high_blood_pressure
+		formatString: #,0
+
+	column platelets
+		dataType: double
+		summarizeBy: average
+		sourceColumn: platelets
+		lineageTag: col-fact-platelets
+		formatString: 0.00
+
+	column serum_creatinine
+		dataType: double
+		summarizeBy: average
+		sourceColumn: serum_creatinine
+		lineageTag: col-fact-serum_creatinine
+		formatString: 0.00
+
+	column serum_sodium
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: serum_sodium
+		lineageTag: col-fact-serum_sodium
+		formatString: #,0
+
+	column sex
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: sex
+		lineageTag: col-fact-sex
+		formatString: #,0
+
+	column smoking
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: smoking
+		lineageTag: col-fact-smoking
+		formatString: #,0
+
+	column time
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: time
+		lineageTag: col-fact-time
+		formatString: #,0
+
+	column DEATH_EVENT
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: DEATH_EVENT
+		lineageTag: col-fact-DEATH_EVENT
+		formatString: #,0
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

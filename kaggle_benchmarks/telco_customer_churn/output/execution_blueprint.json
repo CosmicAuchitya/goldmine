@@ -1,0 +1,31 @@
+{
+  "project_title": "Enterprise Analytics & Dimensional Architecture for raw_data",
+  "fact_table": "telco_customer_churn",
+  "target_metric": "Churn",
+  "primary_id_column": "customerID",
+  "cardinality_defense_plan": {
+    "dimension_aggregation_strategies": "Pre-aggregate any 1:N dimensions before merge to preserve 1:1 fact integrity",
+    "entity_resolution_and_key_cleaning": "Sanitize and harmonize join keys with whitespace stripping and case folding",
+    "relational_join_sequence": "Left join 0 dimension tables () onto telco_customer_churn"
+  },
+  "forensic_enrichment_columns": [
+    "Fulfillment & SLA duration variance",
+    "Financial and operational friction ratio"
+  ],
+  "assertion_gates": [
+    "assert len(final_fact) == len(initial_fact), 'Zero drift violation: Cartesian explosion detected!'",
+    "assert final_fact.duplicated(subset=['customerID']).sum() == 0, 'Duplicate primary keys detected in customerID!'"
+  ],
+  "bi_deliverables": {
+    "fact_table": "bi_ready_fact.parquet",
+    "dimension_tables": [],
+    "dax_measures": [
+      "Total Volume",
+      "Target Events Count",
+      "Target Event Rate %",
+      "Total Operational Loss ($)",
+      "Dimensional Risk Index"
+    ]
+  },
+  "dataset_fingerprint": "65f176183bc8783e"
+}

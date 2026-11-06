@@ -1,0 +1,171 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "bank_churn_modelling": {
+      "table_name": "bank_churn_modelling",
+      "filename": "bank_churn_modelling.csv",
+      "selected_sheet": null,
+      "estimated_rows": 10000,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "CustomerId",
+        "Surname",
+        "CreditScore",
+        "Geography",
+        "Gender",
+        "Age",
+        "Tenure",
+        "Balance",
+        "Num Of Products",
+        "Has Credit Card",
+        "Is Active Member",
+        "Estimated Salary",
+        "Churn"
+      ],
+      "potential_keys": [
+        "CustomerId",
+        "Num Of Products",
+        "Estimated Salary"
+      ],
+      "strictly_unique_primary_keys": [
+        "CustomerId"
+      ],
+      "recommended_primary_key": "CustomerId",
+      "sample_columns": [
+        {
+          "name": "CustomerId",
+          "dtype": "int64",
+          "sample_values": [
+            "15634602",
+            "15647311",
+            "15619304"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Surname",
+          "dtype": "str",
+          "sample_values": [
+            "[MASKED_SURNAME]",
+            "[MASKED_SURNAME]",
+            "[MASKED_SURNAME]"
+          ],
+          "nunique_in_sample": 1193,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "CreditScore",
+          "dtype": "int64",
+          "sample_values": [
+            "619",
+            "608",
+            "502"
+          ],
+          "nunique_in_sample": 408,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Geography",
+          "dtype": "str",
+          "sample_values": [
+            "France",
+            "Spain",
+            "Germany"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Gender",
+          "dtype": "str",
+          "sample_values": [
+            "Female",
+            "Male"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Age",
+          "dtype": "int64",
+          "sample_values": [
+            "42",
+            "41",
+            "39"
+          ],
+          "nunique_in_sample": 63,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Tenure",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "1",
+            "8"
+          ],
+          "nunique_in_sample": 11,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Balance",
+          "dtype": "float64",
+          "sample_values": [
+            "0.0",
+            "83807.86",
+            "159660.8"
+          ],
+          "nunique_in_sample": 1294,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Num Of Products",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "3",
+            "2"
+          ],
+          "nunique_in_sample": 4,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Has Credit Card",
+          "dtype": "int64",
+          "sample_values": [
+            "[MASKED_HAS_CREDIT_CARD]",
+            "[MASKED_HAS_CREDIT_CARD]"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Is Active Member",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "0"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Estimated Salary",
+          "dtype": "float64",
+          "sample_values": [
+            "101348.88",
+            "112542.58",
+            "113931.57"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

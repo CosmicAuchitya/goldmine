@@ -317,11 +317,22 @@ class MicroLevelForensicInquiryEngine:
         pos_driver = corrs_sorted[0][0]
         neg_driver = corrs_sorted[-1][0]
         
-        med_pos = float(self.df[pos_driver].median())
-        med_neg = float(self.df[neg_driver].median())
-        
-        p_hi = self.df[pos_driver] > med_pos
-        n_hi = self.df[neg_driver] > med_neg
+        def _get_hi_low_split(s: pd.Series):
+            med = float(s.median())
+            cnt_gt = int((s > med).sum())
+            if 0 < cnt_gt < len(s):
+                return med, ">", "<=", (s > med).fillna(False)
+            cnt_gte = int((s >= med).sum())
+            if 0 < cnt_gte < len(s):
+                return med, ">=", "<", (s >= med).fillna(False)
+            u_vals = np.sort(s.dropna().unique())
+            if len(u_vals) >= 2:
+                split_val = float(u_vals[-1])
+                return split_val, ">=", "<", (s >= split_val).fillna(False)
+            return med, ">", "<=", (s > med).fillna(False)
+
+        med_pos, op_pos_hi, op_pos_lo, p_hi = _get_hi_low_split(self.df[pos_driver])
+        med_neg, op_neg_hi, op_neg_lo, n_hi = _get_hi_low_split(self.df[neg_driver])
         
         q1 = self.target_series[~p_hi & n_hi]
         q2 = self.target_series[~p_hi & ~n_hi]
@@ -379,6 +390,10 @@ class MicroLevelForensicInquiryEngine:
             "neg_driver": neg_driver,
             "med_pos": med_pos,
             "med_neg": med_neg,
+            "op_pos_hi": op_pos_hi,
+            "op_pos_lo": op_pos_lo,
+            "op_neg_hi": op_neg_hi,
+            "op_neg_lo": op_neg_lo,
             "p_value": float(p_quad),
             "quad_spread": round(quad_spread, 2),
             "is_significant": is_sig,
@@ -460,6 +475,8 @@ class MicroLevelForensicInquiryEngine:
             verb = "Retention Review if"
         elif dom_key == "industrial_predictive_maintenance":
             verb = "Maintenance Inspection if"
+        elif dom_key == "saas_enterprise":
+            verb = "Churn Review if"
         else:
             verb = "Triage Gate if"
 
@@ -672,6 +689,10 @@ class MicroLevelForensicInquiryEngine:
             q1_cnt = int(quads["Q1_optimal"]["count"])
             q3_cnt = int(quads["Q3_masked"]["count"])
             q4_cnt = int(quads["Q4_catastrophic"]["count"])
+            op_p_hi = interactions.get('op_pos_hi', '>')
+            op_p_lo = interactions.get('op_pos_lo', '<=')
+            op_n_hi = interactions.get('op_neg_hi', '>')
+            op_n_lo = interactions.get('op_neg_lo', '<=')
             if not interactions.get("is_significant", False):
                 q_rates = [q["rate"] for q in quads.values() if q["count"] > 0]
                 min_q, max_q = (min(q_rates), max(q_rates)) if q_rates else (0.0, 0.0)
@@ -686,7 +707,7 @@ class MicroLevelForensicInquiryEngine:
             elif q3_cnt == 0:
                 ans3 = (
                     f"Cross-quadrant analysis (2x2 Chi-Square p = {interactions['p_value']:.4e}) exposes a strict physical inverse operating boundary between '{pos}' and '{neg}': "
-                    f"the Masked Risk stratum (High '{pos}' > {interactions['med_pos']:.2f} & High '{neg}' > {interactions['med_neg']:.2f}) contains 0 physical observations "
+                    f"the Masked Risk stratum (High '{pos}' {op_p_hi} {interactions['med_pos']:.2f} & High '{neg}' {op_n_hi} {interactions['med_neg']:.2f}) contains 0 physical observations "
                     f"(structurally empty stratum — elevated '{pos}' and elevated '{neg}' never co-occur in this population). "
                     f"Consequently, all high-'{pos}' records concentrate in the Compound Catastrophe zone (Low '{neg}', {q4_cnt:,} records) with a {q4_r}% adverse rate "
                     f"versus {q1_r}% in the Optimal Zone ({q1_cnt:,} records), proving that '{neg}' cannot be elevated alongside high '{pos}' to buffer risk."
@@ -694,7 +715,7 @@ class MicroLevelForensicInquiryEngine:
             elif q4_cnt == 0:
                 ans3 = (
                     f"Cross-quadrant analysis (2x2 Chi-Square p = {interactions['p_value']:.4e}) exposes a strict co-movement boundary between '{pos}' and '{neg}': "
-                    f"the Compound Catastrophe stratum (High '{pos}' > {interactions['med_pos']:.2f} & Low '{neg}' <= {interactions['med_neg']:.2f}) contains 0 physical observations "
+                    f"the Compound Catastrophe stratum (High '{pos}' {op_p_hi} {interactions['med_pos']:.2f} & Low '{neg}' {op_n_lo} {interactions['med_neg']:.2f}) contains 0 physical observations "
                     f"(structurally empty stratum). All high-'{pos}' records reside in the Masked Risk zone ({q3_cnt:,} records) at a {q3_r}% adverse rate "
                     f"versus {q1_r}% in the Optimal Zone ({q1_cnt:,} records)."
                 )
@@ -920,10 +941,10 @@ class MicroLevelForensicInquiryEngine:
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | {q1_rate_str} | {q1_imp_str} |
-| **Q2 (Unbuffered Low)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | {q2_rate_str} | {q2_imp_str} |
-| **Q3 (Masked Risk)** | High `{pos}` (> {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | {q3_rate_str} | {q3_imp_str} |
-| **Q4 (Catastrophic Zone)** | High `{pos}` (> {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | {q4_rate_str} | {q4_imp_str} |
+| **Q1 (Optimal Zone)** | Low `{pos}` ({interactions.get('op_pos_lo', '<=')} {interactions['med_pos']:.2f}) & High `{neg}` ({interactions.get('op_neg_hi', '>')} {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | {q1_rate_str} | {q1_imp_str} |
+| **Q2 (Unbuffered Low)** | Low `{pos}` ({interactions.get('op_pos_lo', '<=')} {interactions['med_pos']:.2f}) & Low `{neg}` ({interactions.get('op_neg_lo', '<=')} {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | {q2_rate_str} | {q2_imp_str} |
+| **Q3 (Masked Risk)** | High `{pos}` ({interactions.get('op_pos_hi', '>')} {interactions['med_pos']:.2f}) & High `{neg}` ({interactions.get('op_neg_hi', '>')} {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | {q3_rate_str} | {q3_imp_str} |
+| **Q4 (Catastrophic Zone)** | High `{pos}` ({interactions.get('op_pos_hi', '>')} {interactions['med_pos']:.2f}) & Low `{neg}` ({interactions.get('op_neg_lo', '<=')} {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | {q4_rate_str} | {q4_imp_str} |
 
 """
 

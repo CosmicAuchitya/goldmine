@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</title>
+    <style>
+        /* =====================================================================
+           BESPOKE DESIGN SYSTEM: CLINICAL DIAGNOSTIC & OPERATIONS CLARITY
+           Zero External CDNs & Dynamic CSS Variable Palettes
+           ===================================================================== */
+        :root {
+            --canvas-bg: #0B1324;
+            --card-bg: #111E38;
+            --border-color: #1E2F54;
+            --accent-primary: #3B82F6;
+            --accent-secondary: #10B981;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --card-radius: 8px;
+            --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="light"] {
+            --canvas-bg: #F4F7FB;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --accent-primary: #2563EB;
+            --accent-secondary: #059669;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--canvas-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            padding: 24px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Command Bar */
+        .cmd-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .brand-meta h1 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .brand-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-verified {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        .badge-circuit-breaker {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+        }
+        .badge-persona {
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Header Controls */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-ctrl {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-ctrl:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Slicer Ribbon */
+        .slicer-ribbon {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-elevation);
+        }
+        .slicer-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+        .chips-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .chip {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .chip:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+        .chip.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .slicer-select {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Executive Banner */
+        .exec-banner {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(244, 63, 94, 0.04));
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 var(--card-radius) var(--card-radius) 0;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .exec-banner.cb-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.06));
+            border-left-color: #f59e0b;
+        }
+
+        /* Hero KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-elevation);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border-color);
+        }
+        .kpi-card.accent-red::after { background: #f43f5e; }
+        .kpi-card.accent-green::after { background: #10b981; }
+        .kpi-card.accent-gold::after { background: var(--accent-primary); }
+        .kpi-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .kpi-val {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Main 12-Column Responsive Bento Grid & Archetype Structural Geometry */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .panel-card {
+            grid-column: span 6;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-elevation);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .panel-card.span-12, .panel-card.full-width { grid-column: span 12; }
+        .panel-card.span-8 { grid-column: span 8; }
+        .panel-card.span-7 { grid-column: span 7; }
+        .panel-card.span-6 { grid-column: span 6; }
+        .panel-card.span-5 { grid-column: span 5; }
+        .panel-card.span-4 { grid-column: span 4; }
+        @media (max-width: 1100px) {
+            .panel-card, .panel-card.span-8, .panel-card.span-7, .panel-card.span-5, .panel-card.span-4 {
+                grid-column: span 12;
+            }
+        }
+
+        /* Bespoke Structural Differentiation per Executive Archetype */
+        body[data-archetype="swiss_institutional_terminal"] {
+            --card-radius: 2px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .cmd-bar {
+            border-top: 3px double var(--accent-primary);
+            padding-top: 16px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .kpi-val {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+        }
+
+        body[data-archetype="nordic_saas_command"] {
+            --card-radius: 12px;
+        }
+        body[data-archetype="nordic_saas_command"] .panel-card {
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(6, 182, 212, 0.28);
+        }
+
+        body[data-archetype="editorial_commerce_studio"] {
+            --card-radius: 14px;
+        }
+        body[data-archetype="editorial_commerce_studio"] .cmd-bar {
+            border-bottom: 3px double var(--border-color);
+        }
+        body[data-archetype="editorial_commerce_studio"] .brand-meta h1 {
+            font-size: 27px;
+            letter-spacing: -0.01em;
+        }
+
+        body[data-archetype="industrial_scada_telemetry"] {
+            --card-radius: 3px;
+        }
+        body[data-archetype="industrial_scada_telemetry"] .panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            border-top: 2px solid var(--accent-primary);
+            border-right: 2px solid var(--accent-primary);
+            pointer-events: none;
+        }
+        .scada-led {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            margin-right: 6px;
+        }
+
+        body[data-archetype="clinical_diagnostic_clarity"] {
+            --card-radius: 10px;
+        }
+        body[data-archetype="clinical_diagnostic_clarity"] .panel-card {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Ontology & Governance Drawer */
+        .ont-strip {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .ont-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 3px 9px;
+        }
+        details.gov-drawer {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-top: 12px;
+        }
+        details.gov-drawer summary {
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .pathway-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .pathway-card {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 12px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .panel-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .svg-container {
+            width: 100%;
+            min-height: 280px;
+            position: relative;
+            flex: 1;
+        }
+
+        /* Tooltip */
+        #chart-tooltip {
+            position: fixed;
+            display: none;
+            background: rgba(15, 23, 42, 0.95);
+            color: #ffffff;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            max-width: 280px;
+        }
+
+        /* What-If Simulator */
+        .sim-box {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+        .sim-slider-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .sim-slider {
+            flex: 1;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+        }
+        .sim-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .btn-preset {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-preset:hover {
+            border-color: var(--accent-primary);
+        }
+        .sim-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .sim-res-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* Worklist Explorer */
+        .worklist-ctrls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .worklist-tabs {
+            display: flex;
+            gap: 8px;
+        }
+        .wl-tab {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .wl-tab.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+        }
+        .wl-search {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 240px;
+            outline: none;
+        }
+        .table-wrap {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        .worklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .worklist-table th {
+            background: var(--canvas-bg);
+            position: sticky;
+            top: 0;
+            padding: 8px 12px;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+        .worklist-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .worklist-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Print Media */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
+            .cmd-bar button, .slicer-ribbon, .sim-slider-row, .sim-buttons, .worklist-ctrls { display: none !important; }
+            .panel-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            #chart-tooltip { display: none !important; }
+        }
+    </style>
+</head>
+<body data-archetype="clinical_diagnostic_clarity">
+    <div id="chart-tooltip"></div>
+
+    <!-- Top Command Bar -->
+    <header class="cmd-bar">
+        <div class="brand-meta">
+            <h1 id="ui-title">Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</h1>
+            <div class="brand-badges">
+                <span class="badge badge-persona">Chief Medical Officer / Clinical Ops Director / CHRO</span>
+                <span class="badge badge-persona">Clinical Diagnostic &amp; Operations Clarity</span>
+                <span class="badge badge-verified">&check; 100% DuckDB Ground Truth (0 Drift)</span>
+                
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-ctrl" id="lang-btn" onclick="toggleLanguage()">🇮🇳 Hinglish Switch</button>
+            <button class="btn-ctrl" id="theme-btn" onclick="toggleTheme()">☀️ Light / 🌙 Dark</button>
+            <button class="btn-ctrl" onclick="window.print()">🖨️ Print / PDF</button>
+        </div>
+    </header>
+
+    <!-- Domain Ontology Intelligence Strip -->
+    <div class="ont-strip">
+        <span class="ont-pill"><strong>Ontology:</strong> Manufacturing &amp; Industrial Operations (MFG)</span>
+        <span class="ont-pill"><strong>Layout:</strong> Clinical cohort stratification &amp; early-intervention layout</span>
+        <span class="ont-pill"><strong>DFII Score:</strong> 19 / 19 (8 Adaptive Panels)</span>
+    </div>
+
+    <!-- Cross-Filter Slicer Ribbon -->
+    <div class="slicer-ribbon">
+        <div class="slicer-label" data-en="Filter by ejection_fraction:" data-hi="ejection_fraction Se Filter Karein:">
+            Filter by ejection_fraction:
+        </div>
+        <div class="chips-container" id="prim-chips">
+            <button class="chip active" onclick="setPrimaryFilter('All')">All Segments</button>
+        </div>
+        
+        <div class="slicer-label" style="margin-left: 12px;" data-en="high_blood_pressure:" data-hi="high_blood_pressure:">
+            high_blood_pressure:
+        </div>
+        <select class="slicer-select" id="sec-select" onchange="setSecondaryFilter(this.value)">
+            <option value="All">All high_blood_pressure</option>
+        </select>
+        
+        <button class="btn-ctrl" style="padding: 4px 10px; font-size: 11px;" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <!-- Executive Insight Strip -->
+    <div class="exec-banner " id="exec-banner">
+        <div>
+            <strong id="exec-banner-tag" data-en="Executive Bottleneck Insight:" data-hi="Karyakari Bottleneck Jankari:">
+                Executive Bottleneck Insight:
+            </strong>
+            <span id="exec-banner-text">Group `ejection_fraction = 20` exhibits the highest statistically verified adverse concentration at 88.89% (vs 28.47% rest-of-business baseline, 3.12x lift, z = 5.32, 10.9 excess events).</span>
+        </div>
+        <div style="font-size: 12px; font-weight: 700; white-space: nowrap;">
+            Status: 🟢 Statistically Validated
+        </div>
+    </div>
+
+    <!-- Hero KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card accent-gold">
+            <div class="kpi-title" data-en="Audited Records" data-hi="Kul Records">Audited Records</div>
+            <div class="kpi-val" id="kpi-records">299</div>
+            <div class="kpi-sub" data-en="Zero Cartesian Drift" data-hi="100% Asli Records">Zero Cartesian Drift</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Events" data-hi="Failure / Nuksan Events">Adverse Events</div>
+            <div class="kpi-val" id="kpi-events">96</div>
+            <div class="kpi-sub" id="kpi-rate-sub">Failure Rate: 32.11%</div>
+        </div>
+        <div class="kpi-card accent-green">
+            <div class="kpi-title" data-en="System Reliability" data-hi="System Ki Suraksha">System Reliability</div>
+            <div class="kpi-val" id="kpi-reliability">67.89%</div>
+            <div class="kpi-sub" data-en="Unbreached Operating Profile" data-hi="Surakshit Operating Profile">Unbreached Operating Profile</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Capital Drag" data-hi="Direct Financial Nuksan">
+                Adverse Failure Share
+            </div>
+            <div class="kpi-val" id="kpi-drag">
+                96 units
+            </div>
+            <div class="kpi-sub" id="kpi-drag-sub">
+                Physical Adverse Units
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Visual Panels Grid -->
+    <div class="dashboard-grid" id="main-panels-container">
+        <!-- Panels are injected and rendered via native SVG engine -->
+    </div>
+
+    <!-- Collapsible Statistical Proof, Pathways & Design Governance Drawer -->
+    <details class="gov-drawer" id="gov-drawer">
+        <summary data-en="🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit" data-hi="🔬 Statistical Saboot, 3 Raste (A/B/C) Aur Design Governance Audit">
+            🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit
+        </summary>
+        <div id="gov-drawer-body" style="margin-top: 12px;"></div>
+    </details>
+
+    <!-- Footer -->
+    <footer>
+        <div>Generated Autonomously by DataX-Ray Stage 7 Bespoke Dashboard Architect &bull; Verified Physical Ground Truth</div>
+        <div>Engine Version: V5.5 &bull; Archetype: clinical_diagnostic_clarity &bull; DFII Impact Index: 19/19 &bull; Zero External CDNs</div>
+    </footer>
+
+    <!-- =====================================================================
+         CLIENT-SIDE APPLICATION LOGIC & ZERO-CDN NATIVE SVG RENDERERS
+         ===================================================================== -->
+    <script>
+        const DASHBOARD_PAYLOAD = /*__DXR_PAYLOAD_START__*/{"meta": {"dataset_name": "heart_failure_clinical", "engine": "DataX-Ray Bespoke Architecture V5.5", "archetype": "clinical_diagnostic_clarity", "archetype_name": "Clinical Diagnostic \u0026 Operations Clarity", "executive_persona": "Chief Medical Officer / Clinical Ops Director / CHRO", "title_en": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit", "title_hi": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit", "generated_timestamp": "2026-11-06 17:28:47"}, "ontology": {"ontology_key": "manufacturing_industrial", "domain_code": "MFG", "domain_name": "Manufacturing \u0026 Industrial Operations", "key_metrics_kpis": ["Overall Equipment Effectiveness (OEE = Availability * Performance * Quality)", "Scrap Rate (% of produced parts defective)", "First Pass Yield (FPY %)", "Mean Time Between Failures (MTBF) \u0026 Mean Time to Repair (MTTR)"], "hidden_leakage_risks": ["Unplanned Machine Breakdown (\u092e\u0936\u0940\u0928 \u0905\u091a\u093e\u0928\u0915 \u0916\u0930\u093e\u092c \u0939\u094b\u0928\u093e, \u092a\u0942\u0930\u0940 \u0932\u093e\u0907\u0928 \u0930\u0941\u0915\u0928\u093e)", "Raw Material Price Volatility (\u0915\u091a\u094d\u091a\u0947 \u092e\u093e\u0932 \u0915\u093e \u092e\u0939\u0902\u0917\u093e \u0939\u094b\u0928\u093e)", "Batch Contamination / Recall (\u092a\u0942\u0930\u0940 \u0932\u0949\u091f \u0916\u0930\u093e\u092c \u0928\u093f\u0915\u0932\u0928\u093e)"]}, "dfii": {"aesthetic_impact": 5, "context_fit": 5, "implementation_feasibility": 5, "performance_safety": 5, "consistency_risk": 1, "dfii": 19}, "design_system": {"layout_concept": "Clinical cohort stratification \u0026 early-intervention layout", "default_theme": "light", "font_display": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"}, "selected_panels": ["segment_vulnerability_lollipop", "nonlinear_cliff_step_area", "orthogonal_2x2_quadrant", "triage_efficiency_frontier", "secondary_cross_tab_heatmap", "exposure_vs_risk_bubble", "what_if_counterfactual_simulator", "actionable_worklist_explorer"], "selected_panels_detail": [{"id": "segment_vulnerability_lollipop", "name": "Primary Segment Vulnerability \u0026 Wilson 95% CIs", "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.", "priority": 1}, {"id": "nonlinear_cliff_step_area", "name": "Non-Linear Parameter Threshold Cliff \u0026 Danger Zone", "justification": "Isolates discrete physical inflection points across 7 continuous driver(s).", "priority": 2}, {"id": "orthogonal_2x2_quadrant", "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix", "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.", "priority": 3}, {"id": "triage_efficiency_frontier", "name": "Operational Intake Screening Yield Frontier", "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.", "priority": 4}, {"id": "secondary_cross_tab_heatmap", "name": "2D Cross-Tabulation Risk Concentration Heatmap", "justification": "Bivariate categorical cross-tab (ejection_fraction x high_blood_pressure) exposes sub-node vulnerability hubs.", "priority": 5}, {"id": "exposure_vs_risk_bubble", "name": "Exposure Volume vs Adverse Risk Bubble Dispersion", "justification": "Separates high-volume systemic friction from low-volume niche outliers.", "priority": 7}, {"id": "what_if_counterfactual_simulator", "name": "What-If Counterfactual ROI \u0026 Excess-Risk Simulator", "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.", "priority": 9}, {"id": "actionable_worklist_explorer", "name": "Actionable Priority Worklist \u0026 Incident Triage Table", "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.", "priority": 10}], "rejected_panels_detail": [{"id": "temporal_momentum_ribbon", "name": "Temporal Failure Rate \u0026 Volume Momentum", "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."}, {"id": "pareto_loss_waterfall", "name": "Pareto Cumulative Financial Loss Waterfall", "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."}], "global_kpis": {"total_records": 299, "adverse_events": 96, "adverse_rate_pct": 32.11, "system_reliability_pct": 67.89, "has_monetary_ledger": false, "currency_unit": "events", "cost_column": "None (Unit Counts)", "adverse_capital_drag": 0.0, "total_portfolio_volume": 0.0}, "circuit_breaker": {"active": false, "p_value": 0.0, "z_stat": 5.32, "relative_risk_multiplier": 3.12, "excess_events": 10.9}, "bottleneck": {"segment": "ejection_fraction = 20", "volume": 18, "events": 16, "rate_pct": 88.89, "rest_rate_pct": 28.47, "excess_events": 10.9, "narrative_en": "Group `ejection_fraction = 20` exhibits the highest statistically verified adverse concentration at 88.89% (vs 28.47% rest-of-business baseline, 3.12x lift, z = 5.32, 10.9 excess events).", "narrative_hi": "Group `ejection_fraction = 20` mein sabse zyada parmanit nuksan dar 88.89% hai (baaki business mein 28.47%, 3.12x zyada jokhim, 10.9 roke ja sakne wale excess events)."}, "what_if_model": {"excess_events": 10.9, "excess_ci_low": 8.1, "excess_ci_high": 13.7, "avg_cost_per_event": 0.0, "cohort_adverse_dollars": 0.0, "bottleneck_segment": "ejection_fraction = 20", "bottleneck_rate_pct": 88.89, "rest_rate_pct": 28.47}, "pathways": [{"path_name": "Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)", "strategy_type": "Low CapEx / Immediate Operational Triage", "implementation_cost": "Internal Staff Hours (No CapEx)", "time_to_impact": "1 - 2 Weeks", "projected_friction_reduction": "3 events prevented (25% Excess-Risk Compression)", "statistical_confidence_interval": "[2 to 3 events] (95% Attributable Risk CI)", "fayda_pros": "Zero organizational disruption; captures initial 25% of the 10.9 attributable excess events in `ejection_fraction = 20` via lightweight queue alerts.", "nuksan_cons": "Leaves 75% of cohort excess risk (8 excess events) and baseline systemic friction unaddressed.", "collateral_friction": "Minor alert-fatigue among frontline staff if threshold rules are too sensitive."}, {"path_name": "Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)", "strategy_type": "Moderate CapEx / Targeted Clinical or Operational Protocol", "implementation_cost": "Dedicated Protocol Buffer \u0026 Daily Monitoring", "time_to_impact": "30 - 45 Days", "projected_friction_reduction": "7 events prevented (60% Excess-Risk Compression)", "statistical_confidence_interval": "[5 to 8 events] (95% Attributable Risk CI)", "fayda_pros": "Highest Return on Invested Effort; directly targets the statistically verified `ejection_fraction = 20` bottleneck (88.89% vs 28.47% rest-of-system, p = 1.0235e-07, +60.42% attributable excess risk).", "nuksan_cons": "Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.", "collateral_friction": "Requires cross-departmental coordination; minor initial resistance during protocol adoption."}, {"path_name": "Pathway C: Structural (100% Excess-Risk Elimination \u2014 Full Cohort Parity with Baseline)", "strategy_type": "High CapEx / Infrastructure \u0026 Automated Remediation", "implementation_cost": "Dedicated Telemetry / Automated Infrastructure Revamp", "time_to_impact": "90 - 180 Days", "projected_friction_reduction": "11 events prevented (100% Baseline Parity)", "statistical_confidence_interval": "[8 to 14 events] (95% Attributable Risk CI)", "fayda_pros": "Brings `ejection_fraction = 20` from 88.89% down to exact statistical parity with the rest-of-population baseline (28.47%), eliminating all 11 attributable excess failures.", "nuksan_cons": "High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.", "collateral_friction": "Heavy operational friction during system migration; requires ongoing engineering maintenance."}], "cube_slices": [{"prim_val": "15", "sec_val": "0", "volume": 2, "adverse_events": 2, "adverse_rate_pct": 100.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "17", "sec_val": "1", "volume": 2, "adverse_events": 1, "adverse_rate_pct": 50.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "20", "sec_val": "0", "volume": 10, "adverse_events": 9, "adverse_rate_pct": 90.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "20", "sec_val": "1", "volume": 8, "adverse_events": 7, "adverse_rate_pct": 87.5, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "25", "sec_val": "0", "volume": 24, "adverse_events": 11, "adverse_rate_pct": 45.83, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "25", "sec_val": "1", "volume": 12, "adverse_events": 7, "adverse_rate_pct": 58.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "30", "sec_val": "0", "volume": 22, "adverse_events": 8, "adverse_rate_pct": 36.36, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "30", "sec_val": "1", "volume": 12, "adverse_events": 5, "adverse_rate_pct": 41.67, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "35", "sec_val": "0", "volume": 34, "adverse_events": 4, "adverse_rate_pct": 11.76, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "35", "sec_val": "1", "volume": 15, "adverse_events": 3, "adverse_rate_pct": 20.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "38", "sec_val": "0", "volume": 27, "adverse_events": 9, "adverse_rate_pct": 33.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "38", "sec_val": "1", "volume": 13, "adverse_events": 6, "adverse_rate_pct": 46.15, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "40", "sec_val": "0", "volume": 27, "adverse_events": 1, "adverse_rate_pct": 3.7, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "40", "sec_val": "1", "volume": 10, "adverse_events": 3, "adverse_rate_pct": 30.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "45", "sec_val": "0", "volume": 11, "adverse_events": 2, "adverse_rate_pct": 18.18, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "45", "sec_val": "1", "volume": 9, "adverse_events": 3, "adverse_rate_pct": 33.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "50", "sec_val": "0", "volume": 12, "adverse_events": 3, "adverse_rate_pct": 25.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "50", "sec_val": "1", "volume": 9, "adverse_events": 3, "adverse_rate_pct": 33.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "55", "sec_val": "0", "volume": 3, "adverse_events": 1, "adverse_rate_pct": 33.33, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "60", "sec_val": "0", "volume": 18, "adverse_events": 4, "adverse_rate_pct": 22.22, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "60", "sec_val": "1", "volume": 13, "adverse_events": 0, "adverse_rate_pct": 0.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "62", "sec_val": "0", "volume": 1, "adverse_events": 1, "adverse_rate_pct": 100.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "62", "sec_val": "1", "volume": 1, "adverse_events": 0, "adverse_rate_pct": 0.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "65", "sec_val": "0", "volume": 1, "adverse_events": 1, "adverse_rate_pct": 100.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "Other", "sec_val": "0", "volume": 2, "adverse_events": 1, "adverse_rate_pct": 50.0, "adverse_cost": 0.0, "total_cost": 0.0}, {"prim_val": "Other", "sec_val": "1", "volume": 1, "adverse_events": 1, "adverse_rate_pct": 100.0, "adverse_cost": 0.0, "total_cost": 0.0}], "prim_dim_name": "ejection_fraction", "sec_dim_name": "high_blood_pressure", "prim_segments": ["15", "17", "20", "25", "30", "35", "38", "40", "45", "50", "55", "60", "62", "65", "Other"], "sec_segments": ["0", "1"], "widgets_data": {"temporal": {"is_temporal": false, "date_column": "", "pop_delta_pp": 0.0, "trend_direction": "STABLE", "periods": []}, "pareto": [], "lollipop": [{"segment": "14", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "15", "volume": 2, "events": 2, "rate_pct": 100.0, "ci_low": 34.24, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "65", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "70", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "20", "volume": 18, "events": 16, "rate_pct": 88.89, "ci_low": 67.2, "ci_high": 96.9, "adverse_cost": 0.0}, {"segment": "17", "volume": 2, "events": 1, "rate_pct": 50.0, "ci_low": 9.45, "ci_high": 90.55, "adverse_cost": 0.0}, {"segment": "25", "volume": 36, "events": 18, "rate_pct": 50.0, "ci_low": 34.47, "ci_high": 65.53, "adverse_cost": 0.0}, {"segment": "62", "volume": 2, "events": 1, "rate_pct": 50.0, "ci_low": 9.45, "ci_high": 90.55, "adverse_cost": 0.0}, {"segment": "30", "volume": 34, "events": 13, "rate_pct": 38.24, "ci_low": 23.9, "ci_high": 54.96, "adverse_cost": 0.0}, {"segment": "38", "volume": 40, "events": 15, "rate_pct": 37.5, "ci_low": 24.22, "ci_high": 52.97, "adverse_cost": 0.0}, {"segment": "55", "volume": 3, "events": 1, "rate_pct": 33.33, "ci_low": 6.15, "ci_high": 79.23, "adverse_cost": 0.0}, {"segment": "50", "volume": 21, "events": 6, "rate_pct": 28.57, "ci_low": 13.81, "ci_high": 49.96, "adverse_cost": 0.0}, {"segment": "45", "volume": 20, "events": 5, "rate_pct": 25.0, "ci_low": 11.19, "ci_high": 46.87, "adverse_cost": 0.0}, {"segment": "35", "volume": 49, "events": 7, "rate_pct": 14.29, "ci_low": 7.1, "ci_high": 26.67, "adverse_cost": 0.0}, {"segment": "60", "volume": 31, "events": 4, "rate_pct": 12.9, "ci_low": 5.13, "ci_high": 28.85, "adverse_cost": 0.0}, {"segment": "40", "volume": 37, "events": 4, "rate_pct": 10.81, "ci_low": 4.29, "ci_high": 24.71, "adverse_cost": 0.0}, {"segment": "80", "volume": 1, "events": 0, "rate_pct": 0.0, "ci_low": 0.0, "ci_high": 79.35, "adverse_cost": 0.0}], "heatmap": {"has_heatmap": true, "prim_dim": "ejection_fraction", "sec_dim": "high_blood_pressure", "rows": ["15", "17", "20", "25", "30", "35", "38", "40", "45", "50"], "cols": ["0", "1"], "cells": [{"prim_val": "15", "sec_val": "0", "volume": 2, "events": 2, "rate_pct": 100.0, "adverse_cost": 0.0}, {"prim_val": "17", "sec_val": "1", "volume": 2, "events": 1, "rate_pct": 50.0, "adverse_cost": 0.0}, {"prim_val": "20", "sec_val": "0", "volume": 10, "events": 9, "rate_pct": 90.0, "adverse_cost": 0.0}, {"prim_val": "20", "sec_val": "1", "volume": 8, "events": 7, "rate_pct": 87.5, "adverse_cost": 0.0}, {"prim_val": "25", "sec_val": "0", "volume": 24, "events": 11, "rate_pct": 45.83, "adverse_cost": 0.0}, {"prim_val": "25", "sec_val": "1", "volume": 12, "events": 7, "rate_pct": 58.33, "adverse_cost": 0.0}, {"prim_val": "30", "sec_val": "0", "volume": 22, "events": 8, "rate_pct": 36.36, "adverse_cost": 0.0}, {"prim_val": "30", "sec_val": "1", "volume": 12, "events": 5, "rate_pct": 41.67, "adverse_cost": 0.0}, {"prim_val": "35", "sec_val": "0", "volume": 34, "events": 4, "rate_pct": 11.76, "adverse_cost": 0.0}, {"prim_val": "35", "sec_val": "1", "volume": 15, "events": 3, "rate_pct": 20.0, "adverse_cost": 0.0}, {"prim_val": "38", "sec_val": "0", "volume": 27, "events": 9, "rate_pct": 33.33, "adverse_cost": 0.0}, {"prim_val": "38", "sec_val": "1", "volume": 13, "events": 6, "rate_pct": 46.15, "adverse_cost": 0.0}, {"prim_val": "40", "sec_val": "0", "volume": 27, "events": 1, "rate_pct": 3.7, "adverse_cost": 0.0}, {"prim_val": "40", "sec_val": "1", "volume": 10, "events": 3, "rate_pct": 30.0, "adverse_cost": 0.0}, {"prim_val": "45", "sec_val": "0", "volume": 11, "events": 2, "rate_pct": 18.18, "adverse_cost": 0.0}, {"prim_val": "45", "sec_val": "1", "volume": 9, "events": 3, "rate_pct": 33.33, "adverse_cost": 0.0}, {"prim_val": "50", "sec_val": "0", "volume": 12, "events": 3, "rate_pct": 25.0, "adverse_cost": 0.0}, {"prim_val": "50", "sec_val": "1", "volume": 9, "events": 3, "rate_pct": 33.33, "adverse_cost": 0.0}]}, "bubble": [{"segment": "14", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "15", "volume": 2, "events": 2, "rate_pct": 100.0, "ci_low": 34.24, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "65", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "70", "volume": 1, "events": 1, "rate_pct": 100.0, "ci_low": 20.65, "ci_high": 100.0, "adverse_cost": 0.0}, {"segment": "20", "volume": 18, "events": 16, "rate_pct": 88.89, "ci_low": 67.2, "ci_high": 96.9, "adverse_cost": 0.0}, {"segment": "17", "volume": 2, "events": 1, "rate_pct": 50.0, "ci_low": 9.45, "ci_high": 90.55, "adverse_cost": 0.0}, {"segment": "25", "volume": 36, "events": 18, "rate_pct": 50.0, "ci_low": 34.47, "ci_high": 65.53, "adverse_cost": 0.0}, {"segment": "62", "volume": 2, "events": 1, "rate_pct": 50.0, "ci_low": 9.45, "ci_high": 90.55, "adverse_cost": 0.0}, {"segment": "30", "volume": 34, "events": 13, "rate_pct": 38.24, "ci_low": 23.9, "ci_high": 54.96, "adverse_cost": 0.0}, {"segment": "38", "volume": 40, "events": 15, "rate_pct": 37.5, "ci_low": 24.22, "ci_high": 52.97, "adverse_cost": 0.0}, {"segment": "55", "volume": 3, "events": 1, "rate_pct": 33.33, "ci_low": 6.15, "ci_high": 79.23, "adverse_cost": 0.0}, {"segment": "50", "volume": 21, "events": 6, "rate_pct": 28.57, "ci_low": 13.81, "ci_high": 49.96, "adverse_cost": 0.0}, {"segment": "45", "volume": 20, "events": 5, "rate_pct": 25.0, "ci_low": 11.19, "ci_high": 46.87, "adverse_cost": 0.0}, {"segment": "35", "volume": 49, "events": 7, "rate_pct": 14.29, "ci_low": 7.1, "ci_high": 26.67, "adverse_cost": 0.0}, {"segment": "60", "volume": 31, "events": 4, "rate_pct": 12.9, "ci_low": 5.13, "ci_high": 28.85, "adverse_cost": 0.0}], "cliffs": [{"column": "time", "max_delta": 0.6556140350877193, "mean_delta": 0.2891011776015381, "spread": 0.7756140350877193, "step_ratio": 2.27, "is_significant": true, "is_cliff": true, "correlation": -0.5269637792775773, "chi2": 125.58, "p_value": 4.846835223184411e-27, "bins": [{"range": "(3.999, 73.0]", "count": 76, "events": 63, "rate_pct": 82.89}, {"range": "(73.0, 115.0]", "count": 75, "events": 13, "rate_pct": 17.33}, {"range": "(115.0, 203.0]", "count": 73, "events": 16, "rate_pct": 21.92}, {"range": "(203.0, 285.0]", "count": 75, "events": 4, "rate_pct": 5.33}]}, {"column": "age", "max_delta": 0.34909502262443437, "mean_delta": 0.13901817137111253, "spread": 0.34909502262443437, "step_ratio": 2.51, "is_significant": true, "is_cliff": true, "correlation": 0.25372854308800363, "chi2": 22.16, "p_value": 6.027344307230214e-05, "bins": [{"range": "(39.999, 51.0]", "count": 78, "events": 20, "rate_pct": 25.64}, {"range": "(51.0, 60.0]", "count": 84, "events": 24, "rate_pct": 28.57}, {"range": "(60.0, 70.0]", "count": 85, "events": 21, "rate_pct": 24.71}, {"range": "(70.0, 95.0]", "count": 52, "events": 31, "rate_pct": 59.62}]}, {"column": "serum_creatinine", "max_delta": 0.34375, "mean_delta": 0.1789182475158085, "spread": 0.5138888888888888, "step_ratio": 1.92, "is_significant": true, "is_cliff": true, "correlation": 0.29427756098414937, "chi2": 47.66, "p_value": 2.5153469857183985e-10, "bins": [{"range": "(0.499, 0.9]", "count": 81, "events": 9, "rate_pct": 11.11}, {"range": "(0.9, 1.1]", "count": 82, "events": 24, "rate_pct": 29.27}, {"range": "(1.1, 1.4]", "count": 64, "events": 18, "rate_pct": 28.12}, {"range": "(1.4, 9.4]", "count": 72, "events": 45, "rate_pct": 62.5}]}, {"column": "ejection_fraction", "max_delta": 0.30119608553823846, "mean_delta": 0.1553103188077721, "spread": 0.39049235993208825, "step_ratio": 1.94, "is_significant": true, "is_cliff": true, "correlation": -0.26860331239406193, "chi2": 33.36, "p_value": 2.710165959370843e-07, "bins": [{"range": "(13.999, 30.0]", "count": 93, "events": 51, "rate_pct": 54.84}, {"range": "(30.0, 38.0]", "count": 89, "events": 22, "rate_pct": 24.72}, {"range": "(38.0, 45.0]", "count": 57, "events": 9, "rate_pct": 15.79}, {"range": "(45.0, 80.0]", "count": 60, "events": 14, "rate_pct": 23.33}]}, {"column": "serum_sodium", "max_delta": 0.25070494744937194, "mean_delta": 0.0976429527634347, "spread": 0.26852409638554214, "step_ratio": 2.57, "is_significant": true, "is_cliff": true, "correlation": -0.19520359641640125, "chi2": 18.13, "p_value": 0.00041411715055589537, "bins": [{"range": "(112.999, 134.0]", "count": 83, "events": 42, "rate_pct": 50.6}, {"range": "(134.0, 137.0]", "count": 94, "events": 24, "rate_pct": 25.53}, {"range": "(137.0, 140.0]", "count": 80, "events": 19, "rate_pct": 23.75}, {"range": "(140.0, 148.0]", "count": 42, "events": 11, "rate_pct": 26.19}]}, {"column": "platelets", "max_delta": 0.14666666666666667, "mean_delta": 0.08, "spread": 0.14666666666666667, "step_ratio": 1.83, "is_significant": false, "is_cliff": false, "correlation": -0.04913886798037428, "chi2": 4.42, "p_value": 0.21958292057668374, "bins": [{"range": "(25099.999, 212500.0]", "count": 75, "events": 30, "rate_pct": 40.0}, {"range": "(212500.0, 262000.0]", "count": 75, "events": 19, "rate_pct": 25.33}, {"range": "(262000.0, 303500.0]", "count": 74, "events": 21, "rate_pct": 28.38}, {"range": "(303500.0, 850000.0]", "count": 75, "events": 26, "rate_pct": 34.67}]}, {"column": "creatinine_phosphokinase", "max_delta": 0.11532738095238093, "mean_delta": 0.08098214285714284, "spread": 0.12761904761904758, "step_ratio": 1.42, "is_significant": false, "is_cliff": false, "correlation": 0.06272816025237477, "chi2": 4.64, "p_value": 0.19973676412118255, "bins": [{"range": "(22.999, 116.5]", "count": 75, "events": 19, "rate_pct": 25.33}, {"range": "(116.5, 250.0]", "count": 76, "events": 28, "rate_pct": 36.84}, {"range": "(250.0, 582.0]", "count": 84, "events": 32, "rate_pct": 38.1}, {"range": "(582.0, 7861.0]", "count": 64, "events": 17, "rate_pct": 26.56}]}], "interaction": {"pos_driver": "serum_creatinine", "neg_driver": "time", "med_pos": 1.1, "med_neg": 115.0, "op_pos_hi": "\u003e", "op_pos_lo": "\u003c=", "op_neg_hi": "\u003e", "op_neg_lo": "\u003c=", "p_value": 1.762871574479112e-13, "quad_spread": 55.98, "is_significant": true, "quadrants": {"Q1_optimal": {"name": "Optimal Zone (Low serum_creatinine \u0026 High time)", "count": 90, "events": 5, "rate": 5.56}, "Q2_unbuffered": {"name": "Unbuffered Baseline (Low serum_creatinine \u0026 Low time)", "count": 73, "events": 28, "rate": 38.36}, "Q3_masked": {"name": "Masked Risk (High serum_creatinine \u0026 High time)", "count": 58, "events": 15, "rate": 25.86}, "Q4_catastrophic": {"name": "Compound Catastrophe (High serum_creatinine \u0026 Low time)", "count": 78, "events": 48, "rate": 61.54}}}, "triage": [{"policy_name": "Policy 1: Conservative (Clinical Screen if serum_creatinine \u003e 1.40)", "scrap_count": 72, "scrap_pct": 24.08, "defects_caught": 45, "recall_pct": 46.88, "false_discards": 27, "false_discard_pct": 13.3, "retained_count": 227, "retained_defect_rate": 22.47}, {"policy_name": "Policy 2: Surgical (Clinical Screen if serum_creatinine \u003e 1.10)", "scrap_count": 136, "scrap_pct": 45.48, "defects_caught": 63, "recall_pct": 65.62, "false_discards": 73, "false_discard_pct": 35.96, "retained_count": 163, "retained_defect_rate": 20.25}, {"policy_name": "Policy 3: Compound (Clinical Screen if serum_creatinine \u003e 1.10 OR time \u003c 115.00)", "scrap_count": 208, "scrap_pct": 69.57, "defects_caught": 91, "recall_pct": 94.79, "false_discards": 117, "false_discard_pct": 57.64, "retained_count": 91, "retained_defect_rate": 5.49}], "worklist_rows": [{"fact_surrogate_id": 138, "priority_rank": 1, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 75.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.1' (60.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.1, "age": 68.0, "creatinine_phosphokinase": 646}, {"fact_surrogate_id": 191, "priority_rank": 2, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 75.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.1' (60.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.1, "age": 80.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 113, "priority_rank": 3, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.6' (50.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.6, "age": 50.0, "creatinine_phosphokinase": 369}, {"fact_surrogate_id": 248, "priority_rank": 4, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.4' (50.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.4, "age": 64.0, "creatinine_phosphokinase": 143}, {"fact_surrogate_id": 271, "priority_rank": 5, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.6' (50.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.6, "age": 44.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 204, "priority_rank": 6, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='3.5' (50.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 3.5, "age": 60.0, "creatinine_phosphokinase": 59}, {"fact_surrogate_id": 299, "priority_rank": 7, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 65.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.6' (50.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.6, "age": 50.0, "creatinine_phosphokinase": 196}, {"fact_surrogate_id": 268, "priority_rank": 8, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 59.44, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.7' (44.4% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.7, "age": 56.0, "creatinine_phosphokinase": 135}, {"fact_surrogate_id": 156, "priority_rank": 9, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 59.44, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.7' (44.4% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.7, "age": 60.0, "creatinine_phosphokinase": 231}, {"fact_surrogate_id": 257, "priority_rank": 10, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 59.44, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.7' (44.4% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.7, "age": 65.0, "creatinine_phosphokinase": 326}, {"fact_surrogate_id": 81, "priority_rank": 11, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 59.44, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.7' (44.4% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.7, "age": 70.0, "creatinine_phosphokinase": 69}, {"fact_surrogate_id": 287, "priority_rank": 12, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 59.44, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.7' (44.4% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.7, "age": 60.0, "creatinine_phosphokinase": 253}, {"fact_surrogate_id": 121, "priority_rank": 13, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 55.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.5' (40.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.5, "age": 60.0, "creatinine_phosphokinase": 737}, {"fact_surrogate_id": 192, "priority_rank": 14, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 55.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.5' (40.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.5, "age": 64.0, "creatinine_phosphokinase": 62}, {"fact_surrogate_id": 171, "priority_rank": 15, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 55.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.5' (40.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.5, "age": 51.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 79, "priority_rank": 16, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 50.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.6' (50.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.6, "age": 75.0, "creatinine_phosphokinase": 203}, {"fact_surrogate_id": 58, "priority_rank": 17, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 50.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.6' (50.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.6, "age": 60.0, "creatinine_phosphokinase": 607}, {"fact_surrogate_id": 282, "priority_rank": 18, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 48.33, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.7' (33.3% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.7, "age": 70.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 105, "priority_rank": 19, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 48.33, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.3' (33.3% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.3, "age": 60.0, "creatinine_phosphokinase": 53}, {"fact_surrogate_id": 39, "priority_rank": 20, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 48.33, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.3' (33.3% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.3, "age": 60.0, "creatinine_phosphokinase": 2656}, {"fact_surrogate_id": 57, "priority_rank": 21, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 48.33, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='2.7' (33.3% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 2.7, "age": 70.0, "creatinine_phosphokinase": 75}, {"fact_surrogate_id": 200, "priority_rank": 22, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 40.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.8' (25.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.8, "age": 60.0, "creatinine_phosphokinase": 1211}, {"fact_surrogate_id": 245, "priority_rank": 23, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 40.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.8' (25.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.8, "age": 54.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 84, "priority_rank": 24, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 40.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.8' (25.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.8, "age": 79.0, "creatinine_phosphokinase": 55}, {"fact_surrogate_id": 78, "priority_rank": 25, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 42.0, "creatinine_phosphokinase": 102}, {"fact_surrogate_id": 115, "priority_rank": 26, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 60.0, "creatinine_phosphokinase": 754}, {"fact_surrogate_id": 230, "priority_rank": 27, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 72.0, "creatinine_phosphokinase": 211}, {"fact_surrogate_id": 179, "priority_rank": 28, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 63.0, "creatinine_phosphokinase": 122}, {"fact_surrogate_id": 161, "priority_rank": 29, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 66.0, "creatinine_phosphokinase": 72}, {"fact_surrogate_id": 112, "priority_rank": 30, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 55.0, "creatinine_phosphokinase": 60}, {"fact_surrogate_id": 99, "priority_rank": 31, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 60.0, "creatinine_phosphokinase": 156}, {"fact_surrogate_id": 265, "priority_rank": 32, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 61.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 254, "priority_rank": 33, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 70.0, "creatinine_phosphokinase": 88}, {"fact_surrogate_id": 250, "priority_rank": 34, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 53.0, "creatinine_phosphokinase": 207}, {"fact_surrogate_id": 34, "priority_rank": 35, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 50.0, "creatinine_phosphokinase": 159}, {"fact_surrogate_id": 273, "priority_rank": 36, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 67.0, "creatinine_phosphokinase": 213}, {"fact_surrogate_id": 286, "priority_rank": 37, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 55.0, "creatinine_phosphokinase": 170}, {"fact_surrogate_id": 296, "priority_rank": 38, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 55.0, "creatinine_phosphokinase": 1820}, {"fact_surrogate_id": 238, "priority_rank": 39, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.5, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.2' (37.5% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.2, "age": 70.0, "creatinine_phosphokinase": 232}, {"fact_surrogate_id": 226, "priority_rank": 40, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 75.0, "creatinine_phosphokinase": 675}, {"fact_surrogate_id": 157, "priority_rank": 41, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 52.0, "creatinine_phosphokinase": 58}, {"fact_surrogate_id": 213, "priority_rank": 42, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 78.0, "creatinine_phosphokinase": 224}, {"fact_surrogate_id": 234, "priority_rank": 43, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 53.0, "creatinine_phosphokinase": 707}, {"fact_surrogate_id": 298, "priority_rank": 44, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 45.0, "creatinine_phosphokinase": 2413}, {"fact_surrogate_id": 246, "priority_rank": 45, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 61.0, "creatinine_phosphokinase": 80}, {"fact_surrogate_id": 292, "priority_rank": 46, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 37.22, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.4' (22.2% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.4, "age": 60.0, "creatinine_phosphokinase": 320}, {"fact_surrogate_id": 216, "priority_rank": 47, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 73.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 97, "priority_rank": 48, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 63.0, "creatinine_phosphokinase": 514}, {"fact_surrogate_id": 110, "priority_rank": 49, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 45.0, "creatinine_phosphokinase": 292}, {"fact_surrogate_id": 21, "priority_rank": 50, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 65.0, "creatinine_phosphokinase": 52}, {"fact_surrogate_id": 126, "priority_rank": 51, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 43.0, "creatinine_phosphokinase": 358}, {"fact_surrogate_id": 134, "priority_rank": 52, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 63.0, "creatinine_phosphokinase": 193}, {"fact_surrogate_id": 107, "priority_rank": 53, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 55.0, "creatinine_phosphokinase": 748}, {"fact_surrogate_id": 74, "priority_rank": 54, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 65.0, "creatinine_phosphokinase": 224}, {"fact_surrogate_id": 159, "priority_rank": 55, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 85.0, "creatinine_phosphokinase": 910}, {"fact_surrogate_id": 242, "priority_rank": 56, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 65.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 280, "priority_rank": 57, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 55.0, "creatinine_phosphokinase": 84}, {"fact_surrogate_id": 227, "priority_rank": 58, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 58.0, "creatinine_phosphokinase": 57}, {"fact_surrogate_id": 241, "priority_rank": 59, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 35.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.3' (35.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.3, "age": 70.0, "creatinine_phosphokinase": 81}, {"fact_surrogate_id": 92, "priority_rank": 60, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 60.0, "creatinine_phosphokinase": 897}, {"fact_surrogate_id": 122, "priority_rank": 61, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 66.0, "creatinine_phosphokinase": 68}, {"fact_surrogate_id": 139, "priority_rank": 62, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 62.0, "creatinine_phosphokinase": 281}, {"fact_surrogate_id": 148, "priority_rank": 63, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 64.0, "creatinine_phosphokinase": 1610}, {"fact_surrogate_id": 249, "priority_rank": 64, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 40.0, "creatinine_phosphokinase": 624}, {"fact_surrogate_id": 258, "priority_rank": 65, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 58.0, "creatinine_phosphokinase": 132}, {"fact_surrogate_id": 288, "priority_rank": 66, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 45.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 293, "priority_rank": 67, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 52.0, "creatinine_phosphokinase": 190}, {"fact_surrogate_id": 264, "priority_rank": 68, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 68.0, "creatinine_phosphokinase": 157}, {"fact_surrogate_id": 239, "priority_rank": 69, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 65.0, "creatinine_phosphokinase": 720}, {"fact_surrogate_id": 256, "priority_rank": 70, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 52.0, "creatinine_phosphokinase": 191}, {"fact_surrogate_id": 116, "priority_rank": 71, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 58.0, "creatinine_phosphokinase": 400}, {"fact_surrogate_id": 15, "priority_rank": 72, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 49.0, "creatinine_phosphokinase": 80}, {"fact_surrogate_id": 44, "priority_rank": 73, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 72.0, "creatinine_phosphokinase": 127}, {"fact_surrogate_id": 104, "priority_rank": 74, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 42.0, "creatinine_phosphokinase": 5209}, {"fact_surrogate_id": 96, "priority_rank": 75, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 58.0, "creatinine_phosphokinase": 133}, {"fact_surrogate_id": 202, "priority_rank": 76, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 45.0, "creatinine_phosphokinase": 308}, {"fact_surrogate_id": 177, "priority_rank": 77, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 69.0, "creatinine_phosphokinase": 1419}, {"fact_surrogate_id": 211, "priority_rank": 78, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 70.0, "creatinine_phosphokinase": 212}, {"fact_surrogate_id": 206, "priority_rank": 79, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 50.0, "creatinine_phosphokinase": 167}, {"fact_surrogate_id": 199, "priority_rank": 80, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 50.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 225, "priority_rank": 81, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 58.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 228, "priority_rank": 82, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 55.0, "creatinine_phosphokinase": 2794}, {"fact_surrogate_id": 209, "priority_rank": 83, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 60.0, "creatinine_phosphokinase": 2281}, {"fact_surrogate_id": 158, "priority_rank": 84, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 50.0, "creatinine_phosphokinase": 250}, {"fact_surrogate_id": 169, "priority_rank": 85, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 65.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 189, "priority_rank": 86, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 60.667, "creatinine_phosphokinase": 151}, {"fact_surrogate_id": 176, "priority_rank": 87, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 60.0, "creatinine_phosphokinase": 95}, {"fact_surrogate_id": 255, "priority_rank": 88, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 53.0, "creatinine_phosphokinase": 446}, {"fact_surrogate_id": 253, "priority_rank": 89, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 50.0, "creatinine_phosphokinase": 245}, {"fact_surrogate_id": 261, "priority_rank": 90, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 55.0, "creatinine_phosphokinase": 66}, {"fact_surrogate_id": 178, "priority_rank": 91, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 49.0, "creatinine_phosphokinase": 69}, {"fact_surrogate_id": 281, "priority_rank": 92, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 70.0, "creatinine_phosphokinase": 2695}, {"fact_surrogate_id": 270, "priority_rank": 93, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 40.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 275, "priority_rank": 94, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 30.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.0' (30.0% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.0, "age": 60.0, "creatinine_phosphokinase": 257}, {"fact_surrogate_id": 284, "priority_rank": 95, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 65.0, "creatinine_phosphokinase": 1688}, {"fact_surrogate_id": 160, "priority_rank": 96, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 59.0, "creatinine_phosphokinase": 129}, {"fact_surrogate_id": 173, "priority_rank": 97, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 70.0, "creatinine_phosphokinase": 171}, {"fact_surrogate_id": 222, "priority_rank": 98, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 65.0, "creatinine_phosphokinase": 118}, {"fact_surrogate_id": 278, "priority_rank": 99, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 70.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 235, "priority_rank": 100, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 53.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 243, "priority_rank": 101, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 40.0, "creatinine_phosphokinase": 90}, {"fact_surrogate_id": 236, "priority_rank": 102, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 77.0, "creatinine_phosphokinase": 109}, {"fact_surrogate_id": 237, "priority_rank": 103, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 75.0, "creatinine_phosphokinase": 119}, {"fact_surrogate_id": 277, "priority_rank": 104, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 70.0, "creatinine_phosphokinase": 618}, {"fact_surrogate_id": 295, "priority_rank": 105, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 62.0, "creatinine_phosphokinase": 61}, {"fact_surrogate_id": 289, "priority_rank": 106, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 65.0, "creatinine_phosphokinase": 892}, {"fact_surrogate_id": 219, "priority_rank": 107, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 68.0, "creatinine_phosphokinase": 1021}, {"fact_surrogate_id": 63, "priority_rank": 108, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 55.0, "creatinine_phosphokinase": 109}, {"fact_surrogate_id": 101, "priority_rank": 109, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 65.0, "creatinine_phosphokinase": 305}, {"fact_surrogate_id": 103, "priority_rank": 110, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 80.0, "creatinine_phosphokinase": 898}, {"fact_surrogate_id": 109, "priority_rank": 111, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 63.0, "creatinine_phosphokinase": 936}, {"fact_surrogate_id": 100, "priority_rank": 112, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 63.0, "creatinine_phosphokinase": 61}, {"fact_surrogate_id": 90, "priority_rank": 113, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 57.0, "creatinine_phosphokinase": 115}, {"fact_surrogate_id": 98, "priority_rank": 114, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 70.0, "creatinine_phosphokinase": 59}, {"fact_surrogate_id": 87, "priority_rank": 115, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 55.0, "creatinine_phosphokinase": 47}, {"fact_surrogate_id": 232, "priority_rank": 116, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 70.0, "creatinine_phosphokinase": 93}, {"fact_surrogate_id": 223, "priority_rank": 117, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 28.12, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='1.1' (28.1% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 1.1, "age": 42.0, "creatinine_phosphokinase": 86}, {"fact_surrogate_id": 137, "priority_rank": 118, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 65.0, "creatinine_phosphokinase": 59}, {"fact_surrogate_id": 150, "priority_rank": 119, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 60.0, "creatinine_phosphokinase": 2261}, {"fact_surrogate_id": 108, "priority_rank": 120, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 45.0, "creatinine_phosphokinase": 1876}, {"fact_surrogate_id": 72, "priority_rank": 121, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 58.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 233, "priority_rank": 122, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 40.0, "creatinine_phosphokinase": 129}, {"fact_surrogate_id": 269, "priority_rank": 123, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 45.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 294, "priority_rank": 124, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 63.0, "creatinine_phosphokinase": 103}, {"fact_surrogate_id": 290, "priority_rank": 125, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 90.0, "creatinine_phosphokinase": 337}, {"fact_surrogate_id": 272, "priority_rank": 126, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 51.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 208, "priority_rank": 127, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 85.0, "creatinine_phosphokinase": 212}, {"fact_surrogate_id": 153, "priority_rank": 128, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 50.0, "creatinine_phosphokinase": 115}, {"fact_surrogate_id": 152, "priority_rank": 129, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 62.0, "creatinine_phosphokinase": 30}, {"fact_surrogate_id": 163, "priority_rank": 130, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 63.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 181, "priority_rank": 131, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 40.0, "creatinine_phosphokinase": 478}, {"fact_surrogate_id": 190, "priority_rank": 132, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 40.0, "creatinine_phosphokinase": 244}, {"fact_surrogate_id": 175, "priority_rank": 133, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 65.0, "creatinine_phosphokinase": 198}, {"fact_surrogate_id": 119, "priority_rank": 134, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 65.0, "creatinine_phosphokinase": 113}, {"fact_surrogate_id": 124, "priority_rank": 135, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 60.0, "creatinine_phosphokinase": 582}, {"fact_surrogate_id": 143, "priority_rank": 136, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 50.0, "creatinine_phosphokinase": 482}, {"fact_surrogate_id": 144, "priority_rank": 137, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 61.0, "creatinine_phosphokinase": 84}, {"fact_surrogate_id": 142, "priority_rank": 138, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 46.0, "creatinine_phosphokinase": 291}, {"fact_surrogate_id": 80, "priority_rank": 139, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 55.0, "creatinine_phosphokinase": 336}, {"fact_surrogate_id": 217, "priority_rank": 140, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 70.0, "creatinine_phosphokinase": 1202}, {"fact_surrogate_id": 203, "priority_rank": 141, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 70.0, "creatinine_phosphokinase": 97}, {"fact_surrogate_id": 172, "priority_rank": 142, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 52.0, "creatinine_phosphokinase": 3966}, {"fact_surrogate_id": 266, "priority_rank": 143, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 50.0, "creatinine_phosphokinase": 298}, {"fact_surrogate_id": 244, "priority_rank": 144, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.62, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.9' (15.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.9, "age": 73.0, "creatinine_phosphokinase": 1185}, {"fact_surrogate_id": 118, "priority_rank": 145, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='3.2' (0.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 3.2, "age": 85.0, "creatinine_phosphokinase": 102}, {"fact_surrogate_id": 283, "priority_rank": 146, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='3.8' (0.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 3.8, "age": 42.0, "creatinine_phosphokinase": 64}, {"fact_surrogate_id": 132, "priority_rank": 147, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='6.1' (0.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 6.1, "age": 60.0, "creatinine_phosphokinase": 1082}, {"fact_surrogate_id": 130, "priority_rank": 148, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='3.4' (0.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 3.4, "age": 53.0, "creatinine_phosphokinase": 270}, {"fact_surrogate_id": 229, "priority_rank": 149, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 15.0, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='5.0' (0.0% risk); serum_creatinine \u003e= 1.40 Cliff Breach", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 5.0, "age": 65.0, "creatinine_phosphokinase": 56}, {"fact_surrogate_id": 167, "priority_rank": 150, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 53.0, "creatinine_phosphokinase": 196}, {"fact_surrogate_id": 193, "priority_rank": 151, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 50.0, "creatinine_phosphokinase": 121}, {"fact_surrogate_id": 260, "priority_rank": 152, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 53.0, "creatinine_phosphokinase": 56}, {"fact_surrogate_id": 262, "priority_rank": 153, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 62.0, "creatinine_phosphokinase": 655}, {"fact_surrogate_id": 274, "priority_rank": 154, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 42.0, "creatinine_phosphokinase": 64}, {"fact_surrogate_id": 180, "priority_rank": 155, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 55.0, "creatinine_phosphokinase": 835}, {"fact_surrogate_id": 86, "priority_rank": 156, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 51.0, "creatinine_phosphokinase": 78}, {"fact_surrogate_id": 95, "priority_rank": 157, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 58.0, "creatinine_phosphokinase": 144}, {"fact_surrogate_id": 117, "priority_rank": 158, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 60.0, "creatinine_phosphokinase": 96}, {"fact_surrogate_id": 89, "priority_rank": 159, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 44.0, "creatinine_phosphokinase": 84}, {"fact_surrogate_id": 147, "priority_rank": 160, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 5.26, "monetary_exposure": null, "exposure_column_source": "NONE_PHYSICAL_UNITS", "primary_risk_reason": "Cohort serum_creatinine='0.7' (5.3% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "serum_creatinine": 0.7, "age": 52.0, "creatinine_phosphokinase": 132}]}}/*__DXR_PAYLOAD_END__*/;
+
+        let currentLang = 'en';
+        let currentTheme = 'light';
+        let activePrim = 'All';
+        let activeSec = 'All';
+        let currentSimPct = 60;
+        let currentCliffIdx = 0;
+        let currentWlSearch = '';
+        let TOOLTIP_REGISTRY = [];
+
+        function escHtml(s) {
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function regTip(htmlContent) {
+            const id = TOOLTIP_REGISTRY.length;
+            TOOLTIP_REGISTRY.push(htmlContent);
+            return id;
+        }
+
+        function wilsonCI95(events, n) {
+            if (!n || n <= 0) return [0, 0];
+            const z = 1.959964;
+            const p = events / n;
+            const denom = 1 + (z * z) / n;
+            const center = (p + (z * z) / (2 * n)) / denom;
+            const half = (z * Math.sqrt((p * (1 - p) + (z * z) / (4 * n)) / n)) / denom;
+            return [Math.max(0, (center - half) * 100), Math.min(100, (center + half) * 100)];
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            renderAllCharts();
+        }
+
+        // Bilingual Toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('lang-btn').textContent = currentLang === 'en' ? '🇮🇳 Hinglish Switch' : '🇬🇧 English Switch';
+            document.getElementById('ui-title').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.meta.title_en : DASHBOARD_PAYLOAD.meta.title_hi;
+            document.getElementById('exec-banner-text').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.bottleneck.narrative_en : DASHBOARD_PAYLOAD.bottleneck.narrative_hi;
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = currentLang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-hi');
+            });
+
+            renderAllCharts();
+            renderGovernanceDrawer();
+        }
+
+        // Safe Delegated Tooltip & Cross-Filter Event Listeners (100% Immune to Quotes/XSS)
+        const tooltip = document.getElementById('chart-tooltip');
+        function showTooltip(evt, htmlContent) {
+            tooltip.innerHTML = htmlContent;
+            tooltip.style.display = 'block';
+            const x = Math.min(window.innerWidth - 295, evt.clientX + 14);
+            const y = Math.min(window.innerHeight - 130, evt.clientY + 14);
+            tooltip.style.left = Math.max(8, x) + 'px';
+            tooltip.style.top = Math.max(8, y) + 'px';
+        }
+        function hideTooltip() {
+            tooltip.style.display = 'none';
+        }
+
+        function bindDelegatedPanelEvents() {
+            const panelHost = document.getElementById('main-panels-container');
+            if (!panelHost || panelHost.dataset.delegated === '1') return;
+            panelHost.dataset.delegated = '1';
+
+            panelHost.addEventListener('mousemove', (evt) => {
+                const el = evt.target.closest('[data-tip-id]');
+                if (!el) { hideTooltip(); return; }
+                const tid = Number(el.getAttribute('data-tip-id'));
+                if (!Number.isNaN(tid) && TOOLTIP_REGISTRY[tid]) {
+                    showTooltip(evt, TOOLTIP_REGISTRY[tid]);
+                }
+            });
+            panelHost.addEventListener('mouseleave', hideTooltip);
+
+            panelHost.addEventListener('click', (evt) => {
+                const el = evt.target.closest('[data-prim-seg], [data-sec-seg]');
+                if (!el) return;
+                const pSeg = el.getAttribute('data-prim-seg');
+                const sSeg = el.getAttribute('data-sec-seg');
+                if (pSeg) {
+                    activePrim = (activePrim === pSeg && !sSeg) ? 'All' : pSeg;
+                    document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                        c.classList.toggle('active', c.dataset.segVal === activePrim);
+                    });
+                }
+                if (sSeg) {
+                    activeSec = sSeg;
+                    const secSel = document.getElementById('sec-select');
+                    if (secSel) secSel.value = sSeg;
+                }
+                recalcMicroCube();
+            });
+        }
+
+        // Slicer Filtering & Micro-Cube Recalculation
+        function initSlicers() {
+            const chipsBox = document.getElementById('prim-chips');
+            chipsBox.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.className = 'chip active';
+            allBtn.dataset.segVal = 'All';
+            allBtn.textContent = 'All Segments';
+            allBtn.onclick = () => setPrimaryFilter('All');
+            chipsBox.appendChild(allBtn);
+
+            DASHBOARD_PAYLOAD.prim_segments.forEach(seg => {
+                const btn = document.createElement('button');
+                btn.className = 'chip';
+                btn.dataset.segVal = seg;
+                btn.textContent = seg;
+                btn.onclick = () => setPrimaryFilter(seg);
+                chipsBox.appendChild(btn);
+            });
+
+            const secSelect = document.getElementById('sec-select');
+            if (secSelect) {
+                secSelect.innerHTML = '<option value="All">All ' + escHtml(DASHBOARD_PAYLOAD.sec_dim_name) + '</option>';
+                DASHBOARD_PAYLOAD.sec_segments.forEach(seg => {
+                    const opt = document.createElement('option');
+                    opt.value = seg;
+                    opt.textContent = seg;
+                    secSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function setPrimaryFilter(val) {
+            activePrim = val;
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === val);
+            });
+            recalcMicroCube();
+        }
+
+        function setSecondaryFilter(val) {
+            activeSec = val;
+            recalcMicroCube();
+        }
+
+        function resetFilters() {
+            activePrim = 'All';
+            activeSec = 'All';
+            const secSel = document.getElementById('sec-select');
+            if (secSel) secSel.value = 'All';
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === 'All');
+            });
+            recalcMicroCube();
+        }
+
+        function getActiveSegmentBreakdown() {
+            if (activeSec === 'All') {
+                return DASHBOARD_PAYLOAD.widgets_data.lollipop || [];
+            }
+            const bySeg = {};
+            DASHBOARD_PAYLOAD.cube_slices.filter(s => s.sec_val === activeSec).forEach(s => {
+                if (!bySeg[s.prim_val]) bySeg[s.prim_val] = { segment: s.prim_val, volume: 0, events: 0, adverse_cost: 0 };
+                bySeg[s.prim_val].volume += s.volume;
+                bySeg[s.prim_val].events += s.adverse_events;
+                bySeg[s.prim_val].adverse_cost += s.adverse_cost;
+            });
+            return Object.values(bySeg).map(d => {
+                const r = d.volume > 0 ? (d.events / d.volume) * 100 : 0;
+                const [lo, hi] = wilsonCI95(d.events, d.volume);
+                return { segment: d.segment, volume: d.volume, events: d.events, rate_pct: r, ci_low: lo, ci_high: hi, adverse_cost: d.adverse_cost };
+            }).sort((a, b) => b.rate_pct - a.rate_pct);
+        }
+
+        function recalcMicroCube() {
+            const slices = DASHBOARD_PAYLOAD.cube_slices.filter(s => {
+                const matchP = (activePrim === 'All' || s.prim_val === activePrim);
+                const matchS = (activeSec === 'All' || s.sec_val === activeSec);
+                return matchP && matchS;
+            });
+
+            let totRec = 0, totEv = 0, totAdvCost = 0, totCost = 0;
+            slices.forEach(s => {
+                totRec += s.volume;
+                totEv += s.adverse_events;
+                totAdvCost += s.adverse_cost;
+                totCost += s.total_cost;
+            });
+
+            const rPct = totRec > 0 ? (totEv / totRec) * 100.0 : 0.0;
+            const relPct = 100.0 - rPct;
+
+            document.getElementById('kpi-records').textContent = totRec.toLocaleString();
+            document.getElementById('kpi-events').textContent = totEv.toLocaleString();
+            document.getElementById('kpi-rate-sub').textContent = 'Failure Rate: ' + rPct.toFixed(2) + '%';
+            document.getElementById('kpi-reliability').textContent = relPct.toFixed(2) + '%';
+
+            if (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                document.getElementById('kpi-drag').textContent = '$' + totAdvCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('kpi-drag-sub').textContent = 'Out of $' + totCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' total';
+            } else {
+                document.getElementById('kpi-drag').textContent = totEv.toLocaleString() + ' units';
+            }
+
+            renderAllCharts();
+        }
+
+        // =====================================================================
+        // NATIVE INTERACTIVE SVG CHART RENDERERS (ALL 10 CATALOG WIDGETS)
+        // =====================================================================
+        function renderLollipopChart(container) {
+            const data = getActiveSegmentBreakdown();
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No segment data.</p>'; return; }
+
+            const maxRate = Math.max(...data.map(d => d.ci_high), 10);
+            const baseline = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+            const w = 540, h = Math.max(250, data.length * 34 + 34);
+            const padL = 135, padR = 48, padT = 22, padB = 24;
+            const chartW = w - padL - padR;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+
+            const bx = padL + Math.min(1, baseline / maxRate) * chartW;
+            svg += `<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${h - padB}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" />`;
+            svg += `<text x="${bx}" y="${padT - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Baseline ${baseline.toFixed(1)}%</text>`;
+
+            data.slice(0, 14).forEach((d, i) => {
+                const y = padT + i * 34 + 16;
+                const cx = padL + (d.rate_pct / maxRate) * chartW;
+                const xLow = padL + (d.ci_low / maxRate) * chartW;
+                const xHigh = padL + (d.ci_high / maxRate) * chartW;
+                const isHighlighted = (activePrim === 'All' || activePrim === d.segment);
+                const opacity = isHighlighted ? 1.0 : 0.28;
+                const shortLbl = d.segment.length > 18 ? d.segment.substring(0, 17) + '…' : d.segment;
+
+                svg += `<text x="${padL - 10}" y="${y + 4}" fill="var(--text-main)" font-size="11" font-weight="600" text-anchor="end" opacity="${opacity}">${escHtml(shortLbl)}</text>`;
+                svg += `<line x1="${xLow}" y1="${y}" x2="${xHigh}" y2="${y}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xLow}" y1="${y - 4}" x2="${xLow}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xHigh}" y1="${y - 4}" x2="${xHigh}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${padL}" y1="${y}" x2="${cx}" y2="${y}" stroke="var(--accent-primary)" stroke-width="2.5" opacity="${opacity}" />`;
+
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Wilson 95% CI: [${d.ci_low.toFixed(1)}% to ${d.ci_high.toFixed(1)}%]<br>Volume: ${d.volume.toLocaleString()}<br>Adverse Events: ${d.events.toLocaleString()}` +
+                    (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${y}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" opacity="${opacity}" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${xHigh + 7}" y="${y + 4}" fill="var(--accent-primary)" font-size="11" font-weight="700" opacity="${opacity}">${d.rate_pct.toFixed(1)}%</text>`;
+            });
+
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderParetoChart(container) {
+            if (!DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>';
+                return;
+            }
+            const segs = getActiveSegmentBreakdown().slice().sort((a, b) => b.adverse_cost - a.adverse_cost).slice(0, 12);
+            const totDrag = Math.max(segs.reduce((acc, x) => acc + x.adverse_cost, 0), 0.01);
+            let cum = 0;
+            const data = segs.map(s => {
+                cum += s.adverse_cost;
+                return { segment: s.segment, adverse_cost: s.adverse_cost, cumulative_pct: (cum / totDrag) * 100.0 };
+            });
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>'; return; }
+
+            const w = 520, h = 260;
+            const padL = 56, padR = 38, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxDrag = Math.max(...data.map(d => d.adverse_cost), 1);
+            const n = data.length;
+            const barW = Math.max(12, (chartW / n) - 8);
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const y80 = padT + (1 - 0.8) * chartH;
+            svg += `<line x1="${padL}" y1="${y80}" x2="${w - padR}" y2="${y80}" stroke="#f43f5e" stroke-dasharray="3,3" stroke-width="1.5" />`;
+            svg += `<text x="${w - padR}" y="${y80 - 4}" fill="#f43f5e" font-size="10" text-anchor="end">80% Pareto Line</text>`;
+
+            let polyPoints = [];
+            data.forEach((d, i) => {
+                const x = padL + i * (chartW / n) + 4;
+                const barH = (d.adverse_cost / maxDrag) * chartH;
+                const y = padT + chartH - barH;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Adverse Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<br>Cumulative Share: ${d.cumulative_pct.toFixed(1)}%`);
+
+                svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="var(--accent-primary)" opacity="${isHi ? '0.88' : '0.28'}" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${x + barW/2}" y="${h - padB + 14}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(d.segment.substring(0, 9))}</text>`;
+
+                const cx = x + barW / 2;
+                const cy = padT + (1 - (d.cumulative_pct / 100)) * chartH;
+                polyPoints.push(`${cx},${cy}`);
+            });
+
+            if (polyPoints.length > 1) {
+                svg += `<polyline points="${polyPoints.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="2.5" />`;
+                polyPoints.forEach((pt, i) => {
+                    const [px, py] = pt.split(',');
+                    const d = data[i];
+                    const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Cumulative Loss Concentration: ${d.cumulative_pct.toFixed(1)}%`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4" fill="#f43f5e" stroke="var(--card-bg)" stroke-width="1.5" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTemporalChart(container) {
+            const tempObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+            const periods = tempObj.periods || [];
+            if (!periods.length) return;
+
+            const w = 520, h = 260;
+            const padL = 48, padR = 36, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...periods.map(p => Number(p.adverse_rate_pct || 0)), 5);
+            const maxVol = Math.max(...periods.map(p => Number(p.total_records ?? p.total_volume ?? 1)), 1);
+            const n = periods.length;
+            const barW = Math.max(6, Math.min(28, (chartW / n) * 0.55));
+            const stepLabel = Math.max(1, Math.ceil(n / 8));
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            let pts = [];
+
+            periods.forEach((p, i) => {
+                const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                const rate = Number(p.adverse_rate_pct || 0);
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (rate / maxRate)) * chartH;
+                const vH = (vol / maxVol) * (chartH * 0.65);
+                pts.push(`${x},${y}`);
+
+                svg += `<rect x="${x - barW/2}" y="${padT + chartH - vH}" width="${barW}" height="${vH}" fill="var(--accent-primary)" opacity="0.18" rx="2" />`;
+                if (i % stepLabel === 0 || i === n - 1) {
+                    svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(p.period)}</text>`;
+                }
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(99, 102, 241, 0.12)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-secondary)" stroke-width="3" />`;
+                periods.forEach((p, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                    const ev = Number(p.adverse_events || 0);
+                    const rate = Number(p.adverse_rate_pct || 0);
+                    const tipId = regTip(`<strong>Period: ${escHtml(p.period)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4.5" fill="var(--accent-secondary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCrossTabHeatmap(container) {
+            const hm = DASHBOARD_PAYLOAD.widgets_data.heatmap || {};
+            const rows = hm.rows || [], cols = hm.cols || [], cells = hm.cells || [];
+            if (!rows.length || !cols.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient secondary cross-tab dimensions.</p>';
+                return;
+            }
+            const cellMap = {};
+            let maxRate = 5;
+            cells.forEach(c => {
+                cellMap[c.prim_val + '|||' + c.sec_val] = c;
+                if (c.rate_pct > maxRate) maxRate = c.rate_pct;
+            });
+
+            const w = 540, h = Math.max(250, rows.length * 28 + 64);
+            const padL = 128, padR = 18, padT = 44, padB = 16;
+            const cellW = (w - padL - padR) / cols.length;
+            const cellH = (h - padT - padB) / rows.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            cols.forEach((colVal, ci) => {
+                const cx = padL + ci * cellW + cellW / 2;
+                const lbl = colVal.length > 10 ? colVal.substring(0, 9) + '…' : colVal;
+                svg += `<text x="${cx}" y="${padT - 10}" fill="var(--text-muted)" font-size="9.5" font-weight="600" text-anchor="middle">${escHtml(lbl)}</text>`;
+            });
+
+            rows.forEach((rowVal, ri) => {
+                const ry = padT + ri * cellH;
+                const rLbl = rowVal.length > 17 ? rowVal.substring(0, 16) + '…' : rowVal;
+                svg += `<text x="${padL - 8}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="10" font-weight="600" text-anchor="end">${escHtml(rLbl)}</text>`;
+                cols.forEach((colVal, ci) => {
+                    const rx = padL + ci * cellW;
+                    const c = cellMap[rowVal + '|||' + colVal];
+                    const vol = c ? c.volume : 0;
+                    const rate = c ? c.rate_pct : 0;
+                    const ev = c ? c.events : 0;
+                    const alpha = vol > 0 ? Math.min(0.90, 0.14 + (rate / maxRate) * 0.76) : 0.04;
+                    const fillCol = vol > 0 ? `rgba(244, 63, 94, ${alpha.toFixed(2)})` : 'var(--canvas-bg)';
+                    const tipId = regTip(
+                        `<strong>${escHtml(rowVal)} &times; ${escHtml(colVal)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}` +
+                        (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger && c ? `<br>Drag: $${c.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                    );
+                    svg += `<rect x="${rx + 1.5}" y="${ry + 1.5}" width="${Math.max(4, cellW - 3)}" height="${Math.max(4, cellH - 3)}" fill="${fillCol}" stroke="var(--border-color)" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(rowVal)}" data-sec-seg="${escHtml(colVal)}" />`;
+                    if (vol > 0 && cellW >= 38) {
+                        svg += `<text x="${rx + cellW / 2}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="9.5" font-weight="700" text-anchor="middle" pointer-events="none">${rate.toFixed(1)}%</text>`;
+                    }
+                });
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderExposureBubbleChart(container) {
+            const data = getActiveSegmentBreakdown().slice(0, 14);
+            if (data.length < 2) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient cohort dispersion for bubble plot.</p>';
+                return;
+            }
+            const w = 520, h = 260;
+            const padL = 52, padR = 36, padT = 26, padB = 38;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxVol = Math.max(...data.map(d => d.volume), 1);
+            const maxRate = Math.max(...data.map(d => d.rate_pct), 10) * 1.12;
+            const isMon = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const maxImpact = Math.max(...data.map(d => isMon ? d.adverse_cost : d.events), 1);
+            const baseRate = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const by = padT + (1 - Math.min(1, baseRate / maxRate)) * chartH;
+            svg += `<line x1="${padL}" y1="${by}" x2="${w - padR}" y2="${by}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.2" />`;
+            svg += `<text x="${w - padR}" y="${by - 5}" fill="var(--text-muted)" font-size="9.5" text-anchor="end">Mean Rate ${baseRate.toFixed(1)}%</text>`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Cohort Volume (Records) &rarr;</text>`;
+
+            data.forEach(d => {
+                const cx = padL + (d.volume / maxVol) * (chartW * 0.90) + chartW * 0.04;
+                const cy = padT + (1 - (d.rate_pct / maxRate)) * chartH;
+                const impact = isMon ? d.adverse_cost : d.events;
+                const r = 6 + Math.sqrt(Math.max(0, impact) / maxImpact) * 18;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const fill = d.rate_pct >= baseRate ? '#f43f5e' : 'var(--accent-primary)';
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Volume: ${d.volume.toLocaleString()}<br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Events: ${d.events.toLocaleString()}` +
+                    (isMon ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="${fill}" fill-opacity="${isHi ? '0.68' : '0.20'}" stroke="${fill}" stroke-width="2" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${cx}" y="${cy - r - 4}" fill="var(--text-main)" font-size="9.5" font-weight="600" text-anchor="middle" opacity="${isHi ? '1' : '0.35'}" pointer-events="none">${escHtml(d.segment.substring(0, 12))}</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCliffChart(container, selectedIndex = 0) {
+            const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+            if (!cliffs.length) return;
+            const cliff = cliffs[selectedIndex] || cliffs[0];
+            const bins = cliff.bins || [];
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...bins.map(b => b.rate_pct), 10) * 1.1;
+            const n = bins.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const pTxt = cliff.p_value < 0.0001 ? 'p < 0.0001' : ('p = ' + Number(cliff.p_value).toFixed(4));
+            svg += `<text x="${w - padR}" y="16" fill="#f43f5e" font-size="10" font-weight="700" text-anchor="end">${escHtml(cliff.column)} &bull; Max Jump +${(cliff.max_delta * 100).toFixed(1)}pp (${pTxt})</text>`;
+
+            let pts = [];
+            bins.forEach((b, i) => {
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (b.rate_pct / maxRate)) * chartH;
+                pts.push(`${x},${y}`);
+                svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">Q${i+1}: ${escHtml(String(b.range).substring(0, 13))}</text>`;
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(244, 63, 94, 0.16)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="3" />`;
+
+                bins.forEach((b, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const tipId = regTip(`<strong>${escHtml(cliff.column)} (Q${i+1})</strong><br>Range: ${escHtml(b.range)}<br>Failure Rate: ${b.rate_pct.toFixed(2)}%<br>Volume: ${b.count.toLocaleString()}<br>Events: ${b.events.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="5.5" fill="#f43f5e" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 9}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${b.rate_pct.toFixed(1)}%</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function render2x2Quadrant(container) {
+            const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+            const q = inter.quadrants;
+            if (!q) return;
+
+            const posName = inter.pos_driver || 'Risk Driver';
+            const negName = inter.neg_driver || 'Buffer';
+            const medPos = inter.med_pos !== undefined ? Number(inter.med_pos).toFixed(2) : '';
+            const medNeg = inter.med_neg !== undefined ? Number(inter.med_neg).toFixed(2) : '';
+
+            const w = 480, h = 260;
+            const pad = 18;
+            const boxW = (w - pad * 3) / 2;
+            const boxH = (h - pad * 3) / 2;
+
+            const quadBoxes = [
+                { key: 'Q1_optimal', title: 'Q1: Optimal Zone', x: pad, y: pad, color: '#10b981', desc: `Low ${posName} (≤${medPos}) & High ${negName}` },
+                { key: 'Q2_unbuffered', title: 'Q2: Unbuffered Baseline', x: pad * 2 + boxW, y: pad, color: '#38bdf8', desc: `Low ${posName} & Low ${negName} (≤${medNeg})` },
+                { key: 'Q3_masked', title: 'Q3: Masked Risk', x: pad, y: pad * 2 + boxH, color: '#f59e0b', desc: `High ${posName} (>${medPos}) & High ${negName}` },
+                { key: 'Q4_catastrophic', title: 'Q4: Compound Catastrophe', x: pad * 2 + boxW, y: pad * 2 + boxH, color: '#f43f5e', desc: `High ${posName} & Low ${negName}` }
+            ];
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            quadBoxes.forEach(qb => {
+                const d = q[qb.key] || { count: 0, events: 0, rate: 0.0 };
+                const tipId = regTip(`<strong>${escHtml(qb.title)}</strong><br>${escHtml(qb.desc)}<br>Volume: ${d.count.toLocaleString()}<br>Events: ${d.events.toLocaleString()}<br>Failure Rate: ${d.rate.toFixed(2)}%`);
+                const shortDesc = qb.desc.length > 36 ? qb.desc.substring(0, 35) + '…' : qb.desc;
+
+                svg += `<rect x="${qb.x}" y="${qb.y}" width="${boxW}" height="${boxH}" fill="var(--card-bg)" stroke="${qb.color}" stroke-width="2" rx="6" data-tip-id="${tipId}" />`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 22}" fill="${qb.color}" font-size="11.5" font-weight="700" pointer-events="none">${escHtml(qb.title)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 40}" fill="var(--text-muted)" font-size="9.5" pointer-events="none">${escHtml(shortDesc)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 72}" fill="var(--text-main)" font-size="19" font-weight="800" pointer-events="none">${d.rate.toFixed(2)}%</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 90}" fill="var(--text-muted)" font-size="10" pointer-events="none">${d.count.toLocaleString()} records (${d.events.toLocaleString()} events)</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTriageYieldChart(container) {
+            const triage = DASHBOARD_PAYLOAD.widgets_data.triage || [];
+            if (!triage.length) return;
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 40;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Flagged / Intake Hold % &rarr;</text>`;
+            let pts = [];
+
+            triage.forEach(t => {
+                const x = padL + (t.scrap_pct / 100) * chartW;
+                const y = padT + (1 - (t.recall_pct / 100)) * chartH;
+                pts.push(`${x},${y}`);
+            });
+
+            if (pts.length > 1) {
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-primary)" stroke-width="3" stroke-dasharray="4,3" />`;
+                triage.forEach((t, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const polName = t.policy_name.split('(')[0].trim();
+                    const tipId = regTip(`<strong>${escHtml(t.policy_name)}</strong><br>Flagged/Scrap: ${t.scrap_pct.toFixed(1)}%<br>Defect Recall: ${t.recall_pct.toFixed(1)}%<br>Retained Defect Rate: ${t.retained_defect_rate.toFixed(2)}%<br>False Alarms: ${t.false_discards.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 10}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${escHtml(polName)} (${t.recall_pct.toFixed(0)}% recall)</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        // =====================================================================
+        // WHAT-IF COUNTERFACTUAL SIMULATOR (100% PHYSICAL EXCESS-RISK MATH)
+        // =====================================================================
+        function initWhatIfSimulator(container) {
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const pathways = Array.isArray(DASHBOARD_PAYLOAD.pathways) ? DASHBOARD_PAYLOAD.pathways : [];
+
+            let pathCardsHtml = '';
+            if (pathways.length) {
+                pathCardsHtml = `<div class="pathway-grid">` + pathways.map(pw => `
+                    <div class="pathway-card">
+                        <div style="font-weight:700;color:var(--accent-primary);margin-bottom:4px;">${escHtml(pw.path_name)}</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+                            <strong>Cost:</strong> ${escHtml(pw.implementation_cost)} &bull; <strong>Timeline:</strong> ${escHtml(pw.time_to_impact)}
+                        </div>
+                        <div style="font-size:11px;margin-bottom:4px;"><strong>Impact:</strong> ${escHtml(pw.projected_friction_reduction)}</div>
+                        <div style="font-size:11px;color:#10b981;margin-bottom:3px;"><strong>Pros (Fayda):</strong> ${escHtml(pw.fayda_pros)}</div>
+                        <div style="font-size:11px;color:#f59e0b;"><strong>Cons / Friction:</strong> ${escHtml(pw.nuksan_cons)}</div>
+                    </div>
+                `).join('') + `</div>`;
+            }
+
+            let htmlStr = `
+                <div class="sim-box">
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-en="Simulate Excess-Risk Mitigation (% Parity with Baseline):" data-hi="Excess-Risk Bachav Ka Live Simulation Karein (% Parity):">
+                        Simulate Excess-Risk Mitigation (% Parity with Baseline):
+                    </div>
+                    ${cbActive ? `
+                    <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:10px;border-radius:6px;font-size:12px;color:#f59e0b;margin-bottom:12px;">
+                        🛑 <strong>Statistical Circuit-Breaker Active ($0 CapEx Freeze):</strong> Observed difference is within random sampling noise (p &ge; 0.05). Targeted CapEx is frozen to protect capital.
+                    </div>
+                    ` : `
+                    <div class="sim-buttons">
+                        <button class="btn-preset" onclick="setSimValue(25)">Pathway A: 25% (Conservative)</button>
+                        <button class="btn-preset" onclick="setSimValue(60)">Pathway B: 60% (Surgical)</button>
+                        <button class="btn-preset" onclick="setSimValue(100)">Pathway C: 100% (Structural Parity)</button>
+                    </div>
+                    <div class="sim-slider-row">
+                        <span style="font-size:12px;color:var(--text-muted);">0%</span>
+                        <input type="range" min="0" max="100" value="${currentSimPct}" class="sim-slider" id="sim-slider" oninput="updateWhatIfDisplay()" />
+                        <span style="font-size:12px;font-weight:700;width:45px;" id="sim-val-display">${currentSimPct}%</span>
+                    </div>
+                    `}
+                    <div class="sim-results">
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Averted Excess Events" data-hi="Roke Gaye Excess Events">Averted Excess Events</div>
+                            <div class="kpi-val" id="sim-averted-ev" style="font-size:20px;color:#10b981;">0</div>
+                            <div class="kpi-sub" id="sim-ev-ci">95% CI: [0 to 0]</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Projected Risk Averted" data-hi="Bachaya Gaya Financial Nuksan">Projected Risk Averted</div>
+                            <div class="kpi-val" id="sim-averted-drag" style="font-size:20px;color:var(--accent-primary);">$0.00</div>
+                            <div class="kpi-sub" id="sim-drag-ci">Physical Ledger Grounded</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Post-Mitigation Bottleneck Rate" data-hi="Sudhaar Ke Baad Bottleneck Dar">Post-Mitigation Bottleneck Rate</div>
+                            <div class="kpi-val" id="sim-post-rate" style="font-size:20px;color:var(--text-main);">0.00%</div>
+                            <div class="kpi-sub" id="sim-post-sub">Target Cohort Compression</div>
+                        </div>
+                    </div>
+                    ${pathCardsHtml}
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            updateWhatIfDisplay();
+        }
+
+        function setSimValue(v) {
+            currentSimPct = Number(v);
+            const slider = document.getElementById('sim-slider');
+            if (slider) {
+                slider.value = currentSimPct;
+                updateWhatIfDisplay();
+            }
+        }
+
+        function updateWhatIfDisplay() {
+            const slider = document.getElementById('sim-slider');
+            if (slider) currentSimPct = Number(slider.value);
+            const pct = currentSimPct;
+            const valDisp = document.getElementById('sim-val-display');
+            if (valDisp) valDisp.textContent = pct + '%';
+
+            const elEv = document.getElementById('sim-averted-ev');
+            const elEvCi = document.getElementById('sim-ev-ci');
+            const elDrag = document.getElementById('sim-averted-drag');
+            const elDragCi = document.getElementById('sim-drag-ci');
+            const elPost = document.getElementById('sim-post-rate');
+            const elPostSub = document.getElementById('sim-post-sub');
+            if (!elEv || !elDrag) return;
+
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const isMonetary = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const wm = DASHBOARD_PAYLOAD.what_if_model || {};
+            const excessEv = Number(wm.excess_events ?? DASHBOARD_PAYLOAD.bottleneck.excess_events ?? 0);
+            const ciLo = Number(wm.excess_ci_low ?? 0);
+            const ciHi = Number(wm.excess_ci_high ?? 0);
+            const avgCost = Number(wm.avg_cost_per_event ?? 0);
+            const botRate = Number(wm.bottleneck_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rate_pct ?? 0);
+            const restRate = Number(wm.rest_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rest_rate_pct ?? 0);
+
+            if (cbActive) {
+                elEv.textContent = '0 events';
+                if (elEvCi) elEvCi.textContent = 'Noise Gate Active (p >= 0.05)';
+                elDrag.textContent = isMonetary ? '$0.00 ($0 Freeze)' : '0 units ($0 Freeze)';
+                if (elDragCi) elDragCi.textContent = 'CapEx Frozen — Random Variation';
+                if (elPost) elPost.textContent = botRate.toFixed(2) + '%';
+                if (elPostSub) elPostSub.textContent = 'No cohort intervention advised';
+                return;
+            }
+
+            const avertedEv = pct === 0 ? 0 : Math.max(1, Math.round(excessEv * (pct / 100)));
+            const evLo = Math.max(0, Math.round(ciLo * (pct / 100)));
+            const evHi = Math.max(evLo, Math.round(ciHi * (pct / 100)));
+
+            elEv.textContent = avertedEv.toLocaleString() + ' events';
+            if (elEvCi) elEvCi.textContent = `95% CI: [${evLo.toLocaleString()} to ${evHi.toLocaleString()} events]`;
+
+            if (isMonetary) {
+                const avertedDol = avertedEv * avgCost;
+                const dolLo = evLo * avgCost;
+                const dolHi = evHi * avgCost;
+                elDrag.textContent = '$' + avertedDol.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (elDragCi) elDragCi.textContent = `95% CI: [$${dolLo.toLocaleString(undefined, {maximumFractionDigits:0})} to $${dolHi.toLocaleString(undefined, {maximumFractionDigits:0})}]`;
+            } else {
+                elDrag.textContent = avertedEv.toLocaleString() + ' physical units';
+                if (elDragCi) elDragCi.textContent = 'Zero fabricated currency (*1000 ban)';
+            }
+
+            const newRate = Math.max(restRate, botRate - (botRate - restRate) * (pct / 100));
+            if (elPost) elPost.textContent = newRate.toFixed(2) + '%';
+            if (elPostSub) elPostSub.textContent = `Down from ${botRate.toFixed(2)}% toward ${restRate.toFixed(2)}% baseline`;
+        }
+
+        // =====================================================================
+        // ACTIONABLE WORKLIST EXPLORER TABLE
+        // =====================================================================
+        let currentWlQueue = 'PREVENTIVE_RETENTION_WATCH';
+        function initWorklistExplorer(container) {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            if (!rows.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No priority worklist rows discovered.</p>';
+                return;
+            }
+            const nPrev = rows.filter(r => r.action_queue === 'PREVENTIVE_RETENTION_WATCH').length;
+            const nRec = rows.filter(r => r.action_queue === 'REALIZED_LOSS_RECOVERY_AUDIT').length;
+
+            let htmlStr = `
+                <div class="worklist-ctrls">
+                    <div class="worklist-tabs">
+                        <button class="wl-tab ${currentWlQueue === 'PREVENTIVE_RETENTION_WATCH' ? 'active' : ''}" id="tab-prev" onclick="switchWlQueue('PREVENTIVE_RETENTION_WATCH')">Preventive Retention Watch (${nPrev})</button>
+                        <button class="wl-tab ${currentWlQueue === 'REALIZED_LOSS_RECOVERY_AUDIT' ? 'active' : ''}" id="tab-rec" onclick="switchWlQueue('REALIZED_LOSS_RECOVERY_AUDIT')">Realized Loss Recovery (${nRec})</button>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" class="wl-search" id="wl-search" value="${escHtml(currentWlSearch)}" placeholder="Search ID, cohort, reason..." oninput="filterWorklistTable()" />
+                        <button class="btn-ctrl" onclick="downloadWorklistCSV()">⬇️ Export CSV</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="worklist-table" id="worklist-table">
+                        <thead id="wl-thead"></thead>
+                        <tbody id="wl-tbody"></tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            renderWorklistTable();
+        }
+
+        function switchWlQueue(queueName) {
+            currentWlQueue = queueName;
+            document.getElementById('tab-prev')?.classList.toggle('active', queueName === 'PREVENTIVE_RETENTION_WATCH');
+            document.getElementById('tab-rec')?.classList.toggle('active', queueName === 'REALIZED_LOSS_RECOVERY_AUDIT');
+            renderWorklistTable();
+        }
+
+        function getFilteredWorklistRows() {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            const pCol = DASHBOARD_PAYLOAD.prim_dim_name;
+            const query = currentWlSearch.toLowerCase();
+            return rows.filter(r => {
+                if (r.action_queue !== currentWlQueue) return false;
+                if (activePrim !== 'All' && pCol && Object.prototype.hasOwnProperty.call(r, pCol) && String(r[pCol]) !== activePrim) return false;
+                if (!query) return true;
+                return Object.values(r).some(v => String(v ?? '').toLowerCase().includes(query));
+            });
+        }
+
+        function renderWorklistTable() {
+            const searchEl = document.getElementById('wl-search');
+            if (searchEl) currentWlSearch = searchEl.value || '';
+            const filtered = getFilteredWorklistRows();
+
+            const thead = document.getElementById('wl-thead');
+            const tbody = document.getElementById('wl-tbody');
+            if (!thead || !tbody) return;
+
+            if (!filtered.length) {
+                thead.innerHTML = '';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">No matching records in this queue for active filter.</td></tr>';
+                return;
+            }
+
+            const cols = Object.keys(filtered[0]).filter(c => c !== '_is_target_event' && c !== 'action_queue').slice(0, 7);
+            let thHtml = '<tr>';
+            cols.forEach(c => thHtml += '<th>' + escHtml(c.replace(/_/g, ' ')) + '</th>');
+            thHtml += '</tr>';
+            thead.innerHTML = thHtml;
+
+            let trHtml = '';
+            filtered.slice(0, 60).forEach(r => {
+                trHtml += '<tr>';
+                cols.forEach(c => {
+                    const v = r[c];
+                    const disp = (v === null || v === undefined || v === '') ? '—' : v;
+                    trHtml += '<td>' + escHtml(disp) + '</td>';
+                });
+                trHtml += '</tr>';
+            });
+            tbody.innerHTML = trHtml;
+        }
+
+        function filterWorklistTable() {
+            renderWorklistTable();
+        }
+
+        function downloadWorklistCSV() {
+            const rows = getFilteredWorklistRows();
+            const exportRows = rows.length ? rows : (DASHBOARD_PAYLOAD.widgets_data.worklist_rows || []);
+            if (!exportRows.length) return;
+            const cols = Object.keys(exportRows[0]);
+            let csv = cols.join(',') + '\n';
+            exportRows.forEach(r => {
+                csv += cols.map(c => '"' + String(r[c] ?? '').replace(/"/g, '""') + '"').join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'actionable_priority_worklist.csv';
+            a.click();
+        }
+
+        // =====================================================================
+        // GOVERNANCE PROOF DRAWER & ARCHETYPE BENTO SPAN ENGINE
+        // =====================================================================
+        function getArchetypeSpanClass(pId, idx) {
+            if (pId === 'actionable_worklist_explorer' || pId === 'what_if_counterfactual_simulator') return 'span-12 full-width';
+            const arch = DASHBOARD_PAYLOAD.meta.archetype;
+            if (arch === 'nordic_saas_command' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'swiss_institutional_terminal' && idx < 2) return idx === 0 ? 'span-7' : 'span-5';
+            if (arch === 'industrial_scada_telemetry' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'editorial_commerce_studio' && idx === 0 && pId === 'temporal_momentum_ribbon') return 'span-12';
+            return 'span-6';
+        }
+
+        function renderGovernanceDrawer() {
+            const box = document.getElementById('gov-drawer-body');
+            if (!box) return;
+            const cb = DASHBOARD_PAYLOAD.circuit_breaker || {};
+            const dfii = DASHBOARD_PAYLOAD.dfii || {};
+            const ont = DASHBOARD_PAYLOAD.ontology || {};
+            const sel = DASHBOARD_PAYLOAD.selected_panels_detail || [];
+            const rej = DASHBOARD_PAYLOAD.rejected_panels_detail || [];
+
+            const kpiList = (ont.key_metrics_kpis || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const leakList = (ont.hidden_leakage_risks || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const selRows = sel.map(p => `<tr><td><strong>${escHtml(p.name)}</strong></td><td style="color:#10b981;">SELECTED (P${p.priority})</td><td>${escHtml(p.justification)}</td></tr>`).join('');
+            const rejRows = rej.map(p => `<tr><td>${escHtml(p.name)}</td><td style="color:var(--text-muted);">REJECTED</td><td>${escHtml(p.reason)}</td></tr>`).join('');
+
+            box.innerHTML = `
+                <div class="pathway-grid" style="margin-bottom:14px;">
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Statistical Hypothesis Proof</div>
+                        <div>Two-Proportion z-Stat: <strong>${Number(cb.z_stat || 0).toFixed(2)}</strong></div>
+                        <div>Two-Tailed p-Value: <strong>${Number(cb.p_value ?? 1).toExponential(3)}</strong></div>
+                        <div>Relative Risk Lift: <strong>${Number(cb.relative_risk_multiplier || 1).toFixed(2)}x</strong></div>
+                        <div>Attributable Excess Events: <strong>${Number(cb.excess_events || 0).toFixed(1)}</strong></div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">DFII Design Score (${dfii.dfii || 16} / 19)</div>
+                        <div>Aesthetic Impact: ${dfii.aesthetic_impact || 5}/5 &bull; Context Fit: ${dfii.context_fit || 5}/5</div>
+                        <div>Feasibility: ${dfii.implementation_feasibility || 5}/5 &bull; Perf Safety: ${dfii.performance_safety || 5}/5</div>
+                        <div>Consistency Risk Penalty: -${dfii.consistency_risk || 1}</div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Ontology Watchpoints (${escHtml(ont.domain_code || 'GEN')})</div>
+                        <ul style="padding-left:16px;margin-top:4px;">${leakList || kpiList}</ul>
+                    </div>
+                </div>
+                <div class="table-wrap" style="max-height:240px;">
+                    <table class="worklist-table">
+                        <thead><tr><th>Catalog Widget</th><th>Decision</th><th>Mathematical / Shape Justification</th></tr></thead>
+                        <tbody>${selRows}${rejRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function onCliffFeatureChange(val) {
+            currentCliffIdx = Number(val) || 0;
+            const cBox = document.getElementById('chart-cliff');
+            if (cBox) renderCliffChart(cBox, currentCliffIdx);
+        }
+
+        // =====================================================================
+        // ASSEMBLE ALL 10 CATALOG PANELS & INITIALIZE
+        // =====================================================================
+        function renderAllCharts() {
+            const container = document.getElementById('main-panels-container');
+            if (!container) return;
+            TOOLTIP_REGISTRY = [];
+            container.innerHTML = '';
+
+            const panels = DASHBOARD_PAYLOAD.selected_panels || [];
+
+            panels.forEach((pId, idx) => {
+                const card = document.createElement('div');
+                card.className = 'panel-card ' + getArchetypeSpanClass(pId, idx);
+
+                if (pId === 'segment_vulnerability_lollipop') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Primary Segment Vulnerability &amp; Wilson 95% CIs' : 'Segments Ki Kamzori Aur 95% Confidence Bounds'}</div>
+                                <div class="panel-desc">Ranked failure rate across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} cohorts (click any node to cross-filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-lollipop"></div>
+                    `;
+                    container.appendChild(card);
+                    renderLollipopChart(card.querySelector('#chart-lollipop'));
+                }
+                else if (pId === 'pareto_loss_waterfall') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Pareto 80/20 Cumulative Financial Loss Waterfall' : 'Pareto 80/20 Financial Nuksan Waterfall'}</div>
+                                <div class="panel-desc">Cumulative adverse capital concentration across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-pareto"></div>
+                    `;
+                    container.appendChild(card);
+                    renderParetoChart(card.querySelector('#chart-pareto'));
+                }
+                else if (pId === 'temporal_momentum_ribbon') {
+                    const tObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+                    const popStr = tObj.pop_delta_pp !== undefined ? ` (${tObj.pop_delta_pp >= 0 ? '+' : ''}${Number(tObj.pop_delta_pp).toFixed(2)}pp PoP &bull; ${escHtml(tObj.trend_direction || 'STABLE')})` : '';
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Temporal Failure Rate &amp; Volume Momentum' : 'Samay Ke Sath Failure Rate Aur Volume Trend'}</div>
+                                <div class="panel-desc">Dual-axis volume bars &amp; adverse rate trajectory via ${escHtml(tObj.date_column || 'Date')}${popStr}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-temporal"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTemporalChart(card.querySelector('#chart-temporal'));
+                }
+                else if (pId === 'secondary_cross_tab_heatmap') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2D Cross-Tabulation Risk Concentration Heatmap' : '2D Cross-Tab Risk Concentration Heatmap'}</div>
+                                <div class="panel-desc">Intersectional hotspot matrix: ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} &times; ${escHtml(DASHBOARD_PAYLOAD.sec_dim_name)} (click cell to filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-heatmap"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCrossTabHeatmap(card.querySelector('#chart-heatmap'));
+                }
+                else if (pId === 'exposure_vs_risk_bubble') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Exposure Volume vs Adverse Risk Bubble Dispersion' : 'Volume Banam Nuksan Dar Bubble Dispersion'}</div>
+                                <div class="panel-desc">Separates high-volume systemic friction from low-volume niche outliers.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-bubble"></div>
+                    `;
+                    container.appendChild(card);
+                    renderExposureBubbleChart(card.querySelector('#chart-bubble'));
+                }
+                else if (pId === 'nonlinear_cliff_step_area') {
+                    const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+                    let selHtml = '';
+                    if (cliffs.length >= 2) {
+                        selHtml = `<select class="slicer-select" onchange="onCliffFeatureChange(this.value)">` +
+                            cliffs.slice(0, 6).map((c, ci) => `<option value="${ci}" ${ci === currentCliffIdx ? 'selected' : ''}>${escHtml(c.column)}</option>`).join('') +
+                            `</select>`;
+                    }
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Non-Linear Parameter Threshold Cliff &amp; Danger Zone' : 'Khatre Ki Laal Rekha (Parameter Threshold Cliff)'}</div>
+                                <div class="panel-desc">Empirical quartile discretization exposing acute tipping points.</div>
+                            </div>
+                            ${selHtml}
+                        </div>
+                        <div class="svg-container" id="chart-cliff"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCliffChart(card.querySelector('#chart-cliff'), currentCliffIdx);
+                }
+                else if (pId === 'orthogonal_2x2_quadrant') {
+                    const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2x2 Orthogonal Risk vs Protective Buffer Matrix' : '2x2 Risk Banam Protective Buffer Matrix'}</div>
+                                <div class="panel-desc">${escHtml(inter.pos_driver || 'Risk')} vs ${escHtml(inter.neg_driver || 'Buffer')} interaction quadrants.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-quadrant"></div>
+                    `;
+                    container.appendChild(card);
+                    render2x2Quadrant(card.querySelector('#chart-quadrant'));
+                }
+                else if (pId === 'triage_efficiency_frontier') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Operational Intake Screening Yield Frontier' : 'Intake Screening Aur Defect Recall Curve'}</div>
+                                <div class="panel-desc">Trade-off curve between intake hold/scrap % and defect containment recall %.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-triage"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTriageYieldChart(card.querySelector('#chart-triage'));
+                }
+                else if (pId === 'what_if_counterfactual_simulator') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'What-If Counterfactual ROI &amp; Excess-Risk Simulator' : 'Agar Hum Faisla Badlein Toh Kitna Bachav Hoga (What-If ROI)?'}</div>
+                                <div class="panel-desc">Interactive epidemiological excess-risk compression with 95% confidence bounds &amp; 3-pathway advisory.</div>
+                            </div>
+                        </div>
+                        <div id="sim-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWhatIfSimulator(card.querySelector('#sim-container'));
+                }
+                else if (pId === 'actionable_worklist_explorer') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Actionable Priority Worklist &amp; Incident Triage' : 'Aaj Subah Team Ke Liye Actionable Priority List'}</div>
+                                <div class="panel-desc">Two-Queue row-level prioritization for preventive retention and realized loss recovery.</div>
+                            </div>
+                        </div>
+                        <div id="worklist-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWorklistExplorer(card.querySelector('#worklist-container'));
+                }
+            });
+        }
+
+        // Window onload
+        window.addEventListener('DOMContentLoaded', () => {
+            bindDelegatedPanelEvents();
+            initSlicers();
+            renderAllCharts();
+            renderGovernanceDrawer();
+        });
+    </script>
+</body>
+</html>

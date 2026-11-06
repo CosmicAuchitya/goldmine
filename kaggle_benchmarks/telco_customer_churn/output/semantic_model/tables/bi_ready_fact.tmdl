@@ -1,0 +1,172 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 7,043"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Churn] = "Yes")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 1,869"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[MonthlyCharges]), 'bi_ready_fact'[Churn] = "Yes")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $139,130.85"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[MonthlyCharges])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $456,116.60"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column customerID
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customerID
+		lineageTag: col-fact-customerID
+
+	column gender
+		dataType: string
+		summarizeBy: none
+		sourceColumn: gender
+		lineageTag: col-fact-gender
+
+	column SeniorCitizen
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: SeniorCitizen
+		lineageTag: col-fact-SeniorCitizen
+		formatString: #,0
+
+	column Partner
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Partner
+		lineageTag: col-fact-Partner
+
+	column Dependents
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Dependents
+		lineageTag: col-fact-Dependents
+
+	column tenure
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: tenure
+		lineageTag: col-fact-tenure
+		formatString: #,0
+
+	column PhoneService
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PhoneService
+		lineageTag: col-fact-PhoneService
+
+	column MultipleLines
+		dataType: string
+		summarizeBy: none
+		sourceColumn: MultipleLines
+		lineageTag: col-fact-MultipleLines
+
+	column InternetService
+		dataType: string
+		summarizeBy: none
+		sourceColumn: InternetService
+		lineageTag: col-fact-InternetService
+
+	column OnlineSecurity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: OnlineSecurity
+		lineageTag: col-fact-OnlineSecurity
+
+	column OnlineBackup
+		dataType: string
+		summarizeBy: none
+		sourceColumn: OnlineBackup
+		lineageTag: col-fact-OnlineBackup
+
+	column DeviceProtection
+		dataType: string
+		summarizeBy: none
+		sourceColumn: DeviceProtection
+		lineageTag: col-fact-DeviceProtection
+
+	column TechSupport
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TechSupport
+		lineageTag: col-fact-TechSupport
+
+	column StreamingTV
+		dataType: string
+		summarizeBy: none
+		sourceColumn: StreamingTV
+		lineageTag: col-fact-StreamingTV
+
+	column StreamingMovies
+		dataType: string
+		summarizeBy: none
+		sourceColumn: StreamingMovies
+		lineageTag: col-fact-StreamingMovies
+
+	column Contract
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Contract
+		lineageTag: col-fact-Contract
+
+	column PaperlessBilling
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PaperlessBilling
+		lineageTag: col-fact-PaperlessBilling
+
+	column PaymentMethod
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PaymentMethod
+		lineageTag: col-fact-PaymentMethod
+
+	column MonthlyCharges
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: MonthlyCharges
+		lineageTag: col-fact-MonthlyCharges
+		formatString: $#,0.00
+
+	column TotalCharges
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: TotalCharges
+		lineageTag: col-fact-TotalCharges
+		formatString: $#,0.00
+
+	column Churn
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Churn
+		lineageTag: col-fact-Churn
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

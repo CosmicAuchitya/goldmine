@@ -112,3 +112,37 @@ def test_empty_2x2_quadrant_never_claims_false_buffering():
     assert "structurally empty stratum" in md
     assert "achieve a 0.0% failure rate" not in md
 
+
+def test_bivariate_interactions_robust_binary_split():
+    """Discrete binary feature (median == max) must split cleanly using >= operator into populated quadrants."""
+    from autonomous_engine.strategic_decision_matrix import StrategicDecisionEngine
+
+    n = 200
+    np.random.seed(42)
+    age = np.random.uniform(20, 70, n)
+    # Active member is binary {0, 1} with more 1s than 0s so median is 1.0
+    active = np.random.choice([0, 1], p=[0.4, 0.6], size=n)
+    # Target churn is higher when age is high and active is 0
+    churn = ((age > 45) & (active == 0)).astype(int)
+    # Add random baseline noise
+    churn[np.random.choice(n, 15, replace=False)] = 1
+
+    df_test = pd.DataFrame({
+        "CustomerId": range(1, n + 1),
+        "Age": age,
+        "IsActiveMember": active,
+        "Balance": np.linspace(1000, 50000, n),
+        "Churn": churn
+    })
+
+    eng = StrategicDecisionEngine(df_test)
+    interactions = eng.micro_engine.analyze_bivariate_interactions()
+    assert interactions is not None
+    quads = interactions["quadrants"]
+    # All 4 quadrants must have positive counts (no artificial zero dropouts)
+    for qk, qv in quads.items():
+        assert qv["count"] > 0, f"Quadrant {qk} unexpectedly had 0 counts!"
+    assert sum(qv["count"] for qv in quads.values()) == n
+    assert sum(qv["events"] for qv in quads.values()) == int(churn.sum())
+
+

@@ -1,0 +1,165 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "heart_failure_clinical_records": {
+      "table_name": "heart_failure_clinical_records",
+      "filename": "heart_failure_clinical_records.csv",
+      "selected_sheet": null,
+      "estimated_rows": 299,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "age",
+        "anaemia",
+        "creatinine_phosphokinase",
+        "diabetes",
+        "ejection_fraction",
+        "high_blood_pressure",
+        "platelets",
+        "serum_creatinine",
+        "serum_sodium",
+        "sex",
+        "smoking",
+        "time",
+        "DEATH_EVENT"
+      ],
+      "potential_keys": [
+        "time"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "age",
+          "dtype": "float64",
+          "sample_values": [
+            "75.0",
+            "55.0",
+            "65.0"
+          ],
+          "nunique_in_sample": 47,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "anaemia",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "creatinine_phosphokinase",
+          "dtype": "int64",
+          "sample_values": [
+            "582",
+            "7861",
+            "146"
+          ],
+          "nunique_in_sample": 208,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "diabetes",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "ejection_fraction",
+          "dtype": "int64",
+          "sample_values": [
+            "20",
+            "38",
+            "40"
+          ],
+          "nunique_in_sample": 17,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "high_blood_pressure",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "0"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "platelets",
+          "dtype": "float64",
+          "sample_values": [
+            "265000.0",
+            "263358.03",
+            "162000.0"
+          ],
+          "nunique_in_sample": 176,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "serum_creatinine",
+          "dtype": "float64",
+          "sample_values": [
+            "1.9",
+            "1.1",
+            "1.3"
+          ],
+          "nunique_in_sample": 40,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "serum_sodium",
+          "dtype": "int64",
+          "sample_values": [
+            "130",
+            "136",
+            "129"
+          ],
+          "nunique_in_sample": 27,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "sex",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "0"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "smoking",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "time",
+          "dtype": "int64",
+          "sample_values": [
+            "4",
+            "6",
+            "7"
+          ],
+          "nunique_in_sample": 148,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

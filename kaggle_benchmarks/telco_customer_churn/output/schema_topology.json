@@ -1,0 +1,176 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "telco_customer_churn": {
+      "table_name": "telco_customer_churn",
+      "filename": "telco_customer_churn.csv",
+      "selected_sheet": null,
+      "estimated_rows": 7043,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "customerID",
+        "gender",
+        "SeniorCitizen",
+        "Partner",
+        "Dependents",
+        "tenure",
+        "PhoneService",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod",
+        "MonthlyCharges",
+        "TotalCharges",
+        "Churn"
+      ],
+      "potential_keys": [
+        "customerID",
+        "TotalCharges"
+      ],
+      "strictly_unique_primary_keys": [
+        "customerID"
+      ],
+      "recommended_primary_key": "customerID",
+      "sample_columns": [
+        {
+          "name": "customerID",
+          "dtype": "str",
+          "sample_values": [
+            "7590-VHVEG",
+            "5575-GNVDE",
+            "3668-QPYBK"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "gender",
+          "dtype": "str",
+          "sample_values": [
+            "Female",
+            "Male"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "SeniorCitizen",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Partner",
+          "dtype": "str",
+          "sample_values": [
+            "Yes",
+            "No"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Dependents",
+          "dtype": "str",
+          "sample_values": [
+            "No",
+            "Yes"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "tenure",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "34",
+            "2"
+          ],
+          "nunique_in_sample": 73,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "PhoneService",
+          "dtype": "str",
+          "sample_values": [
+            "[MASKED_PHONESERVICE]",
+            "[MASKED_PHONESERVICE]"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "MultipleLines",
+          "dtype": "str",
+          "sample_values": [
+            "No phone service",
+            "No",
+            "Yes"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "InternetService",
+          "dtype": "str",
+          "sample_values": [
+            "DSL",
+            "Fiber optic",
+            "No"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "OnlineSecurity",
+          "dtype": "str",
+          "sample_values": [
+            "No",
+            "Yes",
+            "No internet service"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "OnlineBackup",
+          "dtype": "str",
+          "sample_values": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "DeviceProtection",
+          "dtype": "str",
+          "sample_values": [
+            "No",
+            "Yes",
+            "No internet service"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

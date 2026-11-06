@@ -1,0 +1,117 @@
+{
+  "dataset_name": "bank_customer_churn",
+  "matched_ontology": {
+    "ontology_key": "b2b_enterprise",
+    "domain_code": "B2B_ENT",
+    "domain_name": "B2B Enterprise (Corporate Contracts, Invoicing & Wholesale)",
+    "key_metrics_kpis": [
+      "Annual Contract Value (ACV) & Total Contract Value (TCV)",
+      "Days Sales Outstanding (DSO) - \u092a\u0948\u0938\u0947 \u0935\u0938\u0942\u0932\u0928\u0947 \u092e\u0947\u0902 \u0932\u0917\u0928\u0947 \u0935\u093e\u0932\u0947 \u0914\u0938\u0924 \u0926\u093f\u0928",
+      "Pipeline Velocity (\u0932\u0940\u0921 \u0938\u0947 \u0915\u094d\u0932\u094b\u091c \u0939\u094b\u0928\u0947 \u0915\u0940 \u0917\u0924\u093f)",
+      "Customer Acquisition Cost (CAC) Payback Time"
+    ],
+    "hidden_leakage_risks": [
+      "Bad Debts (\u0915\u0938\u094d\u091f\u092e\u0930 \u0915\u0902\u092a\u0928\u0940 \u0915\u093e \u0926\u093f\u0935\u093e\u0932\u093f\u092f\u093e \u0939\u094b \u091c\u093e\u0928\u093e \u092f\u093e \u092c\u093f\u0932 \u0928 \u092d\u0930\u0928\u093e)",
+      "SLA Penalty Deductions (\u0938\u0930\u094d\u0935\u093f\u0938 \u0921\u093e\u0909\u0928\u091f\u093e\u0907\u092e \u092a\u0930 \u092d\u093e\u0930\u0940 \u0915\u091f\u094c\u0924\u0940)",
+      "Scope Creep in Custom Integration (\u092c\u093f\u0928\u093e \u090f\u0915\u094d\u0938\u094d\u091f\u094d\u0930\u093e \u092c\u093f\u0932 \u0915\u093f\u090f \u0905\u0924\u093f\u0930\u093f\u0915\u094d\u0924 \u0915\u093e\u092e \u0915\u0930\u0928\u093e)"
+    ]
+  },
+  "archetype": "nordic_saas_command",
+  "archetype_name": "Nordic SaaS Command Center",
+  "executive_persona": "Chief Revenue Officer (CRO) & VP Customer Success",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "8-col / 4-col executive bento layout with prominent MRR leakage focus",
+    "default_theme": "dark",
+    "font_display": "'Trebuchet MS', 'Segoe UI Variable Display', system-ui, sans-serif",
+    "font_body": "'Trebuchet MS', 'Segoe UI', -apple-system, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 10000,
+    "total_columns": 13,
+    "is_temporal": false,
+    "has_monetary_ledger": true,
+    "has_secondary_dim": true,
+    "cliffs_count": 6,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 2
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "priority": 3
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (Geography x Num Of Products) exposes sub-node vulnerability hubs.",
+      "priority": 4
+    },
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
+      "priority": 5
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 6
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 7
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit"
+  }
+}
