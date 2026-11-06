@@ -75,7 +75,7 @@
     {
       "id": "secondary_cross_tab_heatmap",
       "name": "2D Cross-Tabulation Risk Concentration Heatmap",
-      "justification": "Bivariate categorical cross-tab (JobRole x JobInvolvement) exposes sub-node vulnerability hubs.",
+      "justification": "Bivariate categorical cross-tab (JobRole x OverTime) exposes sub-node vulnerability hubs.",
       "priority": 5
     },
     {

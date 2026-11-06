@@ -12,44 +12,48 @@
 ### 2. Macro Operational Financial Impact
 - **Total Monitored Records**: `10,000`
 - **Negative / Target Events (Machine failure)**: `339` (`3.39%`)
-- **Total Friction / Capital Drag**: **$0.00**
+- **Physical Event Footprint**: **Non-Monetary Operational Telemetry (`339` adverse events)**
 
 ---
 
 ### 3. Economic Moats (Core Value Drivers & Operational Excellence)
 *Top performers demonstrating minimum friction and maximum operational stability:*
 
-| HDF | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
+| Type | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | 9,885 | 224 | **97.73%** | 2.27% | **High Reliability Leader** |
-| **1** | 115 | 115 | **0.0%** | 100.0% | Sub-Baseline Performer |
+| **H** | 1,003 | 21 | **97.91%** | 2.09% | **High Reliability Leader** |
+| **M** | 2,997 | 83 | **97.23%** | 2.77% | **High Reliability Leader** |
+| **L** | 6,000 | 235 | **96.08%** | 3.92% | **High Reliability Leader** |
 
 ---
 
-### 4. Capital Leaks & Financial Vulnerabilities
-*Concentrated operational drag where operational friction bleeds capital:*
+### 4. Operational Bottlenecks & Adverse Event Concentration
+*Concentrated operational friction ranked by physical adverse event volume:*
 
-| HDF | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | 9,885 | 224 | **2.27%** | **$0.00** | **0.0%** |
-| **1** | 115 | 115 | **100.0%** | **$0.00** | **0.0%** |
-
----
-
-### 5. Secondary Segment / Node Bottlenecks (OSF)
-*Sub-nodes exhibiting concentrated friction:*
-
-| OSF | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| Type | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
 | :--- | :--- | :--- | :--- | :--- |
-| **0** | 9,902 | 241 | **2.43%** | $0.00 |
-| **1** | 98 | 98 | **100.0%** | $0.00 |
+| **L** | 6,000 | 235 | **3.92%** | **69.32%** |
+| **M** | 2,997 | 83 | **2.77%** | **24.48%** |
+| **H** | 1,003 | 21 | **2.09%** | **6.19%** |
+
+---
+
+### 5. Secondary Segment / Node Bottlenecks (Rotational speed [rpm]_tier)
+*Sub-nodes exhibiting concentrated physical failure events:*
+
+| Rotational speed [rpm]_tier | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| :--- | :--- | :--- | :--- | :--- |
+| **Tier 1 (Low)** | 2,513 | 255 | **10.15%** | 75.22% |
+| **Tier 4 (Elevated)** | 2,490 | 48 | **1.93%** | 14.16% |
+| **Tier 2 (Moderate)** | 2,495 | 24 | **0.96%** | 7.08% |
+| **Tier 3 (High)** | 2,502 | 12 | **0.48%** | 3.54% |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `HDF` may be confounded by underlying volume distributions, scale effects, or `OSF` concentration.
+> - Observed risk in `Type` may be confounded by underlying volume distributions, scale effects, or `Rotational speed [rpm]_tier` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
@@ -70,9 +74,9 @@
 
 > *"Good morning. Across our audited footprint of **10,000 physical records**, our system identified **339 critical events (3.39%)**, driving an aggregate volume of **339 critical quality events (3.39%)**.*
 > 
-> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `HDF` (rate spread: 97.73 percentage points, Chi-Square p = 0.0000e+00): the top leak segment accounts for **66.1% of all adverse quality events**.*
+> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `Type` (rate spread: 1.83 percentage points, 1.88x relative separation, Chi-Square p = 1.0324e-03): the top leak segment accounts for **69.3% of all adverse quality events**.*
 > 
-> *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously prevent **33 defective outcomes** within the next operational cycle."*
+> *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously prevent **34 defective outcomes** within the next operational cycle."*
 
 
 ---
@@ -81,13 +85,13 @@
 *Objective: Unbiased problem diagnosis, empirical proof of solutions, executive counter-questions, and honest trade-offs.*
 
 ### 1. Ground-Truth Problem Diagnosis (Audited Friction Footprint)
-- **Domain Context**: **Enterprise Operational Systems**
+- **Domain Context**: **Industrial Manufacturing & Predictive Maintenance**
 - **Monitored Population**: **10,000 physical records**
 - **Target Adverse Events (`Machine failure`)**: **339 events (3.39%)**
 - **Highest-Observed Candidate Segment**: **`Type = L`**
   - **Cohort Volume**: 6,000 records
   - **Adverse Events in Segment**: 235 events
-  - **Segment Failure Rate**: **3.92%** (vs. 2.6% rest-of-population baseline — **1.16x Risk Multiplier**)
+  - **Segment Failure Rate**: **3.92%** (vs. 2.6% rest-of-population baseline — **1.51x Risk Multiplier**)
   - **Statistical Significance Gate**: **PASSED (`z = 3.56, p = 3.6487e-04`)** — **79.0 Attributable Excess Events (+1.32% above 2.6% rest-of-system baseline)**
 
 ---
@@ -124,10 +128,10 @@
 ---
 
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
-*Board ya leadership (Executive Operating Committee) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
+*Board ya leadership (VP of Plant Operations & Reliability Engineering) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'Type = L' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Type = L' is 3.92% compared to 2.60% across the remainder of the population (Relative Risk Multiplier: 1.16x across 6,000 physical records). The empirical separation yields z = 3.56 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 79.0 attributable excess events.
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Type = L' is 3.92% compared to 2.60% across the remainder of the population (Relative Risk Multiplier: 1.51x across 6,000 physical records). The empirical separation yields z = 3.56 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 79.0 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
 > **Empirical Data Answer**: Out of 6,000 records in this high-risk partition, 235 were confirmed adverse events (3.92% precision vs 2.60% rest-of-system baseline, +1.32% excess risk). Targeting this cohort addresses 79.0 attributable excess events while absorbing 5,765 non-event reviews across the cohort cycle.
@@ -170,15 +174,15 @@
 
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`HDF` vs. `Rotational speed [rpm]`)
-*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 0.0000e+00):*
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`Torque [Nm]` vs. `Rotational speed [rpm]`)
+*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 3.2250e-44):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `HDF` (<= 0.00) & High `Rotational speed [rpm]` (> 1503.00) | 4,992 | 60 | **1.2%** | **Optimal Performance Buffer** |
-| **Q2 (Unbuffered Low)** | Low `HDF` (<= 0.00) & Low `Rotational speed [rpm]` (<= 1503.00) | 4,893 | 164 | **3.35%** | Baseline Operating Profile |
-| **Q3 (Masked Risk)** | High `HDF` (> 0.00) & High `Rotational speed [rpm]` (> 1503.00) | 0 | 0 | **0.0%** | Partially Buffered Risk (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `HDF` (> 0.00) & Low `Rotational speed [rpm]` (<= 1503.00) | 115 | 115 | **100.0%** | **Compound Maximum Risk Exposure** |
+| **Q1 (Optimal Zone)** | Low `Torque [Nm]` (<= 40.10) & High `Rotational speed [rpm]` (> 1503.00) | 4,396 | 59 | **1.34%** | **Optimal Performance Buffer** |
+| **Q2 (Unbuffered Low)** | Low `Torque [Nm]` (<= 40.10) & Low `Rotational speed [rpm]` (<= 1503.00) | 631 | 3 | **0.48%** | Baseline Operating Profile |
+| **Q3 (Masked Risk)** | High `Torque [Nm]` (> 40.10) & High `Rotational speed [rpm]` (> 1503.00) | 596 | 1 | **0.17%** | Partially Buffered Risk (Elevated Drag) |
+| **Q4 (Catastrophic Zone)** | High `Torque [Nm]` (> 40.10) & Low `Rotational speed [rpm]` (<= 1503.00) | 4,377 | 276 | **6.31%** | **Compound Maximum Risk Exposure** |
 
 ---
 
@@ -187,9 +191,9 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Triage Gate if HDF >= 1.00)** | Operational Filter | 115 | 1.15% | **33.92%** | **2.27%** | 0 | 0.0% |
-| **Policy 2: Surgical (Triage Gate if HDF >= 0.00)** | Operational Filter | 10,000 | 100.0% | **100.0%** | **0.0%** | 9,661 | 100.0% |
-| **Policy 3: Compound (Triage Gate if HDF > 0.00 OR Rotational speed [rpm] < 1503.00)** | Operational Filter | 4,986 | 49.86% | **82.3%** | **1.2%** | 4,707 | 48.72% |
+| **Policy 1: Conservative (Maintenance Inspection if Torque [Nm] > 46.80)** | Operational Filter | 2,471 | 24.71% | **71.98%** | **1.26%** | 2,227 | 23.05% |
+| **Policy 2: Surgical (Maintenance Inspection if Torque [Nm] > 40.10)** | Operational Filter | 4,973 | 49.73% | **81.71%** | **1.23%** | 4,696 | 48.61% |
+| **Policy 3: Compound (Maintenance Inspection if Torque [Nm] > 40.10 OR Rotational speed [rpm] < 1503.00)** | Operational Filter | 5,591 | 55.91% | **82.6%** | **1.34%** | 5,311 | 54.97% |
 
 ---
 
@@ -216,17 +220,17 @@
 **MQ2: What is the critical operational boundary for secondary driver 'Torque [Nm]', and does breach of this threshold alter failure probability?**  
 > **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'Torque [Nm]' quartile threshold (Chi-Square p = 1.5112e-92). In high-risk Q4 ((46.8, 76.6]), the adverse rate is 9.87%, compared to 1.91% in favorable Q1 ((3.799, 33.2]). Managing 'Torque [Nm]' into its favorable operating window delivers a 7.96 percentage point risk reduction.
 
-**MQ3: Can high levels of protective factor 'Rotational speed [rpm]' compensate for elevated risk factor 'HDF', or does 'HDF' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'HDF' cohort, elevating 'Rotational speed [rpm]' shifts adverse events from 100.0% (Compound Catastrophe) to 0.0% (Masked Risk). Records with elevated 'HDF' and high 'Rotational speed [rpm]' achieve a 0.0% failure rate, which closely approaches the 1.2% Optimal Zone rate and demonstrates that high 'Rotational speed [rpm]' effectively buffers the risk of elevated 'HDF'.
+**MQ3: Can high levels of protective factor 'Rotational speed [rpm]' compensate for elevated risk factor 'Torque [Nm]', or does 'Torque [Nm]' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 3.2250e-44) reveals that within the high 'Torque [Nm]' cohort, elevating 'Rotational speed [rpm]' shifts adverse events from 6.31% (Compound Catastrophe) to 0.17% (Masked Risk). Records with elevated 'Torque [Nm]' and high 'Rotational speed [rpm]' achieve a 0.17% failure rate, which closely approaches the 1.34% Optimal Zone rate and demonstrates that high 'Rotational speed [rpm]' effectively buffers the risk of elevated 'Torque [Nm]'.
 
 **MQ4: At what level does third-order metric 'Tool wear [min]' begin compromising operational yield?**  
 > **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 1.7565e-27) shows that 'Tool wear [min]' escalates by 4.76 percentage points from 2.17% in Q1 ((-0.001, 53.0]) to 6.93% in Q4 ((162.0, 253.0]). This isolates Q4 as a statistically significant vulnerability zone requiring threshold monitoring.
 
 **MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 339 catastrophic records reveals that 58.7% breach two or more critical parameters (HDF, OSF, Rotational speed [rpm]) simultaneously. Catastrophic degradation is an emergent compound phenomenon rather than a single isolated defect.
+> **Empirical Data Answer**: Tail risk audit across the lowest 339 catastrophic records reveals that 74.63% breach two or more critical parameters (Torque [Nm], Tool wear [min], Rotational speed [rpm]) simultaneously. Catastrophic degradation is an emergent compound phenomenon rather than a single isolated defect.
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Triage Gate if HDF >= 1.00)), 115 records (1.15%) are flagged, capturing 33.92% of all adverse events with 0 false alarms. Under Surgical Triage (Policy 2: Surgical (Triage Gate if HDF >= 0.00)), flagged volume expands to 10000 records (100.0%), capturing 100.0% of adverse events and shifting the unflagged adverse rate to 0.0%, at the cost of 9661 false alarms (100.0% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (29.50 vs 1.00 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Maintenance Inspection if Torque [Nm] > 46.80)), 2471 records (24.71%) are flagged, capturing 71.98% of all adverse events with 2227 false alarms. Under Surgical Triage (Policy 2: Surgical (Maintenance Inspection if Torque [Nm] > 40.10)), flagged volume expands to 4973 records (49.73%), capturing 81.71% of adverse events and shifting the unflagged adverse rate to 1.23%, at the cost of 4696 false alarms (48.61% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (2.91 vs 1.64 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
 
 **MQ7: Does 'Process temperature [K]' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'Air temperature [K]' (Simpson's Paradox)?**  
 > **Empirical Data Answer**: At the unadjusted level, 'Process temperature [K]' shows correlation r = 0.036 with the target. However, 'Process temperature [K]' is strongly co-linear with 'Air temperature [K]' (r = 0.876). When stratifying across 'Air temperature [K]' quartiles, the correlation of 'Process temperature [K]' within strata shifts to ((295.29900000000004, 298.3]: r=-0.031, (298.3, 300.1]: r=-0.012, (300.1, 301.5]: r=0.004). This proves that much of 'Process temperature [K]'s macro effect is mediated through its relationship with 'Air temperature [K]', warning against isolated policy changes on 'Process temperature [K]' alone.

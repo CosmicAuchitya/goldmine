@@ -39,7 +39,7 @@
     "total_columns": 14,
     "is_temporal": false,
     "has_monetary_ledger": false,
-    "has_secondary_dim": true,
+    "has_secondary_dim": false,
     "cliffs_count": 5,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
@@ -73,10 +73,10 @@
       "priority": 4
     },
     {
-      "id": "secondary_cross_tab_heatmap",
-      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
-      "justification": "Bivariate categorical cross-tab (HDF x OSF) exposes sub-node vulnerability hubs.",
-      "priority": 6
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 7
     },
     {
       "id": "what_if_counterfactual_simulator",
@@ -103,9 +103,9 @@
       "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."
     },
     {
-      "id": "exposure_vs_risk_bubble",
-      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
-      "reason": "Insufficient categorical depth (< 3 cohorts) for multi-dimensional bubble dispersion."
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "reason": "Secondary dimension either not detected or cardinality outside 2-15 range."
     }
   ],
   "executive_narrative": {

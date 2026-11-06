@@ -99,6 +99,75 @@ def is_pseudo_numeric_identifier(col_name: str, series: Optional[pd.Series] = No
             return True
     return False
 
+
+def is_categorical_or_string_series(series: pd.Series) -> bool:
+    """
+    Compatible across Pandas 1.x, 2.x, and 3.0+ (where string columns have 'str' / StringDtype
+    instead of legacy 'object' dtype).
+    """
+    if series is None:
+        return False
+    dt_str = str(series.dtype).lower()
+    if dt_str == 'category' or dt_str == 'object' or dt_str.startswith('str'):
+        return True
+    if pd.api.types.is_object_dtype(series) or pd.api.types.is_string_dtype(series):
+        return True
+    return False
+
+
+def is_deterministic_target_leakage(
+    col_name: str,
+    series: pd.Series,
+    binary_target: Optional[pd.Series],
+    target_col: Optional[str] = None
+) -> bool:
+    """
+    Detects tautological post-event target sub-mode flags (e.g., HDF, OSF, PWF, TWF in AI4I
+    where HDF=1 deterministically implies Machine failure=1 with 100.0% certainty, or RNF
+    random failure flags) that represent decompositions of the target event itself rather than
+    pre-event operational dimensions or continuous physical predictors.
+    """
+    if series is None or binary_target is None:
+        return False
+    if target_col and str(col_name).strip().lower() == str(target_col).strip().lower():
+        return True
+    if len(series) < 50:
+        return False
+
+    c_low = str(col_name).strip().lower()
+    # Check binary 0/1 indicator columns
+    s_num = pd.to_numeric(series, errors='coerce')
+    if s_num.notna().mean() < 0.98:
+        return False
+    u_vals = set(s_num.dropna().unique())
+    if not u_vals.issubset({0, 1, 0.0, 1.0}) or len(u_vals) != 2:
+        return False
+
+    # 1. Explicit industrial failure-mode acronym indicators when target is a failure outcome
+    if target_col and any(k in str(target_col).lower() for k in ['failure', 'defect', 'fault', 'breach']):
+        if re.match(r'^(?:twf|hdf|pwf|osf|rnf)$', c_low):
+            return True
+
+    # 2. Empirical tautological implication check:
+    # If Flag == 1 occurs >= 10 times AND P(Target == 1 | Flag == 1) >= 0.995 (near-100% deterministic subset of target)
+    pos_mask = (s_num == 1)
+    n_pos = int(pos_mask.sum())
+    total_target = int(binary_target.sum())
+    if n_pos >= 10 and total_target > 0 and n_pos <= total_target:
+        cond_prob = float(binary_target.loc[pos_mask].mean())
+        if cond_prob >= 0.995:
+            return True
+
+    # Also check inverse coding where Flag == 0 is a deterministic subset of Target == 1
+    zero_mask = (s_num == 0)
+    n_zero = int(zero_mask.sum())
+    if n_zero >= 10 and total_target > 0 and n_zero <= total_target:
+        cond_prob_zero = float(binary_target.loc[zero_mask].mean())
+        if cond_prob_zero >= 0.995:
+            return True
+
+    return False
+
 def resolve_currency_metadata(
     df: pd.DataFrame,
     cost_col: Optional[str] = None,
@@ -219,7 +288,7 @@ def resolve_canonical_target_and_cost(
     # 1.2 Target Keywords search if blueprint candidate absent or invalid
     target_keywords = [
         'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
-        'readmit', 'attrition', 'churn', 'fraud', 'default', 'reach', 'ontime',
+        'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
         'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker',
         'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
         'grade', 'rating', 'score', 'test results', 'test_results', 'test result',

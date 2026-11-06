@@ -34,6 +34,8 @@ try:
         is_pseudo_numeric_identifier,
         is_synthetic_column,
         is_demographic_attribute,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage,
         resolve_canonical_target_and_cost
     )
 except ImportError:
@@ -45,6 +47,8 @@ except ImportError:
         is_pseudo_numeric_identifier,
         is_synthetic_column,
         is_demographic_attribute,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage,
         resolve_canonical_target_and_cost
     )
 
@@ -80,7 +84,7 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     secondary_dim = None
 
     cols = list(df.columns)
-    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job']
+    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type']
     location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'branch', 'location', 'airport']
 
     cat_cols = []
@@ -89,13 +93,15 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             continue
         if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
             continue
+        if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
+            continue
         c_low = c.lower().strip()
         if c_low.endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code')):
             continue
         if any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']):
             continue
         nunique = df[c].nunique()
-        if 2 <= nunique <= 50 and (df[c].dtype == 'object' or str(df[c].dtype) == 'category'):
+        if 2 <= nunique <= 50 and is_categorical_or_string_series(df[c]):
             cat_cols.append((c, nunique))
 
     # Fallback for purely numeric datasets: find low-cardinality discrete features
@@ -104,6 +110,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             if c in [target_col, cost_col] or c.lower().endswith(('_id', '_key')) or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
                 continue
             if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
+                continue
+            if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
                 continue
             nunique = df[c].nunique()
             if 2 <= nunique <= 30:
@@ -115,6 +123,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             if c in [target_col, cost_col] or c.lower().endswith(('_id', '_key')) or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
                 continue
             if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
+                continue
+            if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
                 continue
             if pd.api.types.is_numeric_dtype(df[c]) and df[c].nunique() > 1:
                 cat_cols.append((c, df[c].nunique()))
@@ -159,6 +169,23 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
         if remaining:
             remaining.sort(key=compute_dispersion, reverse=True)
             secondary_dim = remaining[0]
+        else:
+            # If dataset has only 1 categorical dimension (e.g. Type in AI4I), select highest-dispersion physical numeric feature for discretization
+            num_fallbacks = [
+                c for c in cols
+                if c not in [target_col, cost_col, primary_dim]
+                and not c.lower().endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code'))
+                and not is_index_artifact(c, df[c])
+                and not is_pseudo_numeric_identifier(c, df[c])
+                and not is_synthetic_column(c, blueprint)
+                and not is_sensitive_column_name(c)
+                and not is_deterministic_target_leakage(c, df[c], bin_target, target_col)
+                and pd.api.types.is_numeric_dtype(df[c])
+                and df[c].nunique() > 1
+            ]
+            if num_fallbacks:
+                num_fallbacks.sort(key=compute_dispersion, reverse=True)
+                secondary_dim = num_fallbacks[0]
 
     return target_col, cost_col, primary_dim, secondary_dim
 
@@ -203,7 +230,7 @@ def synthesize_deliverables(output_dir: str):
     def discretize_continuous_dim(df: pd.DataFrame, col: str) -> str:
         if not col or col not in df.columns:
             return col
-        if df[col].dtype == 'object' or str(df[col].dtype) == 'category' or df[col].nunique() <= 12:
+        if is_categorical_or_string_series(df[col]) or df[col].nunique() <= 12:
             return col
         tier_col = f"{col}_tier"
         try:
@@ -392,6 +419,13 @@ System Reliability Rate % =
             moats = sorted(qualified, key=lambda x: x.get("event_rate_pct", 0.0))[:5]
         top_leaks = sorted(prim_summary, key=lambda x: x.get("friction_loss", 0.0) if cost_col else x.get("target_events", 0), reverse=True)[:5]
 
+    has_monetary_cost = bool(cost_col and total_cost > 0)
+    macro_drag_line = (
+        f"- **Total Friction / Capital Drag**: **${total_cost:,.2f}**"
+        if has_monetary_cost
+        else f"- **Physical Event Footprint**: **Non-Monetary Operational Telemetry (`{target_count:,}` adverse events)**"
+    )
+
     # 2. Executive Forensic Dossier (Unbiased)
     dossier_content = f"""# ENTERPRISE DATAX-RAY FORENSIC DOSSIER
 ## Executive Summary & Capital Friction Audit
@@ -407,7 +441,7 @@ System Reliability Rate % =
 ### 2. Macro Operational Financial Impact
 - **Total Monitored Records**: `{total_records:,}`
 - **Negative / Target Events ({target_col or 'Status'})**: `{target_count:,}` (`{target_rate_pct}%`)
-- **Total Friction / Capital Drag**: **${total_cost:,.2f}**
+{macro_drag_line}
 """
 
     if imbalance_report and imbalance_report.get("is_severely_imbalanced"):
@@ -439,7 +473,8 @@ System Reliability Rate % =
             status = "Sub-Baseline Performer"
         dossier_content += f"| **{m.get(prim_dim, 'N/A')}** | {m.get('volume', 0):,} | {m.get('target_events', 0):,} | **{rel}%** | {m.get('event_rate_pct', 0.0)}% | {status} |\n"
 
-    dossier_content += f"""
+    if has_monetary_cost:
+        dossier_content += f"""
 ---
 
 ### 4. Capital Leaks & Financial Vulnerabilities
@@ -448,13 +483,28 @@ System Reliability Rate % =
 | {prim_dim or 'Segment'} | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 """
-    for l in top_leaks:
-        loss_val = l.get("friction_loss", 0.0)
-        share = round((loss_val / total_cost * 100.0), 2) if total_cost > 0 else 0.0
-        dossier_content += f"| **{l.get(prim_dim, 'N/A')}** | {l.get('volume', 0):,} | {l.get('target_events', 0):,} | **{l.get('event_rate_pct', 0.0)}%** | **${loss_val:,.2f}** | **{share}%** |\n"
+        for l in top_leaks:
+            loss_val = l.get("friction_loss", 0.0)
+            share = round((loss_val / total_cost * 100.0), 2) if total_cost > 0 else 0.0
+            dossier_content += f"| **{l.get(prim_dim, 'N/A')}** | {l.get('volume', 0):,} | {l.get('target_events', 0):,} | **{l.get('event_rate_pct', 0.0)}%** | **${loss_val:,.2f}** | **{share}%** |\n"
+    else:
+        dossier_content += f"""
+---
+
+### 4. Operational Bottlenecks & Adverse Event Concentration
+*Concentrated operational friction ranked by physical adverse event volume:*
+
+| {prim_dim or 'Segment'} | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| :--- | :--- | :--- | :--- | :--- |
+"""
+        for l in top_leaks:
+            ev_cnt = int(l.get('target_events', 0))
+            share = round((ev_cnt / max(target_count, 1) * 100.0), 2)
+            dossier_content += f"| **{l.get(prim_dim, 'N/A')}** | {l.get('volume', 0):,} | {ev_cnt:,} | **{l.get('event_rate_pct', 0.0)}%** | **{share}%** |\n"
 
     if sec_summary:
-        dossier_content += f"""
+        if has_monetary_cost:
+            dossier_content += f"""
 ---
 
 ### 5. Secondary Segment / Node Bottlenecks ({sec_dim or 'Nodes'})
@@ -463,18 +513,34 @@ System Reliability Rate % =
 | {sec_dim or 'Node'} | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
 | :--- | :--- | :--- | :--- | :--- |
 """
-        for s in sec_summary:
-            s_loss = s.get("friction_loss", 0.0)
-            dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s.get('target_events', 0):,} | **{s.get('event_rate_pct', 0.0)}%** | ${s_loss:,.2f} |\n"
+            for s in sec_summary:
+                s_loss = s.get("friction_loss", 0.0)
+                dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s.get('target_events', 0):,} | **{s.get('event_rate_pct', 0.0)}%** | ${s_loss:,.2f} |\n"
+        else:
+            dossier_content += f"""
+---
+
+### 5. Secondary Segment / Node Bottlenecks ({sec_dim or 'Nodes'})
+*Sub-nodes exhibiting concentrated physical failure events:*
+
+| {sec_dim or 'Node'} | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| :--- | :--- | :--- | :--- | :--- |
+"""
+            for s in sec_summary:
+                s_ev = int(s.get('target_events', 0))
+                s_share = round((s_ev / max(target_count, 1) * 100.0), 2)
+                dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s_ev:,} | **{s.get('event_rate_pct', 0.0)}%** | {s_share}% |\n"
 
     # Evaluate statistical significance of Primary Dimension concentration
     prim_p_val = 1.0
     prim_rate_spread = 0.0
+    prim_rel_lift = 1.0
     if prim_summary and len(prim_summary) >= 2:
         valid_rows = [r for r in prim_summary if r.get("volume", 0) >= 5]
         if len(valid_rows) >= 2:
             rates_list = [float(r.get("event_rate_pct", 0.0)) for r in valid_rows]
             prim_rate_spread = round(max(rates_list) - min(rates_list), 2)
+            prim_rel_lift = round(max(rates_list) / max(min(rates_list), 0.01), 2)
             cont_rows = [
                 [int(r.get("target_events", 0)), max(0, int(r.get("volume", 0)) - int(r.get("target_events", 0)))]
                 for r in valid_rows
@@ -487,14 +553,19 @@ System Reliability Rate % =
             except Exception:
                 prim_p_val = 1.0
 
-    is_prim_significant = bool(prim_p_val < 0.05 and prim_rate_spread >= 2.5)
+    # Significant if p < 0.05 AND meaningful effect size (>= 2.5 percentage points OR >= 1.25x relative risk lift for low-base-rate domains)
+    is_prim_significant = bool(prim_p_val < 0.05 and (prim_rate_spread >= 2.5 or prim_rel_lift >= 1.25))
 
     circuit_breaker_note = ""
     if not is_prim_significant and prim_dim:
+        if prim_p_val >= 0.05:
+            cb_reason = f"p = {prim_p_val:.4f} >= 0.05 — within random sampling variation"
+        else:
+            cb_reason = f"p = {prim_p_val:.4f}, negligible practical effect size: {prim_rate_spread:.2f} pp spread, {prim_rel_lift:.2f}x lift"
         circuit_breaker_note = (
             f"\n> [!WARNING]\n"
-            f"> **Statistical Circuit-Breaker Alert (Uniform Noise Distribution across `{prim_dim}`, Chi-Square p = {prim_p_val:.4f})**: "
-            f"Adverse event rates across `{prim_dim}` vary by only {prim_rate_spread:.2f} percentage points (p = {prim_p_val:.4f} >= 0.05). "
+            f"> **Statistical Circuit-Breaker Alert (Uniform / Negligible Separation across `{prim_dim}`, Chi-Square p = {prim_p_val:.4f})**: "
+            f"Adverse event rates across `{prim_dim}` vary by only {prim_rate_spread:.2f} percentage points ({cb_reason}). "
             f"The sensitivity table below models theoretical **system-wide global baseline improvements**, NOT segment-targeted ROI. "
             f"**Do NOT allocate segment-specific CapEx based on `{prim_dim}`.**\n"
         )
@@ -556,7 +627,7 @@ System Reliability Rate % =
         share_pct = round((top_leak_events / max(target_count, 1) * 100.0), 1)
         share_str = f"{share_pct}% of all adverse quality events"
         drag_str = f"an aggregate volume of **{target_count:,} critical quality events ({target_rate_pct}%)**"
-        remedy_str = f"autonomously prevent **{int(target_count * 0.10):,} defective outcomes** within the next operational cycle"
+        remedy_str = f"autonomously prevent **{int(round(target_count * 0.10)):,} defective outcomes** within the next operational cycle"
 
     if is_prim_significant:
         briefing_script = (
@@ -564,16 +635,21 @@ System Reliability Rate % =
             f"*Use this verbatim script when presenting these forensic findings to the CFO, VP, or Board:*\n\n"
             f"> *\"Good morning. Across our audited footprint of **{total_records:,} physical records**, "
             f"our system identified **{target_count:,} critical events ({target_rate_pct}%)**, driving {drag_str}.*\n> \n"
-            f"> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `{prim_dim}` (rate spread: {prim_rate_spread:.2f} percentage points, Chi-Square p = {prim_p_val:.4e}): the top leak segment accounts for **{share_str}**.*\n> \n"
+            f"> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `{prim_dim}` (rate spread: {prim_rate_spread:.2f} percentage points, {prim_rel_lift:.2f}x relative separation, Chi-Square p = {prim_p_val:.4e}): the top leak segment accounts for **{share_str}**.*\n> \n"
             f"> *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models {remedy_str}.\"*\n"
         )
     else:
+        noise_desc = (
+            f"Chi-Square p = {prim_p_val:.4f} >= 0.05 — statistically indistinguishable from random sampling noise"
+            if prim_p_val >= 0.05
+            else f"Chi-Square p = {prim_p_val:.4f}, negligible {prim_rate_spread:.2f} pp / {prim_rel_lift:.2f}x practical separation"
+        )
         briefing_script = (
             f"\n### 9. Data Analyst Executive Boardroom Briefing Script\n"
             f"*Use this verbatim script when presenting these forensic findings to the CFO, VP, or Board:*\n\n"
             f"> *\"Good morning. Across our audited footprint of **{total_records:,} physical records**, "
             f"our system identified **{target_count:,} critical events ({target_rate_pct}%)**, driving {drag_str}.*\n> \n"
-            f"> *Crucially, our Statistical Circuit-Breaker proves that failure rates across `{prim_dim}` are **uniformly distributed** (rate spread: only {prim_rate_spread:.2f} percentage points, Chi-Square p = {prim_p_val:.4f} — statistically indistinguishable from random sampling noise), even though the largest volume segment accounts for {share_str} simply due to headcount/volume.* \n> \n"
+            f"> *Crucially, our Statistical Circuit-Breaker proves that failure rates across `{prim_dim}` lack actionable concentration (rate spread: only {prim_rate_spread:.2f} percentage points, {noise_desc}), even though the largest volume segment accounts for {share_str} simply due to headcount/volume.* \n> \n"
             f"> *Therefore, we advise an immediate **$0 CapEx freeze on `{prim_dim}`-targeted interventions** to avoid wasting capital on statistical noise, and recommend either auditing missing upstream telemetry or pursuing global system-wide process hygiene.\"*\n"
         )
     dossier_content += briefing_script
@@ -618,11 +694,14 @@ System Reliability Rate % =
         wl_path = generate_actionable_priority_worklist(df_fact, out, blueprint=blueprint)
         temp_sum = analyze_temporal_trends(df_fact, out, blueprint=blueprint)
         
-        # Determine highest failure-rate segment from prim_summary
+        # Determine highest failure-rate segment from prim_summary (must exceed global baseline rate!)
         min_cohort_size = max(5, int(total_records * 0.02))
-        sig_prim_rows = [r for r in prim_summary if r.get("volume", 0) >= min_cohort_size] if prim_summary else []
+        sig_prim_rows = [
+            r for r in prim_summary
+            if r.get("volume", 0) >= min_cohort_size and float(r.get("event_rate_pct", 0.0)) >= float(target_rate_pct)
+        ] if prim_summary else []
         if not sig_prim_rows and prim_summary:
-            sig_prim_rows = prim_summary
+            sig_prim_rows = [r for r in prim_summary if r.get("volume", 0) >= 5] or prim_summary
         worst_seg_row = max(sig_prim_rows, key=lambda x: x.get("event_rate_pct", 0.0)) if sig_prim_rows else {}
         top_leak_seg_val = worst_seg_row.get(prim_dim, "N/A") if prim_dim else "N/A"
         top_leak_rate_val = float(worst_seg_row.get("event_rate_pct", 0.0))

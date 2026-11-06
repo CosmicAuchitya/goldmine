@@ -55,5 +55,60 @@ def test_excess_risk_metrics():
     assert round(res["excess_rate"], 2) == 0.30
     assert round(res["excess_events"], 1) == 30.0
     assert res["z_stat"] > 5.0
-    assert res["p_val"] < 0.0001
+    assert res["p_value"] < 0.0001
     assert res["excess_rate_low"] > 0.15
+
+
+def test_camelcase_hr_and_industrial_domain_classification():
+    """CamelCase 'WorkLifeBalance' must classify as HR Workforce (never FinTech 'balance' substring)."""
+    from autonomous_engine.strategic_decision_matrix import StrategicDecisionEngine
+
+    df_hr = pd.DataFrame({
+        "EmployeeNumber": range(1, 61),
+        "JobRole": ["Sales Representative"] * 20 + ["Manager"] * 40,
+        "WorkLifeBalance": [1, 2, 3] * 20,
+        "DistanceFromHome": list(range(1, 31)) * 2,
+        "TotalWorkingYears": [2] * 20 + [12] * 40,
+        "MonthlyIncome": [2500.0] * 20 + [9000.0] * 40,
+        "Attrition": ["Yes"] * 12 + ["No"] * 8 + ["Yes"] * 4 + ["No"] * 36
+    })
+    eng_hr = StrategicDecisionEngine(df_hr)
+    dossier = eng_hr.generate_strategic_decision_dossier()
+    assert eng_hr.domain_profile["domain_key"] == "hr_workforce"
+    assert eng_hr.domain_profile["domain_key"] != "fintech_banking"
+
+    # Verify Relative Risk Multiplier uses rest_rate denominator (60.0% / 10.0% = 6.0x)
+    assert dossier["high_risk_rate"] == 60.0
+    assert dossier["rest_rate"] == 10.0
+    assert dossier["relative_risk_multiplier"] == 6.0
+
+    # Verify Triage policies never flag 0% or 100% of population
+    triage = eng_hr.micro_engine.simulate_operational_triage()
+    for pol in triage:
+        assert 0 < pol["scrap_count"] < len(df_hr)
+        assert "Retention Review if" in pol["policy_name"]
+
+
+def test_empty_2x2_quadrant_never_claims_false_buffering():
+    """When Q3 (High pos & High neg) has 0 observations, MQ3 and 2x2 table must report Empty Stratum."""
+    from autonomous_engine.strategic_decision_matrix import StrategicDecisionEngine
+
+    # Construct inverse relationship where Torque > median and RPM > median never co-occur
+    n = 100
+    torque = np.concatenate([np.linspace(50, 75, 50), np.linspace(15, 35, 50)])
+    rpm = np.concatenate([np.linspace(1200, 1400, 50), np.linspace(1600, 2200, 50)])
+    failure = np.array([1] * 15 + [0] * 35 + [1] * 2 + [0] * 48)
+    df_ind = pd.DataFrame({
+        "UDI": range(1, n + 1),
+        "Type": ["L"] * 60 + ["M"] * 40,
+        "Torque [Nm]": torque,
+        "Rotational speed [rpm]": rpm,
+        "Machine failure": failure
+    })
+    eng_ind = StrategicDecisionEngine(df_ind)
+    assert eng_ind.domain_profile["domain_key"] == "industrial_predictive_maintenance"
+    md = eng_ind.micro_engine.render_micro_markdown()
+    assert "N/A (Empty Stratum)" in md
+    assert "structurally empty stratum" in md
+    assert "achieve a 0.0% failure rate" not in md
+

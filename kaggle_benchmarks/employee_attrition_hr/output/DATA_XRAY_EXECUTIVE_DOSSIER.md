@@ -42,22 +42,20 @@
 
 ---
 
-### 5. Secondary Segment / Node Bottlenecks (DistanceFromHome_tier)
+### 5. Secondary Segment / Node Bottlenecks (OverTime)
 *Sub-nodes exhibiting concentrated friction:*
 
-| DistanceFromHome_tier | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| OverTime | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tier 4 (Elevated)** | 355 | 73 | **20.56%** | $352,699.00 |
-| **Tier 3 (High)** | 340 | 59 | **17.35%** | $299,868.00 |
-| **Tier 1 (Low)** | 419 | 54 | **12.89%** | $283,049.00 |
-| **Tier 2 (Moderate)** | 356 | 51 | **14.33%** | $198,925.00 |
+| **Yes** | 416 | 127 | **30.53%** | $595,616.00 |
+| **No** | 1,054 | 110 | **10.44%** | $538,925.00 |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `JobRole` may be confounded by underlying volume distributions, scale effects, or `DistanceFromHome_tier` concentration.
+> - Observed risk in `JobRole` may be confounded by underlying volume distributions, scale effects, or `OverTime` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
@@ -94,13 +92,13 @@
 *Objective: Unbiased problem diagnosis, empirical proof of solutions, executive counter-questions, and honest trade-offs.*
 
 ### 1. Ground-Truth Problem Diagnosis (Audited Friction Footprint)
-- **Domain Context**: **Financial Services & Risk Operations**
+- **Domain Context**: **Human Capital & Workforce Retention Operations**
 - **Monitored Population**: **1,470 physical records**
 - **Target Adverse Events (`Attrition`)**: **237 events (16.12%)**
 - **Highest-Observed Candidate Segment**: **`JobRole = Sales Representative`**
   - **Cohort Volume**: 83 records
   - **Adverse Events in Segment**: 33 events
-  - **Segment Failure Rate**: **39.76%** (vs. 14.71% rest-of-population baseline — **2.47x Risk Multiplier**)
+  - **Segment Failure Rate**: **39.76%** (vs. 14.71% rest-of-population baseline — **2.7x Risk Multiplier**)
   - **Statistical Significance Gate**: **PASSED (`z = 6.03, p = 1.6554e-09`)** — **20.8 Attributable Excess Events (+25.05% above 14.71% rest-of-system baseline)**
 
 ---
@@ -137,10 +135,10 @@
 ---
 
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
-*Board ya leadership (Chief Risk Officer / CFO) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
+*Board ya leadership (Chief Human Resources Officer (CHRO) / VP of People Analytics) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'JobRole = Sales Representative' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'JobRole = Sales Representative' is 39.76% compared to 14.71% across the remainder of the population (Relative Risk Multiplier: 2.47x across 83 physical records). The empirical separation yields z = 6.03 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 20.8 attributable excess events.
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'JobRole = Sales Representative' is 39.76% compared to 14.71% across the remainder of the population (Relative Risk Multiplier: 2.7x across 83 physical records). The empirical separation yields z = 6.03 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 20.8 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
 > **Empirical Data Answer**: Out of 83 records in this high-risk partition, 33 were confirmed adverse events (39.76% precision vs 14.71% rest-of-system baseline, +25.05% excess risk). Targeting this cohort addresses 20.8 attributable excess events while absorbing 50 non-event reviews across the cohort cycle.
@@ -200,9 +198,9 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Underwriting Audit if DistanceFromHome > 14.00)** | Operational Filter | 355 | 24.15% | **30.8%** | **14.71%** | 282 | 22.87% |
-| **Policy 2: Surgical (Underwriting Audit if DistanceFromHome > 7.00)** | Operational Filter | 695 | 47.28% | **55.7%** | **13.55%** | 563 | 45.66% |
-| **Policy 3: Compound (Underwriting Audit if DistanceFromHome > 7.00 OR TotalWorkingYears < 10.00)** | Operational Filter | 1,065 | 72.45% | **85.23%** | **8.64%** | 863 | 69.99% |
+| **Policy 1: Conservative (Retention Review if DistanceFromHome > 14.00)** | Operational Filter | 355 | 24.15% | **30.8%** | **14.71%** | 282 | 22.87% |
+| **Policy 2: Surgical (Retention Review if DistanceFromHome > 7.00)** | Operational Filter | 695 | 47.28% | **55.7%** | **13.55%** | 563 | 45.66% |
+| **Policy 3: Compound (Retention Review if DistanceFromHome > 7.00 OR TotalWorkingYears < 10.00)** | Operational Filter | 1,065 | 72.45% | **85.23%** | **8.64%** | 863 | 69.99% |
 
 ---
 
@@ -238,7 +236,7 @@
 > **Empirical Data Answer**: Tail risk audit across the lowest 237 catastrophic records reveals that only 21.94% breach two or more critical parameters (DistanceFromHome, NumCompaniesWorked, TotalWorkingYears) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Underwriting Audit if DistanceFromHome > 14.00)), 355 records (24.15%) are flagged, capturing 30.8% of all adverse events with 282 false alarms. Under Surgical Triage (Policy 2: Surgical (Underwriting Audit if DistanceFromHome > 7.00)), flagged volume expands to 695 records (47.28%), capturing 55.7% of adverse events and shifting the unflagged adverse rate to 13.55%, at the cost of 563 false alarms (45.66% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (1.28 vs 1.18 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Retention Review if DistanceFromHome > 14.00)), 355 records (24.15%) are flagged, capturing 30.8% of all adverse events with 282 false alarms. Under Surgical Triage (Policy 2: Surgical (Retention Review if DistanceFromHome > 7.00)), flagged volume expands to 695 records (47.28%), capturing 55.7% of adverse events and shifting the unflagged adverse rate to 13.55%, at the cost of 563 false alarms (45.66% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (1.28 vs 1.18 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
 
 **MQ7: Does 'TotalWorkingYears' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'JobLevel' (Simpson's Paradox)?**  
 > **Empirical Data Answer**: At the unadjusted level, 'TotalWorkingYears' shows correlation r = -0.171 with the target. However, 'TotalWorkingYears' is strongly co-linear with 'JobLevel' (r = 0.782). When stratifying across 'JobLevel' quartiles, the correlation of 'TotalWorkingYears' within strata shifts to ((0.999, 2.0]: r=-0.202, (2.0, 3.0]: r=0.035, (3.0, 5.0]: r=0.008). This proves that much of 'TotalWorkingYears's macro effect is mediated through its relationship with 'JobLevel', warning against isolated policy changes on 'TotalWorkingYears' alone.

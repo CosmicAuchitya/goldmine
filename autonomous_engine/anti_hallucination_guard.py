@@ -353,7 +353,7 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
             )
 
     # 7.3 Ban identical Operational Triage policies (e.g. 2.62 vs 2.62)
-    triage_policy_matches = re.findall(r'\| \*\*Policy 1: Conservative[^\n]+\| ([0-9,]+) \([0-9.]+%\) \|[\s\S]*?\| \*\*Policy 2: Surgical[^\n]+\| ([0-9,]+) \([0-9.]+%\) \|', dossier_text)
+    triage_policy_matches = re.findall(r'\| \*\*Policy 1: Conservative[^\n]+\| ([0-9,]+) (?:\([0-9.]+%\) )?\|[\s\S]*?\| \*\*Policy 2: Surgical[^\n]+\| ([0-9,]+) (?:\([0-9.]+%\) )?\|', dossier_text)
     for p1_scrap, p2_scrap in triage_policy_matches:
         if p1_scrap == p2_scrap:
             physics_violations.append(
@@ -363,6 +363,82 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
         physics_violations.append(
             "Degenerate Triage Narrative: MQ6 claims one policy has higher efficiency over another while comparing identical ratios (X vs X)!"
         )
+
+    # 7.4 Ban 100% or 0% Scrap Policies in Operational Triage (Degenerate Full-Population Wipeout)
+    triage_row_matches = re.findall(r'\|\s*\*\*(Policy\s+[123]:[^*]+)\*\*\s*\|\s*Operational Filter\s*\|\s*([0-9,]+)\s*\|\s*([0-9.]+)%\s*\|', dossier_text)
+    for pol_title, pol_vol_str, pol_scrap_pct_str in triage_row_matches:
+        pol_vol = int(pol_vol_str.replace(',', ''))
+        pol_scrap_pct = float(pol_scrap_pct_str)
+        if pol_vol >= total_records or pol_scrap_pct >= 99.95:
+            physics_violations.append(
+                f"Degenerate 100% Triage Wipeout in '{pol_title.strip()}': Flagged {pol_vol:,} / {total_records:,} records ({pol_scrap_pct}% scrap)!"
+            )
+        elif pol_vol <= 0 or pol_scrap_pct <= 0.0:
+            physics_violations.append(
+                f"Degenerate 0% Triage Gate in '{pol_title.strip()}': Flagged 0 records (0.0% scrap)!"
+            )
+
+    # 7.5 Verify Relative Risk Multiplier Math against Rest-of-Population Baseline
+    rr_line_match = re.search(
+        r'\*\*Segment Failure Rate\*\*:\s*\*\*([0-9.]+)%\*\*\s*\(vs\.\s*([0-9.]+)%\s*rest-of-population baseline\s*—\s*\*\*([0-9.]+)x\s*Risk Multiplier\*\*\)',
+        dossier_text
+    )
+    if rr_line_match:
+        seg_r = float(rr_line_match.group(1))
+        rest_r = float(rr_line_match.group(2))
+        claimed_rr = float(rr_line_match.group(3))
+        if rest_r > 0:
+            expected_rr = round(seg_r / rest_r, 2)
+            if abs(expected_rr - claimed_rr) > 0.12:
+                physics_violations.append(
+                    f"Relative Risk Multiplier mismatch: Segment {seg_r}% vs rest-of-population {rest_r}% equals {expected_rr}x, but dossier claims {claimed_rr}x!"
+                )
+
+    # 7.6 Verify Zero Inverted Bottleneck Claims in PLAIN_BUSINESS_SUMMARY.md and MQ3 Empty Stratum Honesty
+    mq3_empty_row = re.search(r'\|\s*\*\*Q3 \(Masked Risk\)\*\*\s*\|[^\n]*?\|\s*0\s*\|\s*0\s*\|\s*\*\*0\.0%\*\*', dossier_text)
+    if mq3_empty_row:
+        physics_violations.append(
+            "Zero-Volume Quadrant Hallucination: Q3 (Masked Risk) has 0 observations but renders '0.0%' failure rate instead of Empty Stratum!"
+        )
+    plain_summary_file = out_path / "PLAIN_BUSINESS_SUMMARY.md"
+    if plain_summary_file.exists():
+        plain_text = plain_summary_file.read_text(encoding="utf-8", errors="ignore")
+        inv_match = re.search(
+            r'has the highest failure rate at \*\*([0-9.]+)%\*\*\s*\(compared to ([0-9.]+)% across the rest of the business\)',
+            plain_text
+        )
+        if inv_match:
+            top_r = float(inv_match.group(1))
+            other_r = float(inv_match.group(2))
+            if top_r <= other_r:
+                physics_violations.append(
+                    f"Inverted Bottleneck in PLAIN_BUSINESS_SUMMARY.md: Claims '{top_r}%' is the highest failure rate when rest-of-business is '{other_r}%' ({top_r}% <= {other_r}%)!"
+                )
+
+    # 7.7 Ban Mathematical Inequality Contradictions (e.g., 'p = 0.0010 >= 0.05') and Cross-Section Circuit-Breaker Splits
+    bad_p_ineq = re.findall(r'\bp\s*=\s*([0-9.eE+-]+)\s*>=\s*0\.05', dossier_text)
+    for p_str in bad_p_ineq:
+        try:
+            p_v = float(p_str)
+            if p_v < 0.05:
+                physics_violations.append(
+                    f"Mathematical inequality contradiction: Dossier prints 'p = {p_str} >= 0.05' when {p_v} < 0.05!"
+                )
+        except Exception:
+            pass
+
+    cb_freeze_match = re.search(r'Do NOT allocate segment-specific CapEx based on `([^`]+)`', dossier_text)
+    sdm_pass_match = re.search(
+        r'\*\*Highest-Observed Candidate Segment\*\*:\s*\*\*`([^=`\n]+?)\s*=\s*[^`\n]+`\*\*[\s\S]{0,400}?\*\*Statistical Significance Gate\*\*:\s*\*\*PASSED',
+        dossier_text
+    )
+    if cb_freeze_match and sdm_pass_match:
+        dim_freeze = cb_freeze_match.group(1).strip().lower()
+        dim_pass = sdm_pass_match.group(1).strip().lower()
+        if dim_freeze == dim_pass:
+            physics_violations.append(
+                f"Internal Circuit-Breaker Contradiction: Section 8 freezes CapEx on '{cb_freeze_match.group(1)}' as noise while Strategic Decision Matrix passes '{sdm_pass_match.group(1)}' for cohort CapEx!"
+            )
 
     # AUDIT CHECK 8: Statistical Circuit-Breaker & Causal Honesty Gate (V4.0 Enterprise Gate)
     # 8.1 Ban pseudo-numeric nominal identifiers (Room Number, Zip Code, Phone) from Quantile Cliffs

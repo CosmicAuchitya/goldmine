@@ -111,12 +111,18 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
     df = strip_accounting_summary_rows(df)
 
     for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = clean_accounting_series(df[col])
-            s_clean = df[col].astype(str).str.replace(',', '').str.strip()
+        if pd.api.types.is_object_dtype(df[col]) or pd.api.types.is_string_dtype(df[col]):
+            s_cleaned = clean_accounting_series(df[col])
+            s_clean = s_cleaned.astype(str).str.replace(',', '').str.strip()
             s_num = pd.to_numeric(s_clean, errors='coerce')
-            if s_num.notna().mean() >= 0.85 and s_num.nunique() > 10:
+            c_low = col.lower()
+            is_id_or_code = c_low in ('id', 'udi') or c_low.endswith(('_id', '_key', '_code')) or any(
+                k in c_low for k in ('zip', 'postal', 'phone', 'ssn')
+            )
+            if not is_id_or_code and s_num.notna().mean() >= 0.85 and s_num.nunique() > 10:
                 df[col] = s_num.fillna(s_num.median())
+            else:
+                df[col] = s_cleaned
     return df
 
 def execute_templated_pipeline(
@@ -299,7 +305,14 @@ def execute_templated_pipeline(
                 num_cols = [c for c in df_dim.select_dtypes(include=[np.number]).columns if c != join_key]
                 agg_dict = {c: "sum" for c in num_cols}
                 # Non-numeric dominant values
-                cat_cols = [c for c in df_dim.select_dtypes(include=['object', 'category']).columns if c != join_key]
+                cat_cols = [
+                    c for c in df_dim.columns
+                    if c != join_key and (
+                        pd.api.types.is_object_dtype(df_dim[c])
+                        or pd.api.types.is_string_dtype(df_dim[c])
+                        or str(df_dim[c].dtype) == 'category'
+                    )
+                ]
                 for c in cat_cols[:2]:
                     agg_dict[c] = "first"
                 

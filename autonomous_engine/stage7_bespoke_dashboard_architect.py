@@ -48,7 +48,8 @@ try:
         is_index_artifact,
         is_pseudo_numeric_identifier,
         is_synthetic_column,
-        is_demographic_attribute
+        is_demographic_attribute,
+        is_deterministic_target_leakage
     )
     from .pii_scrubber import is_sensitive_column_name, scrub_text
     from .strategic_decision_matrix import StrategicDecisionEngine, calculate_wilson_ci
@@ -61,7 +62,8 @@ except ImportError:
         is_index_artifact,
         is_pseudo_numeric_identifier,
         is_synthetic_column,
-        is_demographic_attribute
+        is_demographic_attribute,
+        is_deterministic_target_leakage
     )
     from pii_scrubber import is_sensitive_column_name, scrub_text
     from strategic_decision_matrix import StrategicDecisionEngine, calculate_wilson_ci
@@ -351,6 +353,8 @@ def _sanitize_operational_dimensions(
         if is_index_artifact(col, s) or is_pseudo_numeric_identifier(col, s):
             return False
         if is_synthetic_column(col, blueprint) or is_sensitive_column_name(col):
+            return False
+        if is_deterministic_target_leakage(col, s, s_bin, target_col):
             return False
         if not allow_demo_fallback and is_demographic_attribute(col):
             return False
@@ -1076,7 +1080,10 @@ def build_dashboard_payload(
             ]
             df_wl_safe = df_wl[safe_wl_cols].head(160).copy()
             for col_idx, col_n in enumerate(safe_wl_cols):
-                if col_idx > 0 and pd.api.types.is_object_dtype(df_wl_safe[col_n]):
+                if col_idx > 0 and (
+                    pd.api.types.is_object_dtype(df_wl_safe[col_n])
+                    or pd.api.types.is_string_dtype(df_wl_safe[col_n])
+                ):
                     df_wl_safe[col_n] = df_wl_safe[col_n].apply(
                         lambda x: scrub_text(str(x)) if pd.notna(x) else ""
                     )

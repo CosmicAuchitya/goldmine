@@ -95,8 +95,8 @@
       "type": "categorical_segment"
     },
     "secondary_dimension": {
-      "name": "DistanceFromHome",
-      "cardinality": 29,
+      "name": "OverTime",
+      "cardinality": 2,
       "type": "categorical_subsegment"
     }
   }

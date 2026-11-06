@@ -4,7 +4,7 @@
 Across **10,000 physical records** audited in your dataset, our system identified **339 critical failure events (3.39%)**, generating **339 critical quality/failure events** (3.39% defect rate).
 
 ### 2. Where Is the Bottleneck?
-- **Main Bottleneck Identified**: Group `HDF` = **'0'** has the highest failure rate at **2.27%** (compared to 100.00% across the rest of the business).
+- **Main Bottleneck Identified**: Group `Type` = **'L'** has the highest failure rate at **3.92%** (compared to 2.60% across the rest of the business).
 - **Strategic Priority**: Direct intervention on this specific group will yield the highest return on operational effort.
 
 ### 3. Danger Threshold (Red-Line)
@@ -28,7 +28,7 @@ Across **10,000 physical records** audited in your dataset, our system identifie
 Aapke audit kiye gaye **10,000 records** mein se, system ne **339 failure / churn cases (3.39%)** pakde hain, jisse kul **339 critical failure/defect events** (3.39% defect rate) ho raha hai.
 
 ### 2. Sabse Bada Nuksan Kahan Ho Raha Hai?
-- **Sabse Bada Bottleneck Kahan Hai?**: Group `HDF` = **'0'** mein sabse zyada failure/churn rate **2.27%** hai (jabki baaki business mein yeh sirf 100.00% hai).
+- **Sabse Bada Bottleneck Kahan Hai?**: Group `Type` = **'L'** mein sabse zyada failure/churn rate **3.92%** hai (jabki baaki business mein yeh sirf 2.60% hai).
 - **Team Ka Focus**: Sabse pehle isi specific cohort par dhyan dein, yahin se sabse tez improvement milega.
 
 ### 3. Khatre Ki Laal Rekha (Danger Limit)

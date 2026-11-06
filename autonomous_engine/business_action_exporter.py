@@ -39,7 +39,9 @@ try:
         is_index_artifact,
         is_pseudo_numeric_identifier,
         is_synthetic_column,
-        is_demographic_attribute
+        is_demographic_attribute,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage
     )
     from .strategic_decision_matrix import (
         calculate_wilson_ci,
@@ -54,7 +56,9 @@ except ImportError:
         is_index_artifact,
         is_pseudo_numeric_identifier,
         is_synthetic_column,
-        is_demographic_attribute
+        is_demographic_attribute,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage
     )
     from strategic_decision_matrix import (
         calculate_wilson_ci,
@@ -149,6 +153,8 @@ def generate_actionable_priority_worklist(
             continue
         if is_synth(c) or is_sensitive_column_name(c):
             continue
+        if is_deterministic_target_leakage(c, df_work[c], df_work["_is_target_event"], target_col):
+            continue
         if 2 <= df_work[c].nunique() <= 40:
             cat_candidates.append(c)
 
@@ -191,6 +197,7 @@ def generate_actionable_priority_worklist(
         and not is_pseudo_numeric_identifier(c, df_work[c])
         and not is_synth(c)
         and not is_sensitive_column_name(c)
+        and not is_deterministic_target_leakage(c, df_work[c], df_work["_is_target_event"], target_col)
         and df_work[c].nunique() >= 5
     ]
 
@@ -202,6 +209,7 @@ def generate_actionable_priority_worklist(
             and not is_index_artifact(c, df_work[c])
             and not is_pseudo_numeric_identifier(c, df_work[c])
             and not is_sensitive_column_name(c)
+            and not is_deterministic_target_leakage(c, df_work[c], df_work["_is_target_event"], target_col)
             and df_work[c].nunique() >= 5
         ]
 
@@ -532,6 +540,10 @@ def generate_plain_business_summary(
 
     # Resolve Primary Dimension & Bottleneck Cohort
     prim_dim = prim_dim_info.get("prim_dim") if prim_dim_info else None
+    if prim_dim and prim_dim in df_fact.columns and is_deterministic_target_leakage(prim_dim, df_fact[prim_dim], s_bin, target_col):
+        prim_dim = None
+        prim_dim_info = None
+
     if not prim_dim and strat_dossier:
         hr_seg = strat_dossier.get("high_risk_segment", "")
         if " = " in hr_seg:
@@ -563,16 +575,40 @@ def generate_plain_business_summary(
             worst_idx = valid_rates["mean"].idxmax()
             top_leak_seg = str(worst_idx)
 
+    def _compute_seg_vs_rest(col_n: str, seg_val: str) -> Tuple[int, float, float]:
+        seg_m = (df_fact[col_n].astype(str) == str(seg_val))
+        n_s = int(seg_m.sum())
+        if n_s <= 0:
+            return 0, 0.0, baseline_rate
+        k_s = int(s_bin[seg_m].sum())
+        r_s = round((k_s / n_s) * 100.0, 2)
+        n_o = max(1, total_records - n_s)
+        k_o = max(0, target_count - k_s)
+        r_o = round((k_o / n_o) * 100.0, 2)
+        return n_s, r_s, r_o
+
     # Physical Ground-Truth Enforcement: ALWAYS compute exact cohort & rest-of-business rates on (prim_dim == top_leak_seg)
     if prim_dim and prim_dim in df_fact.columns and top_leak_seg and top_leak_seg != "N/A":
-        seg_mask = (df_fact[prim_dim].astype(str) == str(top_leak_seg))
-        n_seg = int(seg_mask.sum())
-        if n_seg > 0:
-            k_seg = int(s_bin[seg_mask].sum())
-            top_leak_rate = round((k_seg / n_seg) * 100.0, 2)
-            n_other = max(1, total_records - n_seg)
-            k_other = max(0, target_count - k_seg)
-            rest_rate = round((k_other / n_other) * 100.0, 2)
+        n_seg, top_leak_rate, rest_rate = _compute_seg_vs_rest(prim_dim, top_leak_seg)
+        # Guard against Inverted Bottlenecks (where selected segment actually has a LOWER rate than rest-of-business)
+        if n_seg == 0 or top_leak_rate <= rest_rate:
+            recovered = False
+            if strat_dossier and not is_cb_active:
+                hr_seg = strat_dossier.get("high_risk_segment", "")
+                if " = " in hr_seg:
+                    cand_col, cand_val = [p.strip() for p in hr_seg.split(" = ", 1)]
+                    cand_val = cand_val.strip("'\"")
+                    if cand_col in df_fact.columns and not is_deterministic_target_leakage(cand_col, df_fact[cand_col], s_bin, target_col):
+                        n_c, r_c, ro_c = _compute_seg_vs_rest(cand_col, cand_val)
+                        if n_c > 0 and r_c > ro_c:
+                            prim_dim = cand_col
+                            top_leak_seg = cand_val
+                            top_leak_rate = r_c
+                            rest_rate = ro_c
+                            recovered = True
+            if not recovered:
+                top_leak_seg = None
+                top_leak_rate = 0.0
 
     # Worklist summary counts
     n_prev_watch = 0
@@ -599,7 +635,7 @@ def generate_plain_business_summary(
     # =========================================================================
     # BLOCK 2: Bottleneck Identification
     # =========================================================================
-    if not is_cb_active and prim_dim and top_leak_seg and top_leak_seg != "N/A" and top_leak_rate > 0.0:
+    if not is_cb_active and prim_dim and top_leak_seg and top_leak_seg != "N/A" and top_leak_rate > 0.0 and top_leak_rate > rest_rate:
         bottleneck_en = (
             f"- **Main Bottleneck Identified**: Group `{prim_dim}` = **'{top_leak_seg}'** has the highest failure rate at **{top_leak_rate:.2f}%** (compared to {rest_rate:.2f}% across the rest of the business).\n"
             f"- **Strategic Priority**: Direct intervention on this specific group will yield the highest return on operational effort."
@@ -627,6 +663,8 @@ def generate_plain_business_summary(
         for c in cliffs:
             col_name = c.get("column", "")
             if is_synthetic_column(col_name, blueprint) or is_index_artifact(col_name) or is_pseudo_numeric_identifier(col_name):
+                continue
+            if col_name in df_fact.columns and is_deterministic_target_leakage(col_name, df_fact[col_name], s_bin, target_col):
                 continue
             if c.get("bins"):
                 valid_cliffs.append(c)

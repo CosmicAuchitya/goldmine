@@ -22,6 +22,7 @@ Core Capabilities:
 """
 
 import os
+import re
 import sys
 import json
 from pathlib import Path
@@ -36,6 +37,8 @@ try:
         is_synthetic_column,
         is_demographic_attribute,
         is_pseudo_numeric_identifier,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage,
         resolve_canonical_target_and_cost
     )
 except ImportError:
@@ -44,6 +47,8 @@ except ImportError:
         is_synthetic_column,
         is_demographic_attribute,
         is_pseudo_numeric_identifier,
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage,
         resolve_canonical_target_and_cost
     )
 
@@ -215,6 +220,7 @@ class MicroLevelForensicInquiryEngine:
             and not c.lower().endswith(('_id', '_key'))
             and not is_index_artifact(c, self.df[c])
             and not is_pseudo_numeric_identifier(c, self.df[c])
+            and not is_deterministic_target_leakage(c, self.df[c], self.target_series, self.target_col)
         ]
 
         if raw_source_cols:
@@ -450,40 +456,84 @@ class MicroLevelForensicInquiryEngine:
             verb = "Underwriting Audit if"
         elif dom_key == "food_beverage_manufacturing":
             verb = "Scrap if"
+        elif dom_key == "hr_workforce":
+            verb = "Retention Review if"
+        elif dom_key == "industrial_predictive_maintenance":
+            verb = "Maintenance Inspection if"
         else:
             verb = "Triage Gate if"
 
         s_pos = pd.to_numeric(self.df[pos_driver], errors='coerce').dropna()
-        p1_mask = self.df[pos_driver] > q75_pos
-        p2_mask = self.df[pos_driver] > med_pos
+        p1_mask = (self.df[pos_driver] > q75_pos).fillna(False)
+        p2_mask = (self.df[pos_driver] > med_pos).fillna(False)
+        p1_cnt = int(p1_mask.sum())
+        p2_cnt = int(p2_mask.sum())
 
-        if np.isclose(q75_pos, med_pos) or int(p1_mask.sum()) == int(p2_mask.sum()) or int(p1_mask.sum()) == 0:
+        if (
+            np.isclose(q75_pos, med_pos)
+            or p1_cnt == p2_cnt
+            or p1_cnt <= 0
+            or p2_cnt <= 0
+            or p1_cnt >= self.total_records
+            or p2_cnt >= self.total_records
+        ):
+            candidate_rules = []
+            seen_counts = set()
+            for q_lvl in [0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.50, 0.40]:
+                q_v = float(s_pos.quantile(q_lvl))
+                for op_sym, m_cand in [(">", (self.df[pos_driver] > q_v).fillna(False)), (">=", (self.df[pos_driver] >= q_v).fillna(False))]:
+                    c_cnt = int(m_cand.sum())
+                    if 0 < c_cnt < self.total_records and c_cnt not in seen_counts:
+                        seen_counts.add(c_cnt)
+                        candidate_rules.append((c_cnt, op_sym, q_v, m_cand))
+
             u_vals = np.sort(s_pos.unique())
-            if len(u_vals) >= 2:
-                val_c = float(u_vals[-1])
-                val_s = float(u_vals[-2])
-                p1_name = f"Policy 1: Conservative ({verb} {pos_driver} >= {val_c:.2f})"
-                p1_mask = self.df[pos_driver] >= val_c
-                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} >= {val_s:.2f})"
-                p2_mask = self.df[pos_driver] >= val_s
-                if int(p1_mask.sum()) == int(p2_mask.sum()):
-                    q85_val = float(s_pos.quantile(0.85))
-                    q60_val = float(s_pos.quantile(0.60))
-                    p1_name = f"Policy 1: Conservative ({verb} {pos_driver} > {q85_val:.2f})"
-                    p1_mask = self.df[pos_driver] > q85_val
-                    p2_name = f"Policy 2: Surgical ({verb} {pos_driver} > {q60_val:.2f})"
-                    p2_mask = self.df[pos_driver] > q60_val
+            for u_v in u_vals[::-1]:
+                fv = float(u_v)
+                for op_sym, m_cand in [(">=", (self.df[pos_driver] >= fv).fillna(False)), (">", (self.df[pos_driver] > fv).fillna(False))]:
+                    c_cnt = int(m_cand.sum())
+                    if 0 < c_cnt < self.total_records and c_cnt not in seen_counts:
+                        seen_counts.add(c_cnt)
+                        candidate_rules.append((c_cnt, op_sym, fv, m_cand))
+
+            candidate_rules.sort(key=lambda x: x[0])
+            if len(candidate_rules) >= 2:
+                # Prefer Conservative around ~10-35% of volume and Surgical strictly broader (~35-65%)
+                target_c = int(self.total_records * 0.25)
+                c_idx = min(range(len(candidate_rules) - 1), key=lambda i: abs(candidate_rules[i][0] - target_c))
+                target_s = max(candidate_rules[c_idx][0] + 1, int(self.total_records * 0.50))
+                s_idx = min(range(c_idx + 1, len(candidate_rules)), key=lambda i: abs(candidate_rules[i][0] - target_s))
+                _, op1, v1, p1_mask = candidate_rules[c_idx]
+                _, op2, v2, p2_mask = candidate_rules[s_idx]
+                p1_name = f"Policy 1: Conservative ({verb} {pos_driver} {op1} {v1:.2f})"
+                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} {op2} {v2:.2f})"
+            elif len(candidate_rules) == 1:
+                _, op2, v2, p2_mask = candidate_rules[0]
+                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} {op2} {v2:.2f})"
+                and_mask = p2_mask & (self.df[neg_driver] < med_neg).fillna(False)
+                if 0 < int(and_mask.sum()) < int(p2_mask.sum()):
+                    p1_mask = and_mask
+                    p1_name = f"Policy 1: Conservative ({verb} {pos_driver} {op2} {v2:.2f} AND {neg_driver} < {med_neg:.2f})"
+                else:
+                    p1_mask = p2_mask
+                    p1_name = f"Policy 1: Conservative ({verb} {pos_driver} {op2} {v2:.2f})"
             else:
                 p1_name = f"Policy 1: Conservative ({verb} {pos_driver} > {q75_pos:.2f})"
-                p1_mask = self.df[pos_driver] > q75_pos
-                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} >= {med_pos:.2f})"
-                p2_mask = self.df[pos_driver] >= med_pos
+                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} > {med_pos:.2f})"
         else:
             p1_name = f"Policy 1: Conservative ({verb} {pos_driver} > {q75_pos:.2f})"
             p2_name = f"Policy 2: Surgical ({verb} {pos_driver} > {med_pos:.2f})"
 
         p3_name = f"Policy 3: Compound ({verb} {pos_driver} > {med_pos:.2f} OR {neg_driver} < {med_neg:.2f})"
-        p3_mask = (self.df[pos_driver] > med_pos) | (self.df[neg_driver] < med_neg)
+        p3_mask = ((self.df[pos_driver] > med_pos) | (self.df[neg_driver] < med_neg)).fillna(False)
+        if int(p3_mask.sum()) >= self.total_records or int(p3_mask.sum()) == 0:
+            q25_neg = float(self.df[neg_driver].quantile(0.25))
+            p3_cand = (p2_mask | (self.df[neg_driver] < q25_neg).fillna(False))
+            if 0 < int(p3_cand.sum()) < self.total_records:
+                p3_mask = p3_cand
+                p3_name = f"Policy 3: Compound ({verb} Surgical Gate OR {neg_driver} < {q25_neg:.2f})"
+            else:
+                p3_mask = p2_mask
 
         policies = [
             (p1_name, p1_mask),
@@ -619,14 +669,34 @@ class MicroLevelForensicInquiryEngine:
             q2_r = quads["Q2_unbuffered"]["rate"]
             q3_r = quads["Q3_masked"]["rate"]
             q4_r = quads["Q4_catastrophic"]["rate"]
+            q1_cnt = int(quads["Q1_optimal"]["count"])
+            q3_cnt = int(quads["Q3_masked"]["count"])
+            q4_cnt = int(quads["Q4_catastrophic"]["count"])
             if not interactions.get("is_significant", False):
                 q_rates = [q["rate"] for q in quads.values() if q["count"] > 0]
                 min_q, max_q = (min(q_rates), max(q_rates)) if q_rates else (0.0, 0.0)
+                q3_disp = f"{q3_r}%" if q3_cnt > 0 else "Empty Stratum"
+                q4_disp = f"{q4_r}%" if q4_cnt > 0 else "Empty Stratum"
                 ans3 = (
                     f"Two-way quadrant partitioning between '{pos}' and '{neg}' yields event rates tightly bounded between "
-                    f"{min_q:.2f}% and {max_q:.2f}% across all four strata (Q1: {q1_r}%, Q2: {q2_r}%, Q3: {q3_r}%, Q4: {q4_r}%; "
+                    f"{min_q:.2f}% and {max_q:.2f}% across populated strata (Q1: {q1_r}%, Q2: {q2_r}%, Q3: {q3_disp}, Q4: {q4_disp}; "
                     f"2x2 Chi-Square p = {interactions['p_value']:.4f}). Because p >= 0.05, neither feature exerts a statistically significant "
                     f"buffering or compounding interaction effect on '{self.target_col}'."
+                )
+            elif q3_cnt == 0:
+                ans3 = (
+                    f"Cross-quadrant analysis (2x2 Chi-Square p = {interactions['p_value']:.4e}) exposes a strict physical inverse operating boundary between '{pos}' and '{neg}': "
+                    f"the Masked Risk stratum (High '{pos}' > {interactions['med_pos']:.2f} & High '{neg}' > {interactions['med_neg']:.2f}) contains 0 physical observations "
+                    f"(structurally empty stratum — elevated '{pos}' and elevated '{neg}' never co-occur in this population). "
+                    f"Consequently, all high-'{pos}' records concentrate in the Compound Catastrophe zone (Low '{neg}', {q4_cnt:,} records) with a {q4_r}% adverse rate "
+                    f"versus {q1_r}% in the Optimal Zone ({q1_cnt:,} records), proving that '{neg}' cannot be elevated alongside high '{pos}' to buffer risk."
+                )
+            elif q4_cnt == 0:
+                ans3 = (
+                    f"Cross-quadrant analysis (2x2 Chi-Square p = {interactions['p_value']:.4e}) exposes a strict co-movement boundary between '{pos}' and '{neg}': "
+                    f"the Compound Catastrophe stratum (High '{pos}' > {interactions['med_pos']:.2f} & Low '{neg}' <= {interactions['med_neg']:.2f}) contains 0 physical observations "
+                    f"(structurally empty stratum). All high-'{pos}' records reside in the Masked Risk zone ({q3_cnt:,} records) at a {q3_r}% adverse rate "
+                    f"versus {q1_r}% in the Optimal Zone ({q1_cnt:,} records)."
                 )
             else:
                 ratio_q3_q1 = round(q3_r / max(q1_r, 0.01), 2)
@@ -832,6 +902,17 @@ class MicroLevelForensicInquiryEngine:
             q2_imp = "Baseline Operating Profile" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
             q3_imp = "Partially Buffered Risk (Elevated Drag)" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
             q4_imp = "**Compound Maximum Risk Exposure**" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
+
+            def _fmt_quad_cells(q_obj: Dict[str, Any], default_imp: str) -> Tuple[str, str]:
+                if int(q_obj.get("count", 0)) == 0:
+                    return "**N/A (Empty Stratum)**", "Structurally Empty Stratum (No Physical Co-Occurrence)"
+                return f"**{q_obj['rate']}%**", default_imp
+
+            q1_rate_str, q1_imp_str = _fmt_quad_cells(quads["Q1_optimal"], q1_imp)
+            q2_rate_str, q2_imp_str = _fmt_quad_cells(quads["Q2_unbuffered"], q2_imp)
+            q3_rate_str, q3_imp_str = _fmt_quad_cells(quads["Q3_masked"], q3_imp)
+            q4_rate_str, q4_imp_str = _fmt_quad_cells(quads["Q4_catastrophic"], q4_imp)
+
             md += f"""---
 
 ### 2. 2x2 Orthogonal Feature Interaction Matrix (`{pos}` vs. `{neg}`)
@@ -839,10 +920,10 @@ class MicroLevelForensicInquiryEngine:
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | **{quads['Q1_optimal']['rate']}%** | {q1_imp} |
-| **Q2 (Unbuffered Low)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | **{quads['Q2_unbuffered']['rate']}%** | {q2_imp} |
-| **Q3 (Masked Risk)** | High `{pos}` (> {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | **{quads['Q3_masked']['rate']}%** | {q3_imp} |
-| **Q4 (Catastrophic Zone)** | High `{pos}` (> {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | **{quads['Q4_catastrophic']['rate']}%** | {q4_imp} |
+| **Q1 (Optimal Zone)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q1_optimal']['count']:,} | {quads['Q1_optimal']['events']:,} | {q1_rate_str} | {q1_imp_str} |
+| **Q2 (Unbuffered Low)** | Low `{pos}` (<= {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q2_unbuffered']['count']:,} | {quads['Q2_unbuffered']['events']:,} | {q2_rate_str} | {q2_imp_str} |
+| **Q3 (Masked Risk)** | High `{pos}` (> {interactions['med_pos']:.2f}) & High `{neg}` (> {interactions['med_neg']:.2f}) | {quads['Q3_masked']['count']:,} | {quads['Q3_masked']['events']:,} | {q3_rate_str} | {q3_imp_str} |
+| **Q4 (Catastrophic Zone)** | High `{pos}` (> {interactions['med_pos']:.2f}) & Low `{neg}` (<= {interactions['med_neg']:.2f}) | {quads['Q4_catastrophic']['count']:,} | {quads['Q4_catastrophic']['events']:,} | {q4_rate_str} | {q4_imp_str} |
 
 """
 
@@ -904,12 +985,67 @@ class StrategicDecisionEngine:
         self.dossier: Optional[Dict[str, Any]] = None
 
     def _classify_domain(self) -> Dict[str, Any]:
-        """Classifies the domain and determines the appropriate friction unit."""
-        cols_lower = [c.lower() for c in self.columns]
-        
-        # Check Food & Beverage / Agricultural / Manufacturing Quality Assurance
-        fnb_kw = ['wine', 'beer', 'beverage', 'alcohol', 'acidity', 'sugar', 'citric', 'sulphate', 'food', 'quality', 'batch', 'manufacturing', 'defect', 'yield', 'harvest', 'crop', 'soil']
-        if any(any(k in c for k in fnb_kw) for c in cols_lower):
+        """Classifies the domain using word-boundary tokenization (zero CamelCase/substring false positives)."""
+        def _tokenize_col(col: str) -> List[str]:
+            s = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', str(col))
+            s = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', s)
+            return [tok for tok in re.findall(r'[a-z0-9]+', s.lower()) if tok]
+
+        col_tok_lists = [_tokenize_col(c) for c in self.columns]
+        cols_norm = [" ".join(toks) for toks in col_tok_lists]
+        all_tokens = {tok for toks in col_tok_lists for tok in toks}
+
+        def _matches_domain(keywords: List[str]) -> bool:
+            for kw in keywords:
+                if " " in kw:
+                    pat = r'\b' + re.escape(kw) + r'\b'
+                    if any(re.search(pat, cn) for cn in cols_norm):
+                        return True
+                else:
+                    if kw in all_tokens:
+                        return True
+            return False
+
+        # 1. Check Industrial Manufacturing / SCADA / Predictive Maintenance
+        industrial_kw = [
+            'torque', 'rotational', 'rpm', 'scada', 'spindle', 'vibration',
+            'tool wear', 'machine failure', 'process temperature', 'air temperature',
+            'telemetry', 'bearing'
+        ]
+        if _matches_domain(industrial_kw):
+            return {
+                "domain_key": "industrial_predictive_maintenance",
+                "domain_name": "Industrial Manufacturing & Predictive Maintenance",
+                "unit_name": "Unplanned Machine Failures & Equipment Downtime Events",
+                "unit_symbol": "Events",
+                "is_financial": False,
+                "persona": "VP of Plant Operations & Reliability Engineering"
+            }
+
+        # 2. Check Human Capital / Workforce & HR Retention
+        hr_kw = [
+            'attrition', 'job role', 'years at company', 'work life balance',
+            'employee number', 'employee count', 'job satisfaction',
+            'environment satisfaction', 'job involvement', 'percent salary hike',
+            'workforce', 'employee id'
+        ]
+        if _matches_domain(hr_kw):
+            return {
+                "domain_key": "hr_workforce",
+                "domain_name": "Human Capital & Workforce Retention Operations",
+                "unit_name": "Voluntary Turnover & Payroll Attrition Exposure",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "Chief Human Resources Officer (CHRO) / VP of People Analytics"
+            }
+
+        # 3. Check Food & Beverage / Agricultural / Oenological Quality Assurance
+        fnb_kw = [
+            'wine', 'beer', 'beverage', 'alcohol', 'acidity', 'sugar', 'citric',
+            'sulphate', 'sulphates', 'food', 'quality', 'batch', 'batches',
+            'manufacturing', 'defect', 'defects', 'yield', 'harvest', 'crop', 'soil'
+        ]
+        if _matches_domain(fnb_kw):
             return {
                 "domain_key": "food_beverage_manufacturing",
                 "domain_name": "Food & Beverage Manufacturing / Oenological Quality Assurance",
@@ -919,9 +1055,13 @@ class StrategicDecisionEngine:
                 "persona": "Master Winemaker / VP of Oenological Operations & Quality Assurance"
             }
 
-        # Check Healthcare / Medical
-        medical_kw = ['death', 'mortality', 'patient', 'hospital', 'clinical', 'ejection', 'creatinine', 'anaemia', 'sodium', 'systolic', 'readmit', 'diagnosis']
-        if any(any(k in c for k in medical_kw) for c in cols_lower):
+        # 4. Check Healthcare / Medical
+        medical_kw = [
+            'death', 'mortality', 'patient', 'patients', 'hospital', 'clinical',
+            'ejection', 'creatinine', 'anaemia', 'anemia', 'sodium', 'systolic',
+            'diastolic', 'readmit', 'readmitted', 'diagnosis', 'diabetes', 'stroke', 'sepsis'
+        ]
+        if _matches_domain(medical_kw):
             return {
                 "domain_key": "healthcare_clinical",
                 "domain_name": "Healthcare & Clinical Outcomes",
@@ -930,10 +1070,15 @@ class StrategicDecisionEngine:
                 "is_financial": False,
                 "persona": "Chief Medical Officer / Clinical Operations Board"
             }
-            
-        # Check FinTech / Banking / Fraud / Credit
-        fintech_kw = ['fraud', 'default', 'loan', 'credit', 'balance', 'chargeback', 'transaction', 'debt']
-        if any(any(k in c for k in fintech_kw) for c in cols_lower):
+
+        # 5. Check FinTech / Banking / Fraud / Credit
+        fintech_kw = [
+            'fraud', 'default', 'loan', 'loans', 'credit', 'chargeback',
+            'transaction', 'transactions', 'debt', 'mortgage',
+            'account balance', 'bank balance', 'checking account', 'saving accounts'
+        ]
+        has_financial_balance = ('balance' in all_tokens) and not _matches_domain(['work life balance'])
+        if _matches_domain(fintech_kw) or has_financial_balance:
             return {
                 "domain_key": "fintech_banking",
                 "domain_name": "Financial Services & Risk Operations",
@@ -943,9 +1088,12 @@ class StrategicDecisionEngine:
                 "persona": "Chief Risk Officer / CFO"
             }
 
-        # Check Logistics / Supply Chain
-        logistics_kw = ['shipping', 'freight', 'carrier', 'delivery', 'delay', 'transit', 'tracking', 'rto', 'warehouse']
-        if any(any(k in c for k in logistics_kw) for c in cols_lower):
+        # 6. Check Logistics / Supply Chain
+        logistics_kw = [
+            'shipping', 'freight', 'carrier', 'delivery', 'delay', 'delayed',
+            'transit', 'tracking', 'rto', 'warehouse', 'shipment', 'shipments'
+        ]
+        if _matches_domain(logistics_kw):
             return {
                 "domain_key": "logistics_supply_chain",
                 "domain_name": "Logistics & Supply Chain Operations",
@@ -955,9 +1103,12 @@ class StrategicDecisionEngine:
                 "persona": "VP of Supply Chain & Global Operations"
             }
 
-        # Check SaaS / Subscription
-        saas_kw = ['churn', 'arr', 'mrr', 'subscription', 'ticket', 'nrr', 'contract', 'cac']
-        if any(any(k in c for k in saas_kw) for c in cols_lower):
+        # 7. Check SaaS / Subscription
+        saas_kw = [
+            'churn', 'arr', 'mrr', 'subscription', 'subscriptions',
+            'ticket', 'tickets', 'nrr', 'contract', 'cac'
+        ]
+        if _matches_domain(saas_kw):
             return {
                 "domain_key": "saas_enterprise",
                 "domain_name": "Enterprise SaaS & Customer Retention",
@@ -967,9 +1118,13 @@ class StrategicDecisionEngine:
                 "persona": "Chief Commercial Officer / VP Customer Success"
             }
 
-        # Check Digital Media / Streaming Entertainment
-        media_kw = ['stream', 'streams', 'track', 'artist', 'song', 'spotify', 'movie', 'film', 'cinema', 'video', 'youtube', 'view', 'views', 'listen', 'audio']
-        if any(any(k in c for k in media_kw) for c in cols_lower):
+        # 8. Check Digital Media / Streaming Entertainment
+        media_kw = [
+            'stream', 'streams', 'track', 'tracks', 'artist', 'artists',
+            'song', 'songs', 'spotify', 'movie', 'movies', 'film', 'cinema',
+            'video', 'youtube', 'view', 'views', 'listen', 'audio', 'playlist', 'playlists'
+        ]
+        if _matches_domain(media_kw):
             return {
                 "domain_key": "digital_media_streaming",
                 "domain_name": "Digital Media, Music Streaming & Algorithmic Audio Forensics",
@@ -1026,6 +1181,8 @@ class StrategicDecisionEngine:
             if cl.endswith(('_id', '_key', '_is_target_event', '_event', '_target')):
                 return True
             if is_index_artifact(c, self.df[c]) or is_pseudo_numeric_identifier(c, self.df[c]):
+                return True
+            if is_deterministic_target_leakage(c, self.df[c], target_series, self.target_col):
                 return True
             return False
 
@@ -1135,15 +1292,15 @@ class StrategicDecisionEngine:
             high_risk_rate = self.target_rate
             high_risk_mask = pd.Series(True, index=self.df.index)
 
-        baseline_rate = max(self.target_rate, 0.01)
-        relative_risk_multiplier = round(high_risk_rate / baseline_rate, 2) if high_risk_rate > 0 else 1.0
-
         # Physical Two-Proportion z-Test & Excess-Risk (Attributable Risk) Calculation
         n1 = high_risk_volume
         k1 = high_risk_events
         n0 = max(1, self.total_records - n1)
         k0 = max(0, self.target_events - k1)
         rest_rate = round((k0 / n0) * 100.0, 2)
+
+        denom_rate = rest_rate if rest_rate > 0 else max(self.target_rate, 0.01)
+        relative_risk_multiplier = round(round(high_risk_rate, 2) / denom_rate, 2) if high_risk_rate > 0 else 1.0
         excess_metrics = calculate_excess_risk_metrics(k1, n1, k0, n0, confidence=0.95)
         z_stat = excess_metrics["z_stat"]
         p_val = excess_metrics["p_value"]

@@ -53,3 +53,37 @@ def test_synthetic_penalty_rejection():
     assert res["target_col"] == "default"
     assert res["cost_col"] == "credit_amount"
     assert res["cost_col"] != "synthetic_friction_penalty"
+
+
+def test_pandas3_string_dtype_and_deterministic_target_leakage():
+    """Pandas 3.0 StringDtype columns must be detected as categorical, and tautological target sub-flags excluded."""
+    from autonomous_engine.target_resolver import (
+        is_categorical_or_string_series,
+        is_deterministic_target_leakage
+    )
+    from autonomous_engine.stage5_bi_synthesizer import detect_key_columns
+
+    n = 200
+    s_str = pd.Series(["L", "M", "H", "L"] * 50, dtype="string")
+    assert is_categorical_or_string_series(s_str) is True
+
+    # Simulate AI4I-style industrial telemetry where HDF=1 deterministically implies Machine failure=1
+    hdf = pd.Series([1] * 15 + [0] * (n - 15))
+    target = pd.Series([1] * 25 + [0] * (n - 25))
+    rpm = pd.Series(np.linspace(1200, 2200, n))
+    df = pd.DataFrame({
+        "UDI": range(1, n + 1),
+        "Type": s_str,
+        "Rotational speed [rpm]": rpm,
+        "HDF": hdf,
+        "Machine failure": target
+    })
+
+    assert is_deterministic_target_leakage("HDF", df["HDF"], df["Machine failure"], "Machine failure") is True
+    assert is_deterministic_target_leakage("Type", df["Type"], df["Machine failure"], "Machine failure") is False
+
+    t_col, c_col, prim_dim, sec_dim = detect_key_columns(df)
+    assert t_col == "Machine failure"
+    assert prim_dim == "Type"
+    assert sec_dim != "HDF"
+

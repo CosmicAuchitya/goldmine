@@ -4,23 +4,30 @@
   "specs": {
     "primary_dimension_risk": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Risk Exposure & Capital Drag across HDF",
+      "title": "Risk Exposure & Capital Drag across Type",
       "width": 600,
       "height": 280,
       "data": {
         "values": [
           {
-            "segment": "1",
-            "volume": 115,
-            "target_events": 115,
-            "adverse_rate_pct": 100.0,
+            "segment": "L",
+            "volume": 6000,
+            "target_events": 235,
+            "adverse_rate_pct": 3.92,
             "capital_drag": 0.0
           },
           {
-            "segment": "0",
-            "volume": 9885,
-            "target_events": 224,
-            "adverse_rate_pct": 2.27,
+            "segment": "M",
+            "volume": 2997,
+            "target_events": 83,
+            "adverse_rate_pct": 2.77,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "H",
+            "volume": 1003,
+            "target_events": 21,
+            "adverse_rate_pct": 2.09,
             "capital_drag": 0.0
           }
         ]
@@ -34,7 +41,7 @@
           "field": "segment",
           "type": "nominal",
           "sort": "-x",
-          "title": "HDF"
+          "title": "Type"
         },
         "x": {
           "field": "adverse_rate_pct",
@@ -194,7 +201,7 @@
     },
     "orthogonal_interaction_matrix": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "2x2 Orthogonal Interaction: Rotational speed [rpm] vs HDF",
+      "title": "2x2 Orthogonal Interaction: Rotational speed [rpm] vs Torque [Nm]",
       "width": 380,
       "height": 260,
       "data": {
@@ -204,36 +211,36 @@
             "label": "Optimal Zone",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 4992,
-            "events": 60,
-            "failure_rate_pct": 1.2
+            "volume": 4396,
+            "events": 59,
+            "failure_rate_pct": 1.34
           },
           {
             "quadrant": "Q2",
             "label": "Unbuffered Baseline",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 4893,
-            "events": 164,
-            "failure_rate_pct": 3.35
+            "volume": 631,
+            "events": 3,
+            "failure_rate_pct": 0.48
           },
           {
             "quadrant": "Q3",
             "label": "Masked Risk",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 0,
-            "events": 0,
-            "failure_rate_pct": 0.0
+            "volume": 596,
+            "events": 1,
+            "failure_rate_pct": 0.17
           },
           {
             "quadrant": "Q4",
             "label": "Compound Catastrophe",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 115,
-            "events": 115,
-            "failure_rate_pct": 100.0
+            "volume": 4377,
+            "events": 276,
+            "failure_rate_pct": 6.31
           }
         ]
       },
@@ -251,7 +258,7 @@
         "y": {
           "field": "protective_factor_level",
           "type": "nominal",
-          "title": "HDF"
+          "title": "Torque [Nm]"
         },
         "color": {
           "field": "failure_rate_pct",
@@ -300,24 +307,24 @@
         "values": [
           {
             "policy": "Policy 1: Conservative",
-            "scrap_pct": 1.15,
-            "recall_pct": 33.92,
-            "retained_defect_rate": 2.27,
-            "false_discards": 0
+            "scrap_pct": 24.71,
+            "recall_pct": 71.98,
+            "retained_defect_rate": 1.26,
+            "false_discards": 2227
           },
           {
             "policy": "Policy 2: Surgical",
-            "scrap_pct": 100.0,
-            "recall_pct": 100.0,
-            "retained_defect_rate": 0.0,
-            "false_discards": 9661
+            "scrap_pct": 49.73,
+            "recall_pct": 81.71,
+            "retained_defect_rate": 1.23,
+            "false_discards": 4696
           },
           {
             "policy": "Policy 3: Compound",
-            "scrap_pct": 49.86,
-            "recall_pct": 82.3,
-            "retained_defect_rate": 1.2,
-            "false_discards": 4707
+            "scrap_pct": 55.91,
+            "recall_pct": 82.6,
+            "retained_defect_rate": 1.34,
+            "false_discards": 5311
           }
         ]
       },

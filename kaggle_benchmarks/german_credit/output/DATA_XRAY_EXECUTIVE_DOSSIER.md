@@ -82,7 +82,7 @@
 
 > *"Good morning. Across our audited footprint of **1,000 physical records**, our system identified **300 critical events (30.0%)**, driving an aggregate adverse financial liability / capital at risk of **$1,181,438.00** (across 300 defaulted/adverse events out of $3,271,258.00 total portfolio volume).*
 > 
-> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `Checking account` (rate spread: 37.59 percentage points, Chi-Square p = 1.2189e-26): the top leak segment accounts for **42.3% of total adverse financial liability ($1,181,438.00)**.*
+> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `Checking account` (rate spread: 37.59 percentage points, 4.22x relative separation, Chi-Square p = 1.2189e-26): the top leak segment accounts for **42.3% of total adverse financial liability ($1,181,438.00)**.*
 > 
 > *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously unlock **$118,143.80 in direct capital recovery** within the next fiscal quarter."*
 
@@ -99,7 +99,7 @@
 - **Highest-Observed Candidate Segment**: **`Checking account = little`**
   - **Cohort Volume**: 274 records
   - **Adverse Events in Segment**: 135 events
-  - **Segment Failure Rate**: **49.27%** (vs. 22.73% rest-of-population baseline — **1.64x Risk Multiplier**)
+  - **Segment Failure Rate**: **49.27%** (vs. 22.73% rest-of-population baseline — **2.17x Risk Multiplier**)
   - **Statistical Significance Gate**: **PASSED (`z = 8.17, p = 2.2204e-16`)** — **72.7 Attributable Excess Events (+26.54% above 22.73% rest-of-system baseline)**
 
 ---
@@ -139,7 +139,7 @@
 *Board ya leadership (Chief Risk Officer / CFO) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'Checking account = little' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Checking account = little' is 49.27% compared to 22.73% across the remainder of the population (Relative Risk Multiplier: 1.64x across 274 physical records). The empirical separation yields z = 8.17 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 72.7 attributable excess events.
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Checking account = little' is 49.27% compared to 22.73% across the remainder of the population (Relative Risk Multiplier: 2.17x across 274 physical records). The empirical separation yields z = 8.17 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 72.7 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
 > **Empirical Data Answer**: Out of 274 records in this high-risk partition, 135 were confirmed adverse events (49.27% precision vs 22.73% rest-of-system baseline, +26.54% excess risk). Targeting this cohort addresses 72.7 attributable excess events while absorbing 139 non-event reviews across the cohort cycle.

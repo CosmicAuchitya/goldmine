@@ -12,61 +12,59 @@
 ### 2. Macro Operational Financial Impact
 - **Total Monitored Records**: `953`
 - **Negative / Target Events (streams)**: `239` (`25.08%`)
-- **Total Friction / Capital Drag**: **$0.00**
+- **Physical Event Footprint**: **Non-Monetary Operational Telemetry (`239` adverse events)**
 
 ---
 
 ### 3. Economic Moats (Core Value Drivers & Operational Excellence)
 *Top performers demonstrating minimum friction and maximum operational stability:*
 
-| artist_count | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
+| key | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1** | 587 | 120 | **79.56%** | 20.44% | **Moderate Stability Buffer** |
-| **3** | 85 | 24 | **71.76%** | 28.24% | **Moderate Stability Buffer** |
-| **2** | 254 | 81 | **68.11%** | 31.89% | Marginal Stability |
-| **4** | 15 | 7 | **53.33%** | 46.67% | Marginal Stability |
+| **nan** | 95 | 17 | **82.11%** | 17.89% | **Moderate Stability Buffer** |
+| **D** | 81 | 15 | **81.48%** | 18.52% | **Moderate Stability Buffer** |
+| **D#** | 33 | 7 | **78.79%** | 21.21% | **Moderate Stability Buffer** |
+| **G#** | 91 | 22 | **75.82%** | 24.18% | **Moderate Stability Buffer** |
+| **E** | 62 | 15 | **75.81%** | 24.19% | **Moderate Stability Buffer** |
 
 ---
 
-### 4. Capital Leaks & Financial Vulnerabilities
-*Concentrated operational drag where operational friction bleeds capital:*
+### 4. Operational Bottlenecks & Adverse Event Concentration
+*Concentrated operational friction ranked by physical adverse event volume:*
 
-| artist_count | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **1** | 587 | 120 | **20.44%** | **$0.00** | **0.0%** |
-| **2** | 254 | 81 | **31.89%** | **$0.00** | **0.0%** |
-| **3** | 85 | 24 | **28.24%** | **$0.00** | **0.0%** |
-| **4** | 15 | 7 | **46.67%** | **$0.00** | **0.0%** |
-| **5** | 5 | 3 | **60.0%** | **$0.00** | **0.0%** |
-
----
-
-### 5. Secondary Segment / Node Bottlenecks (artist_count_art)
-*Sub-nodes exhibiting concentrated friction:*
-
-| artist_count_art | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| key | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
 | :--- | :--- | :--- | :--- | :--- |
-| **1** | 587 | 120 | **20.44%** | $0.00 |
-| **2** | 254 | 81 | **31.89%** | $0.00 |
-| **3** | 85 | 24 | **28.24%** | $0.00 |
-| **4** | 15 | 7 | **46.67%** | $0.00 |
-| **5** | 5 | 3 | **60.0%** | $0.00 |
-| **6** | 3 | 3 | **100.0%** | $0.00 |
-| **8** | 2 | 1 | **50.0%** | $0.00 |
-| **7** | 2 | 0 | **0.0%** | $0.00 |
+| **C#** | 120 | 32 | **26.67%** | **13.39%** |
+| **F** | 89 | 25 | **28.09%** | **10.46%** |
+| **G** | 96 | 24 | **25.0%** | **10.04%** |
+| **B** | 81 | 24 | **29.63%** | **10.04%** |
+| **A** | 75 | 23 | **30.67%** | **9.62%** |
+
+---
+
+### 5. Secondary Segment / Node Bottlenecks (mode)
+*Sub-nodes exhibiting concentrated physical failure events:*
+
+| mode | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| :--- | :--- | :--- | :--- | :--- |
+| **Major** | 550 | 124 | **22.55%** | 51.88% |
+| **Minor** | 403 | 115 | **28.54%** | 48.12% |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `artist_count` may be confounded by underlying volume distributions, scale effects, or `artist_count_art` concentration.
+> - Observed risk in `key` may be confounded by underlying volume distributions, scale effects, or `mode` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
 
 ### 8. Counterfactual "What-If" Business Simulation & Sensitivity Horizons
 *Standardized sensitivity projections modeling 10%, 20%, and 30% global baseline reduction targets (see Strategic Decision Matrix below for cohort-specific Attributable Excess-Risk ROI):*
+
+> [!WARNING]
+> **Statistical Circuit-Breaker Alert (Uniform / Negligible Separation across `key`, Chi-Square p = 0.7330)**: Adverse event rates across `key` vary by only 12.78 percentage points (p = 0.7330 >= 0.05 — within random sampling variation). The sensitivity table below models theoretical **system-wide global baseline improvements**, NOT segment-targeted ROI. **Do NOT allocate segment-specific CapEx based on `key`.**
 
 | Global Event Mitigation Scenario | Defective Outcomes Averted | Remaining Vulnerability Volume | Operational Feasibility |
 | :--- | :--- | :--- | :--- |
@@ -81,9 +79,9 @@
 
 > *"Good morning. Across our audited footprint of **953 physical records**, our system identified **239 critical events (25.08%)**, driving an aggregate volume of **239 critical quality events (25.08%)**.*
 > 
-> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `artist_count` (rate spread: 39.56 percentage points, Chi-Square p = 3.9725e-04): the top leak segment accounts for **50.2% of all adverse quality events**.*
+> *Crucially, our Statistical Circuit-Breaker proves that failure rates across `key` lack actionable concentration (rate spread: only 12.78 percentage points, Chi-Square p = 0.7330 >= 0.05 — statistically indistinguishable from random sampling noise), even though the largest volume segment accounts for 13.4% of all adverse quality events simply due to headcount/volume.* 
 > 
-> *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously prevent **23 defective outcomes** within the next operational cycle."*
+> *Therefore, we advise an immediate **$0 CapEx freeze on `key`-targeted interventions** to avoid wasting capital on statistical noise, and recommend either auditing missing upstream telemetry or pursuing global system-wide process hygiene."*
 
 
 ---
@@ -98,7 +96,7 @@
 - **Highest-Observed Candidate Segment**: **`released_month = 6`**
   - **Cohort Volume**: 86 records
   - **Adverse Events in Segment**: 41 events
-  - **Segment Failure Rate**: **47.67%** (vs. 22.84% rest-of-population baseline — **1.9x Risk Multiplier**)
+  - **Segment Failure Rate**: **47.67%** (vs. 22.84% rest-of-population baseline — **2.09x Risk Multiplier**)
   - **Statistical Significance Gate**: **PASSED (`z = 5.07, p = 4.0151e-07`)** — **21.4 Attributable Excess Events (+24.84% above 22.84% rest-of-system baseline)**
 
 ---
@@ -108,9 +106,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **5 Streams saved (25% Excess-Risk Compression)** | [3 to 8 Streams] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (16 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **13 Streams saved (60% Excess-Risk Compression)** | [7 to 18 Streams] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **21 Streams saved (100% Baseline Parity)** | [12 to 31 Streams] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **5 events prevented (25% Excess-Risk Compression)** | [3 to 8 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (16 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **13 events prevented (60% Excess-Risk Compression)** | [7 to 18 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **21 events prevented (100% Baseline Parity)** | [12 to 31 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -138,7 +136,7 @@
 *Board ya leadership (Global Head of Editorial & Music Programming / VP of Content Analytics) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'released_month = 6' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'released_month = 6' is 47.67% compared to 22.84% across the remainder of the population (Relative Risk Multiplier: 1.9x across 86 physical records). The empirical separation yields z = 5.07 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 21.4 attributable excess events.
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'released_month = 6' is 47.67% compared to 22.84% across the remainder of the population (Relative Risk Multiplier: 2.09x across 86 physical records). The empirical separation yields z = 5.07 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 21.4 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
 > **Empirical Data Answer**: Out of 86 records in this high-risk partition, 41 were confirmed adverse events (47.67% precision vs 22.84% rest-of-system baseline, +24.84% excess risk). Targeting this cohort addresses 21.4 attributable excess events while absorbing 45 non-event reviews across the cohort cycle.
