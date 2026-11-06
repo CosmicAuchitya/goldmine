@@ -15,7 +15,9 @@ Algorithm:
 
 import os
 import sys
+import re
 from pathlib import Path
+from typing import Any, List, Optional
 import pandas as pd
 import numpy as np
 
@@ -27,6 +29,83 @@ try:
     from robust_csv_sniffer import smart_read_csv
 except ImportError:
     from autonomous_engine.robust_csv_sniffer import smart_read_csv
+
+
+def clean_accounting_series(s: pd.Series) -> pd.Series:
+    """
+    Cleans accounting-formatted strings into standard floats:
+    - Indian numbering with commas: '12,34,567.50' -> 1234567.50
+    - Parentheses for negatives: '(1,250.00)' -> -1250.00
+    - Debit/Credit suffixes: '5,000.00 Dr' -> 5000.00, '5,000.00 Cr' -> -5000.00
+    - Currency symbols: '₹ 45,000.00' / '£1,200.00' / '$500'
+    """
+    if pd.api.types.is_numeric_dtype(s):
+        return s
+
+    if not pd.api.types.is_object_dtype(s) and not pd.api.types.is_string_dtype(s):
+        return s
+
+    def _convert_val(val):
+        if pd.isna(val):
+            return np.nan
+        v_str = str(val).strip()
+        if not v_str or v_str.lower() in ('nan', 'none', 'null', '-', '--'):
+            return np.nan
+
+        # Check debit / credit suffix
+        is_cr = v_str.lower().endswith(' cr') or v_str.lower().endswith('cr')
+        # Check parenthesized negative: (1,234.50)
+        is_paren_neg = v_str.startswith('(') and v_str.endswith(')')
+
+        # Remove currency symbols, commas, Dr/Cr, parens
+        cleaned = re.sub(r'[₹\$£€\s,]', '', v_str)
+        cleaned = re.sub(r'(?i)(dr|cr)$', '', cleaned).strip('()')
+
+        try:
+            num = float(cleaned)
+            if is_cr or is_paren_neg:
+                return -abs(num)
+            return num
+        except (ValueError, TypeError):
+            return val
+
+    # Test sample conversion rate to ensure we only convert if >=75% non-null values parse as numbers
+    sample = s.dropna().head(50)
+    if len(sample) == 0:
+        return s
+
+    converted_sample = [isinstance(_convert_val(x), (float, int)) for x in sample]
+    if sum(converted_sample) / float(len(converted_sample)) >= 0.75:
+        return s.apply(_convert_val)
+    return s
+
+
+def strip_accounting_summary_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Detects and removes summary/aggregate footer rows (Total, Grand Total, Closing Balance)
+    common in Tally, Marg, SAP, and Indian accounting exports to avoid double-counting.
+    """
+    if len(df) <= 2:
+        return df
+
+    summary_pattern = re.compile(
+        r'^(?:total|grand\s*total|sub\s*total|subtotal|closing\s*balance|balance\s*c/f|balance\s*b/f)\b',
+        re.IGNORECASE
+    )
+
+    # Check bottom 10 rows
+    rows_to_drop = []
+    tail_len = min(10, len(df))
+    tail_indices = df.index[-tail_len:]
+
+    for idx in tail_indices:
+        row_str_vals = [str(x).strip() for x in df.loc[idx] if pd.notna(x)]
+        if any(summary_pattern.match(v) for v in row_str_vals[:4]):
+            rows_to_drop.append(idx)
+
+    if rows_to_drop:
+        return df.drop(index=rows_to_drop)
+    return df
 
 def detect_optimal_header_row(file_path: Path, max_scan_rows: int = 15) -> int:
     """
@@ -89,9 +168,15 @@ def smart_read_tabular(file_path: str, **kwargs) -> pd.DataFrame:
         
     # Clean column names (strip whitespace, normalize)
     df.columns = [str(c).strip() for c in df.columns]
+    # Strip summary/total rows (e.g. from Tally/Indian accounting exports)
+    df = strip_accounting_summary_rows(df)
+    # Clean accounting formatted columns (Dr/Cr, currency symbols, Indian commas)
+    for c in df.columns:
+        if df[c].dtype == object:
+            df[c] = clean_accounting_series(df[c])
     return df
 
 if __name__ == "__main__":
-    test_path = sys.argv[1] if len(sys.argv) > 1 else "error/raw_data/Airlines.xlsx"
+    test_path = sys.argv[1] if len(sys.argv) > 1 else "raw_data/sample.xlsx"
     detected = detect_optimal_header_row(Path(test_path))
     print(f"[*] Scanned '{test_path}' -> Optimal Header Row: {detected}")

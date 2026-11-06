@@ -37,26 +37,31 @@ def audit_target_imbalance(
         
     total_records = len(df)
     
-    # Construct robust boolean positive-event mask
-    if pd.api.types.is_numeric_dtype(df[target_col]):
-        s_num = pd.to_numeric(df[target_col], errors='coerce').fillna(0)
-        is_positive_mask = (s_num == 1)
-    elif pd.api.types.is_bool_dtype(df[target_col]):
-        is_positive_mask = (df[target_col] == True)
+    # Construct canonical boolean positive-event mask (Single Source of Truth)
+    if "_is_target_event" in df.columns:
+        is_positive_mask = (pd.to_numeric(df["_is_target_event"], errors="coerce").fillna(0) == 1)
     else:
-        # String or Categorical target
-        s_str = df[target_col].astype(str).str.strip().str.lower()
-        is_positive_mask = s_str.str.contains(r'\b(?:y|yes|true|t|1|fraud|churn|cancel|late|delay|fail|positive|pos|default|dissatisfied|attrit|attrited|attrition)\b|delay|late|cancel|fraud|fail|churn|dissatisfied|attrit', regex=True)
-        # Defense: Exclude missing rows
-        is_positive_mask = is_positive_mask & df[target_col].notna()
-        # If no semantic keywords matched, evaluate rarest class in low-cardinality targets
-        if is_positive_mask.sum() == 0 and df[target_col].nunique() <= 20:
-            vc = df[target_col].value_counts(ascending=True)
-            if not vc.empty:
-                rarest_val = vc.index[0]
-                rarest_cnt = vc.iloc[0]
-                if (rarest_cnt / max(total_records, 1)) * 100.0 <= imbalance_threshold_pct:
-                    is_positive_mask = (df[target_col] == rarest_val)
+        try:
+            try:
+                from .target_resolver import resolve_canonical_target_and_cost
+            except ImportError:
+                from target_resolver import resolve_canonical_target_and_cost
+            canon = resolve_canonical_target_and_cost(df, blueprint={"target_metric": target_col})
+            is_positive_mask = (canon["binary_target"] == 1)
+        except Exception:
+            if pd.api.types.is_numeric_dtype(df[target_col]):
+                s_num = pd.to_numeric(df[target_col], errors='coerce').fillna(0)
+                is_positive_mask = (s_num == 1)
+            elif pd.api.types.is_bool_dtype(df[target_col]):
+                is_positive_mask = (df[target_col] == True)
+            else:
+                s_str = df[target_col].astype(str).str.strip().str.lower()
+                known_missing = {'unknown', 'none', 'null', 'nan', '', 'na', 'n/a'}
+                clean_mask = df[target_col].notna() & (~s_str.isin(known_missing))
+                is_positive_mask = s_str.str.contains(
+                    r'\b(?:y|yes|sim|si|ja|oui|true|t|1|fraud|churn|cancel|late|delay|fail|positive|pos|default|dissatisfied|attrit|attrited|attrition)\b',
+                    regex=True
+                ) & clean_mask
                     
     positive_count = int(is_positive_mask.sum())
     positive_rate_pct = round((positive_count / max(total_records, 1)) * 100.0, 3)

@@ -62,8 +62,14 @@ def get_isolated_cache_path(file_path: Path, cache_dir: Path) -> Path:
 
 try:
     from .atomic_windows_io import atomic_to_parquet
-except ImportError:
-    from atomic_windows_io import atomic_to_parquet
+except (ImportError, ModuleNotFoundError):
+    try:
+        from atomic_windows_io import atomic_to_parquet
+    except (ImportError, ModuleNotFoundError):
+        try:
+            from autonomous_engine.atomic_windows_io import atomic_to_parquet
+        except (ImportError, ModuleNotFoundError):
+            atomic_to_parquet = globals().get('atomic_to_parquet', None)
 
 def load_with_isolated_cache(
     file_path: Path,
@@ -89,10 +95,10 @@ def load_with_isolated_cache(
     return df
 
 if __name__ == "__main__":
-    test_p = Path("error/raw_data/Airlines.xlsx")
+    test_p = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("raw_data")
     if test_p.exists():
         h = compute_file_content_hash(test_p)
-        cache_target = get_isolated_cache_path(test_p, Path("error/cache"))
+        cache_target = get_isolated_cache_path(test_p, Path("cache"))
         print(f"[*] File: {test_p.name} (Size: {test_p.stat().st_size:,} bytes)")
         print(f"[+] Unique Content Hash: {h}")
         print(f"[+] Hash-Partitioned Cache Path: {cache_target}")

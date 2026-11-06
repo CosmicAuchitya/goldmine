@@ -10,16 +10,39 @@ Covers:
 7. Fact Table Immutability (Gap 12)
 """
 
+import sys
 import unittest
+from pathlib import Path
+
+# Ensure project root is in sys.path for direct standalone test execution
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 import numpy as np
 import pandas as pd
-from autonomous_engine.strategic_decision_matrix import (
-    calculate_wilson_ci,
-    calculate_two_proportion_z_test,
-    MicroLevelForensicInquiryEngine,
-    StrategicDecisionEngine
-)
-from autonomous_engine.stage2_ai_blueprint import calculate_topology_fingerprint
+try:
+    from autonomous_engine.strategic_decision_matrix import calculate_wilson_ci, calculate_two_proportion_z_test, MicroLevelForensicInquiryEngine, StrategicDecisionEngine
+    from autonomous_engine.stage2_ai_blueprint import calculate_topology_fingerprint, validate_and_sanitize_blueprint
+    from autonomous_engine.common_utils import validate_etl_ast_security, build_sanitized_subprocess_env, quote_sql_ident
+    from autonomous_engine.pii_scrubber import is_sensitive_column_name
+except (ImportError, ModuleNotFoundError):
+    try:
+        from strategic_decision_matrix import calculate_wilson_ci, calculate_two_proportion_z_test, MicroLevelForensicInquiryEngine, StrategicDecisionEngine
+        from stage2_ai_blueprint import calculate_topology_fingerprint, validate_and_sanitize_blueprint
+        from common_utils import validate_etl_ast_security, build_sanitized_subprocess_env, quote_sql_ident
+        from pii_scrubber import is_sensitive_column_name
+    except (ImportError, ModuleNotFoundError):
+        calculate_wilson_ci = globals().get('calculate_wilson_ci')
+        calculate_two_proportion_z_test = globals().get('calculate_two_proportion_z_test')
+        MicroLevelForensicInquiryEngine = globals().get('MicroLevelForensicInquiryEngine')
+        StrategicDecisionEngine = globals().get('StrategicDecisionEngine')
+        calculate_topology_fingerprint = globals().get('calculate_topology_fingerprint')
+        validate_and_sanitize_blueprint = globals().get('validate_and_sanitize_blueprint')
+        validate_etl_ast_security = globals().get('validate_etl_ast_security')
+        build_sanitized_subprocess_env = globals().get('build_sanitized_subprocess_env')
+        quote_sql_ident = globals().get('quote_sql_ident')
+        is_sensitive_column_name = globals().get('is_sensitive_column_name')
 
 
 class TestEngineStatisticsAndGuards(unittest.TestCase):
@@ -118,6 +141,38 @@ class TestEngineStatisticsAndGuards(unittest.TestCase):
 
         self.assertNotIn("_is_target_event", bottleneck, "Target event must not be selected as root cause")
         self.assertNotIn("fact_surrogate_id", bottleneck, "Surrogate key must not be selected as root cause")
+
+    def test_ast_security_and_env_isolation_guards(self):
+        """AST Security Gate and Subprocess Env Scrubber must block exploits and strip secrets."""
+        self.assertGreater(len(validate_etl_ast_security("import subprocess\nsubprocess.run(['id'])")), 0)
+        self.assertGreater(len(validate_etl_ast_security("x = eval('1+1')")), 0)
+        self.assertEqual(validate_etl_ast_security("import pandas as pd\ndf = pd.DataFrame({'a': [1, 2]})"), [])
+        self.assertEqual(quote_sql_ident('col"name'), '"col""name"')
+
+        import os
+        old_val = os.environ.get("GEMINI_API_KEY")
+        os.environ["GEMINI_API_KEY"] = "AIzaTestDummySecretKey00000000000000000"
+        try:
+            clean_env = build_sanitized_subprocess_env()
+            self.assertNotIn("GEMINI_API_KEY", clean_env)
+        finally:
+            if old_val is None:
+                os.environ.pop("GEMINI_API_KEY", None)
+            else:
+                os.environ["GEMINI_API_KEY"] = old_val
+
+    def test_pii_and_blueprint_prompt_injection_guards(self):
+        """Multilingual PII detection and blueprint prompt-injection sanitizer must hold."""
+        self.assertTrue(is_sensitive_column_name("NomeCliente"))
+        self.assertFalse(is_sensitive_column_name("cancellation"))
+        self.assertFalse(is_sensitive_column_name("product_name"))
+
+        topo = {"tables": {"orders": {"columns": ["Order_ID", "Churn"], "estimated_rows": 100, "recommended_primary_key": "Order_ID"}}}
+        bad_bp = {"fact_table": "fake", "primary_id_column": "evil'); os.system('x')", "target_metric": "x'); import os #"}
+        clean_bp = validate_and_sanitize_blueprint(bad_bp, topo)
+        self.assertEqual(clean_bp["fact_table"], "orders")
+        self.assertEqual(clean_bp["primary_id_column"], "Order_ID")
+        self.assertEqual(clean_bp["target_metric"], "Churn")
 
 
 if __name__ == "__main__":

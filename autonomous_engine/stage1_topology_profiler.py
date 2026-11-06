@@ -15,6 +15,7 @@ Features & Defenses:
 
 import os
 import sys
+import re
 import json
 from pathlib import Path
 from typing import Dict, Any, Tuple
@@ -26,19 +27,26 @@ if sys.platform == "win32":
 
 # Robust imports supporting both package and direct script execution
 try:
-    from .robust_excel_scanner import detect_optimal_header_row
+    from .robust_excel_scanner import detect_optimal_header_row, strip_accounting_summary_rows
     from .pii_scrubber import scrub_schema_payload
     from .robust_csv_sniffer import smart_read_csv, detect_encoding_and_delimiter
     from .cardinality_and_bridge_detector import detect_relationship_cardinality
     from .composite_key_detector import detect_composite_join_mapping
     from .safe_math_and_json_guard import safe_dump_json
+    from .target_resolver import is_index_artifact
 except ImportError:
-    from robust_excel_scanner import detect_optimal_header_row
+    from robust_excel_scanner import detect_optimal_header_row, strip_accounting_summary_rows
     from pii_scrubber import scrub_schema_payload
     from robust_csv_sniffer import smart_read_csv, detect_encoding_and_delimiter
     from cardinality_and_bridge_detector import detect_relationship_cardinality
     from composite_key_detector import detect_composite_join_mapping
     from safe_math_and_json_guard import safe_dump_json
+    try:
+        from target_resolver import is_index_artifact
+    except ImportError:
+        def is_index_artifact(col_name: str, series=None) -> bool:
+            c = str(col_name).strip().lower()
+            return bool(re.match(r'^(?:unnamed\s*:?\s*\d*|index|level_\d+|row_?(?:id|num|number)|_surrogate_id_key)$', c))
 
 SAMPLE_ROWS = 2000
 
@@ -94,7 +102,8 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         detected_enc = enc
         detected_delim = delim
         with open(filepath, 'r', encoding=enc, errors='ignore') as f:
-            total_rows = sum(1 for _ in f) - 1
+            raw_lines = sum(1 for _ in f)
+        total_rows = max(0, raw_lines - 1 - header_row)
     elif ext == '.parquet':
         import pyarrow.parquet as pq
         table = pq.read_table(filepath)
@@ -105,11 +114,17 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
 
     # Clean whitespace in column names
     df_sample.columns = [str(c).strip() for c in df_sample.columns]
+    # Strip summary footer rows (e.g. Tally / Grand Total rows) and reconcile total row count
+    cleaned_sample = strip_accounting_summary_rows(df_sample)
+    dropped_summary_count = len(df_sample) - len(cleaned_sample)
+    if dropped_summary_count > 0:
+        total_rows = max(0, total_rows - dropped_summary_count)
+        df_sample = cleaned_sample
 
     columns_meta = []
     potential_keys = []
     n_sample = len(df_sample)
-    
+
     for col in df_sample.columns:
         s = df_sample[col].dropna()
         dtype = str(df_sample[col].dtype)
@@ -120,9 +135,10 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         col_lower = str(col).lower()
         has_bad_keyword = any(b in col_lower for b in BAD_KEY_KEYWORDS)
         is_url_or_long_text = any(str(x).startswith(('http://', 'https://', '//', 'www.')) or len(str(x)) > 60 for x in samples)
+        is_idx = is_index_artifact(col)
         
-        has_key_keyword = any(k in col_lower for k in KEY_SEMANTIC_KEYWORDS) and not has_bad_keyword
-        high_uniqueness = (n_sample > 10 and (nunique / float(n_sample)) >= 0.70) and not has_bad_keyword and not is_url_or_long_text
+        has_key_keyword = any(k in col_lower for k in KEY_SEMANTIC_KEYWORDS) and not has_bad_keyword and not is_idx
+        high_uniqueness = (n_sample > 10 and (nunique / float(n_sample)) >= 0.70) and not has_bad_keyword and not is_url_or_long_text and not is_idx
         
         if has_key_keyword or high_uniqueness:
             potential_keys.append(col)
@@ -131,7 +147,8 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
             "name": col,
             "dtype": dtype,
             "sample_values": samples,
-            "nunique_in_sample": nunique
+            "nunique_in_sample": nunique,
+            "is_index_artifact": is_idx
         })
         
     strictly_unique_primary_keys = []
@@ -158,9 +175,10 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
 
     recommended_pk = "fact_surrogate_id"
     if strictly_unique_primary_keys:
-        true_ids = [c for c in strictly_unique_primary_keys if c.lower() in ['id', 'ident', 'uuid', 'key'] or c.lower().endswith(('_id', '_key', '_uuid'))]
-        code_ids = [c for c in strictly_unique_primary_keys if c.lower().endswith(('_code', '_num', '_no'))]
-        clean_keys = [c for c in strictly_unique_primary_keys if not any(b in c.lower() for b in BAD_KEY_KEYWORDS)]
+        non_idx_keys = [c for c in strictly_unique_primary_keys if not is_index_artifact(c)]
+        true_ids = [c for c in non_idx_keys if c.lower() in ['id', 'ident', 'uuid', 'key'] or c.lower().endswith(('_id', '_key', '_uuid'))]
+        code_ids = [c for c in non_idx_keys if c.lower().endswith(('_code', '_num', '_no'))]
+        clean_keys = [c for c in non_idx_keys if not any(b in c.lower() for b in BAD_KEY_KEYWORDS)]
         if true_ids:
             recommended_pk = true_ids[0]
         elif code_ids:
@@ -334,7 +352,7 @@ def profile_raw_directory(dir_path: str, output_json: str = None) -> dict:
     return sanitized_profile
 
 if __name__ == "__main__":
-    target_dir = sys.argv[1] if len(sys.argv) > 1 else "error/raw_data"
+    target_dir = sys.argv[1] if len(sys.argv) > 1 else "raw_data"
     out_file = sys.argv[2] if len(sys.argv) > 2 else "autonomous_engine/schema_topology.json"
     p = profile_raw_directory(target_dir, out_file)
     print("\n--- SCHEMA SUMMARY ---")

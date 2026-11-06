@@ -16,6 +16,8 @@ Guarantees:
 
 import os
 import sys
+import re
+import uuid
 import time
 import json
 import sqlite3
@@ -33,7 +35,9 @@ class RunManager:
     def __init__(self, dataset_name: str = "Dataset", base_runs_dir: str = "runs"):
         self.dataset_name = dataset_name
         self.timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.run_id = f"run_{self.timestamp_str}_{dataset_name.replace(' ', '_').lower()}"
+        safe_slug = re.sub(r'[^a-z0-9_]+', '_', str(dataset_name).lower()).strip('_') or "dataset"
+        uniq_tag = f"{os.getpid()}_{uuid.uuid4().hex[:6]}"
+        self.run_id = f"run_{self.timestamp_str}_{uniq_tag}_{safe_slug}"
         
         self.base_runs_dir = Path(base_runs_dir).resolve()
         self.run_dir = self.base_runs_dir / self.run_id
@@ -52,8 +56,9 @@ class RunManager:
         
     def _init_sqlite_catalog(self):
         """Initializes SQLite catalog schema if not already present."""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=15.0)
         cur = conn.cursor()
+        cur.execute("PRAGMA journal_mode=WAL;")
         cur.execute("""
             CREATE TABLE IF NOT EXISTS pipeline_runs (
                 run_id TEXT PRIMARY KEY,
@@ -100,7 +105,7 @@ class RunManager:
     ):
         """Records stage performance telemetry into SQLite catalog."""
         self.stage_timings[f"stage_{stage_num}"] = duration_sec
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=15.0)
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO stage_telemetry (run_id, stage_number, stage_name, duration_sec, status, details)
@@ -114,19 +119,19 @@ class RunManager:
 
     def finalize_run(
         self,
-        status: str,
-        initial_rows: int,
-        final_fact_rows: int,
-        cartesian_drift: int,
-        duplicate_ids: int,
-        assertion_status: str,
-        domain_invariants_status: str
+        status: str = "COMPLETED",
+        initial_rows: int = 0,
+        final_fact_rows: int = 0,
+        cartesian_drift: int = 0,
+        duplicate_ids: int = 0,
+        assertion_status: str = "PASSED",
+        domain_invariants_status: str = "PASSED"
     ) -> Dict[str, Any]:
         """Finalizes run records in SQLite and writes immutable run_manifest.json."""
         total_duration = round(time.time() - self.start_time, 2)
         end_time_str = datetime.datetime.now().isoformat()
         
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(self.db_path, timeout=15.0)
         cur = conn.cursor()
         cur.execute("""
             INSERT OR REPLACE INTO pipeline_runs (

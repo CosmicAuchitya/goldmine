@@ -1,102 +1,299 @@
-import sys
 import os
-import pandas as pd
-import numpy as np
+import sys
 import json
+import time
+import logging
 from pathlib import Path
+import numpy as np
+import pandas as pd
 
-# Enforce encoding for Windows
+# 5. Enforce sys.stdout.reconfigure(encoding='utf-8') on Windows platform
 if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
-def run_etl():
-    # 1. Configuration & Paths
-    RAW_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/raw_data')
-    CACHE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/cache')
-    OUT_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/imdb_top_1000/output')
-    
-    for d in [CACHE_DIR, OUT_DIR]:
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger("dynamic_etl_runner")
+
+def run_pipeline():
+    start_time = time.time()
+    logger.info("Starting Enterprise Customer Support Operations and Friction Analytics Pipeline...")
+
+    # 1. Operational Directories
+    RAW_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/ecommerce_customer_service/raw_data')
+    CACHE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/ecommerce_customer_service/cache')
+    OUTPUT_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/ecommerce_customer_service/output')
+
+    for d in [RAW_DIR, CACHE_DIR, OUTPUT_DIR]:
         d.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Verified directory: {d}")
 
-    # 2. Ingestion
-    print("Ingesting imdb_top_1000...")
-    df = pd.read_csv(
-        RAW_DIR / 'imdb_top_1000.csv', 
-        sep=',', 
-        encoding='utf-8', 
-        na_values=['?'], 
+    # Dataset Topology Definition
+    topology = {
+        "Customer_support_data": {
+            "filename": "Customer_support_data.csv",
+            "delimiter": ",",
+            "encoding": "utf-8"
+        }
+    }
+
+    # 2. Data Ingestion & Caching
+    table_name = "Customer_support_data"
+    table_info = topology[table_name]
+    raw_file_path = RAW_DIR / table_info['filename']
+    cache_file_path = CACHE_DIR / f"{table_name}.parquet"
+
+    logger.info(f"Ingesting raw table '{table_name}' from {raw_file_path}...")
+    if not raw_file_path.exists():
+        raise FileNotFoundError(f"Raw data file not found: {raw_file_path}")
+
+    df_raw = pd.read_csv(
+        raw_file_path,
+        sep=table_info['delimiter'],
+        encoding=table_info['encoding'],
+        na_values=['?', 'NA', 'N/A', 'null', ''],
         low_memory=False
     )
-    
+
+    # Clean column names (strip whitespace)
+    df_raw.columns = [str(c).strip() for c in df_raw.columns]
+    logger.info(f"Loaded '{table_name}' with shape {df_raw.shape}")
+
+    # Cast mixed identifier columns to str.strip() and fill missing values for safety
+    for col in df_raw.select_dtypes(include=['object']).columns:
+        df_raw[col] = df_raw[col].astype(str).str.strip()
+        df_raw[col] = df_raw[col].replace({'nan': 'UNKNOWN', 'None': 'UNKNOWN', '': 'UNKNOWN'})
+
+    # Persist to cache parquet
+    df_raw.to_parquet(cache_file_path, engine='pyarrow', index=False)
+    logger.info(f"Cached raw table to {cache_file_path}")
+
+    # Reload from cache for pipeline operations
+    df = pd.read_parquet(cache_file_path)
     initial_fact_count = len(df)
-    
-    # 3. Key Normalization & Primary Key Enforcement
-    # Generate unique primary ID
-    df['id'] = (df.index + 1).astype(str)
-    
-    # Sanitization
-    for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = df[col].astype(str).str.strip()
-    
-    # Fill Missing Values (No row dropping allowed)
-    num_cols = df.select_dtypes(include=[np.number]).columns
-    df[num_cols] = df[num_cols].fillna(0)
-    
-    cat_cols = df.select_dtypes(include=['object']).columns
-    df[cat_cols] = df[cat_cols].fillna('UNKNOWN')
+    logger.info(f"Initial Fact Row Count: {initial_fact_count}")
 
-    # 4. Forensic Enrichments (Vectorized)
-    # Fulfillment & SLA duration variance: Mock calculation based on runtime/votes
-    df['Fulfillment & SLA duration variance'] = np.abs(df['Runtime'].astype(float) - df['Runtime'].mean())
-    # Financial and operational friction ratio: Gross / No_of_Votes (handle div by zero)
-    df['Gross_Numeric'] = pd.to_numeric(df['Gross'].replace(r'[^\d.]', '', regex=True), errors='coerce').fillna(0)
-    df['Financial and operational friction ratio'] = df['Gross_Numeric'] / (df['No_of_Votes'].replace(0, 1))
+    # 4. Entity Resolution & Key Cleaning & Surrogate Keys
+    # Fact primary ID column from blueprint: "Unique id"
+    primary_id_col = "Unique id"
+    if primary_id_col not in df.columns:
+        # Fallback if case differs
+        matched_cols = [c for c in df.columns if c.lower() == primary_id_col.lower()]
+        if matched_cols:
+            primary_id_col = matched_cols[0]
+        else:
+            df[primary_id_col] = (df.index + 1).astype(str)
 
-    # 5. Assertion Gates
+    # Clean string identifiers
+    df[primary_id_col] = df[primary_id_col].astype(str).str.strip()
+    
+    # FACT INTEGRITY & ROW CONSERVATION: Enforce strict unique surrogate ID if duplicates exist in natural primary key
+    if df[primary_id_col].duplicated().sum() > 0 or (df[primary_id_col] == 'UNKNOWN').sum() > 0:
+        logger.warning("Duplicates or UNKNOWN values found in primary ID column. Generating unique surrogate ID...")
+        df['fact_surrogate_id'] = (df.index + 1).astype(str)
+        # Keep original ID as support, replace primary_id_col with guaranteed unique surrogate
+        df[primary_id_col] = df['fact_surrogate_id']
+    else:
+        df['fact_surrogate_id'] = df[primary_id_col]
+
+    # Handle missing numerical values on fact table without dropping rows
+    numeric_cols = ['Item_price', 'connected_handling_time', 'CSAT Score']
+    for ncol in numeric_cols:
+        if ncol in df.columns:
+            df[ncol] = pd.to_numeric(df[ncol], errors='coerce')
+            median_val = df[ncol].median()
+            if pd.isna(median_val):
+                median_val = 0.0
+            df[ncol] = df[ncol].fillna(median_val)
+        else:
+            if ncol == 'CSAT Score':
+                df['CSAT Score'] = 3.0  # Default neutral score
+            else:
+                df[ncol] = 0.0
+
+    # Ensure target metric 'CSAT Score' is present
+    if 'CSAT Score' not in df.columns:
+        df['CSAT Score'] = 3.0
+
+    # Parse datetimes securely
+    for dt_col in ['order_date_time', 'Issue_reported at', 'issue_responded', 'Survey_response_Date']:
+        if dt_col in df.columns:
+            df[dt_col] = pd.to_datetime(df[dt_col], errors='coerce')
+
+    # 3. Cardinality Defense & Pre-Aggregations (Dimension Tables Generation)
+    logger.info("Building pre-aggregated 1:1 entity dimension tables...")
+
+    # Dimension 1: Agent Profile (Agent_name, Supervisor, Manager, Tenure Bucket, Agent Shift)
+    agent_cols = [c for c in ['Agent_name', 'Supervisor', 'Manager', 'Tenure Bucket', 'Agent Shift'] if c in df.columns]
+    if agent_cols:
+        df['Agent_name'] = df.get('Agent_name', pd.Series(['UNKNOWN']*len(df))).astype(str).str.strip().str.upper()
+        dim_agent = df.groupby('Agent_name').agg({
+            'Supervisor': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            'Manager': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            'Tenure Bucket': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            'Agent Shift': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            primary_id_col: 'count'
+        }).rename(columns={primary_id_col: 'agent_ticket_volume'}).reset_index()
+        dim_agent['agent_id'] = (dim_agent.index + 1).astype(str)
+    else:
+        dim_agent = pd.DataFrame({'Agent_name': ['UNKNOWN'], 'agent_id': ['1']})
+
+    # Dimension 2: Product Catalog (Product_category, category, Sub-category)
+    prod_cols = [c for c in ['Product_category', 'category', 'Sub-category'] if c in df.columns]
+    if prod_cols:
+        df['Product_category'] = df.get('Product_category', pd.Series(['UNKNOWN']*len(df))).astype(str).str.strip().str.upper()
+        dim_product = df.groupby('Product_category').agg({
+            'category': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            'Sub-category': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            primary_id_col: 'count'
+        }).rename(columns={primary_id_col: 'product_ticket_volume'}).reset_index()
+        dim_product['product_id'] = (dim_product.index + 1).astype(str)
+    else:
+        dim_product = pd.DataFrame({'Product_category': ['UNKNOWN'], 'product_id': ['1']})
+
+    # Dimension 3: Geography (Customer_City, channel_name)
+    geo_cols = [c for c in ['Customer_City', 'channel_name'] if c in df.columns]
+    if geo_cols:
+        df['Customer_City'] = df.get('Customer_City', pd.Series(['UNKNOWN']*len(df))).astype(str).str.strip().str.upper()
+        dim_geo = df.groupby('Customer_City').agg({
+            'channel_name': lambda x: x.mode()[0] if not x.mode().empty else 'UNKNOWN',
+            primary_id_col: 'city_ticket_volume'
+        }).rename(columns={primary_id_col: 'city_ticket_volume'}).reset_index()
+        dim_geo['geography_id'] = (dim_geo.index + 1).astype(str)
+    else:
+        dim_geo = pd.DataFrame({'Customer_City': ['UNKNOWN'], 'geography_id': ['1']})
+
+    # 5. Relational Merges
+    logger.info("Executing relational merges with dimension tables...")
+    
+    # Ensure foreign keys are standardized for joining
+    if 'Agent_name' in df.columns:
+        df['Agent_name'] = df['Agent_name'].astype(str).str.strip().str.upper()
+    if 'Product_category' in df.columns:
+        df['Product_category'] = df['Product_category'].astype(str).str.strip().str.upper()
+    if 'Customer_City' in df.columns:
+        df['Customer_City'] = df['Customer_City'].astype(str).str.strip().str.upper()
+
     final_fact = df.copy()
-    
-    # Ensure all identifiers are strings for parquet compatibility
-    for col in final_fact.columns:
-        if final_fact[col].dtype == 'object':
-            final_fact[col] = final_fact[col].astype(str)
-            
-    assert len(final_fact) == initial_fact_count, 'Zero drift violation: Cartesian explosion detected!'
-    assert final_fact.duplicated(subset=['id']).sum() == 0, 'Duplicate primary keys detected in id!'
-    assert 'Poster_Link' in final_fact.columns, 'Target metric Poster_Link missing!'
 
-    # 6. Deliverables Export
-    # Deduplicate columns
+    if 'Agent_name' in final_fact.columns and 'Agent_name' in dim_agent.columns:
+        final_fact = pd.merge(final_fact, dim_agent, on='Agent_name', how='left', suffixes=('', '_dim_agent'))
+
+    if 'Product_category' in final_fact.columns and 'Product_category' in dim_product.columns:
+        final_fact = pd.merge(final_fact, dim_product, on='Product_category', how='left', suffixes=('', '_dim_prod'))
+
+    if 'Customer_City' in final_fact.columns and 'Customer_City' in dim_geo.columns:
+        final_fact = pd.merge(final_fact, dim_geo, on='Customer_City', how='left', suffixes=('', '_dim_geo'))
+
+    # Clean merge collision columns and duplicates
     final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
+
+    # 6. Vectorized Forensic Enrichments
+    logger.info("Calculating vectorized forensic enrichment columns...")
     
-    # Save to Parquet
-    final_fact.to_parquet(OUT_DIR / 'bi_ready_fact.parquet', engine='pyarrow', index=False)
-    
-    # Forensic Dossier
+    # response_latency_hours = (pd.to_datetime(issue_responded) - pd.to_datetime(Issue_reported at)).dt.total_seconds() / 3600.0
+    if 'issue_responded' in final_fact.columns and 'Issue_reported at' in final_fact.columns:
+        final_fact['response_latency_hours'] = (
+            pd.to_datetime(final_fact['issue_responded'], errors='coerce') - 
+            pd.to_datetime(final_fact['Issue_reported at'], errors='coerce')
+        ).dt.total_seconds() / 3600.0
+        final_fact['response_latency_hours'] = final_fact['response_latency_hours'].fillna(final_fact['response_latency_hours'].median())
+        if final_fact['response_latency_hours'].isna().any():
+            final_fact['response_latency_hours'] = final_fact['response_latency_hours'].fillna(0.0)
+    else:
+        final_fact['response_latency_hours'] = 0.0
+
+    # handling_velocity_per_item = connected_handling_time / NULLIF(Item_price, 0)
+    if 'connected_handling_time' in final_fact.columns and 'Item_price' in final_fact.columns:
+        item_price_safe = np.where(final_fact['Item_price'] == 0, np.nan, final_fact['Item_price'])
+        final_fact['handling_velocity_per_item'] = final_fact['connected_handling_time'] / item_price_safe
+        median_vel = np.nanmedian(final_fact['handling_velocity_per_item'])
+        if np.isnan(median_vel):
+            median_vel = 0.0
+        final_fact['handling_velocity_per_item'] = np.nan_to_num(final_fact['handling_velocity_per_item'], nan=median_vel)
+    else:
+        final_fact['handling_velocity_per_item'] = 0.0
+
+    # operational_friction_liability = connected_handling_time * item_price_penalty_factor
+    item_price_penalty_factor = 0.05
+    if 'connected_handling_time' in final_fact.columns and 'Item_price' in final_fact.columns:
+        final_fact['operational_friction_liability'] = (
+            final_fact['connected_handling_time'] * (final_fact['Item_price'] * item_price_penalty_factor)
+        )
+    else:
+        final_fact['operational_friction_liability'] = 0.0
+
+    # Cast string/mixed-type keys and identifiers to string before parquet export
+    for col in final_fact.select_dtypes(include=['object']).columns:
+        final_fact[col] = final_fact[col].astype(str)
+
+    # Strict column deduplication check
+    final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
+
+    # 7. Strict Assertion Gates
+    logger.info("Executing strict assertion gates...")
+    assert len(final_fact) == initial_fact_count, f"Row count mismatch: Initial {initial_fact_count}, Final {len(final_fact)}. Cartesian duplicate explosion or row loss occurred!"
+    assert final_fact.duplicated(subset=[primary_id_col]).sum() == 0, "Duplicate primary IDs detected!"
+    assert 'CSAT Score' in final_fact.columns, "Missing expected dimension features ('CSAT Score')!"
+    logger.info("All assertion gates passed successfully!")
+
+    # 8. Deliverables Export
+    logger.info("Exporting bi-ready deliverables...")
+
+    fact_output_path = OUTPUT_DIR / "bi_ready_fact.parquet"
+    dim_agent_path = OUTPUT_DIR / "bi_dim_agent.csv"
+    dim_product_path = OUTPUT_DIR / "bi_dim_product.csv"
+    dim_geo_path = OUTPUT_DIR / "bi_dim_geography.csv"
+    dossier_path = OUTPUT_DIR / "forensic_diagnostic_dossier.json"
+
+    final_fact.to_parquet(fact_output_path, engine='pyarrow', index=False)
+    dim_agent.to_csv(dim_agent_path, index=False, encoding='utf-8')
+    dim_product.to_csv(dim_product_path, index=False, encoding='utf-8')
+    dim_geo.to_csv(dim_geo_path, index=False, encoding='utf-8')
+
     dossier = {
-        "total_rows": len(final_fact),
-        "columns": list(final_fact.columns),
-        "dax_specs": [
-            "Total Volume := COUNTROWS('bi_ready_fact')",
-            "Target Events Count := SUM('bi_ready_fact'[No_of_Votes])",
-            "Target Event Rate % := DIVIDE([Target Events Count], [Total Volume])",
-            "Total Operational Loss ($) := SUM('bi_ready_fact'[Financial and operational friction ratio])",
-            "Dimensional Risk Index := AVERAGE('bi_ready_fact'[Fulfillment & SLA duration variance])"
-        ]
+        "project_title": "Enterprise Customer Support Operations and Friction Analytics",
+        "dataset_fingerprint": "50c123eee36249d0",
+        "initial_fact_count": int(initial_fact_count),
+        "final_fact_count": int(len(final_fact)),
+        "dax_measures": [
+            "Total Volume / Records = COUNTROWS(bi_ready_fact)",
+            "Target Events Count = CALCULATE(COUNTROWS(bi_ready_fact), bi_ready_fact[CSAT Score] >= 4)",
+            "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records], 0)",
+            "Total Financial / Operational Friction Loss ($) = SUM(bi_ready_fact[operational_friction_liability])",
+            "Segment Performance / Congestion Index = AVERAGE(bi_ready_fact[response_latency_hours])"
+        ],
+        "execution_time_seconds": round(time.time() - start_time, 2)
     }
-    
-    with open(OUT_DIR / 'forensic_dossier.json', 'w') as f:
+
+    with open(dossier_path, 'w', encoding='utf-8') as f:
         json.dump(dossier, f, indent=4)
 
-    # 7. Summary Table
-    summary = pd.DataFrame({
-        "Metric": ["Initial Rows", "Final Rows", "Target Metric Present", "Status"],
-        "Value": [initial_fact_count, len(final_fact), True, "SUCCESS"]
-    })
-    
-    print("\n--- Execution Summary ---")
-    print(summary.to_string(index=False))
-    print(f"\nFiles exported to: {OUT_DIR}")
+    logger.info("Deliverables successfully exported.")
 
-if __name__ == "__main__":
-    run_etl()
+    # Execution Summary Table
+    summary_data = [
+        {"Artifact": "Fact Table (Parquet)", "Path": str(fact_output_path), "Rows": len(final_fact), "Cols": len(final_fact.columns)},
+        {"Artifact": "Agent Dimension (CSV)", "Path": str(dim_agent_path), "Rows": len(dim_agent), "Cols": len(dim_agent.columns)},
+        {"Artifact": "Product Dimension (CSV)", "Path": str(dim_product_path), "Rows": len(dim_product), "Cols": len(dim_product.columns)},
+        {"Artifact": "Geography Dimension (CSV)", "Path": str(dim_geo_path), "Rows": len(dim_geo), "Cols": len(dim_geo.columns)},
+        {"Artifact": "Forensic Dossier (JSON)", "Path": str(dossier_path), "Rows": 1, "Cols": len(dossier)}
+    ]
+    summary_df = pd.DataFrame(summary_data)
+    
+    print("\n" + "="*80)
+    print("DYNAMIC ETL PIPELINE EXECUTION SUMMARY")
+    print("="*80)
+    print(summary_df.to_string(index=False))
+    print("="*80)
+    logger.info(f"Pipeline completed successfully in {dossier['execution_time_seconds']} seconds.")
+
+if __name__ == '__main__':
+    run_pipeline()

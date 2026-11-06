@@ -1,168 +1,177 @@
 {
   "dataset_name": "raw_data",
   "tables": {
-    "imdb_top_1000": {
-      "table_name": "imdb_top_1000",
-      "filename": "imdb_top_1000.csv",
+    "telecom_users": {
+      "table_name": "telecom_users",
+      "filename": "telecom_users.csv",
       "selected_sheet": null,
-      "estimated_rows": 1000,
+      "estimated_rows": 5986,
       "delimiter": ",",
       "encoding": "utf-8",
       "columns": [
-        "Poster_Link",
-        "Series_Title",
-        "Released_Year",
-        "Certificate",
-        "Runtime",
-        "Genre",
-        "IMDB_Rating",
-        "Overview",
-        "Meta_score",
-        "Director",
-        "Star1",
-        "Star2",
-        "Star3",
-        "Star4",
-        "No_of_Votes",
-        "Gross"
+        "Unnamed: 0",
+        "IDCliente",
+        "Genero",
+        "Aposentado",
+        "Casado",
+        "Dependentes",
+        "MesesComoCliente",
+        "ServicoTelefone",
+        "MultiplasLinhas",
+        "ServicoInternet",
+        "ServicoSegurancaOnline",
+        "ServicoBackupOnline",
+        "ProtecaoEquipamento",
+        "ServicoSuporteTecnico",
+        "ServicoStreamingTV",
+        "ServicoFilmes",
+        "TipoContrato",
+        "FaturaDigital",
+        "FormaPagamento",
+        "ValorMensal",
+        "TotalGasto",
+        "Churn",
+        "Codigo"
       ],
       "potential_keys": [
-        "Poster_Link",
-        "Series_Title",
-        "Runtime",
-        "Overview",
-        "Director",
-        "Star2",
-        "Star3",
-        "Star4",
-        "No_of_Votes",
-        "Gross"
+        "IDCliente",
+        "MesesComoCliente",
+        "ProtecaoEquipamento",
+        "TipoContrato",
+        "FormaPagamento",
+        "TotalGasto"
       ],
       "strictly_unique_primary_keys": [
-        "Poster_Link",
-        "Overview"
+        "IDCliente"
       ],
-      "recommended_primary_key": "Poster_Link",
+      "recommended_primary_key": "IDCliente",
       "sample_columns": [
         {
-          "name": "Poster_Link",
+          "name": "Unnamed: 0",
+          "dtype": "int64",
+          "sample_values": [
+            "[MASKED_UNNAMED: 0]",
+            "[MASKED_UNNAMED: 0]",
+            "[MASKED_UNNAMED: 0]"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 1
+        },
+        {
+          "name": "IDCliente",
           "dtype": "object",
           "sample_values": [
-            "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_UX67_CR0,0,67,98_AL_.jpg",
-            "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UY98_CR1,0,67,98_AL_.jpg",
-            "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_UX67_CR0,0,67,98_AL_.jpg"
+            "7010-BRBUU",
+            "9688-YGXVR",
+            "9286-DOJGF"
           ],
-          "nunique_in_sample": 1000
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
         },
         {
-          "name": "Series_Title",
+          "name": "Genero",
           "dtype": "object",
           "sample_values": [
-            "The Shawshank Redemption",
-            "The Godfather",
-            "The Dark Knight"
+            "Masculino",
+            "Feminino"
           ],
-          "nunique_in_sample": 999
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
         },
         {
-          "name": "Released_Year",
+          "name": "Aposentado",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Casado",
           "dtype": "object",
           "sample_values": [
-            "1994",
-            "1972",
-            "2008"
+            "Sim",
+            "Nao"
           ],
-          "nunique_in_sample": 100
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
         },
         {
-          "name": "Certificate",
+          "name": "Dependentes",
           "dtype": "object",
           "sample_values": [
-            "A",
-            "UA",
-            "U"
+            "Sim",
+            "Nao"
           ],
-          "nunique_in_sample": 16
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
         },
         {
-          "name": "Runtime",
+          "name": "MesesComoCliente",
+          "dtype": "int64",
+          "sample_values": [
+            "72",
+            "44",
+            "38"
+          ],
+          "nunique_in_sample": 73,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "ServicoTelefone",
           "dtype": "object",
           "sample_values": [
-            "142 min",
-            "175 min",
-            "152 min"
+            "Sim",
+            "Nao"
           ],
-          "nunique_in_sample": 140
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
         },
         {
-          "name": "Genre",
+          "name": "MultiplasLinhas",
           "dtype": "object",
           "sample_values": [
-            "Drama",
-            "Crime, Drama",
-            "Action, Crime, Drama"
+            "Sim",
+            "Nao",
+            "SemTelefone"
           ],
-          "nunique_in_sample": 202
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
         },
         {
-          "name": "IMDB_Rating",
-          "dtype": "float64",
-          "sample_values": [
-            "9.3",
-            "9.2",
-            "9.0"
-          ],
-          "nunique_in_sample": 17
-        },
-        {
-          "name": "Overview",
+          "name": "ServicoInternet",
           "dtype": "object",
           "sample_values": [
-            "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-            "An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.",
-            "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."
+            "Nao",
+            "Fibra",
+            "DSL"
           ],
-          "nunique_in_sample": 1000
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
         },
         {
-          "name": "Meta_score",
-          "dtype": "float64",
-          "sample_values": [
-            "80.0",
-            "100.0",
-            "84.0"
-          ],
-          "nunique_in_sample": 63
-        },
-        {
-          "name": "Director",
+          "name": "ServicoSegurancaOnline",
           "dtype": "object",
           "sample_values": [
-            "Frank Darabont",
-            "Francis Ford Coppola",
-            "Christopher Nolan"
+            "SemInternet",
+            "Nao",
+            "Sim"
           ],
-          "nunique_in_sample": 548
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
         },
         {
-          "name": "Star1",
+          "name": "ServicoBackupOnline",
           "dtype": "object",
           "sample_values": [
-            "Tim Robbins",
-            "Marlon Brando",
-            "Christian Bale"
+            "SemInternet",
+            "Sim",
+            "Nao"
           ],
-          "nunique_in_sample": 660
-        },
-        {
-          "name": "Star2",
-          "dtype": "object",
-          "sample_values": [
-            "Morgan Freeman",
-            "Al Pacino",
-            "Heath Ledger"
-          ],
-          "nunique_in_sample": 841
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
         }
       ]
     }

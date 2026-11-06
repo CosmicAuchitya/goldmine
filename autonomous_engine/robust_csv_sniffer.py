@@ -96,7 +96,7 @@ def smart_read_csv(file_path: Path, **kwargs) -> pd.DataFrame:
 
 if __name__ == "__main__":
     # Test with synthetic semicolon-separated and pipe-separated files
-    test_dir = Path("error/test_data")
+    test_dir = Path("cache/test_data")
     test_dir.mkdir(parents=True, exist_ok=True)
     
     # Semicolon test file (German/European format)

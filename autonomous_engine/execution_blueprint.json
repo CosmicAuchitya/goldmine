@@ -1,31 +1,37 @@
 {
-  "project_title": "Enterprise Analytics & Dimensional Architecture for raw_data",
-  "fact_table": "imdb_top_1000",
-  "target_metric": "Poster_Link",
-  "primary_id_column": "id",
+  "project_title": "Enterprise Telecom Customer Churn & Financial Friction Analytics",
+  "fact_table": "telecom_users",
+  "target_metric": "Churn",
+  "primary_id_column": "IDCliente",
   "cardinality_defense_plan": {
-    "dimension_aggregation_strategies": "Pre-aggregate any 1:N dimensions before merge to preserve 1:1 fact integrity",
-    "entity_resolution_and_key_cleaning": "Sanitize and harmonize join keys with whitespace stripping and case folding",
-    "relational_join_sequence": "Left join 0 dimension tables () onto imdb_top_1000"
+    "dimension_aggregation_strategies": "The telecom_users dataset is structured as a 1:1 user profile table. Any future auxiliary service usage or transaction logging tables joined to this entity must be pre-aggregated to distinct IDCliente grain using MAX/SUM operations prior to Star Schema integration to prevent 1-to-Many Cartesian row explosion.",
+    "entity_resolution_and_key_cleaning": "Strip whitespace and enforce uppercase string normalization on IDCliente. Drop index artifacts such as 'Unnamed: 0'. Coerce string-encoded binary variables ('Sim'/'Nao') and categorical service fields into standardized boolean or integer flag formats for high-performance BI analysis.",
+    "relational_join_sequence": "Start with cleansed fact table 'telecom_users' as the central node. Sequentially left-join pre-aggregated demographic, service subscription, and financial billing dimensions on primary key 'IDCliente' to preserve exact row counts."
   },
   "forensic_enrichment_columns": [
-    "Fulfillment & SLA duration variance",
-    "Financial and operational friction ratio"
+    "Average Monthly Spend Velocity: ValorMensal / NULLIF(MesesComoCliente, 0)",
+    "Lifetime Financial Commitment Discrepancy: TotalGasto - (ValorMensal * MesesComoCliente)",
+    "Service Friction Penalty Index: (CASE WHEN ServicoSuporteTecnico = 'Nao' THEN 1 ELSE 0 END + CASE WHEN ServicoSegurancaOnline = 'Nao' THEN 1 ELSE 0 END + CASE WHEN ProtecaoEquipamento = 'Nao' THEN 1 ELSE 0 END)"
   ],
   "assertion_gates": [
-    "assert len(final_fact) == len(initial_fact), 'Zero drift violation: Cartesian explosion detected!'",
-    "assert final_fact.duplicated(subset=['id']).sum() == 0, 'Duplicate primary keys detected in id!'"
+    "assert len(final_fact) == len(initial_fact), 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'",
+    "assert final_fact.duplicated(subset=['IDCliente']).sum() == 0, 'Duplicate primary IDs detected!'",
+    "assert 'Churn' in final_fact.columns, 'Missing expected dimension features!'"
   ],
   "bi_deliverables": {
     "fact_table": "bi_ready_fact.parquet",
-    "dimension_tables": [],
+    "dimension_tables": [
+      "bi_dim_customer_demographics.csv",
+      "bi_dim_service_subscriptions.csv",
+      "bi_dim_billing_contract.csv"
+    ],
     "dax_measures": [
-      "Total Volume",
-      "Target Events Count",
-      "Target Event Rate %",
-      "Total Operational Loss ($)",
-      "Dimensional Risk Index"
+      "Total Volume / Records = COUNTROWS(bi_ready_fact)",
+      "Target Events Count = CALCULATE(COUNTROWS(bi_ready_fact), bi_ready_fact[Churn] = 'Sim' || bi_ready_fact[Churn] = 1)",
+      "Rate / Percentage % = DIVIDE([Target Events Count], [Total Volume / Records], 0)",
+      "Total Financial / Operational Friction Loss ($) = CALCULATE(SUM(bi_ready_fact[TotalGasto]), bi_ready_fact[Churn] = 'Sim' || bi_ready_fact[Churn] = 1)",
+      "Segment Performance / Congestion Index = AVERAGE(bi_ready_fact[ValorMensal])"
     ]
   },
-  "dataset_fingerprint": "fcee9946e79ed6f7"
+  "dataset_fingerprint": "a59bd266719c94b5"
 }

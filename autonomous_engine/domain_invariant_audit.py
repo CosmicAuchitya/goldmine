@@ -89,8 +89,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         fact_parquet = sys.argv[1]
     else:
-        candidates = list(Path("error/output").glob("*.parquet"))
-        fact_parquet = str(candidates[0]) if candidates else "error/output/bi_ready_aviation_fact.parquet"
+        candidates = list(Path("output").glob("*.parquet"))
+        fact_parquet = str(candidates[0]) if candidates else "output/bi_ready_fact.parquet"
     print(f"[*] Running Domain Invariant Audit on: {fact_parquet}...")
     df_test = pd.read_parquet(fact_parquet)
     audit = audit_dataset_invariants(df_test, initial_count=518556, id_col="id")

@@ -1,99 +1,95 @@
 import pandas as pd
 import numpy as np
 import sys
-import os
+import hashlib
 from pathlib import Path
 import json
 
-# Enforce encoding
-if sys.platform == 'win32':
+# Ensure encoding for Windows stdout
+if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
 
 # 1. Operational Directories
-BASE_PATH = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/car_features_msrp')
-RAW_DIR = BASE_PATH / 'raw_data'
-CACHE_DIR = BASE_PATH / 'cache'
-OUTPUT_DIR = BASE_PATH / 'output'
+BASE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/spotify_2023')
+RAW_DIR = BASE_DIR / 'raw_data'
+CACHE_DIR = BASE_DIR / 'cache'
+OUTPUT_DIR = BASE_DIR / 'output'
 
-for p in [CACHE_DIR, OUTPUT_DIR]:
-    p.mkdir(parents=True, exist_ok=True)
+for folder in [CACHE_DIR, OUTPUT_DIR]:
+    folder.mkdir(parents=True, exist_ok=True)
 
-def run_etl():
-    # 2. Data Ingestion
-    raw_file = RAW_DIR / 'data.csv'
-    df = pd.read_csv(raw_file, sep=',', encoding='utf-8', na_values=['?'], low_memory=False)
-    df.columns = df.columns.str.strip()
-    initial_fact_count = len(df)
-    
-    # 4. Entity Resolution & Key Cleaning
-    df['fact_surrogate_id'] = (df.index + 1).astype(str)
-    
-    # Normalizing keys
-    for col in ['Make', 'Model']:
-        df[col] = df[col].astype(str).str.strip().str.upper()
-    
-    # Coalescing missing & Ensuring data type compatibility for Parquet/PyArrow
-    # Fix: Ensure Engine Cylinders is numeric for calculation, mapping 'UNKNOWN' to NaN or 0
-    df['Engine Cylinders'] = pd.to_numeric(df['Engine Cylinders'], errors='coerce').fillna(0)
-    df['Number of Doors'] = df['Number of Doors'].fillna('UNKNOWN')
-    
-    # Fill numeric gaps to preserve row count (Requirement #3)
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
-    df[numeric_cols] = df[numeric_cols].fillna(0)
-    
-    # 3. Cardinality Defense: Market Category Flattening
-    df['Market Category'] = df['Market Category'].fillna('N/A').astype(str)
-    
-    # 5. Relational Merges
-    # Create dimension tables
-    dim_tech = df[['fact_surrogate_id', 'Make', 'Model', 'Year', 'Engine HP', 'Engine Cylinders']].copy()
-    dim_engine = df[['fact_surrogate_id', 'Engine Fuel Type']].copy()
-    dim_market = df[['fact_surrogate_id', 'Market Category']].copy()
-    
-    final_fact = df.merge(dim_tech, on='fact_surrogate_id', suffixes=('', '_drop'))
-    final_fact = final_fact.merge(dim_engine, on='fact_surrogate_id', suffixes=('', '_drop'))
-    final_fact = final_fact.merge(dim_market, on='fact_surrogate_id', suffixes=('', '_drop'))
-    
-    # Clean collisions
-    final_fact = final_fact.loc[:, ~final_fact.columns.str.endswith('_drop')]
-    final_fact = final_fact.loc[:, ~final_fact.columns.duplicated()]
+def get_hash(val):
+    return hashlib.md5(str(val).encode('utf-8')).hexdigest()
 
-    # 6. Vectorized Forensic Enrichments
-    final_fact['normalized_efficiency_ratio'] = ((final_fact['highway MPG'] + final_fact['city mpg']) / 2) / (final_fact['Engine HP'].replace(0, 1))
-    
-    # Market Premium Index
-    group_avg = final_fact.groupby(['Make', 'Vehicle Style'])['MSRP'].transform('mean')
-    final_fact['market_premium_index'] = final_fact['MSRP'] / group_avg.replace(0, 1)
-    
-    # Operational Friction
-    final_fact['operational_friction_liability'] = np.where(final_fact['Engine HP'] > 400, final_fact['MSRP'] * 0.05, 0)
+# 2. Data Ingestion
+raw_df = pd.read_csv(
+    RAW_DIR / 'spotify-2023.csv',
+    sep=',',
+    encoding='latin1',
+    low_memory=False
+)
+initial_fact_count = len(raw_df)
 
-    # 7. Assertion Gates
-    assert len(final_fact) == initial_fact_count, 'Row count mismatch: Cartesian duplicate explosion or row loss occurred!'
-    assert final_fact.duplicated(subset=['fact_surrogate_id']).sum() == 0, 'Duplicate primary IDs detected!'
-    assert 'MSRP' in final_fact.columns, 'Missing expected dimension features!'
+# Entity Resolution & Key Cleaning
+raw_df.columns = raw_df.columns.str.strip()
+raw_df['streams'] = pd.to_numeric(raw_df['streams'], errors='coerce').fillna(0).astype('int64')
+raw_df['in_deezer_playlists'] = pd.to_numeric(raw_df['in_deezer_playlists'].replace(r'[^\d]', '', regex=True), errors='coerce').fillna(0).astype(int)
+raw_df['in_spotify_playlists'] = pd.to_numeric(raw_df['in_spotify_playlists'], errors='coerce').fillna(0).astype(int)
+raw_df['in_apple_playlists'] = pd.to_numeric(raw_df['in_apple_playlists'], errors='coerce').fillna(0).astype(int)
 
-    # 8. Deliverables Export
-    final_fact['fact_surrogate_id'] = final_fact['fact_surrogate_id'].astype(str)
-    
-    final_fact.to_parquet(OUTPUT_DIR / 'bi_ready_fact.parquet', index=False, engine='pyarrow')
-    dim_tech.to_csv(OUTPUT_DIR / 'bi_dim_vehicle_tech.csv', index=False)
-    dim_market.to_csv(OUTPUT_DIR / 'bi_dim_market_segments.csv', index=False)
-    
-    dossier = {
-        "summary": {"rows": len(final_fact), "cols": len(final_fact.columns)},
-        "dax_measures": [
-            "Total_Vehicle_Volume := COUNT(fact_vehicle_inventory[fact_surrogate_id])",
-            "Target_Events_Count := COUNTROWS(fact_vehicle_inventory)",
-            "Price_Efficiency_Rate := DIVIDE(SUM(fact_vehicle_inventory[MSRP]), [Total_Vehicle_Volume])",
-            "Total_Operational_Friction_Loss := SUM(fact_vehicle_inventory[operational_friction_liability])",
-            "Congestion_Index := DIVIDE(AVERAGE(fact_vehicle_inventory[Engine HP]), AVERAGE(fact_vehicle_inventory[city mpg]))"
-        ]
-    }
-    with open(OUTPUT_DIR / 'forensic_diagnostic_dossier.json', 'w') as f:
-        json.dump(dossier, f, indent=4)
+# 3. Cardinality Defense: Create Dimensions
+# Dimension: Artist
+raw_df['artist_surrogate_key'] = raw_df['artist(s)_name'].apply(get_hash)
+dim_artist = raw_df[['artist_surrogate_key', 'artist(s)_name', 'artist_count']].drop_duplicates(subset=['artist_surrogate_key'])
 
-    print(f"ETL Execution Successful. Processed {len(final_fact)} records.")
+# Dimension: Release Date
+raw_df['date_key'] = (raw_df['released_year'].astype(str) + '-' + 
+                      raw_df['released_month'].astype(str) + '-' + 
+                      raw_df['released_day'].astype(str)).fillna('UNKNOWN')
+dim_date = raw_df[['date_key', 'released_year', 'released_month', 'released_day']].drop_duplicates(subset=['date_key'])
 
-if __name__ == "__main__":
-    run_etl()
+# 4. Generate Fact Surrogate ID
+# Using index-based unique IDs to prevent collisions in the fact table per the developer requirements
+raw_df['fact_surrogate_id'] = (raw_df.index + 1).astype(str)
+
+# 5. Vectorized Forensic Enrichments
+raw_df['platform_penetration_ratio'] = (raw_df['in_spotify_playlists'] + raw_df['in_apple_playlists'] + raw_df['in_deezer_playlists']) / raw_df['artist_count'].replace(0, 1)
+raw_df['engagement_velocity'] = raw_df['streams'] / (raw_df['in_spotify_charts'] + raw_df['in_apple_charts'] + raw_df['in_deezer_charts'] + 1)
+# Normalize metrics to 0-1 range for index calc
+raw_df['operational_friction_index'] = (1 - (raw_df['danceability_%'] + raw_df['energy_%'] + raw_df['valence_%']) / 300) * (1 / (raw_df['in_spotify_playlists'] + 1))
+
+# Relational Join Sequence
+final_fact = raw_df.merge(dim_artist, on='artist_surrogate_key', how='left', suffixes=('', '_drop'))
+final_fact = final_fact.merge(dim_date, on='date_key', how='left', suffixes=('', '_drop'))
+final_fact = final_fact.loc[:, ~final_fact.columns.str.endswith('_drop')]
+
+# 6. Assertion Gates
+assert len(final_fact) == initial_fact_count, 'Row count mismatch!'
+assert final_fact['fact_surrogate_id'].duplicated().sum() == 0, 'Duplicate primary IDs detected!'
+assert 'streams' in final_fact.columns, 'Missing expected dimension features!'
+
+# 7. Deliverables Export
+# Cast string keys for Parquet safety
+for col in final_fact.select_dtypes(include=['object']).columns:
+    final_fact[col] = final_fact[col].astype(str)
+
+final_fact.to_parquet(OUTPUT_DIR / 'bi_ready_fact.parquet', index=False, engine='pyarrow')
+dim_artist.to_csv(OUTPUT_DIR / 'bi_dim_artist.csv', index=False)
+dim_date.to_csv(OUTPUT_DIR / 'bi_dim_release_date.csv', index=False)
+
+# Diagnostic Dossier
+dossier = {
+    "total_records": len(final_fact),
+    "dax_measures": [
+        "Total Volume / Records = COUNTROWS(fact_spotify)",
+        "Target Events Count = SUM(fact_spotify[streams])",
+        "Rate / Percentage % = DIVIDE(SUM(fact_spotify[in_spotify_charts]), COUNTROWS(fact_spotify))",
+        "Total Financial / Operational Friction Loss ($) = SUMX(fact_spotify, [operational_friction_index])",
+        "Segment Performance / Congestion Index = AVERAGE(fact_spotify[engagement_velocity])"
+    ]
+}
+with open(OUTPUT_DIR / 'diagnostic_dossier.json', 'w') as f:
+    json.dump(dossier, f, indent=4)
+
+print(f"ETL Execution Complete. {len(final_fact)} rows processed.")
+print(f"Assets exported to: {OUTPUT_DIR}")

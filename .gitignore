@@ -1,0 +1,15 @@
+.env
+.env.*
+venv/
+__pycache__/
+*.pyc
+*.bak
+runs/
+scratch/
+.pytest_cache/
+*.duckdb
+cricket_intelligence_platform/data/
+kaggle_benchmarks/*/raw_data/*.csv
+kaggle_benchmarks/*/raw_data/*.txt
+kaggle_benchmarks/*/raw_data/*.zip
+error/

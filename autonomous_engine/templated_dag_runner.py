@@ -29,8 +29,17 @@ if sys.platform == "win32":
 
 try:
     from .duckdb_engine import DuckDBRelationalEngine
-except ImportError:
-    from duckdb_engine import DuckDBRelationalEngine
+except (ImportError, ModuleNotFoundError):
+    try:
+        from duckdb_engine import DuckDBRelationalEngine
+    except (ImportError, ModuleNotFoundError):
+        try:
+            from autonomous_engine.duckdb_engine import DuckDBRelationalEngine
+        except (ImportError, ModuleNotFoundError):
+            try:
+                DuckDBRelationalEngine = globals().get('DuckDBRelationalEngine', None)
+            except Exception:
+                DuckDBRelationalEngine = None
 
 def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFrame:
     """
@@ -83,13 +92,27 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
                 pass
     else:
         try:
-            df = pd.read_csv(file_path, low_memory=False)
-        except UnicodeDecodeError:
-            df = pd.read_csv(file_path, low_memory=False, encoding='latin-1')
+            try:
+                from .robust_csv_sniffer import smart_read_csv
+            except ImportError:
+                from robust_csv_sniffer import smart_read_csv
+            df = smart_read_csv(file_path)
+        except Exception:
+            try:
+                df = pd.read_csv(file_path, low_memory=False)
+            except UnicodeDecodeError:
+                df = pd.read_csv(file_path, low_memory=False, encoding='latin-1')
 
     df.columns = [str(c).strip() for c in df.columns]
+    try:
+        from .robust_excel_scanner import strip_accounting_summary_rows, clean_accounting_series
+    except ImportError:
+        from robust_excel_scanner import strip_accounting_summary_rows, clean_accounting_series
+    df = strip_accounting_summary_rows(df)
+
     for col in df.columns:
         if df[col].dtype == 'object':
+            df[col] = clean_accounting_series(df[col])
             s_clean = df[col].astype(str).str.replace(',', '').str.strip()
             s_num = pd.to_numeric(s_clean, errors='coerce')
             if s_num.notna().mean() >= 0.85 and s_num.nunique() > 10:

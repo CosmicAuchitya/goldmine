@@ -1,0 +1,10 @@
+.env
+.env.*
+.git
+__pycache__
+.pytest_cache
+runs
+*.pyc
+venv
+.venv
+kaggle_benchmarks

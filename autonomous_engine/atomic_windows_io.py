@@ -87,7 +87,7 @@ def atomic_write_text(content: str, target_path: Path, encoding: str = 'utf-8') 
     atomic_file_operation(Path(target_path), _write)
 
 if __name__ == "__main__":
-    test_p = Path("error/test_data/atomic_test.parquet")
+    test_p = Path("cache/test_data/atomic_test.parquet")
     df_test = pd.DataFrame({"col_a": [1, 2, 3], "col_b": ["x", "y", "z"]})
     print(f"[*] Testing Atomic Windows I/O on: {test_p}...")
     atomic_to_parquet(df_test, test_p)

@@ -27,13 +27,19 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 
-if sys.platform == "win32":
+if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding='utf-8')
 
+_ENGINE_DIR = Path(__file__).resolve().parent
+_WORKSPACE_ROOT = _ENGINE_DIR.parent if _ENGINE_DIR.name == "autonomous_engine" else _ENGINE_DIR
+load_dotenv(_WORKSPACE_ROOT / ".env")
 load_dotenv()
 
+_LOGGED_POOL_BANNER = False
+
+
 class PacedGeminiClient:
-    def __init__(self, api_key: str = None, max_calls_per_minute: int = 14, model: str = "gemini-3.1-flash-lite"):
+    def __init__(self, api_key: str = None, max_calls_per_minute: int = 14, model: str = "gemini-3.5-flash-lite", quiet: bool = False):
         # 1. Discover all configured API keys
         keys = []
         if api_key:
@@ -71,18 +77,22 @@ class PacedGeminiClient:
         self.total_calls_made = 0
         self._lock = threading.Lock()
         
-        # Cross-process shared rate-limit ledger
-        self.db_dir = Path("runs").resolve()
+        # Cross-process shared rate-limit ledger (anchored to workspace root)
+        self.db_dir = (_WORKSPACE_ROOT / "runs").resolve()
         self.db_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = self.db_dir / "api_rate_limit.db"
         self._init_shared_db()
         
-        print(f"[*] [Rate Limiter] Initialized Multi-Key Pool with {self.num_keys} Key(s) (Total Capacity: {self.total_max_calls} RPM, Model: {self.model})")
+        global _LOGGED_POOL_BANNER
+        if not quiet and not _LOGGED_POOL_BANNER:
+            print(f"[*] [Rate Limiter] Initialized Multi-Key Pool with {self.num_keys} Key(s) (Total Capacity: {self.total_max_calls} RPM, Model: {self.model})")
+            _LOGGED_POOL_BANNER = True
 
     def _init_shared_db(self):
         try:
-            conn = sqlite3.connect(self.db_path, timeout=10.0)
+            conn = sqlite3.connect(self.db_path, timeout=15.0)
             cur = conn.cursor()
+            cur.execute("PRAGMA journal_mode=WAL;")
             # Ensure schema has key_id column
             cur.execute("CREATE TABLE IF NOT EXISTS api_calls (key_id TEXT, call_time REAL);")
             cur.execute("PRAGMA table_info(api_calls);")
@@ -138,9 +148,12 @@ class PacedGeminiClient:
                                     
                     conn.close()
                 except Exception:
-                    # In-memory single-key fallback if SQLite is locked
+                    # Enforce conservative pacing sleep if SQLite ledger is transiently locked
+                    fallback_sleep = max(self.window_seconds / max(self.total_max_calls, 1), 2.1)
+                    time.sleep(fallback_sleep)
+                    idx_fallback = self.total_calls_made % self.num_keys
                     self.total_calls_made += 1
-                    return 0
+                    return idx_fallback
 
             # If all keys in the pool are at capacity, sleep until the earliest key clears a slot
             if min_sleep_needed < float('inf') and min_sleep_needed > 0:
@@ -156,13 +169,22 @@ class PacedGeminiClient:
         """
         last_error = None
         preferred_idx = self.total_calls_made % self.num_keys
+        candidate_models = list(dict.fromkeys([
+            self.model,
+            "gemini-2.5-flash-lite",
+            "gemini-2.5-flash",
+            "gemini-3.5-flash-lite",
+            "gemini-3.8-flash",
+            "gemini-3.5-flash",
+        ]))
         
         for attempt in range(1, max_retries + 1):
             client_idx = self._wait_for_slot(preferred_key_idx=preferred_idx)
             active_client = self.clients[client_idx]
+            current_model = candidate_models[(attempt - 1) % len(candidate_models)]
             
             try:
-                kwargs = {"model": self.model, "contents": contents}
+                kwargs = {"model": current_model, "contents": contents}
                 if system_instruction:
                     kwargs["config"] = {"system_instruction": system_instruction}
                 
@@ -173,12 +195,13 @@ class PacedGeminiClient:
                 last_error = e
                 err_str = str(e)
                 is_rate_limit = any(k in err_str.lower() for k in ["429", "quota", "resource_exhausted", "rate_limit"])
-                is_server_error = any(k in err_str.lower() for k in ["503", "unavailable", "deadline", "504"])
+                is_server_error = any(k in err_str.lower() for k in ["503", "unavailable", "deadline", "504", "404"])
                 if is_server_error:
-                    # Transient server blip (503/504): switch key and pause briefly
+                    # Transient server blip (503/504) or model issue: switch key, cycle model, and pause briefly
                     wait_time = 1.5 * attempt
                     next_idx = (client_idx + 1) % self.num_keys
-                    print(f"\n[!] Server {err_str[:40]}... (Attempt {attempt}/{max_retries}). Switching to Key #{next_idx + 1} and pausing {wait_time:.1f}s...", flush=True)
+                    next_model = candidate_models[attempt % len(candidate_models)]
+                    print(f"\n[!] Server/Endpoint notice: {err_str[:60]}... (Attempt {attempt}/{max_retries}). Switching to Key #{next_idx + 1}, Model '{next_model}' and pausing {wait_time:.1f}s...", flush=True)
                     preferred_idx = next_idx
                     time.sleep(wait_time)
                     continue
@@ -197,15 +220,43 @@ class PacedGeminiClient:
                     print(f"\n[!] Transient API notice: {e}. Retrying in {wait_time:.1f}s (Attempt {attempt}/{max_retries})...", flush=True)
                     time.sleep(wait_time)
                     
-        # Multi-Provider Failover: If Gemini pool exhausted, route to OpenRouter
-        if os.getenv("OPENROUTER_API_KEY"):
-            print("\n[!] Gemini Pool Exhausted! Instant Autonomous Failover to OpenRouter Models...", flush=True)
+        # Multi-Provider Failover: Only route to free OpenRouter endpoints if explicitly permitted by privacy config
+        allow_free_failover = (
+            os.getenv("ALLOW_FREE_OPENROUTER_FAILOVER", "false").strip().lower() in ("1", "true", "yes")
+            or os.getenv("LLM_PROVIDER", "gemini").strip().lower() in ("nemotron", "openrouter")
+        )
+        if allow_free_failover and os.getenv("OPENROUTER_API_KEY"):
+            print("\n[!] Gemini Pool Exhausted! Explicit OpenRouter Failover Permitted — Routing...", flush=True)
             try:
-                return call_openrouter_model(contents, system_instruction=system_instruction)
+                try:
+                    from .pii_scrubber import scrub_text
+                except ImportError:
+                    try:
+                        from pii_scrubber import scrub_text
+                    except ImportError:
+                        scrub_text = lambda s: s
+                safe_contents = scrub_text(contents) if isinstance(contents, str) else contents
+                return call_openrouter_model(safe_contents, system_instruction=system_instruction)
             except Exception as ore:
                 print(f"[X] OpenRouter failover notice: {ore}", flush=True)
 
         raise RuntimeError(f"Failed to complete Gemini API call after {max_retries} attempts. Last error: {last_error}")
+
+    def generate_text(self, prompt: str = "", system_instruction: str = None, max_retries: int = 3, **kwargs) -> str:
+        """Convenience alias used by Q&A and Bespoke Dashboard engines."""
+        contents = prompt if prompt else kwargs.get("contents", "")
+        return self.generate_content(contents=contents, system_instruction=system_instruction, max_retries=max_retries)
+
+    def get_pool_status(self) -> dict:
+        """Returns live health and capacity telemetry for the multi-key pool."""
+        return {
+            "num_keys": self.num_keys,
+            "max_calls_per_key": self.max_calls_per_key,
+            "total_max_calls_rpm": self.total_max_calls,
+            "model": self.model,
+            "total_calls_made": self.total_calls_made,
+            "db_path": str(self.db_path),
+        }
 
 def call_openrouter_model(
     prompt: str,
