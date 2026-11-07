@@ -1,0 +1,103 @@
+{
+  "manifest_version": "1.0.0",
+  "engine": "DataX-Ray Enterprise Autonomous Engine V4.5",
+  "semantic_model_name": "bi_ready_fact",
+  "physical_source": "bi_ready_fact.parquet",
+  "governance": {
+    "certification_status": "Pending Human Sign-off",
+    "sha256_invariant_hash": "937460e1f4390811942ed3e71bfd704411ffcb9c35d4abf2ee47d4848b28a56c",
+    "audited_fact_records": 53940,
+    "cartesian_multiplicity_drift": 0,
+    "duplicate_primary_keys": 0,
+    "anti_hallucination_gate": "PASSED (100.0% Truth Grounded)"
+  },
+  "target_outcome": {
+    "column_name": "cut",
+    "target_description": "cut in ['Fair', 'Good'] (Substandard Cut)",
+    "adverse_condition_dax": "'bi_ready_fact'[cut] IN {\"Good\", \"Fair\"}",
+    "adverse_condition_sql": "CAST(\"cut\" AS VARCHAR) IN ('Good', 'Fair')",
+    "total_adverse_events": 6516,
+    "adverse_event_rate_pct": 12.08
+  },
+  "financial_exposure": {
+    "monetary_column": "price",
+    "has_monetary_ledger": true,
+    "total_adverse_capital_drag": 26292609.0,
+    "total_portfolio_volume": 212135217.0,
+    "currency_unit": "$"
+  },
+  "certified_metrics": [
+    {
+      "id": "m_total_volume",
+      "name": "Total Volume",
+      "dax_formula": "COUNTROWS('bi_ready_fact')",
+      "sql_formula": "COUNT(*)",
+      "metric_type": "simple_count",
+      "format": "#,0",
+      "direction": "context",
+      "audited_value": 53940
+    },
+    {
+      "id": "m_target_events",
+      "name": "Target Events",
+      "dax_formula": "CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[cut] IN {\"Good\", \"Fair\"})",
+      "sql_formula": "COALESCE(SUM(CASE WHEN CAST(\"cut\" AS VARCHAR) IN ('Good', 'Fair') THEN 1 ELSE 0 END), 0)",
+      "metric_type": "filtered_count",
+      "format": "#,0",
+      "direction": "minimize",
+      "audited_value": 6516
+    },
+    {
+      "id": "m_adverse_rate",
+      "name": "Adverse Event Rate %",
+      "dax_formula": "DIVIDE([Target Events], [Total Volume], 0)",
+      "sql_formula": "ROUND(100.0 * COALESCE(SUM(CASE WHEN CAST(\"cut\" AS VARCHAR) IN ('Good', 'Fair') THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0), 2)",
+      "metric_type": "ratio",
+      "format": "0.00%",
+      "direction": "minimize",
+      "audited_value": 12.08
+    },
+    {
+      "id": "m_system_reliability",
+      "name": "System Reliability %",
+      "dax_formula": "1 - [Adverse Event Rate %]",
+      "sql_formula": "ROUND(100.0 - (100.0 * COALESCE(SUM(CASE WHEN CAST(\"cut\" AS VARCHAR) IN ('Good', 'Fair') THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0)), 2)",
+      "metric_type": "derived_ratio",
+      "format": "0.00%",
+      "direction": "maximize",
+      "audited_value": 87.92
+    },
+    {
+      "id": "m_adverse_capital_drag",
+      "name": "Total Adverse Capital Drag ($)",
+      "dax_formula": "CALCULATE(SUM('bi_ready_fact'[price]), 'bi_ready_fact'[cut] IN {\"Good\", \"Fair\"})",
+      "sql_formula": "COALESCE(SUM(CASE WHEN CAST(\"cut\" AS VARCHAR) IN ('Good', 'Fair') THEN COALESCE(TRY_CAST(\"price\" AS DOUBLE), 0.0) ELSE 0.0 END), 0.0)",
+      "metric_type": "financial_sum",
+      "format": "$#,0.00",
+      "direction": "minimize",
+      "audited_value": 26292609.0
+    },
+    {
+      "id": "m_portfolio_volume",
+      "name": "Total Portfolio Volume ($)",
+      "dax_formula": "SUM('bi_ready_fact'[price])",
+      "sql_formula": "COALESCE(SUM(COALESCE(TRY_CAST(\"price\" AS DOUBLE), 0.0)), 0.0)",
+      "metric_type": "financial_baseline",
+      "format": "$#,0.00",
+      "direction": "context",
+      "audited_value": 212135217.0
+    }
+  ],
+  "dimensions": {
+    "primary_dimension": {
+      "name": "clarity",
+      "cardinality": 8,
+      "type": "categorical_segment"
+    },
+    "secondary_dimension": {
+      "name": "color",
+      "cardinality": 7,
+      "type": "categorical_subsegment"
+    }
+  }
+}

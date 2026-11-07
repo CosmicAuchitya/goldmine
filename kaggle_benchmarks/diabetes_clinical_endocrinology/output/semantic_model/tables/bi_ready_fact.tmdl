@@ -1,0 +1,97 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 768"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Outcome] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 268"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column Pregnancies
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Pregnancies
+		lineageTag: col-fact-Pregnancies
+		formatString: #,0
+
+	column Glucose
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Glucose
+		lineageTag: col-fact-Glucose
+		formatString: #,0
+
+	column BloodPressure
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: BloodPressure
+		lineageTag: col-fact-BloodPressure
+		formatString: #,0
+
+	column SkinThickness
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: SkinThickness
+		lineageTag: col-fact-SkinThickness
+		formatString: #,0
+
+	column Insulin
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Insulin
+		lineageTag: col-fact-Insulin
+		formatString: #,0
+
+	column BMI
+		dataType: double
+		summarizeBy: average
+		sourceColumn: BMI
+		lineageTag: col-fact-BMI
+		formatString: 0.00
+
+	column DiabetesPedigreeFunction
+		dataType: double
+		summarizeBy: average
+		sourceColumn: DiabetesPedigreeFunction
+		lineageTag: col-fact-DiabetesPedigreeFunction
+		formatString: 0.00
+
+	column Age
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Age
+		lineageTag: col-fact-Age
+		formatString: #,0
+
+	column Outcome
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Outcome
+		lineageTag: col-fact-Outcome
+		formatString: #,0
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

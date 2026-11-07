@@ -382,6 +382,10 @@ def execute_templated_pipeline(
         if col.endswith('_id') or 'key' in col.lower() or col == primary_id_col:
             df_fact[col] = df_fact[col].astype(str)
 
+    # Sanitize all object-dtype columns to prevent PyArrow mixed-type conversion crashes
+    for col in df_fact.select_dtypes(include=['object']).columns:
+        df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
+
     # Export Fact Parquet
     fact_parquet_path = out_path / "bi_ready_fact.parquet"
     df_fact.to_parquet(fact_parquet_path, engine="pyarrow", index=False)

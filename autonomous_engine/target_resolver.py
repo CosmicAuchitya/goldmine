@@ -309,7 +309,7 @@ def resolve_canonical_target_and_cost(
     target_keywords = [
         'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
         'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
-        'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker',
+        'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
         'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
         'grade', 'rating', 'score', 'test results', 'test_results', 'test result',
         'admission type', 'admission_type', 'diagnosis', 'abnormal', 'emergency'
@@ -321,16 +321,21 @@ def resolve_canonical_target_and_cost(
         c_low = bp_cand.lower()
         is_bad_bp = any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href', 'title'])
         is_artifact = is_index_artifact(bp_cand)
-        is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
+        is_spatial = c_low in ('x', 'y', 'z') and 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
+        is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income', 'fare']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
         is_demographic = is_demographic_attribute(bp_cand)
         has_discrete_targets = any(
             any(k in c.lower() for k in target_keywords) and (df[c].nunique() <= 10) and not c.lower().endswith(('_id', '_key', '_code', '_num')) and not is_index_artifact(c)
             for c in cols
         )
-        if not is_bad_bp and not is_artifact and not (is_monetary and has_discrete_targets) and not (is_demographic and has_discrete_targets):
+        if not is_bad_bp and not is_artifact and not is_spatial and not (is_monetary and has_discrete_targets) and not (is_demographic and has_discrete_targets):
             target_col = bp_cand
     if not target_col:
-        canonical_targets = ['y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn', 'death_event', 'smoker']
+        has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
+        if has_spatial:
+            canonical_targets = ['is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome', 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'target', 'response', 'label']
+        else:
+            canonical_targets = ['y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn', 'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud']
         for cand_name in canonical_targets:
             for c in cols:
                 if c.lower() == cand_name and not is_index_artifact(c):
@@ -340,7 +345,7 @@ def resolve_canonical_target_and_cost(
                         if n_pos >= 10:
                             target_col = c
                             break
-                    elif df[c].nunique() == 2:
+                    elif df[c].nunique() == 2 or (c.lower() == 'cut' and df[c].nunique() <= 10):
                         target_col = c
                         break
             if target_col:
@@ -360,7 +365,7 @@ def resolve_canonical_target_and_cost(
         
         priority_targets = [
             'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
-            'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'fail', 'delay',
+            'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
         target_candidates.sort(key=lambda col: next((i for i, pt in enumerate(priority_targets) if pt in col.lower()), 999))
@@ -424,7 +429,11 @@ def resolve_canonical_target_and_cost(
         clean_mask = ~s_str.isin(known_missing)
         clean_unique = [v for v in s_str.unique() if v not in known_missing]
 
-        if is_adv.sum() > 0:
+        if target_col.lower() == 'cut' and any(k in s_str.unique() for k in ['ideal', 'premium', 'fair']):
+            is_cut_sub = s_str.isin(['fair', 'good'])
+            binary_target = is_cut_sub.astype(int)
+            target_desc = f"{target_col} in ['Fair', 'Good'] (Substandard Cut)"
+        elif is_adv.sum() > 0:
             binary_target = is_adv.astype(int)
             target_desc = f"{target_col} Adverse State"
         elif col_denotes_adverse:
@@ -455,8 +464,12 @@ def resolve_canonical_target_and_cost(
     else:
         s_clean = pd.to_numeric(s_raw, errors='coerce').fillna(0)
         if s_raw.nunique() <= 2 and set(s_clean.unique()).issubset({0, 1, 0.0, 1.0}):
-            binary_target = s_clean.astype(int)
-            target_desc = f"{target_col} == 1"
+            if any(k in target_col.lower() for k in ['survive', 'survival', 'pass', 'retention']):
+                binary_target = (s_clean == 0).astype(int)
+                target_desc = f"{target_col} == 0 (Casualty / Mortality)" if any(k in target_col.lower() for k in ['survive', 'survival']) else f"{target_col} == 0"
+            else:
+                binary_target = s_clean.astype(int)
+                target_desc = f"{target_col} == 1"
         elif any(k in target_col.lower() for k in ['quality', 'score', 'rating', 'grade']):
             # For quality ratings (e.g. 1 to 5, or 1 to 10): lower ratings are adverse
             if s_clean.max() <= 5.5:
@@ -510,7 +523,7 @@ def resolve_canonical_target_and_cost(
     cost_keywords = [
         'loan_amount', 'loanamount', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
-        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate'
+        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare'
     ]
     # Synthetic / non-financial terms to explicitly exclude
     excluded_cost_terms = [
@@ -525,14 +538,14 @@ def resolve_canonical_target_and_cost(
         if c == target_col or is_index_artifact(c) or is_synthetic_column(c, blueprint):
             continue
         c_low = c.lower()
-        if any(x in c_low for x in excluded_cost_terms) and c_low not in ['adr', 'daily_rate', 'hourly_rate']:
+        if any(x in c_low for x in excluded_cost_terms) and c_low not in ['adr', 'daily_rate', 'hourly_rate', 'fare']:
             continue
         # Exclude count metrics (preserving 'discount')
         if bool(re.search(r'(?<!dis)count', c_low)):
             continue
         has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$|_)', c_low))
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
-        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr']
+        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare']
         if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr):
             continue
         # Exclude pure date/time columns that end with time units unless they contain explicit money words
@@ -552,7 +565,7 @@ def resolve_canonical_target_and_cost(
     if candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'credit_amount', 'revenue', 'mrr', 'arr', 'sales', 'billing_amount', 'billing', 'valormensal', 'totalgasto', 'salary', 'income',
-            'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'
+            'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'
         ]
         candidate_cost_cols.sort(key=lambda col: next((i for i, pc in enumerate(priority_cost) if pc in col.lower()), 999))
         cost_col = candidate_cost_cols[0]

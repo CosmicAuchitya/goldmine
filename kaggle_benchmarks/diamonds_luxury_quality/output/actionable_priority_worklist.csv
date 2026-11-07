@@ -1,0 +1,501 @@
+fact_surrogate_id,priority_rank,action_queue,_is_target_event,empirical_cohort_risk_pct,monetary_exposure,exposure_column_source,primary_risk_reason,recommended_next_step,clarity,carat,depth
+26745,1,PREVENTIVE_RETENTION_WATCH,0,56.3,16538,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.01,65.4
+26445,2,PREVENTIVE_RETENTION_WATCH,0,56.3,15984,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,4.0,63.3
+26000,3,PREVENTIVE_RETENTION_WATCH,0,56.3,15223,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,4.01,62.5
+24329,4,PREVENTIVE_RETENTION_WATCH,0,56.3,12587,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.5,62.8
+24298,5,PREVENTIVE_RETENTION_WATCH,0,56.3,12545,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.22,62.6
+22400,6,PREVENTIVE_RETENTION_WATCH,0,56.3,10424,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.77,62.6
+21567,7,PREVENTIVE_RETENTION_WATCH,0,56.3,9665,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.68,63.5
+19340,8,PREVENTIVE_RETENTION_WATCH,0,56.3,8040,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.01,62.7
+19019,9,PREVENTIVE_RETENTION_WATCH,0,56.3,7834,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.11,63.2
+17860,10,PREVENTIVE_RETENTION_WATCH,0,56.3,7204,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.0,62.5
+17842,11,PREVENTIVE_RETENTION_WATCH,0,56.3,7197,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.7,62.6
+17558,12,PREVENTIVE_RETENTION_WATCH,0,56.3,7068,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.7,62.6
+17467,13,PREVENTIVE_RETENTION_WATCH,0,56.3,7006,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.23,63.5
+16284,14,PREVENTIVE_RETENTION_WATCH,0,56.3,6512,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.0,63.1
+15906,15,PREVENTIVE_RETENTION_WATCH,0,56.3,6357,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.15,62.9
+15446,16,PREVENTIVE_RETENTION_WATCH,0,56.3,6183,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.53,62.8
+15418,17,PREVENTIVE_RETENTION_WATCH,0,56.3,6175,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.49,62.6
+15167,18,PREVENTIVE_RETENTION_WATCH,0,56.3,6096,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.44,63.2
+15088,19,PREVENTIVE_RETENTION_WATCH,0,56.3,6064,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.49,62.6
+14969,20,PREVENTIVE_RETENTION_WATCH,0,56.3,6028,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,63.2
+14899,21,PREVENTIVE_RETENTION_WATCH,0,56.3,5998,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.7,63.1
+13971,22,PREVENTIVE_RETENTION_WATCH,0,56.3,5688,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.85,63.3
+12130,23,PREVENTIVE_RETENTION_WATCH,0,56.3,5170,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.57,62.8
+11975,24,PREVENTIVE_RETENTION_WATCH,0,56.3,5141,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,63.3
+9852,25,PREVENTIVE_RETENTION_WATCH,0,56.3,4677,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.74,63.2
+9667,26,PREVENTIVE_RETENTION_WATCH,0,56.3,4643,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.35,62.5
+9463,27,PREVENTIVE_RETENTION_WATCH,0,56.3,4600,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.51,63.3
+9249,28,PREVENTIVE_RETENTION_WATCH,0,56.3,4560,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.35,62.5
+8305,29,PREVENTIVE_RETENTION_WATCH,0,56.3,4387,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.44,62.7
+6669,30,PREVENTIVE_RETENTION_WATCH,0,56.3,4096,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,62.6
+6305,31,PREVENTIVE_RETENTION_WATCH,0,56.3,4022,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,62.9
+6133,32,PREVENTIVE_RETENTION_WATCH,0,56.3,3985,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.39,62.6
+6022,33,PREVENTIVE_RETENTION_WATCH,0,56.3,3965,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,63.3
+6023,34,PREVENTIVE_RETENTION_WATCH,0,56.3,3965,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,62.5
+5820,35,PREVENTIVE_RETENTION_WATCH,0,56.3,3914,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.39,62.6
+5746,36,PREVENTIVE_RETENTION_WATCH,0,56.3,3894,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,62.5
+5266,37,PREVENTIVE_RETENTION_WATCH,0,56.3,3795,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.21,63.3
+4660,38,PREVENTIVE_RETENTION_WATCH,0,56.3,3669,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.17,62.8
+4141,39,PREVENTIVE_RETENTION_WATCH,0,56.3,3544,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.7
+3870,40,PREVENTIVE_RETENTION_WATCH,0,56.3,3480,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.7
+3273,41,PREVENTIVE_RETENTION_WATCH,0,56.3,3360,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.0,63.0
+2983,42,PREVENTIVE_RETENTION_WATCH,0,56.3,3300,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.0,63.0
+2511,43,PREVENTIVE_RETENTION_WATCH,0,56.3,3199,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,62.5
+2324,44,PREVENTIVE_RETENTION_WATCH,0,56.3,3167,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.01,63.2
+2205,45,PREVENTIVE_RETENTION_WATCH,0,56.3,3141,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,62.5
+1597,46,PREVENTIVE_RETENTION_WATCH,0,56.3,3011,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.0,62.5
+1488,47,PREVENTIVE_RETENTION_WATCH,0,56.3,2988,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.03,63.2
+1476,48,PREVENTIVE_RETENTION_WATCH,0,56.3,2984,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.0,62.5
+992,49,PREVENTIVE_RETENTION_WATCH,0,56.3,2896,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.01,63.1
+683,50,PREVENTIVE_RETENTION_WATCH,0,56.3,2850,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.2,63.1
+53585,51,PREVENTIVE_RETENTION_WATCH,0,56.3,2698,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.92,63.0
+53443,52,PREVENTIVE_RETENTION_WATCH,0,56.3,2674,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.92,63.0
+53135,53,PREVENTIVE_RETENTION_WATCH,0,56.3,2618,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.93,63.4
+51581,54,PREVENTIVE_RETENTION_WATCH,0,56.3,2392,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.03,62.8
+51293,55,PREVENTIVE_RETENTION_WATCH,0,56.3,2360,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.2,62.9
+51103,56,PREVENTIVE_RETENTION_WATCH,0,56.3,2336,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.03,62.9
+50706,57,PREVENTIVE_RETENTION_WATCH,0,56.3,2291,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.01,63.4
+50411,58,PREVENTIVE_RETENTION_WATCH,0,56.3,2257,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.01,62.6
+49435,59,PREVENTIVE_RETENTION_WATCH,0,56.3,2108,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.01,63.1
+49110,60,PREVENTIVE_RETENTION_WATCH,0,56.3,2064,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.98,62.5
+49069,61,PREVENTIVE_RETENTION_WATCH,0,56.3,2058,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.0,62.7
+48996,62,PREVENTIVE_RETENTION_WATCH,0,56.3,2048,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.91,63.1
+48134,63,PREVENTIVE_RETENTION_WATCH,0,56.3,1939,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.9,62.8
+47124,64,PREVENTIVE_RETENTION_WATCH,0,56.3,1828,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.86,62.6
+46067,65,PREVENTIVE_RETENTION_WATCH,0,56.3,1736,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.7,63.2
+44902,66,PREVENTIVE_RETENTION_WATCH,0,56.3,1629,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.76,63.0
+43859,67,PREVENTIVE_RETENTION_WATCH,0,56.3,1448,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.71,63.2
+43210,68,PREVENTIVE_RETENTION_WATCH,0,56.3,1395,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.73,62.5
+42340,69,PREVENTIVE_RETENTION_WATCH,0,56.3,1298,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.73,62.5
+41855,70,PREVENTIVE_RETENTION_WATCH,0,56.3,1255,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.61,63.4
+41549,71,PREVENTIVE_RETENTION_WATCH,0,56.3,1235,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.7,63.2
+41052,72,PREVENTIVE_RETENTION_WATCH,0,56.3,1188,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.5,63.3
+40139,73,PREVENTIVE_RETENTION_WATCH,0,56.3,1115,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.7,63.1
+38670,74,PREVENTIVE_RETENTION_WATCH,0,56.3,1040,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.7,63.0
+36715,75,PREVENTIVE_RETENTION_WATCH,0,56.3,953,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.56,62.6
+36572,76,PREVENTIVE_RETENTION_WATCH,0,56.3,945,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.72,62.9
+34555,77,PREVENTIVE_RETENTION_WATCH,0,56.3,870,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.52,63.0
+30156,78,PREVENTIVE_RETENTION_WATCH,0,56.3,720,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.5,63.1
+27896,79,PREVENTIVE_RETENTION_WATCH,0,56.3,655,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.39,62.8
+24383,80,PREVENTIVE_RETENTION_WATCH,0,56.3,638,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.38,62.5
+23019,81,PREVENTIVE_RETENTION_WATCH,0,56.3,630,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.4,63.3
+47657,82,PREVENTIVE_RETENTION_WATCH,0,56.3,530,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.34,62.5
+43907,83,PREVENTIVE_RETENTION_WATCH,0,56.3,511,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.39,62.8
+40600,84,PREVENTIVE_RETENTION_WATCH,0,56.3,497,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.38,62.5
+10021,85,PREVENTIVE_RETENTION_WATCH,0,56.3,413,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.34,62.5
+43989,86,PREVENTIVE_RETENTION_WATCH,0,56.3,394,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,0.31,62.9
+26535,87,PREVENTIVE_RETENTION_WATCH,0,41.3,16193,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.67,62.4
+25999,88,PREVENTIVE_RETENTION_WATCH,0,41.3,15223,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,4.01,61.0
+24817,89,PREVENTIVE_RETENTION_WATCH,0,41.3,13203,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.0,59.7
+24785,90,PREVENTIVE_RETENTION_WATCH,0,41.3,13156,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.75,60.9
+24132,91,PREVENTIVE_RETENTION_WATCH,0,41.3,12300,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.24,62.1
+23581,92,PREVENTIVE_RETENTION_WATCH,0,41.3,11594,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.72,59.6
+23215,93,PREVENTIVE_RETENTION_WATCH,0,41.3,11221,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.34,62.4
+23098,94,PREVENTIVE_RETENTION_WATCH,0,41.3,11119,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.34,62.4
+22638,95,PREVENTIVE_RETENTION_WATCH,0,41.3,10685,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.0,60.3
+22579,96,PREVENTIVE_RETENTION_WATCH,0,41.3,10628,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.63,62.3
+22467,97,PREVENTIVE_RETENTION_WATCH,0,41.3,10494,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.0,60.3
+22429,98,PREVENTIVE_RETENTION_WATCH,0,41.3,10453,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.05,60.9
+22414,99,PREVENTIVE_RETENTION_WATCH,0,41.3,10437,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.63,62.3
+22292,100,PREVENTIVE_RETENTION_WATCH,0,41.3,10340,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.18,62.0
+21899,101,PREVENTIVE_RETENTION_WATCH,0,41.3,9967,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.06,58.7
+21863,102,PREVENTIVE_RETENTION_WATCH,0,41.3,9925,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,3.01,62.2
+21846,103,PREVENTIVE_RETENTION_WATCH,0,41.3,9905,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.04,62.4
+21721,104,PREVENTIVE_RETENTION_WATCH,0,41.3,9789,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.06,58.7
+21632,105,PREVENTIVE_RETENTION_WATCH,0,41.3,9727,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.04,62.4
+21626,106,PREVENTIVE_RETENTION_WATCH,0,41.3,9716,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.43,61.7
+20861,107,PREVENTIVE_RETENTION_WATCH,0,41.3,9078,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.17,60.7
+20852,108,PREVENTIVE_RETENTION_WATCH,0,41.3,9072,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.25,61.4
+20806,109,PREVENTIVE_RETENTION_WATCH,0,41.3,9036,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.16,61.0
+20294,110,PREVENTIVE_RETENTION_WATCH,0,41.3,8709,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.16,62.2
+19947,111,PREVENTIVE_RETENTION_WATCH,0,41.3,8491,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.34,61.5
+19922,112,PREVENTIVE_RETENTION_WATCH,0,41.3,8467,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.5,59.9
+19867,113,PREVENTIVE_RETENTION_WATCH,0,41.3,8419,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.68,58.6
+19849,114,PREVENTIVE_RETENTION_WATCH,0,41.3,8408,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.04,59.3
+19642,115,PREVENTIVE_RETENTION_WATCH,0,41.3,8257,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.04,59.3
+19599,116,PREVENTIVE_RETENTION_WATCH,0,41.3,8220,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.33,60.7
+19459,117,PREVENTIVE_RETENTION_WATCH,0,41.3,8104,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.01,61.7
+18965,118,PREVENTIVE_RETENTION_WATCH,0,41.3,7802,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.72,62.2
+18785,119,PREVENTIVE_RETENTION_WATCH,0,41.3,7680,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.75,61.6
+18494,120,PREVENTIVE_RETENTION_WATCH,0,41.3,7532,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.72,60.1
+18460,121,PREVENTIVE_RETENTION_WATCH,0,41.3,7508,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.12,60.0
+18274,122,PREVENTIVE_RETENTION_WATCH,0,41.3,7421,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.03,59.4
+18242,123,PREVENTIVE_RETENTION_WATCH,0,41.3,7409,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.75,61.5
+18232,124,PREVENTIVE_RETENTION_WATCH,0,41.3,7403,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.04,61.1
+17991,125,PREVENTIVE_RETENTION_WATCH,0,41.3,7276,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.75,61.5
+17903,126,PREVENTIVE_RETENTION_WATCH,0,41.3,7229,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.63,62.0
+17898,127,PREVENTIVE_RETENTION_WATCH,0,41.3,7226,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.3,60.2
+17633,128,PREVENTIVE_RETENTION_WATCH,0,41.3,7100,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.63,62.0
+17604,129,PREVENTIVE_RETENTION_WATCH,0,41.3,7089,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.72,60.5
+17347,130,PREVENTIVE_RETENTION_WATCH,0,41.3,6962,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.72,60.5
+17267,131,PREVENTIVE_RETENTION_WATCH,0,41.3,6912,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.65,62.0
+17107,132,PREVENTIVE_RETENTION_WATCH,0,41.3,6821,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.74,59.9
+17017,133,PREVENTIVE_RETENTION_WATCH,0,41.3,6793,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.52,61.6
+17004,134,PREVENTIVE_RETENTION_WATCH,0,41.3,6788,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.65,62.0
+16926,135,PREVENTIVE_RETENTION_WATCH,0,41.3,6757,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,62.0
+16610,136,PREVENTIVE_RETENTION_WATCH,0,41.3,6636,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,62.0
+16497,137,PREVENTIVE_RETENTION_WATCH,0,41.3,6592,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.01,58.1
+16342,138,PREVENTIVE_RETENTION_WATCH,0,41.3,6535,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.21,62.2
+16237,139,PREVENTIVE_RETENTION_WATCH,0,41.3,6494,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.51,59.0
+16203,140,PREVENTIVE_RETENTION_WATCH,0,41.3,6477,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.53,62.3
+16100,141,PREVENTIVE_RETENTION_WATCH,0,41.3,6436,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,62.4
+15979,142,PREVENTIVE_RETENTION_WATCH,0,41.3,6397,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.7,61.3
+15942,143,PREVENTIVE_RETENTION_WATCH,0,41.3,6377,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.03,61.1
+15862,144,PREVENTIVE_RETENTION_WATCH,0,41.3,6344,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.0,59.7
+15794,145,PREVENTIVE_RETENTION_WATCH,0,41.3,6320,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,62.4
+15779,146,PREVENTIVE_RETENTION_WATCH,0,41.3,6313,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.83,62.0
+15768,147,PREVENTIVE_RETENTION_WATCH,0,41.3,6303,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.34,61.7
+15757,148,PREVENTIVE_RETENTION_WATCH,0,41.3,6300,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.7
+15749,149,PREVENTIVE_RETENTION_WATCH,0,41.3,6299,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.54,61.6
+15451,150,PREVENTIVE_RETENTION_WATCH,0,41.3,6186,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.54,61.6
+15320,151,PREVENTIVE_RETENTION_WATCH,0,41.3,6150,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.08,61.7
+15293,152,PREVENTIVE_RETENTION_WATCH,0,41.3,6139,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.51,62.0
+15290,153,PREVENTIVE_RETENTION_WATCH,0,41.3,6135,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.66,62.1
+14990,154,PREVENTIVE_RETENTION_WATCH,0,41.3,6038,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.51,61.9
+14831,155,PREVENTIVE_RETENTION_WATCH,0,41.3,5974,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.55,61.6
+14655,156,PREVENTIVE_RETENTION_WATCH,0,41.3,5914,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,60.3
+14348,157,PREVENTIVE_RETENTION_WATCH,0,41.3,5808,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,60.3
+13989,158,PREVENTIVE_RETENTION_WATCH,0,41.3,5695,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.3
+13665,159,PREVENTIVE_RETENTION_WATCH,0,41.3,5593,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.3
+13418,160,PREVENTIVE_RETENTION_WATCH,0,41.3,5510,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.8
+13067,161,PREVENTIVE_RETENTION_WATCH,0,41.3,5412,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.8
+13054,162,PREVENTIVE_RETENTION_WATCH,0,41.3,5410,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,60.6
+12561,163,PREVENTIVE_RETENTION_WATCH,0,41.3,5277,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,60.2
+12247,164,PREVENTIVE_RETENTION_WATCH,0,41.3,5203,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.06,61.2
+12171,165,PREVENTIVE_RETENTION_WATCH,0,41.3,5182,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.69,60.2
+12087,166,PREVENTIVE_RETENTION_WATCH,0,41.3,5161,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.44,61.1
+12079,167,PREVENTIVE_RETENTION_WATCH,0,41.3,5158,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.29,61.3
+11737,168,PREVENTIVE_RETENTION_WATCH,0,41.3,5071,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.54,62.0
+11731,169,PREVENTIVE_RETENTION_WATCH,0,41.3,5068,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.44,61.1
+11690,170,PREVENTIVE_RETENTION_WATCH,0,41.3,5065,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.29,61.3
+11635,171,PREVENTIVE_RETENTION_WATCH,0,41.3,5051,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,2.0,61.5
+11605,172,PREVENTIVE_RETENTION_WATCH,0,41.3,5045,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.95,60.3
+11527,173,PREVENTIVE_RETENTION_WATCH,0,41.3,5027,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.32,62.2
+11301,174,PREVENTIVE_RETENTION_WATCH,0,41.3,4980,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.54,62.0
+8988,175,PREVENTIVE_RETENTION_WATCH,0,41.3,4509,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.36,62.1
+8991,176,PREVENTIVE_RETENTION_WATCH,0,41.3,4509,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.28,61.6
+8698,177,PREVENTIVE_RETENTION_WATCH,0,41.3,4459,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.58,60.2
+8532,178,PREVENTIVE_RETENTION_WATCH,0,41.3,4428,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.28,61.6
+8418,179,PREVENTIVE_RETENTION_WATCH,0,41.3,4404,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.51,60.9
+8256,180,PREVENTIVE_RETENTION_WATCH,0,41.3,4377,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.21,62.0
+8101,181,PREVENTIVE_RETENTION_WATCH,0,41.3,4345,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.52,62.3
+7439,182,PREVENTIVE_RETENTION_WATCH,0,41.3,4229,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,61.6
+7356,183,PREVENTIVE_RETENTION_WATCH,0,41.3,4215,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,60.6
+6980,184,PREVENTIVE_RETENTION_WATCH,0,41.3,4153,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,61.6
+6939,185,PREVENTIVE_RETENTION_WATCH,0,41.3,4140,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,60.4
+6929,186,PREVENTIVE_RETENTION_WATCH,0,41.3,4139,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,60.6
+6848,187,PREVENTIVE_RETENTION_WATCH,0,41.3,4124,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.3
+6674,188,PREVENTIVE_RETENTION_WATCH,0,41.3,4098,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.23,61.8
+6453,189,PREVENTIVE_RETENTION_WATCH,0,41.3,4050,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.3
+6349,190,PREVENTIVE_RETENTION_WATCH,0,41.3,4032,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,61.5
+6310,191,PREVENTIVE_RETENTION_WATCH,0,41.3,4025,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.23,61.8
+6304,192,PREVENTIVE_RETENTION_WATCH,0,41.3,4022,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.8
+6274,193,PREVENTIVE_RETENTION_WATCH,0,41.3,4014,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,61.0
+6140,194,PREVENTIVE_RETENTION_WATCH,0,41.3,3987,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,62.1
+6130,195,PREVENTIVE_RETENTION_WATCH,0,41.3,3984,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.17,62.2
+5969,196,PREVENTIVE_RETENTION_WATCH,0,41.3,3950,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.8
+5943,197,PREVENTIVE_RETENTION_WATCH,0,41.3,3945,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,60.3
+5930,198,PREVENTIVE_RETENTION_WATCH,0,41.3,3942,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,61.0
+5932,199,PREVENTIVE_RETENTION_WATCH,0,41.3,3942,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.9
+5822,200,PREVENTIVE_RETENTION_WATCH,0,41.3,3915,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,62.1
+5793,201,PREVENTIVE_RETENTION_WATCH,0,41.3,3905,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.23,61.9
+5781,202,PREVENTIVE_RETENTION_WATCH,0,41.3,3901,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.29,58.6
+5685,203,PREVENTIVE_RETENTION_WATCH,0,41.3,3886,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,61.5
+5617,204,PREVENTIVE_RETENTION_WATCH,0,41.3,3874,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.12,60.3
+5609,205,PREVENTIVE_RETENTION_WATCH,0,41.3,3872,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.9
+5601,206,PREVENTIVE_RETENTION_WATCH,0,41.3,3871,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.2,62.3
+5588,207,PREVENTIVE_RETENTION_WATCH,0,41.3,3864,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.19,60.3
+5479,208,PREVENTIVE_RETENTION_WATCH,0,41.3,3838,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,61.4
+5464,209,PREVENTIVE_RETENTION_WATCH,0,41.3,3835,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.23,61.9
+5428,210,PREVENTIVE_RETENTION_WATCH,0,41.3,3824,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.7
+5413,211,PREVENTIVE_RETENTION_WATCH,0,41.3,3820,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.52,61.7
+5356,212,PREVENTIVE_RETENTION_WATCH,0,41.3,3816,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.18,61.5
+5277,213,PREVENTIVE_RETENTION_WATCH,0,41.3,3797,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.0
+5261,214,PREVENTIVE_RETENTION_WATCH,0,41.3,3794,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.19,60.3
+5217,215,PREVENTIVE_RETENTION_WATCH,0,41.3,3780,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.5,62.4
+5178,216,PREVENTIVE_RETENTION_WATCH,0,41.3,3774,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.29,58.2
+5156,217,PREVENTIVE_RETENTION_WATCH,0,41.3,3769,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,61.4
+5137,218,PREVENTIVE_RETENTION_WATCH,0,41.3,3763,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.2,58.6
+5094,219,PREVENTIVE_RETENTION_WATCH,0,41.3,3755,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.14,61.7
+5020,220,PREVENTIVE_RETENTION_WATCH,0,41.3,3746,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,61.2
+5012,221,PREVENTIVE_RETENTION_WATCH,0,41.3,3745,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.2
+5013,222,PREVENTIVE_RETENTION_WATCH,0,41.3,3745,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,59.8
+5014,223,PREVENTIVE_RETENTION_WATCH,0,41.3,3745,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.8
+4945,224,PREVENTIVE_RETENTION_WATCH,0,41.3,3732,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.19,61.5
+4946,225,PREVENTIVE_RETENTION_WATCH,0,41.3,3732,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.27,60.2
+4927,226,PREVENTIVE_RETENTION_WATCH,0,41.3,3729,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.0
+4914,227,PREVENTIVE_RETENTION_WATCH,0,41.3,3724,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.25,58.0
+4892,228,PREVENTIVE_RETENTION_WATCH,0,41.3,3718,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.04,61.6
+4860,229,PREVENTIVE_RETENTION_WATCH,0,41.3,3711,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.16,61.8
+4787,230,PREVENTIVE_RETENTION_WATCH,0,41.3,3696,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.2,58.6
+4772,231,PREVENTIVE_RETENTION_WATCH,0,41.3,3690,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.3
+4754,232,PREVENTIVE_RETENTION_WATCH,0,41.3,3686,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.21,61.3
+4702,233,PREVENTIVE_RETENTION_WATCH,0,41.3,3678,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.2
+4703,234,PREVENTIVE_RETENTION_WATCH,0,41.3,3678,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.8
+4704,235,PREVENTIVE_RETENTION_WATCH,0,41.3,3678,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,59.8
+4661,236,PREVENTIVE_RETENTION_WATCH,0,41.3,3669,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,61.1
+4625,237,PREVENTIVE_RETENTION_WATCH,0,41.3,3665,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.19,61.5
+4626,238,PREVENTIVE_RETENTION_WATCH,0,41.3,3665,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.27,60.2
+4616,239,PREVENTIVE_RETENTION_WATCH,0,41.3,3663,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.22,61.6
+4592,240,PREVENTIVE_RETENTION_WATCH,0,41.3,3655,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.11,61.9
+4557,241,PREVENTIVE_RETENTION_WATCH,0,41.3,3644,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.16,61.8
+4524,242,PREVENTIVE_RETENTION_WATCH,0,41.3,3634,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.03,61.0
+4475,243,PREVENTIVE_RETENTION_WATCH,0,41.3,3623,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.1,61.3
+4429,244,PREVENTIVE_RETENTION_WATCH,0,41.3,3614,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.09,61.0
+4379,245,PREVENTIVE_RETENTION_WATCH,0,41.3,3609,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.06,62.1
+4375,246,PREVENTIVE_RETENTION_WATCH,0,41.3,3607,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.3
+4377,247,PREVENTIVE_RETENTION_WATCH,0,41.3,3607,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,62.2
+4373,248,PREVENTIVE_RETENTION_WATCH,0,41.3,3606,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.15,62.0
+4354,249,PREVENTIVE_RETENTION_WATCH,0,41.3,3603,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.13,61.1
+4336,250,PREVENTIVE_RETENTION_WATCH,0,41.3,3599,price,Cohort clarity='I1' (41.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,I1,1.02,61.0
+27740,1,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18788,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.8,63.8
+27683,2,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,18707,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.07,61.8
+27673,3,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18686,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.67,63.8
+27661,4,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,18640,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,63.3
+27659,5,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18625,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,60.3
+27650,6,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,18593,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.01,57.6
+27647,7,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,18574,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,70.6
+27646,8,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,18572,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.1
+27644,9,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,18565,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.02,64.5
+27642,10,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,18561,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,57.8
+27634,11,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18541,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.4,56.9
+27631,12,REALIZED_LOSS_RECOVERY_AUDIT,1,56.3,18531,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,I1,4.5,65.8
+27624,13,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,18515,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,67.6
+27617,14,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18495,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.66,64.3
+27607,15,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,18474,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,64.1
+27606,16,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18472,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.09,63.4
+27604,17,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18468,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.04,61.9
+27569,18,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,18376,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.0
+27568,19,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18374,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,60.1
+27553,20,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,18340,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.01,57.6
+27551,21,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,18325,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.5,62.0
+27544,22,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18308,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.51,64.7
+27516,23,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18242,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.01,65.8
+27517,24,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18242,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.01,65.8
+27518,25,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18242,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.01,63.9
+27519,26,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,18242,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.01,63.9
+27513,27,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,18236,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.02,58.8
+27445,28,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18077,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,60.8
+27443,29,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,18069,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,62.8
+27424,30,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18027,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,58.7
+27419,31,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18026,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.04,58.4
+27421,32,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,18026,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.32,62.0
+27418,33,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,18023,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.8
+27416,34,REALIZED_LOSS_RECOVERY_AUDIT,1,56.3,18018,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,I1,5.01,65.5
+27405,35,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,17995,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.93,58.9
+27356,36,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,17930,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,59.1
+27354,37,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,17923,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.41,57.7
+27352,38,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,17917,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,67.5
+27346,39,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17902,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,64.2
+27345,40,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,17898,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,64.1
+27327,41,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17869,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.0
+27306,42,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17804,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.9
+27291,43,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,17760,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.7
+27290,44,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,17760,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,57.7
+27279,45,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17740,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,64.2
+27271,46,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,17713,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.99,60.5
+27240,47,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17608,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.52,63.7
+27234,48,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17600,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.3
+27232,49,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,17597,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.7,62.2
+27209,50,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,17533,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.02,57.9
+27197,51,REALIZED_LOSS_RECOVERY_AUDIT,1,4.47,17499,price,Cohort clarity='IF' (4.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.14,61.7
+27196,52,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,17497,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,65.0
+27191,53,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,17485,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.7,63.6
+27178,54,REALIZED_LOSS_RECOVERY_AUDIT,1,22.01,17449,price,Cohort clarity='VVS2' (7.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,1.5,64.3
+27176,55,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,17447,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,58.0
+27165,56,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,17408,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.05,67.7
+27162,57,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17405,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.5,65.8
+27163,58,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,17405,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.6
+27157,59,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,17400,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.69,63.8
+27146,60,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,17365,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.01,62.5
+27135,61,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,17338,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.69,58.1
+27133,62,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,17330,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.7,57.6
+27131,63,REALIZED_LOSS_RECOVERY_AUDIT,1,56.3,17329,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,I1,4.13,64.8
+27125,64,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17313,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,64.0
+27019,65,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,17151,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.22,57.8
+27005,66,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,17115,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.3
+27002,67,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,17111,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.51,63.7
+27000,68,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17103,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.53,64.6
+26994,69,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17094,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,64.1
+26972,70,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,17051,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.27,59.3
+26957,71,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,17027,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.6,64.6
+26934,72,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16970,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.0,64.8
+26888,73,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16842,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.18,60.4
+26864,74,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,16789,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.02,57.9
+26845,75,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16776,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,59.9
+26838,76,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,16737,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,62.2
+26835,77,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16733,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,60.0
+26830,78,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,16731,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,58.8
+26808,79,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16690,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.18,60.4
+26794,80,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,16650,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.6
+26778,81,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16624,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,59.9
+26769,82,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,16593,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.02,57.9
+26764,83,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16582,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,60.0
+26758,84,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16565,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.02,60.2
+26746,85,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,16544,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.3
+26739,86,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,16519,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.52,63.4
+26735,87,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16512,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.06,63.7
+26733,88,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16506,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.1,59.5
+26650,89,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,16439,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.6
+26643,90,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16425,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,60.3
+26639,91,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16410,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.2
+26635,92,REALIZED_LOSS_RECOVERY_AUDIT,1,4.47,16406,price,Cohort clarity='IF' (4.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.09,58.7
+26631,93,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16398,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.22,63.2
+26623,94,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,16386,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.02,65.0
+26614,95,REALIZED_LOSS_RECOVERY_AUDIT,1,22.01,16364,price,Cohort clarity='VVS2' (7.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,1.5,64.7
+26588,96,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,16304,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,62.4
+26583,97,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16295,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.05,63.7
+26582,98,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,16294,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.09,57.9
+26580,99,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,16291,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.6
+26573,100,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,16280,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.03,65.4
+26560,101,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16241,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.26,56.9
+26554,102,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16239,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.66,63.8
+26555,103,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16239,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.66,63.8
+26548,104,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16231,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,64.1
+26547,105,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16231,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,58.1
+26545,106,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,16223,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.74,58.6
+26540,107,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16206,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,57.6
+26515,108,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,16149,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,63.6
+26514,109,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16148,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.05,63.7
+26491,110,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16086,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,66.9
+26489,111,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16085,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,64.1
+26477,112,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16062,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.13,59.2
+26467,113,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,16036,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.17,58.9
+26461,114,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,16013,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.9
+26459,115,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,16003,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,63.6
+26439,116,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15977,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.6
+26432,117,REALIZED_LOSS_RECOVERY_AUDIT,1,56.3,15964,price,Cohort clarity='I1' (41.3% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,I1,3.4,66.8
+26431,118,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,15962,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,60.1
+26408,119,REALIZED_LOSS_RECOVERY_AUDIT,1,19.47,15928,price,Cohort clarity='IF' (4.5% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.0,63.3
+26404,120,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15919,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.2
+26394,121,REALIZED_LOSS_RECOVERY_AUDIT,1,22.01,15898,price,Cohort clarity='VVS2' (7.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,2.03,63.2
+26388,122,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15888,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,64.0
+26389,123,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15888,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,66.1
+26376,124,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,15851,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.0,58.8
+26328,125,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15832,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.6
+26325,126,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15827,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.1,64.7
+26321,127,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15824,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.4,65.4
+26293,128,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,15792,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.52,64.0
+26294,129,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,15792,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.52,63.9
+26288,130,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15776,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.52,65.1
+26280,131,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,15765,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.02,65.5
+26279,132,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15762,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,65.6
+26265,133,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15729,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,66.3
+26263,134,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,15729,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,59.9
+26255,135,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,15708,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.0,58.8
+26249,136,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,15695,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.02,56.2
+26226,137,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,15649,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.52,63.9
+26223,138,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,15627,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,59.4
+26222,139,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,15619,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.53,60.8
+26221,140,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,15618,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,60.9
+26206,141,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,15587,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,59.9
+26203,142,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,15584,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.5,65.4
+26195,143,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15562,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,65.6
+26190,144,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15540,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,64.8
+26189,145,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,15540,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,59.9
+26156,146,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15467,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.9
+26132,147,REALIZED_LOSS_RECOVERY_AUDIT,1,5.55,15420,price,Cohort clarity='VVS1' (5.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS1,1.51,57.9
+26118,148,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15394,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,64.6
+26116,149,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15393,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,64.7
+26113,150,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15385,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.7,64.1
+26107,151,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,15371,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,62.2
+26100,152,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15351,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,70.2
+26097,153,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15339,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.03,62.7
+26092,154,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15330,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,65.7
+26068,155,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,15287,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.25,62.4
+26067,156,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15282,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.11,67.2
+26059,157,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,15261,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.02,61.9
+26054,158,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15255,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.1
+26006,159,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,15231,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.56,63.6
+25973,160,REALIZED_LOSS_RECOVERY_AUDIT,1,4.47,15164,price,Cohort clarity='IF' (4.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.48,59.8
+25967,161,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15152,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.51,66.0
+25963,162,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15147,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,63.8
+25950,163,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15119,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.07,64.1
+25934,164,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15093,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.8
+25930,165,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,15091,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.66,63.2
+25925,166,REALIZED_LOSS_RECOVERY_AUDIT,1,19.47,15081,price,Cohort clarity='IF' (4.5% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.01,63.2
+25926,167,REALIZED_LOSS_RECOVERY_AUDIT,1,19.47,15081,price,Cohort clarity='IF' (4.5% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.01,63.4
+25921,168,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,15072,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,63.0
+25910,169,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,15046,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.06,60.2
+25900,170,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,15030,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.48,56.7
+25884,171,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,14998,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,58.5
+25878,172,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14975,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.43,64.5
+25876,173,REALIZED_LOSS_RECOVERY_AUDIT,1,10.01,14973,price,Cohort clarity='VS1' (10.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.0,62.4
+25874,174,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14968,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,62.8
+25869,175,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14956,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.2
+25866,176,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14948,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.1
+25859,177,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14936,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.04,64.0
+25853,178,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,14920,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.06,59.0
+25851,179,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14918,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,3.0,59.3
+25840,180,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,14889,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,63.5
+25833,181,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,14860,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.7,64.5
+25829,182,REALIZED_LOSS_RECOVERY_AUDIT,1,7.01,14853,price,Cohort clarity='VVS2' (7.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,1.41,59.9
+25803,183,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14799,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.8
+25798,184,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,14787,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.7,63.9
+25791,185,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14775,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.55,63.7
+25781,186,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,14750,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.06,64.6
+25777,187,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14745,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.0
+25765,188,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14720,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.03,59.6
+25756,189,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,14709,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.51,62.6
+25749,190,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14687,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.03,64.9
+25731,191,REALIZED_LOSS_RECOVERY_AUDIT,1,22.01,14654,price,Cohort clarity='VVS2' (7.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,1.51,63.7
+25732,192,REALIZED_LOSS_RECOVERY_AUDIT,1,19.47,14654,price,Cohort clarity='IF' (4.5% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.51,62.8
+25730,193,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14652,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.5,66.9
+25726,194,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14646,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.03,65.4
+25675,195,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,14597,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,59.4
+25659,196,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,14565,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,57.8
+25609,197,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14479,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,1.73,64.2
+25599,198,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14452,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.14,63.8
+25596,199,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,14445,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.7,63.5
+25591,200,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14430,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,65.1
+25585,201,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14426,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,1.71,64.1
+25583,202,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14426,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,62.3
+25566,203,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,14402,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.01,66.6
+25563,204,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,14395,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.14,57.5
+25532,205,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14350,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.28,63.7
+25497,206,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14285,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.22,62.7
+25486,207,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,14266,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.16,63.6
+25481,208,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14251,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.51,59.5
+25480,209,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14249,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.27,63.6
+25459,210,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,14220,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.28,63.7
+25454,211,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14209,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.51,63.7
+25452,212,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14208,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.0,66.5
+25447,213,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,14199,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,2.0,66.0
+25441,214,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14194,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.5,67.0
+25417,215,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,14148,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,1.51,59.5
+25415,216,REALIZED_LOSS_RECOVERY_AUDIT,1,22.01,14146,price,Cohort clarity='VVS2' (7.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VVS2,1.7,63.1
+25391,217,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,14084,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.08,63.8
+25389,218,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14080,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.02,56.5
+25341,219,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,14042,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.0,57.3
+25328,220,REALIZED_LOSS_RECOVERY_AUDIT,1,16.83,14027,price,Cohort clarity='SI2' (16.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.02,58.2
+25326,221,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,14026,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,63.9
+25321,222,REALIZED_LOSS_RECOVERY_AUDIT,1,4.47,13998,price,Cohort clarity='IF' (4.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,IF,1.5,59.9
+25314,223,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13993,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.07,63.6
+25306,224,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13978,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.19,63.7
+25305,225,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13976,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,63.8
+25299,226,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13956,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.08,63.8
+25281,227,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,13929,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.01,56.7
+25274,228,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13919,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.2,63.6
+25265,229,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,13903,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.52,64.0
+25263,230,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13899,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,63.9
+25243,231,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13853,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,63.6
+25244,232,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13853,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,65.3
+25240,233,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13849,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,63.1
+25238,234,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13846,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.52,65.4
+25236,235,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13846,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,63.9
+25226,236,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13825,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.14,64.8
+25219,237,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,13819,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.51,62.0
+25193,238,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13784,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.61,64.2
+25179,239,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13764,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,65.9
+25180,240,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,13764,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.0,61.2
+25167,241,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13744,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.01,64.9
+25152,242,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13721,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.01,65.0
+25150,243,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,13720,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.5,63.8
+25138,244,REALIZED_LOSS_RECOVERY_AUDIT,1,10.11,13701,price,Cohort clarity='VS2' (10.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,2.29,57.0
+25131,245,REALIZED_LOSS_RECOVERY_AUDIT,1,25.01,13686,price,Cohort clarity='VS1' (10.0% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS1,1.51,63.1
+25114,246,REALIZED_LOSS_RECOVERY_AUDIT,1,15.06,13654,price,Cohort clarity='SI1' (15.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,2.32,60.3
+25111,247,REALIZED_LOSS_RECOVERY_AUDIT,1,25.11,13653,price,Cohort clarity='VS2' (10.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,VS2,1.5,63.7
+25095,248,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13622,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,1.72,64.3
+25096,249,REALIZED_LOSS_RECOVERY_AUDIT,1,30.06,13622,price,Cohort clarity='SI1' (15.1% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI1,1.72,64.8
+25092,250,REALIZED_LOSS_RECOVERY_AUDIT,1,31.83,13621,price,Cohort clarity='SI2' (16.8% risk); depth >= 62.50 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,SI2,2.03,62.7

@@ -98,11 +98,17 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
             
     # 3. Identify Target Metric
     BAD_TARGET_KEYWORDS = ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']
+    has_spatial = 'x' in [c.lower() for c in cols] and 'y' in [c.lower() for c in cols]
     clean_cols = [c for c in cols if not any(b in c.lower() for b in BAD_TARGET_KEYWORDS) and not c.lower().endswith(('_id', '_key', '_uuid'))]
+    if has_spatial:
+        clean_cols = [c for c in clean_cols if c.lower() not in ('x', 'y', 'z')]
     
     target = None
-    # Priority 0: Exact canonical response / outcome columns (e.g. 'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'smoker')
-    canonical_response = ['y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit', 'subscribed', 'smoker']
+    # Priority 0: Exact canonical response / outcome columns (e.g. 'y', 'cut', 'is_canceled', 'churn', 'death_event', 'smoker', 'survived', 'outcome')
+    if has_spatial:
+        canonical_response = ['is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome', 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'target', 'response']
+    else:
+        canonical_response = ['y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit', 'subscribed', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud']
     for cr in canonical_response:
         for c in clean_cols:
             if c.lower() == cr:
@@ -113,7 +119,7 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
 
     # Priority 1: High priority adverse / event outcomes
     if not target:
-        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
         for kw in adverse_kws:
             for c in clean_cols:
                 if kw in c.lower():

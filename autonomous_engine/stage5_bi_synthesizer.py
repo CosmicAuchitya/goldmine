@@ -250,6 +250,8 @@ def synthesize_deliverables(output_dir: str):
 
     # Save enriched view separately to preserve certified Stage 4 fact table immutability
     try:
+        for col in df_fact.select_dtypes(include=['object']).columns:
+            df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
         enriched_fact_path = out / "bi_enriched_fact.parquet"
         df_fact.to_parquet(enriched_fact_path, index=False)
     except Exception:

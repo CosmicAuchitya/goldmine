@@ -473,6 +473,10 @@ class MicroLevelForensicInquiryEngine:
             verb = "Cancellation Review if"
         elif dom_key == "insurance_underwriting":
             verb = "Underwriting Audit if"
+        elif dom_key == "maritime_transportation_safety":
+            verb = "Evacuation Triage if"
+        elif dom_key == "luxury_gemology_retail":
+            verb = "Quality Re-Cut if"
         elif dom_key == "food_beverage_manufacturing":
             verb = "Scrap if"
         elif dom_key == "hr_workforce":
@@ -1087,7 +1091,8 @@ class StrategicDecisionEngine:
         medical_kw = [
             'death', 'mortality', 'patient', 'patients', 'hospital', 'clinical',
             'ejection', 'creatinine', 'anaemia', 'anemia', 'sodium', 'systolic',
-            'diastolic', 'readmit', 'readmitted', 'diagnosis', 'diabetes', 'stroke', 'sepsis'
+            'diastolic', 'readmit', 'readmitted', 'diagnosis', 'diabetes', 'stroke', 'sepsis',
+            'glucose', 'insulin', 'pregnancies', 'pedigree'
         ]
         if _matches_domain(medical_kw):
             return {
@@ -1127,6 +1132,35 @@ class StrategicDecisionEngine:
                 "unit_symbol": "$",
                 "is_financial": True,
                 "persona": "VP of Revenue Management & Hotel Operations"
+            }
+
+        # 7. Check Maritime Transportation Safety & Evacuation Logistics
+        maritime_kw = [
+            'titanic', 'pclass', 'survived', 'fare', 'cabin', 'embarked',
+            'vessel', 'passenger', 'passengers', 'voyage', 'ship', 'maritime'
+        ]
+        if _matches_domain(maritime_kw):
+            return {
+                "domain_key": "maritime_transportation_safety",
+                "domain_name": "Maritime Transportation & Evacuation Safety Operations",
+                "unit_name": "Casualties / Fatalities at Sea",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Maritime Operations & Passenger Safety"
+            }
+
+        # 8. Check Luxury Gemology & Jewelry Merchandising Quality
+        gemology_kw = [
+            'diamond', 'diamonds', 'carat', 'clarity', 'gem', 'gemstone', 'jewelry', 'merchandising'
+        ]
+        if _matches_domain(gemology_kw):
+            return {
+                "domain_key": "luxury_gemology_retail",
+                "domain_name": "Gemological Operations & Luxury Merchandising Quality",
+                "unit_name": "Substandard Cut Gemstones & Margin Drag",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Gemological Operations & Merchandising Quality"
             }
 
         # 7. Check FinTech / Banking / Fraud / Credit

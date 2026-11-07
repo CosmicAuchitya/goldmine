@@ -1,0 +1,501 @@
+fact_surrogate_id,priority_rank,action_queue,_is_target_event,empirical_cohort_risk_pct,monetary_exposure,exposure_column_source,primary_risk_reason,recommended_next_step,Pregnancies,Glucose
+670,1,PREVENTIVE_RETENTION_WATCH,0,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,9,154
+490,2,PREVENTIVE_RETENTION_WATCH,0,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,8,194
+224,3,PREVENTIVE_RETENTION_WATCH,0,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,142
+213,4,PREVENTIVE_RETENTION_WATCH,0,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,179
+55,5,PREVENTIVE_RETENTION_WATCH,0,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,150
+45,6,PREVENTIVE_RETENTION_WATCH,0,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,7,159
+745,7,PREVENTIVE_RETENTION_WATCH,0,65.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,153
+29,8,PREVENTIVE_RETENTION_WATCH,0,65.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,13,145
+404,9,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,72
+460,10,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,134
+461,11,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,120
+763,12,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,89
+251,13,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,106
+513,14,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,91
+147,15,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,57
+192,16,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,123
+249,17,PREVENTIVE_RETENTION_WATCH,0,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,9,124
+659,18,PREVENTIVE_RETENTION_WATCH,0,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,11,127
+560,19,PREVENTIVE_RETENTION_WATCH,0,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,11,85
+559,20,PREVENTIVE_RETENTION_WATCH,0,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,11,103
+37,21,PREVENTIVE_RETENTION_WATCH,0,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,11,138
+510,22,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,120
+331,23,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,118
+479,24,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,126
+22,25,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,99
+738,26,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,65
+675,27,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,91
+463,28,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,74
+195,29,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,85
+300,30,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,112
+346,31,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,126
+345,32,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,95
+558,33,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,110
+584,34,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,100
+134,35,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,84
+691,36,PREVENTIVE_RETENTION_WATCH,0,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,107
+661,37,PREVENTIVE_RETENTION_WATCH,0,56.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,162
+328,38,PREVENTIVE_RETENTION_WATCH,0,56.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,10,179
+283,39,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,133
+286,40,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,136
+518,41,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,125
+162,42,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,102
+474,43,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,136
+223,44,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,119
+43,45,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,106
+757,46,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,137
+556,47,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,124
+478,48,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,114
+50,49,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,105
+42,50,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,133
+77,51,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,62
+504,52,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,94
+93,53,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,81
+83,54,PREVENTIVE_RETENTION_WATCH,0,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,7,83
+362,55,PREVENTIVE_RETENTION_WATCH,0,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,158
+149,56,PREVENTIVE_RETENTION_WATCH,0,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,147
+287,57,PREVENTIVE_RETENTION_WATCH,0,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,155
+438,58,PREVENTIVE_RETENTION_WATCH,0,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,147
+179,59,PREVENTIVE_RETENTION_WATCH,0,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,5,143
+41,60,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,180
+261,61,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,191
+167,62,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,148
+264,63,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,142
+711,64,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,158
+305,65,PREVENTIVE_RETENTION_WATCH,0,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,3,150
+275,66,PREVENTIVE_RETENTION_WATCH,0,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,106
+87,67,PREVENTIVE_RETENTION_WATCH,0,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,106
+519,68,PREVENTIVE_RETENTION_WATCH,0,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,13,76
+728,69,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,141
+295,70,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,161
+59,71,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,146
+488,72,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,173
+248,73,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,165
+609,74,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,152
+212,75,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,147
+336,76,PREVENTIVE_RETENTION_WATCH,0,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,0,165
+569,77,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,154
+229,78,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,197
+185,79,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,141
+161,80,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151
+365,81,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,147
+108,82,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,144
+70,83,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,146
+550,84,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,189
+145,85,PREVENTIVE_RETENTION_WATCH,0,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,4,154
+623,86,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,183
+496,87,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,166
+96,88,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,144
+470,89,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,154
+296,90,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,151
+671,91,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,165
+500,92,PREVENTIVE_RETENTION_WATCH,0,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,6,154
+746,93,PREVENTIVE_RETENTION_WATCH,0,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,12,100
+359,94,PREVENTIVE_RETENTION_WATCH,0,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,12,88
+334,95,PREVENTIVE_RETENTION_WATCH,0,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,12,106
+437,96,PREVENTIVE_RETENTION_WATCH,0,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,12,140
+583,97,PREVENTIVE_RETENTION_WATCH,0,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,12,121
+718,98,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,94
+465,99,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,115
+8,100,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,115
+282,101,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,129
+506,102,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,75
+673,103,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,68
+764,104,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,101
+13,105,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,139
+247,106,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,122
+579,107,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,133
+635,108,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,92
+35,109,PREVENTIVE_RETENTION_WATCH,0,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,10,122
+464,110,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,88
+458,111,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,86
+266,112,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,96
+206,113,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,111
+124,114,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,132
+279,115,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,114
+184,116,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,73
+637,117,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,104
+78,118,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,95
+142,119,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,106
+629,120,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,128
+140,121,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,105
+363,122,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,103
+366,123,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,99
+344,124,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,122
+724,125,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,117
+766,126,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,121
+30,127,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,117
+31,128,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,109
+497,129,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,110
+303,130,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,77
+290,131,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,108
+53,132,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,88
+118,133,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,78
+63,134,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,44
+72,135,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,139
+712,136,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,126
+66,137,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,99
+685,138,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,136
+653,139,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,123
+6,140,PREVENTIVE_RETENTION_WATCH,0,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,116
+102,141,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,151
+47,142,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,146
+259,143,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,193
+549,144,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,164
+326,145,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,157
+154,146,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,153
+471,147,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,144
+413,148,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,143
+414,149,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,143
+575,150,PREVENTIVE_RETENTION_WATCH,0,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,1,143
+235,151,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,74
+742,152,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,102
+674,153,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,123
+502,154,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,84
+505,155,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,96
+552,156,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,84
+109,157,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,83
+715,158,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,102
+33,159,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,88
+526,160,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,87
+314,161,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,113
+525,162,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,125
+522,163,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,124
+257,164,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,111
+273,165,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,122
+528,166,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,116
+495,167,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,80
+319,168,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,115
+353,169,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,61
+397,170,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,96
+399,171,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,82
+390,172,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,100
+355,173,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,90
+141,174,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,128
+432,175,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,89
+611,176,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,106
+616,177,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,106
+369,178,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,81
+348,179,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,116
+191,180,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,111
+170,181,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,111
+81,182,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,113
+645,183,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,103
+349,184,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,99
+753,185,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,108
+573,186,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,111
+571,187,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,78
+127,188,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,120
+317,189,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,99
+515,190,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,99
+687,191,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,130
+21,192,PREVENTIVE_RETENTION_WATCH,0,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,126
+714,193,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,134
+227,194,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,101
+240,195,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,104
+269,196,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,102
+254,197,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,86
+529,198,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,117
+539,199,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,127
+532,200,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,107
+530,201,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,111
+312,202,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,106
+484,203,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,84
+476,204,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,137
+482,205,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,123
+537,206,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,105
+308,207,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,137
+538,208,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,57
+512,209,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,139
+84,210,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,101
+103,211,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,125
+683,212,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,95
+650,213,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,107
+60,214,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,105
+58,215,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,100
+698,216,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,99
+678,217,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,93
+278,218,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,104
+298,219,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,126
+291,220,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,78
+182,221,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,119
+201,222,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,113
+565,223,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,91
+590,224,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,73
+597,225,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,67
+628,226,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,132
+627,227,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,125
+641,228,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,102
+466,229,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,124
+337,230,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,117
+372,231,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,118
+368,232,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,101
+377,233,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,98
+373,234,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,84
+230,235,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,117
+203,236,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,108
+146,237,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,102
+137,238,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,100
+163,239,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,114
+632,240,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,102
+624,241,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,94
+473,242,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,119
+472,243,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,137
+468,244,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,97
+467,245,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,74
+138,246,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,93
+139,247,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,129
+453,248,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,91
+448,249,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,95
+408,250,PREVENTIVE_RETENTION_WATCH,0,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,0,101
+456,1,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='14' (100.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,175
+160,2,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='17' (100.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,17,163
+89,3,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='15' (100.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,15,136
+299,4,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='14' (100.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,14,100
+153,5,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,156
+246,6,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,184
+239,7,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,164
+517,8,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,145
+677,9,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,156
+44,10,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,171
+339,11,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,152
+356,12,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,165
+762,13,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,170
+664,14,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,145
+709,15,REALIZED_LOSS_RECOVERY_AUDIT,1,79.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,164
+25,16,REALIZED_LOSS_RECOVERY_AUDIT,1,78.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,143
+260,17,REALIZED_LOSS_RECOVERY_AUDIT,1,78.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,155
+187,18,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,181
+546,19,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,186
+54,20,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,176
+409,21,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,197
+425,22,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,151
+207,23,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,196
+112,24,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,155
+587,25,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,143
+176,26,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,179
+155,27,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,188
+3,28,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,183
+663,29,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,167
+755,30,REALIZED_LOSS_RECOVERY_AUDIT,1,72.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,154
+57,31,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,187
+340,32,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,178
+284,33,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,161
+716,34,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,187
+696,35,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,142
+499,36,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,195
+193,37,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,159
+210,38,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,184
+156,39,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,152
+186,40,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,194
+237,41,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,181
+115,42,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,160
+604,43,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,150
+613,44,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,168
+27,45,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,147
+23,46,REALIZED_LOSS_RECOVERY_AUDIT,1,70.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,196
+324,47,REALIZED_LOSS_RECOVERY_AUDIT,1,65.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,152
+692,48,REALIZED_LOSS_RECOVERY_AUDIT,1,65.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,158
+744,49,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,140
+38,50,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,102
+524,51,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,130
+132,52,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,122
+619,53,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,112
+215,54,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,112
+24,55,REALIZED_LOSS_RECOVERY_AUDIT,1,64.29,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='9' (64.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,9,119
+741,56,REALIZED_LOSS_RECOVERY_AUDIT,1,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,120
+591,57,REALIZED_LOSS_RECOVERY_AUDIT,1,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,111
+194,58,REALIZED_LOSS_RECOVERY_AUDIT,1,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,135
+649,59,REALIZED_LOSS_RECOVERY_AUDIT,1,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,136
+615,60,REALIZED_LOSS_RECOVERY_AUDIT,1,63.64,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='11' (63.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,11,138
+216,61,REALIZED_LOSS_RECOVERY_AUDIT,1,59.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,151
+541,62,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,100
+444,63,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,108
+388,64,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,105
+732,65,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,120
+469,66,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,120
+62,67,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,133
+10,68,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,125
+189,69,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,109
+585,70,REALIZED_LOSS_RECOVERY_AUDIT,1,57.89,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='8' (57.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,124
+12,71,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,168
+307,72,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,161
+459,73,REALIZED_LOSS_RECOVERY_AUDIT,1,56.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,148
+277,74,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,106
+16,75,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,100
+694,76,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,129
+315,77,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,109
+18,78,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,107
+631,79,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,114
+639,80,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,97
+65,81,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,114
+49,82,REALIZED_LOSS_RECOVERY_AUDIT,1,55.56,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='7' (55.6% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,7,103
+15,83,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,166
+208,84,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,162
+547,85,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,187
+196,86,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,158
+392,87,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,166
+405,88,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,168
+389,89,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,144
+361,90,REALIZED_LOSS_RECOVERY_AUDIT,1,51.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,189
+589,91,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,176
+516,92,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,163
+133,93,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,170
+111,94,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,171
+416,95,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,173
+749,96,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,187
+697,97,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,169
+717,98,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,173
+32,99,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,158
+400,100,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,193
+318,101,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,182
+371,102,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,173
+262,103,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,141
+481,104,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,158
+228,105,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,162
+612,106,REALIZED_LOSS_RECOVERY_AUDIT,1,51.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,174
+358,107,REALIZED_LOSS_RECOVERY_AUDIT,1,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,129
+636,108,REALIZED_LOSS_RECOVERY_AUDIT,1,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,104
+73,109,REALIZED_LOSS_RECOVERY_AUDIT,1,50.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='13' (50.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,13,126
+648,110,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,179
+507,111,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,180
+121,112,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,162
+221,113,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,177
+238,114,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,179
+754,115,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,181
+562,116,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,198
+596,117,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,188
+581,118,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,151
+281,119,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,146
+441,120,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,189
+436,121,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,141
+485,122,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,145
+446,123,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,180
+301,124,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,167
+682,125,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,162
+46,126,REALIZED_LOSS_RECOVERY_AUDIT,1,49.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,180
+667,127,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,145
+426,128,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,184
+418,129,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,144
+131,130,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,173
+605,131,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,183
+231,132,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,142
+200,133,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,148
+116,134,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,146
+236,135,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,171
+379,136,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,156
+395,137,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,158
+364,138,REALIZED_LOSS_RECOVERY_AUDIT,1,48.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,146
+760,139,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,190
+643,140,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,147
+1,141,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,148
+320,142,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,194
+750,143,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,162
+676,144,REALIZED_LOSS_RECOVERY_AUDIT,1,47.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,195
+255,145,REALIZED_LOSS_RECOVERY_AUDIT,1,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,92
+376,146,REALIZED_LOSS_RECOVERY_AUDIT,1,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,140
+511,147,REALIZED_LOSS_RECOVERY_AUDIT,1,44.44,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='12' (44.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,12,84
+144,148,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,108
+271,149,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,101
+668,150,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,111
+707,151,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,115
+543,152,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,90
+26,153,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,125
+713,154,REALIZED_LOSS_RECOVERY_AUDIT,1,41.67,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='10' (41.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,10,129
+304,155,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,115
+85,156,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,137
+190,157,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,139
+219,158,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,85
+217,159,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,109
+220,160,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,112
+180,161,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,130
+117,162,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,124
+387,163,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,116
+403,164,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,136
+720,165,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,97
+350,166,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,0
+338,167,REALIZED_LOSS_RECOVERY_AUDIT,1,36.84,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='5' (36.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,5,115
+14,168,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,189
+647,169,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,167
+607,170,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,181
+410,171,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,172
+360,172,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,196
+333,173,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,180
+428,174,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,181
+747,175,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,147
+101,176,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,163
+599,177,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,173
+723,178,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,149
+703,179,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,168
+690,180,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,144
+662,181,REALIZED_LOSS_RECOVERY_AUDIT,1,36.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,199
+540,182,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,129
+679,183,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,121
+660,184,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,80
+593,185,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,132
+7,186,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,78
+198,187,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,107
+243,188,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,139
+322,189,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,112
+420,190,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,129
+542,191,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,128
+731,192,REALIZED_LOSS_RECOVERY_AUDIT,1,36.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='3' (36.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,130
+165,193,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,131
+620,194,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,119
+130,195,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,105
+79,196,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,131
+67,197,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,109
+17,198,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,118
+758,199,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,123
+5,200,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,137
+570,201,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,121
+214,202,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,140
+309,203,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,128
+398,204,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,131
+110,205,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,95
+486,206,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,135
+267,207,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,138
+292,208,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,107
+323,209,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,124
+449,210,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,104
+415,211,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,138
+178,212,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,129
+125,213,REALIZED_LOSS_RECOVERY_AUDIT,1,34.23,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='0' (34.2% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,0,113
+265,214,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,123
+494,215,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,125
+445,216,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,117
+199,217,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,109
+40,218,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,111
+94,219,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,134
+536,220,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,132
+751,221,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,136
+407,222,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,115
+684,223,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,125
+401,224,REALIZED_LOSS_RECOVERY_AUDIT,1,33.82,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='4' (33.8% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,95
+9,225,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,197
+313,226,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,155
+297,227,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,146
+302,228,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,144
+656,229,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,155
+733,230,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,174
+580,231,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,197
+222,232,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,158
+270,233,REALIZED_LOSS_RECOVERY_AUDIT,1,33.45,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='2' (18.4% risk); Glucose >= 140.25 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,2,146
+171,234,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,102
+172,235,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,134
+665,236,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,115
+702,237,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,125
+367,238,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,124
+503,239,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,0
+166,240,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,104
+232,241,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,134
+561,242,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,125
+244,243,REALIZED_LOSS_RECOVERY_AUDIT,1,32.0,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='6' (32.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,119
+20,244,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,115
+126,245,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,88
+256,246,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,113
+288,247,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,119
+294,248,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,128
+370,249,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,133
+740,250,REALIZED_LOSS_RECOVERY_AUDIT,1,21.48,,NONE_PHYSICAL_UNITS,Cohort Pregnancies='1' (21.5% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,1,102

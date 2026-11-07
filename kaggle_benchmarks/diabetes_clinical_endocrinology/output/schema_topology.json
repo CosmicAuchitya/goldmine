@@ -1,0 +1,130 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "diabetes": {
+      "table_name": "diabetes",
+      "filename": "diabetes.csv",
+      "selected_sheet": null,
+      "estimated_rows": 768,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Pregnancies",
+        "Glucose",
+        "BloodPressure",
+        "SkinThickness",
+        "Insulin",
+        "BMI",
+        "DiabetesPedigreeFunction",
+        "Age",
+        "Outcome"
+      ],
+      "potential_keys": [],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "Pregnancies",
+          "dtype": "int64",
+          "sample_values": [
+            "6",
+            "1",
+            "8"
+          ],
+          "nunique_in_sample": 17,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Glucose",
+          "dtype": "int64",
+          "sample_values": [
+            "148",
+            "85",
+            "183"
+          ],
+          "nunique_in_sample": 136,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "BloodPressure",
+          "dtype": "int64",
+          "sample_values": [
+            "72",
+            "66",
+            "64"
+          ],
+          "nunique_in_sample": 47,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "SkinThickness",
+          "dtype": "int64",
+          "sample_values": [
+            "35",
+            "29",
+            "0"
+          ],
+          "nunique_in_sample": 51,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Insulin",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "94",
+            "168"
+          ],
+          "nunique_in_sample": 186,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "BMI",
+          "dtype": "float64",
+          "sample_values": [
+            "33.6",
+            "26.6",
+            "23.3"
+          ],
+          "nunique_in_sample": 248,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "DiabetesPedigreeFunction",
+          "dtype": "float64",
+          "sample_values": [
+            "0.627",
+            "0.351",
+            "0.672"
+          ],
+          "nunique_in_sample": 517,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Age",
+          "dtype": "int64",
+          "sample_values": [
+            "50",
+            "31",
+            "32"
+          ],
+          "nunique_in_sample": 52,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Outcome",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "0"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

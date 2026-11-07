@@ -1,0 +1,172 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "titanic": {
+      "table_name": "titanic",
+      "filename": "titanic.csv",
+      "selected_sheet": null,
+      "estimated_rows": 891,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "PassengerId",
+        "Survived",
+        "Pclass",
+        "Name",
+        "Sex",
+        "Age",
+        "SibSp",
+        "Parch",
+        "Ticket",
+        "Fare",
+        "Cabin",
+        "Embarked"
+      ],
+      "potential_keys": [
+        "PassengerId",
+        "Name",
+        "Ticket"
+      ],
+      "strictly_unique_primary_keys": [
+        "PassengerId",
+        "Name"
+      ],
+      "recommended_primary_key": "PassengerId",
+      "sample_columns": [
+        {
+          "name": "PassengerId",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "nunique_in_sample": 891,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Survived",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Pclass",
+          "dtype": "int64",
+          "sample_values": [
+            "3",
+            "1",
+            "2"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Name",
+          "dtype": "str",
+          "sample_values": [
+            "[MASKED_NAME]",
+            "[MASKED_NAME]",
+            "[MASKED_NAME]"
+          ],
+          "nunique_in_sample": 891,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Sex",
+          "dtype": "str",
+          "sample_values": [
+            "male",
+            "female"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Age",
+          "dtype": "float64",
+          "sample_values": [
+            "22.0",
+            "38.0",
+            "26.0"
+          ],
+          "nunique_in_sample": 88,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "SibSp",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "0",
+            "3"
+          ],
+          "nunique_in_sample": 7,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Parch",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1",
+            "2"
+          ],
+          "nunique_in_sample": 7,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Ticket",
+          "dtype": "str",
+          "sample_values": [
+            "A/5 21171",
+            "PC 17599",
+            "STON/O2. 3101282"
+          ],
+          "nunique_in_sample": 681,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Fare",
+          "dtype": "float64",
+          "sample_values": [
+            "7.25",
+            "71.2833",
+            "7.925"
+          ],
+          "nunique_in_sample": 248,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Cabin",
+          "dtype": "str",
+          "sample_values": [
+            "C85",
+            "C123",
+            "E46"
+          ],
+          "nunique_in_sample": 147,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Embarked",
+          "dtype": "str",
+          "sample_values": [
+            "S",
+            "C",
+            "Q"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

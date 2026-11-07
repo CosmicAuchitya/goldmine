@@ -1,0 +1,120 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 891"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Survived] = 0)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 549"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[Fare]), 'bi_ready_fact'[Survived] = 0)
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $12,142.72"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[Fare])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $28,693.95"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column PassengerId
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PassengerId
+		lineageTag: col-fact-PassengerId
+
+	column Survived
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Survived
+		lineageTag: col-fact-Survived
+		formatString: #,0
+
+	column Pclass
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Pclass
+		lineageTag: col-fact-Pclass
+		formatString: #,0
+
+	column Name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Name
+		lineageTag: col-fact-Name
+
+	column Sex
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Sex
+		lineageTag: col-fact-Sex
+
+	column Age
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Age
+		lineageTag: col-fact-Age
+		formatString: 0.00
+
+	column SibSp
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: SibSp
+		lineageTag: col-fact-SibSp
+		formatString: #,0
+
+	column Parch
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Parch
+		lineageTag: col-fact-Parch
+		formatString: #,0
+
+	column Ticket
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Ticket
+		lineageTag: col-fact-Ticket
+
+	column Fare
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Fare
+		lineageTag: col-fact-Fare
+		formatString: 0.00
+
+	column Cabin
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Cabin
+		lineageTag: col-fact-Cabin
+
+	column Embarked
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Embarked
+		lineageTag: col-fact-Embarked
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

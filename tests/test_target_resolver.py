@@ -136,3 +136,52 @@ def test_benchmarks_88_89_90_target_and_cost_resolution():
     assert res_bank["is_financial"] is False
 
 
+def test_benchmarks_91_92_93_target_and_cost_resolution():
+    """Verify target and cost detection on schemas matching Benchmarks 91, 92, 93."""
+    # Benchmark 91: Titanic Maritime Passenger Safety
+    df_titanic = pd.DataFrame({
+        "PassengerId": [1, 2, 3, 4],
+        "Survived": [0, 1, 1, 0],
+        "Pclass": [3, 1, 3, 1],
+        "Sex": ["male", "female", "female", "female"],
+        "Fare": [7.25, 71.2833, 7.925, 53.1]
+    })
+    res_tit = resolve_canonical_target_and_cost(df_titanic)
+    assert res_tit["target_col"] == "Survived"
+    assert res_tit["cost_col"] == "Fare"
+    assert res_tit["is_financial"] is True
+    # In survival outcomes, 0 (perished) is adverse
+    assert int(res_tit["binary_target"].sum()) == 2
+
+    # Benchmark 92: Diamonds Gemological Quality & Luxury Retail
+    df_diamonds = pd.DataFrame({
+        "carat": [0.23, 0.21, 0.23, 0.29],
+        "cut": ["Ideal", "Premium", "Good", "Fair"],
+        "color": ["E", "E", "E", "I"],
+        "clarity": ["SI2", "SI1", "VS1", "VS2"],
+        "price": [326, 326, 327, 334]
+    })
+    res_dia = resolve_canonical_target_and_cost(df_diamonds)
+    assert res_dia["target_col"] == "cut"
+    assert res_dia["cost_col"] == "price"
+    assert res_dia["is_financial"] is True
+    # Substandard cuts ('Good', 'Fair') are adverse
+    assert int(res_dia["binary_target"].sum()) == 2
+
+    # Benchmark 93: Pima Indians Diabetes Clinical Endocrinology
+    df_diab = pd.DataFrame({
+        "Pregnancies": [6, 1, 8, 1],
+        "Glucose": [148, 85, 183, 89],
+        "BloodPressure": [72, 66, 64, 66],
+        "BMI": [33.6, 26.6, 23.3, 28.1],
+        "Age": [50, 31, 32, 21],
+        "Outcome": [1, 0, 1, 0]
+    })
+    res_diab = resolve_canonical_target_and_cost(df_diab)
+    assert res_diab["target_col"] == "Outcome"
+    assert res_diab["cost_col"] is None
+    assert res_diab["is_financial"] is False
+    assert int(res_diab["binary_target"].sum()) == 2
+
+
+
