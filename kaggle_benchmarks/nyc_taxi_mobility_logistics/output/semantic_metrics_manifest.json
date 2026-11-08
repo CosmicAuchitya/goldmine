@@ -95,8 +95,8 @@
       "type": "categorical_segment"
     },
     "secondary_dimension": {
-      "name": "pickup_borough",
-      "cardinality": 4,
+      "name": "color",
+      "cardinality": 2,
       "type": "categorical_subsegment"
     }
   }

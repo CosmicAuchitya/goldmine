@@ -8,8 +8,7 @@ Across **1,338 physical records** audited in your dataset, our system identified
 - **Action**: Do NOT waste capital targeting individual groups within `region`. Focus instead on global process improvements across the entire operation.
 
 ### 3. Danger Threshold (Red-Line)
-- **Key Operational Red-Line**: In metric `charges`, when values reach **(16639.913, 63770.428]**, failure risk surges abruptly to **76.12%** (compared to **0.00%** in range (1121.873, 4740.287]).
-- **Preventive Guardrail**: Establish early-warning alerts before accounts cross this critical `charges` threshold to prevent realized losses.
+- **No Physical Numeric Cliffs**: No continuous operational metrics in the current schema exhibit statistically significant threshold failure cliff behavior.
 
 ### 4. Your 3 Strategic Choices (You Decide — We Don't Force Dictates)
 - **Pathway A (Capital Preservation & Freeze — $0 CapEx)**: $0.00 targeted spend advised. Statistical Circuit-Breaker confirms failure rates across cohorts are random sampling noise. Freeze targeted budget to prevent wasting capital on phantom patterns.
@@ -32,8 +31,7 @@ Aapke audit kiye gaye **1,338 records** mein se, system ne **274 failure / churn
 - **Sahi Action**: Kisi ek cohort par targeted marketing ya discount ka paisa mat lagayein. Poore system ke standard process ko globally improve karein.
 
 ### 3. Khatre Ki Laal Rekha (Danger Limit)
-- **Khatre Ki Laal Rekha (Danger Limit)**: Metric `charges` mein jab values **(16639.913, 63770.428]** ke daayre mein pahunchti hain, toh failure rate badhkar **76.12%** ho jata hai (jabki (1121.873, 4740.287] range mein yeh sirf **0.00%** rehta hai).
-- **Bachav Ka Tarika**: Accounts ko is `charges` limit tak pahunchne se pehle hi early-warning trigger karein taaki realized churn/default ko pehle hi roka ja sake.
+- **Koi Numeric Cliff Nahi**: Is dataset ke raw columns mein koi aisa continuous metric nahi mila jisme statistically significant threshold risk cliff ho.
 
 ### 4. Aapke Paas 3 Imandar Raste Hain (Faisla Aapka — Koi Jabardasti Nahi)
 - **Pathway A (Paisa Bachao / Budget Freeze — $0 CapEx)**: $0 targeted kharch ki salah. Statistical Circuit-Breaker ne confirm kiya hai ki alag-alag groups ka farak sirf random chance hai. Targeted budget freeze rakhein taaki bekar kharch na ho.

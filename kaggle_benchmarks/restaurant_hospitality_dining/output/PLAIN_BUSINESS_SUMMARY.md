@@ -4,17 +4,16 @@
 Across **244 physical records** audited in your dataset, our system identified **93 critical failure events (38.11%)**, generating **$1,930.34** in direct financial liability / capital at risk (out of $4,827.77 total monitored portfolio volume).
 
 ### 2. Where Is the Bottleneck?
-- **🛑 $0 Spend Advisory (No Cherry-Picking)**: Our Statistical Circuit-Breaker proves that failure rates across `day` are **uniformly distributed (random noise)**.
-- **Action**: Do NOT waste capital targeting individual groups within `day`. Focus instead on global process improvements across the entire operation.
+- **Main Bottleneck Identified**: Group `day` = **'Fri'** has the highest failure rate at **78.95%** (compared to 34.67% across the rest of the business).
+- **Strategic Priority**: Direct intervention on this specific group will yield the highest return on operational effort.
 
 ### 3. Danger Threshold (Red-Line)
-- **Key Operational Red-Line**: In metric `total_bill`, when values reach **(24.127, 50.81]**, failure risk surges abruptly to **47.54%** (compared to **31.15%** in range (17.795, 24.127]).
-- **Preventive Guardrail**: Establish early-warning alerts before accounts cross this critical `total_bill` threshold to prevent realized losses.
+- **No Physical Numeric Cliffs**: No continuous operational metrics in the current schema exhibit statistically significant threshold failure cliff behavior.
 
 ### 4. Your 3 Strategic Choices (You Decide — We Don't Force Dictates)
-- **Pathway A (Capital Preservation & Freeze — $0 CapEx)**: $0.00 targeted spend advised. Statistical Circuit-Breaker confirms failure rates across cohorts are random sampling noise. Freeze targeted budget to prevent wasting capital on phantom patterns.
-- **Pathway B (Data & Telemetry Audit)**: $0.00 cohort spend. Audit upstream operational data collection to capture missing operational drivers that truly separate failure vs success.
-- **Pathway C (Global System Hygiene)**: Implement global standard operating procedure upgrades across all accounts equally, rather than cherry-picking statistically uniform cohorts.
+- **Pathway A (Low-Risk Pilot)**: **$33.63 risk averted** (2 excess adverse events — 25% Excess-Risk Compression). Est. Cost: $5,000 - $15,000, Timeline: 1 - 2 Weeks. *Advantage*: Zero disruption to daily operations; uses simple early-warning queue alerts on `day = Fri` to stop the first 25% of avoidable excess failures. *Trade-Off*: Leaves 75% of excess losses in `day = Fri` unaddressed.
+- **Pathway B (Focused Operational Fix)**: **$84.07 risk averted** (5 excess adverse events — 60% Excess-Risk Compression). Est. Cost: $25,000 - $50,000, Timeline: 30 - 45 Days. *Advantage*: Highest return on operational effort; directly fixes the `day = Fri` bottleneck (78.95% failure rate vs 34.67% across the rest of the business). *Trade-Off*: Requires frontline team training on targeted outreach protocols.
+- **Pathway C (Deep Structural Overhaul)**: **$134.51 risk averted** (8 excess adverse events — 100% Baseline Parity). Est. Cost: $100,000 - $250,000, Timeline: 90 - 180 Days. *Advantage*: Brings `day = Fri` down from 78.95% to normal rest-of-business parity (34.67%), eliminating all 8 avoidable excess failures. *Trade-Off*: Higher upfront investment and 90 to 180 days payback timeline.
 
 ### 5. Immediate Team Action Worklist (`actionable_priority_worklist.csv`)
 - **Preventive Retention Watch (151 active accounts)**: High-risk active accounts that have NOT yet failed. Have your customer success or QA team contact these accounts immediately.
@@ -28,17 +27,16 @@ Across **244 physical records** audited in your dataset, our system identified *
 Aapke audit kiye gaye **244 records** mein se, system ne **93 failure / churn cases (38.11%)** pakde hain, jisse kul **$1,930.34** ka seedha financial nuksan / risk ($4,827.77 ke kul portfolio volume mein se) ho raha hai.
 
 ### 2. Sabse Bada Nuksan Kahan Ho Raha Hai?
-- **🛑 $0 Spend Advisory (Targeted Paisa Barbaad Mat Karein)**: Statistical Circuit-Breaker ne confirm kiya hai ki `day` ke alag-alag groups mein farak sirf **random luck / noise** hai.
-- **Sahi Action**: Kisi ek cohort par targeted marketing ya discount ka paisa mat lagayein. Poore system ke standard process ko globally improve karein.
+- **Sabse Bada Bottleneck Kahan Hai?**: Group `day` = **'Fri'** mein sabse zyada failure/churn rate **78.95%** hai (jabki baaki business mein yeh sirf 34.67% hai).
+- **Team Ka Focus**: Sabse pehle isi specific cohort par dhyan dein, yahin se sabse tez improvement milega.
 
 ### 3. Khatre Ki Laal Rekha (Danger Limit)
-- **Khatre Ki Laal Rekha (Danger Limit)**: Metric `total_bill` mein jab values **(24.127, 50.81]** ke daayre mein pahunchti hain, toh failure rate badhkar **47.54%** ho jata hai (jabki (17.795, 24.127] range mein yeh sirf **31.15%** rehta hai).
-- **Bachav Ka Tarika**: Accounts ko is `total_bill` limit tak pahunchne se pehle hi early-warning trigger karein taaki realized churn/default ko pehle hi roka ja sake.
+- **Koi Numeric Cliff Nahi**: Is dataset ke raw columns mein koi aisa continuous metric nahi mila jisme statistically significant threshold risk cliff ho.
 
 ### 4. Aapke Paas 3 Imandar Raste Hain (Faisla Aapka — Koi Jabardasti Nahi)
-- **Pathway A (Paisa Bachao / Budget Freeze — $0 CapEx)**: $0 targeted kharch ki salah. Statistical Circuit-Breaker ne confirm kiya hai ki alag-alag groups ka farak sirf random chance hai. Targeted budget freeze rakhein taaki bekar kharch na ho.
-- **Pathway B (Data Telemetry Audit)**: $0 cohort kharch. Apne data collection system ko audit karein taaki wo missing variables capture ho sakein jo sach mein risk decide karte hain.
-- **Pathway C (Global Process Sudhar)**: Kisi ek group ko target karne ke bajay poori company ke basic process ko ek sath sudharein.
+- **Pathway A (Chhota / Low-Risk Trial)**: **$33.63 risk averted** (2 excess adverse events — 25% Excess-Risk Compression). Kharcha: $5,000 - $15,000, Samay: 1 - 2 Weeks. *Fayda*: Daily kaam mein bina kisi rukawat ke `day = Fri` par simple early-warning alerts lagakar shuruati 25% avoidable nuksan turant roka ja sakta hai. *Nuksan*: Is group ka baaki 75% extra risk abhi bhi bacha rahega.
+- **Pathway B (Focused / Targeted Fix)**: **$84.07 risk averted** (5 excess adverse events — 60% Excess-Risk Compression). Kharcha: $25,000 - $50,000, Samay: 30 - 45 Days. *Fayda*: Mehnat aur paise par sabse behtar return (Best ROI); seedha `day = Fri` bottleneck (78.95% failure rate vs baaki business mein 34.67%) ko theek karke 60% extra nuksan kam karta hai. *Nuksan*: Frontline team ko naye targeted follow-up process ki training deni hogi.
+- **Pathway C (Bada / Structural Badlav)**: **$134.51 risk averted** (8 excess adverse events — 100% Baseline Parity). Kharcha: $100,000 - $250,000, Samay: 90 - 180 Days. *Fayda*: `day = Fri` ke 78.95% failure rate ko ghata kar baaki business ke normal 34.67% level par le aata hai, jisse poore 8 avoidable excess failures khatam ho jate hain. *Nuksan*: Shuruati kharcha zyada hai aur poora asar aane mein 90 se 180 din lagenge.
 
 ### 5. Aaj Subah Team Ko Kya Kaam Dein? (`actionable_priority_worklist.csv`)
 - **Bachav Soochi - Preventive Retention Watch (151 active accounts)**: Yeh wo active accounts hain jo abhi tak kharab nahi hue hain, par risk zone mein hain. Team se turant preventive contact karwayein.

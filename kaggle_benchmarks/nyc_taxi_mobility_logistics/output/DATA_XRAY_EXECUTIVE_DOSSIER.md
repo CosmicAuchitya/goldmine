@@ -41,22 +41,20 @@
 
 ---
 
-### 5. Secondary Segment / Node Bottlenecks (pickup_borough)
+### 5. Secondary Segment / Node Bottlenecks (color)
 *Sub-nodes exhibiting concentrated friction:*
 
-| pickup_borough | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| color | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Manhattan** | 5,268 | 1,397 | **26.52%** | $19,076.13 |
-| **Queens** | 657 | 266 | **40.49%** | $5,735.57 |
-| **Brooklyn** | 383 | 119 | **31.07%** | $1,493.45 |
-| **Bronx** | 99 | 25 | **25.25%** | $256.30 |
+| **yellow** | 5,451 | 1,412 | **25.9%** | $22,036.32 |
+| **green** | 982 | 400 | **40.73%** | $4,558.13 |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `dropoff_borough` may be confounded by underlying volume distributions, scale effects, or `pickup_borough` concentration.
+> - Observed risk in `dropoff_borough` may be confounded by underlying volume distributions, scale effects, or `color` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
@@ -93,14 +91,14 @@
 *Objective: Unbiased problem diagnosis, empirical proof of solutions, executive counter-questions, and honest trade-offs.*
 
 ### 1. Ground-Truth Problem Diagnosis (Audited Friction Footprint)
-- **Domain Context**: **Urban Mobility, Fleet Operations & Transit Logistics**
+- **Domain Context**: **Hospitality Restaurant Operations & Dining Guest Experience**
 - **Monitored Population**: **6,433 physical records**
 - **Target Adverse Events (`payment`)**: **1,812 events (28.17%)**
-- **Highest-Observed Candidate Segment**: **`color = green`**
-  - **Cohort Volume**: 982 records
-  - **Adverse Events in Segment**: 400 events
-  - **Segment Failure Rate**: **40.73%** (vs. 25.9% rest-of-population baseline — **1.57x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 9.51, p = 0.0000e+00`)** — **145.6 Attributable Excess Events (+14.83% above 25.9% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`dropoff_borough = Queens`**
+  - **Cohort Volume**: 542 records
+  - **Adverse Events in Segment**: 230 events
+  - **Segment Failure Rate**: **42.44%** (vs. 26.85% rest-of-population baseline — **1.58x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 7.72, p = 1.1990e-14`)** — **84.4 Attributable Excess Events (+15.58% above 26.85% rest-of-system baseline)**
 
 ---
 
@@ -109,9 +107,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$410.23 risk averted (36 excess adverse events — 25% Excess-Risk Compression)** | [$319.07 to $501.39] (28 to 44 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (110 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$991.39 risk averted (87 excess adverse events — 60% Excess-Risk Compression)** | [$774.88 to $1,219.30] (68 to 107 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$1,663.72 risk averted (146 excess adverse events — 100% Baseline Parity)** | [$1,287.67 to $2,028.37] (113 to 178 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$343.99 risk averted (21 excess adverse events — 25% Excess-Risk Compression)** | [$245.71 to $442.27] (15 to 27 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (63 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$835.40 risk averted (51 excess adverse events — 60% Excess-Risk Compression)** | [$606.08 to $1,064.73] (37 to 65 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$1,375.96 risk averted (84 excess adverse events — 100% Baseline Parity)** | [$999.21 to $1,769.09] (61 to 108 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -119,33 +117,33 @@
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
 #### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 145.6 attributable excess events in `color = green` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (110 excess events) and baseline systemic friction unaddressed.
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 84.4 attributable excess events in `dropoff_borough = Queens` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (63 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
 #### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `color = green` bottleneck (40.73% vs 25.9% rest-of-system, p = 0.0000e+00, +14.83% attributable excess risk).
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `dropoff_borough = Queens` bottleneck (42.44% vs 26.85% rest-of-system, p = 1.1990e-14, +15.58% attributable excess risk).
 - **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
 #### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `color = green` from 40.73% down to exact statistical parity with the rest-of-population baseline (25.9%), eliminating all 146 attributable excess failures.
+- **Fayda (Upside & Benefits)**: Brings `dropoff_borough = Queens` from 42.44% down to exact statistical parity with the rest-of-population baseline (26.85%), eliminating all 84 attributable excess failures.
 - **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
 ---
 
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
-*Board ya leadership (VP of Fleet Operations & Urban Transit Logistics) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
+*Board ya leadership (VP of Hospitality Operations & Guest Experience) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'color = green' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'color = green' is 40.73% compared to 25.90% across the remainder of the population (Relative Risk Multiplier: 1.57x across 982 physical records). The empirical separation yields z = 9.51 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 145.6 attributable excess events.
+**Q1: Is the concentration in 'dropoff_borough = Queens' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'dropoff_borough = Queens' is 42.44% compared to 26.85% across the remainder of the population (Relative Risk Multiplier: 1.58x across 542 physical records). The empirical separation yields z = 7.72 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 84.4 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 982 records in this high-risk partition, 400 were confirmed adverse events (40.73% precision vs 25.90% rest-of-system baseline, +14.83% excess risk). Targeting this cohort addresses 145.6 attributable excess events while absorbing 582 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Out of 542 records in this high-risk partition, 230 were confirmed adverse events (42.44% precision vs 26.85% rest-of-system baseline, +15.58% excess risk). Targeting this cohort addresses 84.4 attributable excess events while absorbing 312 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (146 excess events, bringing `color = green` to exact 25.90% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (87 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (84 excess events, bringing `dropoff_borough = Queens` to exact 26.85% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (51 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---
@@ -156,21 +154,6 @@
 ### 1. Non-Linear Quantile Threshold Cliffs (Top Operational Drivers)
 *Discretized quartile breakdown exposing where gradual performance transitions into structural failure:*
 
-#### 📊 Feature: `tip` (Max Inflection Delta: 55.96%, Chi-Square p: 0.0000e+00 — Statistically Significant)
-| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(-0.001, 1.7]` | 3,238 | 1,812 | **55.96%** | **Structural Cliff Breach** |
-| **Q2** | `(1.7, 2.8]` | 1,591 | 0 | **0.0%** | **Optimal Baseline** |
-| **Q3** | `(2.8, 33.2]` | 1,604 | 0 | **0.0%** | **Optimal Baseline** |
-
-#### 📊 Feature: `total` (Max Inflection Delta: 27.55%, Chi-Square p: 9.4331e-121 — Statistically Significant)
-| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(1.2990000000000002, 10.8]` | 1,650 | 831 | **50.36%** | **Structural Cliff Breach** |
-| **Q2** | `(10.8, 14.16]` | 1,613 | 368 | **22.81%** | Transitional Tier |
-| **Q3** | `(14.16, 20.3]` | 1,569 | 347 | **22.12%** | Transitional Tier |
-| **Q4** | `(20.3, 174.82]` | 1,601 | 266 | **16.61%** | **Optimal Baseline** |
-
 #### 📊 Feature: `distance` (Max Inflection Delta: 5.59%, Chi-Square p: 9.8540e-13 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -179,17 +162,32 @@
 | **Q3** | `(1.64, 3.21]` | 1,609 | 434 | **26.97%** | Transitional Tier |
 | **Q4** | `(3.21, 36.7]` | 1,606 | 360 | **22.42%** | **Optimal Baseline** |
 
+#### 📊 Feature: `fare` (Max Inflection Delta: 5.44%, Chi-Square p: 1.0368e-12 — Statistically Significant)
+| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Q1** | `(0.999, 6.5]` | 1,832 | 620 | **33.84%** | **Peak Vulnerability Stratum** |
+| **Q2** | `(6.5, 9.5]` | 1,588 | 451 | **28.4%** | Transitional Tier |
+| **Q3** | `(9.5, 15.0]` | 1,467 | 401 | **27.33%** | Transitional Tier |
+| **Q4** | `(15.0, 150.0]` | 1,546 | 340 | **21.99%** | **Optimal Baseline** |
+
+#### 📊 Feature: `passengers` (Max Inflection Delta: 2.15%, Chi-Square p: 3.9853e-01 — Uniform Noise — Not Significant)
+| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Q1** | `(-0.001, 1.0]` | 4,774 | 1,325 | **27.75%** | Statistical Noise (p >= 0.05) |
+| **Q2** | `(1.0, 2.0]` | 876 | 262 | **29.91%** | Statistical Noise (p >= 0.05) |
+| **Q3** | `(2.0, 6.0]` | 783 | 225 | **28.74%** | Statistical Noise (p >= 0.05) |
+
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`passengers` vs. `tip`)
-*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 0.0000e+00):*
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`passengers` vs. `fare`)
+*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 5.1034e-09):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `passengers` (<= 1.00) & High `tip` (> 1.70) | 2,329 | 0 | **0.0%** | **Optimal Performance Buffer** |
-| **Q2 (Unbuffered Low)** | Low `passengers` (<= 1.00) & Low `tip` (<= 1.70) | 2,445 | 1,325 | **54.19%** | Baseline Operating Profile |
-| **Q3 (Masked Risk)** | High `passengers` (> 1.00) & High `tip` (> 1.70) | 866 | 0 | **0.0%** | Partially Buffered Risk (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `passengers` (> 1.00) & Low `tip` (<= 1.70) | 793 | 487 | **61.41%** | **Compound Maximum Risk Exposure** |
+| **Q1 (Optimal Zone)** | Low `passengers` (<= 1.00) & High `fare` (> 9.50) | 2,230 | 523 | **23.45%** | **Optimal Performance Buffer** |
+| **Q2 (Unbuffered Low)** | Low `passengers` (<= 1.00) & Low `fare` (<= 9.50) | 2,544 | 802 | **31.53%** | Baseline Operating Profile |
+| **Q3 (Masked Risk)** | High `passengers` (> 1.00) & High `fare` (> 9.50) | 783 | 218 | **27.84%** | Partially Buffered Risk (Elevated Drag) |
+| **Q4 (Catastrophic Zone)** | High `passengers` (> 1.00) & Low `fare` (<= 9.50) | 876 | 269 | **30.71%** | **Compound Maximum Risk Exposure** |
 
 ---
 
@@ -198,49 +196,49 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Fare Reconciliation if passengers > 2.00)** | Operational Filter | 783 | 12.17% | **12.42%** | **28.09%** | 558 | 12.08% |
-| **Policy 2: Surgical (Fare Reconciliation if passengers > 1.00)** | Operational Filter | 1,659 | 25.79% | **26.88%** | **27.75%** | 1,172 | 25.36% |
-| **Policy 3: Compound (Fare Reconciliation if passengers > 1.00 OR tip < 1.70)** | Operational Filter | 4,079 | 63.41% | **100.0%** | **0.0%** | 2,267 | 49.06% |
+| **Policy 1: Conservative (Service Quality Audit if passengers > 2.00)** | Operational Filter | 783 | 12.17% | **12.42%** | **28.09%** | 558 | 12.08% |
+| **Policy 2: Surgical (Service Quality Audit if passengers > 1.00)** | Operational Filter | 1,659 | 25.79% | **26.88%** | **27.75%** | 1,172 | 25.36% |
+| **Policy 3: Compound (Service Quality Audit if passengers > 1.00 OR fare < 9.50)** | Operational Filter | 4,022 | 62.52% | **68.21%** | **23.89%** | 2,786 | 60.29% |
 
 ---
 
 ### 4. Confounder Isolation & Simpson's Paradox Defense
 > [!NOTE]
-> **Collinearity Audit between `distance` and `total`**:
-> - Pairwise Pearson Correlation: **r = 0.905**
-> - Macro Target Correlation: `distance`: -0.079 | `total`: -0.174
-> - Stratified Correlation of `total` across `distance` Quartiles:
->   - In `distance` stratum `(-0.001, 0.98]`: partial r = **-0.197**
->   - In `distance` stratum `(0.98, 1.64]`: partial r = **-0.383**
->   - In `distance` stratum `(1.64, 3.21]`: partial r = **-0.319**
->   - In `distance` stratum `(3.21, 36.7]`: partial r = **-0.147**
-> - **Scientific Finding**: Macro correlation of `total` is heavily confounded by `distance`. Operational intervention must address the root driver rather than the proxy symptom.
+> **Collinearity Audit between `distance` and `tolls`**:
+> - Pairwise Pearson Correlation: **r = 0.635**
+> - Macro Target Correlation: `distance`: -0.079 | `tolls`: -0.061
+> - Stratified Correlation of `tolls` across `distance` Quartiles:
+>   - In `distance` stratum `(-0.001, 0.98]`: partial r = **-0.017**
+>   - In `distance` stratum `(0.98, 1.64]`: partial r = **0.0**
+>   - In `distance` stratum `(1.64, 3.21]`: partial r = **0.041**
+>   - In `distance` stratum `(3.21, 36.7]`: partial r = **-0.077**
+> - **Scientific Finding**: Macro correlation of `tolls` is heavily confounded by `distance`. Operational intervention must address the root driver rather than the proxy symptom.
 
 ---
 
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
-**MQ1: At what exact physical threshold does 'tip' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
-> **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'tip'. Across the 4 quartiles, event failure rates drop from 55.96% in Q1 ((-0.001, 1.7]) down to 0.0% in Q4 ((2.8, 33.2]) (Max Delta: 55.96 percentage points, Chi-Square p < 0.0001). This establishes that 'tip' operates as an acute non-linear cliff (step increase of 55.96 percentage points, 2.0x mean delta) rather than a benign linear drift.
+**MQ1: At what exact physical threshold does 'distance' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
+> **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'distance'. Across the 4 quartiles, event failure rates drop from 34.43% in Q1 ((-0.001, 0.98]) down to 22.42% in Q4 ((3.21, 36.7]) (Max Delta: 5.59 percentage points, Chi-Square p < 0.0001). This establishes that 'distance' exhibits a progressive gradient across quartiles (step ratio 1.4x mean progression) rather than an isolated singular cliff.
 
-**MQ2: What is the critical operational boundary for secondary driver 'total', and does breach of this threshold alter failure probability?**  
-> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'total' quartile threshold (Chi-Square p = 9.4331e-121). In high-risk Q1 ((1.2990000000000002, 10.8]), the adverse rate is 50.36%, compared to 16.61% in favorable Q4 ((20.3, 174.82]). Managing 'total' into its favorable operating window delivers a 33.75 percentage point risk reduction.
+**MQ2: What is the critical operational boundary for secondary driver 'fare', and does breach of this threshold alter failure probability?**  
+> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'fare' quartile threshold (Chi-Square p = 1.0368e-12). In high-risk Q1 ((0.999, 6.5]), the adverse rate is 33.84%, compared to 21.99% in favorable Q4 ((15.0, 150.0]). Managing 'fare' into its favorable operating window delivers a 11.85 percentage point risk reduction.
 
-**MQ3: Can high levels of protective factor 'tip' compensate for elevated risk factor 'passengers', or does 'passengers' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'passengers' cohort, elevating 'tip' shifts adverse events from 61.41% (Compound Catastrophe) to 0.0% (Masked Risk). Records with elevated 'passengers' and high 'tip' achieve a 0.0% failure rate, which closely approaches the 0.0% Optimal Zone rate and demonstrates that high 'tip' effectively buffers the risk of elevated 'passengers'.
+**MQ3: Can high levels of protective factor 'fare' compensate for elevated risk factor 'passengers', or does 'passengers' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 5.1034e-09) reveals that within the high 'passengers' cohort, elevating 'fare' shifts adverse events from 30.71% (Compound Catastrophe) to 27.84% (Masked Risk). Records with elevated 'passengers' and high 'fare' experience 27.84% failure—4.39 percentage points (1.19x) higher than the 23.45% failure rate observed when 'passengers' is controlled in the Optimal Zone. Thus, 'passengers' retains a residual risk drag even when 'fare' is elevated.
 
-**MQ4: How significantly does third-order metric 'distance' buffer against failure, and what is the minimum safe threshold?**  
-> **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 9.8540e-13) shows that lower levels of 'distance' incur 34.43% adverse events in Q1 ((-0.001, 0.98]), whereas elevating 'distance' into Q4 ((3.21, 36.7]) reduces adverse events by 12.01 percentage points down to 22.42%. This isolates Q1 as the primary vulnerability stratum.
+**MQ4: Does third-order metric 'passengers' exhibit a statistically significant protective buffer or operational threshold?**  
+> **Empirical Data Answer**: Quartile breakdown of third-order metric 'passengers' shows statistically uniform event rates from Q1 (27.75%) through Q4 (28.74%) (Max Delta: 2.15 percentage points, Chi-Square p = 0.3985). Because p >= 0.05, 'passengers' does not act as a statistically significant operational buffer or risk driver.
 
 **MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 1812 catastrophic records reveals that only 0.0% breach two or more critical parameters (passengers, tip) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
+> **Empirical Data Answer**: Tail risk audit across the lowest 1812 catastrophic records reveals that only 3.48% breach two or more critical parameters (passengers, fare) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Fare Reconciliation if passengers > 2.00)), 783 records (12.17%) are flagged, capturing 12.42% of all adverse events with 558 false alarms. Under Surgical Triage (Policy 2: Surgical (Fare Reconciliation if passengers > 1.00)), flagged volume expands to 1659 records (25.79%), capturing 26.88% of adverse events and shifting the unflagged adverse rate to 27.75%, at the cost of 1172 false alarms (25.36% of normal records). Crucially, both policies yield an efficiency ratio of ~1.02 recall/scrap ratio, which is mathematically equivalent to random coin-flip selection (1.00x lift) and fails to reduce the retained adverse rate (27.75%). Recommendation: Do NOT deploy threshold filtering on this variable, as it generates false alarms without improving cohort purity.
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Service Quality Audit if passengers > 2.00)), 783 records (12.17%) are flagged, capturing 12.42% of all adverse events with 558 false alarms. Under Surgical Triage (Policy 2: Surgical (Service Quality Audit if passengers > 1.00)), flagged volume expands to 1659 records (25.79%), capturing 26.88% of adverse events and shifting the unflagged adverse rate to 27.75%, at the cost of 1172 false alarms (25.36% of normal records). Crucially, both policies yield an efficiency ratio of ~1.02 recall/scrap ratio, which is mathematically equivalent to random coin-flip selection (1.00x lift) and fails to reduce the retained adverse rate (27.75%). Recommendation: Do NOT deploy threshold filtering on this variable, as it generates false alarms without improving cohort purity.
 
-**MQ7: Does 'total' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'distance' (Simpson's Paradox)?**  
-> **Empirical Data Answer**: At the unadjusted level, 'total' shows correlation r = -0.174 with the target. However, 'total' is strongly co-linear with 'distance' (r = 0.905). When stratifying across 'distance' quartiles, the correlation of 'total' within strata shifts to ((-0.001, 0.98]: r=-0.197, (0.98, 1.64]: r=-0.383, (1.64, 3.21]: r=-0.319). This proves that much of 'total's macro effect is mediated through its relationship with 'distance', warning against isolated policy changes on 'total' alone.
+**MQ7: Does 'tolls' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'distance' (Simpson's Paradox)?**  
+> **Empirical Data Answer**: At the unadjusted level, 'tolls' shows correlation r = -0.061 with the target. However, 'tolls' is strongly co-linear with 'distance' (r = 0.635). When stratifying across 'distance' quartiles, the correlation of 'tolls' within strata shifts to ((-0.001, 0.98]: r=-0.017, (0.98, 1.64]: r=0.0, (1.64, 3.21]: r=0.041). This proves that much of 'tolls's macro effect is mediated through its relationship with 'distance', warning against isolated policy changes on 'tolls' alone.
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

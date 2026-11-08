@@ -100,11 +100,11 @@
 - **Domain Context**: **Gemological Operations & Luxury Merchandising Quality**
 - **Monitored Population**: **53,940 physical records**
 - **Target Adverse Events (`cut`)**: **6,516 events (12.08%)**
-- **Highest-Observed Candidate Segment**: **`depth in (62.5, 79.0]`**
-  - **Cohort Volume**: 13,076 records
-  - **Adverse Events in Segment**: 4,582 events
-  - **Segment Failure Rate**: **35.04%** (vs. 4.73% rest-of-population baseline — **7.41x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 92.56, p = 0.0000e+00`)** — **3,963.1 Attributable Excess Events (+30.31% above 4.73% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`clarity = SI2`**
+  - **Cohort Volume**: 9,194 records
+  - **Adverse Events in Segment**: 1,547 events
+  - **Segment Failure Rate**: **16.83%** (vs. 11.1% rest-of-population baseline — **1.52x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 15.33, p = 0.0000e+00`)** — **526.0 Attributable Excess Events (+5.72% above 11.1% rest-of-system baseline)**
 
 ---
 
@@ -113,9 +113,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$3,911,380.11 risk averted (991 excess adverse events — 25% Excess-Risk Compression)** | [$3,800,866.84 to $4,017,946.47] (963 to 1,018 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (2,972 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$9,385,733.49 risk averted (2,378 excess adverse events — 60% Excess-Risk Compression)** | [$9,125,237.95 to $9,646,229.04] (2,312 to 2,444 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$15,641,573.52 risk averted (3,963 excess adverse events — 100% Baseline Parity)** | [$15,207,414.28 to $16,075,732.77] (3,853 to 4,073 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$628,199.43 risk averted (132 excess adverse events — 25% Excess-Risk Compression)** | [$537,776.79 to $713,862.99] (113 to 150 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (394 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$1,503,871.37 risk averted (316 excess adverse events — 60% Excess-Risk Compression)** | [$1,284,953.39 to $1,718,030.27] (270 to 361 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$2,503,279.56 risk averted (526 excess adverse events — 100% Baseline Parity)** | [$2,146,348.07 to $2,860,211.06] (451 to 601 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -123,17 +123,17 @@
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
 #### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 3963.1 attributable excess events in `depth in (62.5, 79.0]` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (2,972 excess events) and baseline systemic friction unaddressed.
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 526.0 attributable excess events in `clarity = SI2` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (394 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
 #### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `depth in (62.5, 79.0]` bottleneck (35.04% vs 4.73% rest-of-system, p = 0.0000e+00, +30.31% attributable excess risk).
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `clarity = SI2` bottleneck (16.83% vs 11.1% rest-of-system, p = 0.0000e+00, +5.72% attributable excess risk).
 - **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
 #### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `depth in (62.5, 79.0]` from 35.04% down to exact statistical parity with the rest-of-population baseline (4.73%), eliminating all 3,963 attributable excess failures.
+- **Fayda (Upside & Benefits)**: Brings `clarity = SI2` from 16.83% down to exact statistical parity with the rest-of-population baseline (11.1%), eliminating all 526 attributable excess failures.
 - **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
@@ -142,14 +142,14 @@
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
 *Board ya leadership (VP of Gemological Operations & Merchandising Quality) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'depth in (62.5, 79.0]' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'depth in (62.5, 79.0]' is 35.04% compared to 4.73% across the remainder of the population (Relative Risk Multiplier: 7.41x across 13,076 physical records). The empirical separation yields z = 92.56 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 3963.1 attributable excess events.
+**Q1: Is the concentration in 'clarity = SI2' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'clarity = SI2' is 16.83% compared to 11.10% across the remainder of the population (Relative Risk Multiplier: 1.52x across 9,194 physical records). The empirical separation yields z = 15.33 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 526.0 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 13,076 records in this high-risk partition, 4,582 were confirmed adverse events (35.04% precision vs 4.73% rest-of-system baseline, +30.31% excess risk). Targeting this cohort addresses 3963.1 attributable excess events while absorbing 8,494 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Out of 9,194 records in this high-risk partition, 1,547 were confirmed adverse events (16.83% precision vs 11.10% rest-of-system baseline, +5.72% excess risk). Targeting this cohort addresses 526.0 attributable excess events while absorbing 7,647 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (3,963 excess events, bringing `depth in (62.5, 79.0]` to exact 4.73% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (2,378 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (526 excess events, bringing `clarity = SI2` to exact 11.10% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (316 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---
@@ -186,15 +186,15 @@
 
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`depth` vs. `price`)
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`depth` vs. `y`)
 *Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 0.0000e+00):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `depth` (<= 61.80) & High `price` (> 2401.00) | 13,010 | 1,039 | **7.99%** | **Optimal Performance Buffer** |
-| **Q2 (Unbuffered Low)** | Low `depth` (<= 61.80) & Low `price` (<= 2401.00) | 14,098 | 684 | **4.85%** | Baseline Operating Profile |
-| **Q3 (Masked Risk)** | High `depth` (> 61.80) & High `price` (> 2401.00) | 13,945 | 2,783 | **19.96%** | Partially Buffered Risk (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `depth` (> 61.80) & Low `price` (<= 2401.00) | 12,887 | 2,010 | **15.6%** | **Compound Maximum Risk Exposure** |
+| **Q1 (Optimal Zone)** | Low `depth` (<= 61.80) & High `y` (> 5.71) | 13,351 | 1,160 | **8.69%** | **Optimal Performance Buffer** |
+| **Q2 (Unbuffered Low)** | Low `depth` (<= 61.80) & Low `y` (<= 5.71) | 13,757 | 563 | **4.09%** | Baseline Operating Profile |
+| **Q3 (Masked Risk)** | High `depth` (> 61.80) & High `y` (> 5.71) | 13,493 | 2,751 | **20.39%** | Partially Buffered Risk (Elevated Drag) |
+| **Q4 (Catastrophic Zone)** | High `depth` (> 61.80) & Low `y` (<= 5.71) | 13,339 | 2,042 | **15.31%** | **Compound Maximum Risk Exposure** |
 
 ---
 
@@ -209,20 +209,6 @@
 
 ---
 
-### 4. Confounder Isolation & Simpson's Paradox Defense
-> [!NOTE]
-> **Collinearity Audit between `price` and `x`**:
-> - Pairwise Pearson Correlation: **r = 0.884**
-> - Macro Target Correlation: `price`: 0.01 | `x`: 0.069
-> - Stratified Correlation of `x` across `price` Quartiles:
->   - In `price` stratum `(325.999, 950.0]`: partial r = **0.014**
->   - In `price` stratum `(950.0, 2401.0]`: partial r = **0.191**
->   - In `price` stratum `(2401.0, 5324.25]`: partial r = **0.053**
->   - In `price` stratum `(5324.25, 18823.0]`: partial r = **0.031**
-> - **Scientific Finding**: Macro correlation of `x` is heavily confounded by `price`. Operational intervention must address the root driver rather than the proxy symptom.
-
----
-
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
@@ -232,8 +218,8 @@
 **MQ2: What is the critical operational boundary for secondary driver 'table', and does breach of this threshold alter failure probability?**  
 > **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'table' quartile threshold (Chi-Square p = 0.0000e+00). In high-risk Q4 ((59.0, 95.0]), the adverse rate is 26.42%, compared to 8.32% in favorable Q1 ((42.999, 56.0]). Managing 'table' into its favorable operating window delivers a 18.10 percentage point risk reduction.
 
-**MQ3: Can high levels of protective factor 'price' compensate for elevated risk factor 'depth', or does 'depth' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'depth' cohort, elevating 'price' shifts adverse events from 15.6% (Compound Catastrophe) to 19.96% (Masked Risk). Records with elevated 'depth' and high 'price' experience 19.96% failure—2.5x the 7.99% failure rate (more than double) observed when 'depth' is controlled in the Optimal Zone. Thus, 'depth' exerts an independent negative drag that 'price' cannot fully mask.
+**MQ3: Can high levels of protective factor 'y' compensate for elevated risk factor 'depth', or does 'depth' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'depth' cohort, elevating 'y' shifts adverse events from 15.31% (Compound Catastrophe) to 20.39% (Masked Risk). Records with elevated 'depth' and high 'y' experience 20.39% failure—2.35x the 8.69% failure rate (more than double) observed when 'depth' is controlled in the Optimal Zone. Thus, 'depth' exerts an independent negative drag that 'y' cannot fully mask.
 
 **MQ4: At what level does third-order metric 'carat' begin compromising operational yield?**  
 > **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 3.7239e-199) shows that 'carat' escalates by 4.14 percentage points from 6.99% in Q1 ((0.199, 0.4]) to 11.13% in Q4 ((1.04, 5.01]). This isolates Q4 as a statistically significant vulnerability zone requiring threshold monitoring.
@@ -243,9 +229,6 @@
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
 > **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Quality Re-Cut if depth > 62.50)), 13076 records (24.24%) are flagged, capturing 70.32% of all adverse events with 8494 false alarms. Under Surgical Triage (Policy 2: Surgical (Quality Re-Cut if depth > 61.80)), flagged volume expands to 26832 records (49.74%), capturing 73.56% of adverse events and shifting the unflagged adverse rate to 6.36%, at the cost of 22039 false alarms (46.47% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (2.90 vs 1.48 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
-
-**MQ7: Does 'x' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'price' (Simpson's Paradox)?**  
-> **Empirical Data Answer**: At the unadjusted level, 'x' shows correlation r = 0.069 with the target. However, 'x' is strongly co-linear with 'price' (r = 0.884). When stratifying across 'price' quartiles, the correlation of 'x' within strata shifts to ((325.999, 950.0]: r=0.014, (950.0, 2401.0]: r=0.191, (2401.0, 5324.25]: r=0.053). This proves that much of 'x's macro effect is mediated through its relationship with 'price', warning against isolated policy changes on 'x' alone.
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

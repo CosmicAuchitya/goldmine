@@ -4,30 +4,44 @@
   "specs": {
     "primary_dimension_risk": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Risk Exposure & Capital Drag across origin",
+      "title": "Risk Exposure & Capital Drag across cylinders",
       "width": 600,
       "height": 280,
       "data": {
         "values": [
           {
-            "segment": "usa",
-            "volume": 249,
-            "target_events": 147,
-            "adverse_rate_pct": 59.04,
+            "segment": "8",
+            "volume": 103,
+            "target_events": 99,
+            "adverse_rate_pct": 96.12,
             "capital_drag": 0.0
           },
           {
-            "segment": "europe",
-            "volume": 70,
+            "segment": "6",
+            "volume": 84,
+            "target_events": 51,
+            "adverse_rate_pct": 60.71,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "3",
+            "volume": 4,
+            "target_events": 2,
+            "adverse_rate_pct": 50.0,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "4",
+            "volume": 204,
             "target_events": 8,
-            "adverse_rate_pct": 11.43,
+            "adverse_rate_pct": 3.92,
             "capital_drag": 0.0
           },
           {
-            "segment": "japan",
-            "volume": 79,
-            "target_events": 5,
-            "adverse_rate_pct": 6.33,
+            "segment": "5",
+            "volume": 3,
+            "target_events": 0,
+            "adverse_rate_pct": 0.0,
             "capital_drag": 0.0
           }
         ]
@@ -41,7 +55,7 @@
           "field": "segment",
           "type": "nominal",
           "sort": "-x",
-          "title": "origin"
+          "title": "cylinders"
         },
         "x": {
           "field": "adverse_rate_pct",

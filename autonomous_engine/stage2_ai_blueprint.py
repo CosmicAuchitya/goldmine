@@ -114,13 +114,13 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
         canonical_response = [
             'dep_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
             'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
-            'ocean_proximity', 'payment', 'target', 'response'
+            'median_house_value', 'payment', 'target', 'response'
         ]
     else:
         canonical_response = [
             'dep_delay', 'delay', 'mpg', 'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit',
             'subscribed', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default',
-            'fraud', 'customer stratification rating', 'ocean_proximity', 'payment'
+            'fraud', 'customer stratification rating', 'median_house_value', 'payment'
         ]
     for cr in canonical_response:
         for c in clean_cols:

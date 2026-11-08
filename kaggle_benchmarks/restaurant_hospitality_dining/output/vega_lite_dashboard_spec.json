@@ -101,38 +101,38 @@
     },
     "threshold_cliff": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Non-Linear Threshold Cliff Inflection: total_bill",
+      "title": "Non-Linear Threshold Cliff Inflection: tip",
       "width": 600,
       "height": 260,
       "data": {
         "values": [
           {
-            "quantile_tier": "Q1: (3.069, 13.348]",
+            "quantile_tier": "Q1: (0.999, 2.0]",
             "tier_index": 1,
-            "volume": 61,
-            "adverse_events": 23,
-            "failure_rate_pct": 37.7
+            "volume": 78,
+            "adverse_events": 30,
+            "failure_rate_pct": 38.46
           },
           {
-            "quantile_tier": "Q2: (13.348, 17.795]",
+            "quantile_tier": "Q2: (2.0, 2.9]",
             "tier_index": 2,
-            "volume": 61,
-            "adverse_events": 22,
-            "failure_rate_pct": 36.07
+            "volume": 44,
+            "adverse_events": 13,
+            "failure_rate_pct": 29.55
           },
           {
-            "quantile_tier": "Q3: (17.795, 24.127]",
+            "quantile_tier": "Q3: (2.9, 3.562]",
             "tier_index": 3,
             "volume": 61,
-            "adverse_events": 19,
-            "failure_rate_pct": 31.15
+            "adverse_events": 26,
+            "failure_rate_pct": 42.62
           },
           {
-            "quantile_tier": "Q4: (24.127, 50.81]",
+            "quantile_tier": "Q4: (3.562, 10.0]",
             "tier_index": 4,
             "volume": 61,
-            "adverse_events": 29,
-            "failure_rate_pct": 47.54
+            "adverse_events": 24,
+            "failure_rate_pct": 39.34
           }
         ]
       },
@@ -148,7 +148,7 @@
               "field": "quantile_tier",
               "type": "nominal",
               "sort": "tier_index",
-              "title": "Quantile Tier (total_bill)"
+              "title": "Quantile Tier (tip)"
             },
             "y": {
               "field": "failure_rate_pct",
@@ -208,7 +208,7 @@
     },
     "orthogonal_interaction_matrix": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "2x2 Orthogonal Interaction: size vs total_bill",
+      "title": "2x2 Orthogonal Interaction: size vs tip",
       "width": 380,
       "height": 260,
       "data": {
@@ -218,26 +218,26 @@
             "label": "Optimal Zone",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 15,
-            "events": 2,
-            "failure_rate_pct": 13.33
+            "volume": 21,
+            "events": 4,
+            "failure_rate_pct": 19.05
           },
           {
             "quadrant": "Q2",
             "label": "Unbuffered Baseline",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 107,
-            "events": 43,
-            "failure_rate_pct": 40.19
+            "volume": 101,
+            "events": 39,
+            "failure_rate_pct": 38.61
           },
           {
             "quadrant": "Q3",
             "label": "Masked Risk",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 69,
-            "events": 23,
+            "volume": 63,
+            "events": 21,
             "failure_rate_pct": 33.33
           },
           {
@@ -245,9 +245,9 @@
             "label": "Compound Catastrophe",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 53,
-            "events": 25,
-            "failure_rate_pct": 47.17
+            "volume": 59,
+            "events": 29,
+            "failure_rate_pct": 49.15
           }
         ]
       },
@@ -265,7 +265,7 @@
         "y": {
           "field": "protective_factor_level",
           "type": "nominal",
-          "title": "total_bill"
+          "title": "tip"
         },
         "color": {
           "field": "failure_rate_pct",
@@ -315,23 +315,23 @@
           {
             "policy": "Policy 1: Conservative",
             "scrap_pct": 25.0,
-            "recall_pct": 31.18,
-            "retained_defect_rate": 34.97,
-            "false_discards": 32
+            "recall_pct": 25.81,
+            "retained_defect_rate": 37.7,
+            "false_discards": 37
           },
           {
             "policy": "Policy 2: Surgical",
             "scrap_pct": 50.0,
-            "recall_pct": 51.61,
-            "retained_defect_rate": 36.89,
-            "false_discards": 74
+            "recall_pct": 53.76,
+            "retained_defect_rate": 35.25,
+            "false_discards": 72
           },
           {
             "policy": "Policy 3: Compound",
             "scrap_pct": 51.64,
-            "recall_pct": 53.76,
-            "retained_defect_rate": 36.44,
-            "false_discards": 76
+            "recall_pct": 55.91,
+            "retained_defect_rate": 34.75,
+            "false_discards": 74
           }
         ]
       },

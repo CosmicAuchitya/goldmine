@@ -75,7 +75,7 @@
     {
       "id": "secondary_cross_tab_heatmap",
       "name": "2D Cross-Tabulation Risk Concentration Heatmap",
-      "justification": "Bivariate categorical cross-tab (origin x cylinders) exposes sub-node vulnerability hubs.",
+      "justification": "Bivariate categorical cross-tab (cylinders x origin) exposes sub-node vulnerability hubs.",
       "priority": 6
     },
     {

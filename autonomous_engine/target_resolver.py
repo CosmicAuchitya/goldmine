@@ -132,9 +132,25 @@ def is_deterministic_target_leakage(
     if target_col and str(col_name).strip().lower() == str(target_col).strip().lower():
         return True
     c_low = str(col_name).strip().lower()
+    t_low = str(target_col).strip().lower() if target_col else ""
 
     # Explicit post-event status/date columns when target is an event outcome
     if any(k in c_low for k in ['reservation_status', 'cancellation_date', 'cancellation_status', 'exit_date']):
+        return True
+
+    # Post-event / backward-causality temporal leakage when target is departure delay
+    if any(k in t_low for k in ['dep_delay', 'delay']):
+        if c_low in ('arr_delay', 'avgdelay', 'dep_time', 'arr_time', 'air_time') or (
+            any(k in c_low for k in ['arr_delay', 'avgdelay', 'air_time']) and 'sched' not in c_low
+        ):
+            return True
+
+    # Post-call duration leakage when target is telemarketing conversion outcome
+    if t_low in ('y', 'deposit', 'subscribed', 'response') and c_low == 'duration':
+        return True
+
+    # Post-payment meter tip leakage when target is payment method (credit card meters never log cash tips)
+    if t_low in ('payment', 'payment_type') and c_low in ('tip', 'tips'):
         return True
 
     if len(series) < 50:
@@ -155,10 +171,18 @@ def is_deterministic_target_leakage(
                 pass
         return False
 
-    # Check binary 0/1 indicator columns
+    # Check numeric columns for deterministic zero-vs-positive accounting leakage (e.g. P(Target=1 | X > 0) == 0.0 or 1.0)
     s_num = pd.to_numeric(series, errors='coerce')
     if s_num.notna().mean() < 0.98:
         return False
+    pos_gt_zero = (s_num > 0)
+    zero_eq = (s_num == 0)
+    if int(pos_gt_zero.sum()) >= 50 and int(zero_eq.sum()) >= 50 and int(binary_target.sum()) >= 20:
+        p_given_pos = float(binary_target.loc[pos_gt_zero].mean())
+        if p_given_pos == 0.0 or p_given_pos == 1.0:
+            return True
+
+    # Check binary 0/1 indicator columns
     u_vals = set(s_num.dropna().unique())
     if not u_vals.issubset({0, 1, 0.0, 1.0}) or len(u_vals) != 2:
         return False
@@ -339,13 +363,13 @@ def resolve_canonical_target_and_cost(
             canonical_targets = [
                 'dep_delay', 'arr_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
                 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
-                'ocean_proximity', 'payment', 'target', 'response', 'label'
+                'median_house_value', 'payment', 'target', 'response', 'label'
             ]
         else:
             canonical_targets = [
                 'dep_delay', 'arr_delay', 'delay', 'mpg', 'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn',
                 'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
-                'customer stratification rating', 'ocean_proximity', 'payment'
+                'customer stratification rating', 'median_house_value', 'payment'
             ]
         for cand_name in canonical_targets:
             for c in cols:
@@ -356,7 +380,7 @@ def resolve_canonical_target_and_cost(
                         if n_pos >= 10:
                             target_col = c
                             break
-                        elif cand_name in ['dep_delay', 'arr_delay', 'delay', 'mpg']:
+                        elif cand_name in ['dep_delay', 'arr_delay', 'delay', 'mpg', 'median_house_value']:
                             target_col = c
                             break
                     elif df[c].nunique() == 2 or (c.lower() == 'cut' and df[c].nunique() <= 10):
@@ -457,10 +481,6 @@ def resolve_canonical_target_and_cost(
             is_cut_sub = s_str.isin(['fair', 'good'])
             binary_target = is_cut_sub.astype(int)
             target_desc = f"{target_col} in ['Fair', 'Good'] (Substandard Cut)"
-        elif target_col.lower() in ['ocean_proximity', 'proximity'] and any(k in s_str.unique() for k in ['inland', 'near bay', 'near ocean']):
-            is_inland = s_str == 'inland'
-            binary_target = is_inland.astype(int)
-            target_desc = f"{target_col} == 'INLAND' (Depressed Asset Tier)"
         elif is_adv.sum() > 0:
             binary_target = is_adv.astype(int)
             target_desc = f"{target_col} Adverse State"
@@ -544,11 +564,11 @@ def resolve_canonical_target_and_cost(
                 thresh = float(s_clean.quantile(0.25))
             binary_target = (s_clean <= thresh).astype(int)
             target_desc = f"{target_col} <= {thresh:.1f} mpg (Low Fuel Efficiency)"
-        elif any(k in target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
-            # For volume/yield metrics: bottom quartile is adverse underperformance
+        elif any(k in target_col.lower() for k in ['house_value', 'property_value', 'asset_value', 'stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
+            # For valuation/volume/yield metrics: bottom quartile is adverse underperformance / distressed valuation
             thresh = float(s_clean.quantile(0.25)) if s_clean.quantile(0.25) > 0 else float(s_clean.median())
             binary_target = (s_clean <= thresh).astype(int)
-            target_desc = f"{target_col} <= {thresh:.2f}"
+            target_desc = f"{target_col} <= ${thresh:,.0f} (Distressed Asset Valuation)" if 'value' in target_col.lower() else f"{target_col} <= {thresh:.2f}"
         else:
             # Default continuous target: if name denotes adverse, upper median is bad; else lower quartile is bad
             if col_denotes_adverse:
@@ -577,9 +597,10 @@ def resolve_canonical_target_and_cost(
     ]
     time_units = ['year', 'years', 'month', 'months', 'day', 'days', 'date']
 
+    is_target_valuation = bool(target_col and any(k in target_col.lower() for k in ['house_value', 'property_value', 'asset_value']))
     candidate_cost_cols = []
     for c in cols:
-        if c == target_col or is_index_artifact(c) or is_synthetic_column(c, blueprint):
+        if (c == target_col and not is_target_valuation) or is_index_artifact(c) or is_synthetic_column(c, blueprint):
             continue
         c_low = c.lower()
         if any(x in c_low for x in excluded_cost_terms) and c_low not in ['adr', 'daily_rate', 'hourly_rate', 'fare']:

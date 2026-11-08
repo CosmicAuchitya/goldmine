@@ -658,10 +658,15 @@ def generate_plain_business_summary(
     # =========================================================================
     # BLOCK 3: Danger Threshold (Physical Continuous Cliff / Red-Line)
     # =========================================================================
+    coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone'}
     valid_cliffs = []
     if cliffs:
         for c in cliffs:
             col_name = c.get("column", "")
+            if not c.get("is_significant", False):
+                continue
+            if col_name == cost_col or col_name.lower().strip() in coord_cols or any(k in col_name.lower() for k in ['longitude', 'latitude']):
+                continue
             if is_synthetic_column(col_name, blueprint) or is_index_artifact(col_name) or is_pseudo_numeric_identifier(col_name):
                 continue
             if col_name in df_fact.columns and is_deterministic_target_leakage(col_name, df_fact[col_name], s_bin, target_col):
@@ -689,8 +694,8 @@ def generate_plain_business_summary(
             f"- **Bachav Ka Tarika**: Accounts ko is `{col_n}` limit tak pahunchne se pehle hi early-warning trigger karein taaki realized churn/default ko pehle hi roka ja sake."
         )
     else:
-        cliff_text_en = "- **No Physical Numeric Cliffs**: No continuous operational metrics in the current schema exhibit threshold failure cliff behavior."
-        cliff_text_hi = "- **Koi Numeric Cliff Nahi**: Is dataset ke raw columns mein koi aisa continuous metric nahi mila jisme abrupt threshold risk cliff ho."
+        cliff_text_en = "- **No Physical Numeric Cliffs**: No continuous operational metrics in the current schema exhibit statistically significant threshold failure cliff behavior."
+        cliff_text_hi = "- **Koi Numeric Cliff Nahi**: Is dataset ke raw columns mein koi aisa continuous metric nahi mila jisme statistically significant threshold risk cliff ho."
 
     # =========================================================================
     # BLOCK 4: 3 Strategic Choices (Pathways A, B, C)

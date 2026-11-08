@@ -20,14 +20,14 @@
   "archetype": "nordic_saas_command",
   "archetype_name": "Nordic SaaS Command Center",
   "executive_persona": "Chief Revenue Officer (CRO) & VP Customer Success",
-  "dfii_score": 17,
+  "dfii_score": 18,
   "dfii_breakdown": {
-    "aesthetic_impact": 4,
+    "aesthetic_impact": 5,
     "context_fit": 4,
     "implementation_feasibility": 5,
     "performance_safety": 5,
     "consistency_risk": 1,
-    "dfii": 17
+    "dfii": 18
   },
   "design_system": {
     "layout_concept": "8-col / 4-col executive bento layout with prominent MRR leakage focus",
@@ -41,7 +41,7 @@
     "is_temporal": false,
     "has_monetary_ledger": true,
     "has_secondary_dim": false,
-    "cliffs_count": 9,
+    "cliffs_count": 6,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
@@ -50,10 +50,28 @@
   },
   "selected_panels": [
     {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 2
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "priority": 3
+    },
+    {
       "id": "nonlinear_cliff_step_area",
       "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 9 continuous driver(s).",
+      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
       "priority": 5
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 6
     },
     {
       "id": "orthogonal_2x2_quadrant",
@@ -87,24 +105,9 @@
       "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
     },
     {
-      "id": "pareto_loss_waterfall",
-      "name": "Pareto Cumulative Financial Loss Waterfall",
-      "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."
-    },
-    {
-      "id": "segment_vulnerability_lollipop",
-      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
-      "reason": "No valid non-synthetic primary dimension detected."
-    },
-    {
       "id": "secondary_cross_tab_heatmap",
       "name": "2D Cross-Tabulation Risk Concentration Heatmap",
       "reason": "Secondary dimension either not detected or cardinality outside 2-15 range."
-    },
-    {
-      "id": "exposure_vs_risk_bubble",
-      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
-      "reason": "Insufficient categorical depth (< 3 cohorts) for multi-dimensional bubble dispersion."
     }
   ],
   "executive_narrative": {

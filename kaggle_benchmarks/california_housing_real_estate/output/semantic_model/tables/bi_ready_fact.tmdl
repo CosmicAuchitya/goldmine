@@ -6,10 +6,10 @@ table bi_ready_fact
 		lineageTag: m-total-volume
 		annotation CertifiedMetric = "Physical Record Count: 20,640"
 
-	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[ocean_proximity] = "INLAND")
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[median_house_value] <= 1.196e+05)
 		formatString: #,0
 		lineageTag: m-target-events
-		annotation CertifiedMetric = "Target Adverse Count: 6,551"
+		annotation CertifiedMetric = "Target Adverse Count: 5,162"
 
 	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
 		formatString: 0.00%
@@ -19,10 +19,10 @@ table bi_ready_fact
 		formatString: 0.00%
 		lineageTag: m-reliability-rate
 
-	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[median_house_value]), 'bi_ready_fact'[ocean_proximity] = "INLAND")
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[median_house_value]), 'bi_ready_fact'[median_house_value] <= 1.196e+05)
 		formatString: $#,0.00
 		lineageTag: m-adverse-capital-drag
-		annotation CertifiedMetric = "Audited Drag: $817,600,123.00"
+		annotation CertifiedMetric = "Audited Drag: $445,929,796.00"
 
 	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[median_house_value])
 		formatString: $#,0.00

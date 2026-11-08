@@ -96,11 +96,11 @@
 - **Domain Context**: **Insurance Underwriting & Actuarial Risk**
 - **Monitored Population**: **1,338 physical records**
 - **Target Adverse Events (`smoker`)**: **274 events (20.48%)**
-- **Highest-Observed Candidate Segment**: **`charges in (16639.913, 63770.428]`**
-  - **Cohort Volume**: 335 records
-  - **Adverse Events in Segment**: 255 events
-  - **Segment Failure Rate**: **76.12%** (vs. 1.89% rest-of-population baseline — **40.28x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 29.15, p = 0.0000e+00`)** — **248.7 Attributable Excess Events (+74.23% above 1.89% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`region = southeast`**
+  - **Cohort Volume**: 364 records
+  - **Adverse Events in Segment**: 91 events
+  - **Segment Failure Rate**: **25.0%** (vs. 18.79% rest-of-population baseline — **1.33x Risk Multiplier**)
+  - **Statistical Significance Gate**: **⚠️ CIRCUIT-BREAKER TRIPPED (`z = 2.51, p = 0.0617 >= 0.05`)** — **Uniform Noise Distribution Detected ($0 Cohort CapEx Recommended)**
 
 ---
 
@@ -109,43 +109,43 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$2,049,110.22 risk averted (62 excess adverse events — 25% Excess-Risk Compression)** | [$1,916,909.56 to $2,181,310.88] (58 to 66 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (187 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$4,924,474.57 risk averted (149 excess adverse events — 60% Excess-Risk Compression)** | [$4,627,023.08 to $5,254,976.22] (140 to 159 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$8,229,491.06 risk averted (249 excess adverse events — 100% Baseline Parity)** | [$7,700,688.42 to $8,725,243.53] (233 to 264 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Capital Preservation & Freeze ($0 CapEx — Statistical Circuit-Breaker Active)** | $0 (CapEx Frozen) | Immediate | **$0.00 risk averted (Circuit-Breaker: Noise p = 0.0617 — CapEx Frozen)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 2.51, p = 0.0617 >= 0.05) | Baseline systemic friction (20.48%) continues until stronger causal features or upstream telemetry are captured. |
+| **Pathway B: Telemetry & Root-Cause Instrumentation Audit (Diagnostic Discovery)** | Internal Data Engineering Audit | 2 - 4 Weeks | **$0.00 risk averted (Circuit-Breaker: Noise p = 0.0617 — CapEx Frozen)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 2.51, p = 0.0617 >= 0.05) | Diagnostic phase only; does not immediately lower event volume until new predictive signals are ingested. |
+| **Pathway C: Global Baseline Process Hygiene (System-Wide Non-Cohort Remediation)** | System-Wide Operational Review | 60 - 90 Days | **$0.00 cohort excess risk (Requires Global System Redesign)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 2.51, p = 0.0617 >= 0.05) | Cannot leverage surgical Pareto concentration (80/20 rule) because no concentrated bottleneck cohort exists in the current data. |
 
 ---
 
 ### 3. Brutal Pros & Cons Matrix (Har Faisle Ka Fayda Aur Nuksan)
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
-#### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 248.7 attributable excess events in `charges in (16639.913, 63770.428]` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (187 excess events) and baseline systemic friction unaddressed.
-- **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
+#### 🔹 Pathway A: Capital Preservation & Freeze ($0 CapEx — Statistical Circuit-Breaker Active)
+- **Fayda (Upside & Benefits)**: Prevents wasted capital and organizational thrashing on `region = southeast`, where the observed 25.0% rate vs 18.79% baseline is statistically indistinguishable from random sampling noise (p = 0.0617).
+- **Nuksan (Downside & Limitations)**: Baseline systemic friction (20.48%) continues until stronger causal features or upstream telemetry are captured.
+- **Collateral Friction (Team / Operational Impact)**: Zero frontline disruption; protects operational teams from chasing phantom false-positive rules.
 
-#### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `charges in (16639.913, 63770.428]` bottleneck (76.12% vs 1.89% rest-of-system, p = 0.0000e+00, +74.23% attributable excess risk).
-- **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
-- **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
+#### 🔹 Pathway B: Telemetry & Root-Cause Instrumentation Audit (Diagnostic Discovery)
+- **Fayda (Upside & Benefits)**: Identifies the missing upstream operational, clinical, or behavioral variables that actually drive the target outcome, since current schema columns exhibit uniform noise.
+- **Nuksan (Downside & Limitations)**: Diagnostic phase only; does not immediately lower event volume until new predictive signals are ingested.
+- **Collateral Friction (Team / Operational Impact)**: Requires brief collaboration between data engineering and domain subject-matter experts.
 
-#### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `charges in (16639.913, 63770.428]` from 76.12% down to exact statistical parity with the rest-of-population baseline (1.89%), eliminating all 249 attributable excess failures.
-- **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
-- **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
+#### 🔹 Pathway C: Global Baseline Process Hygiene (System-Wide Non-Cohort Remediation)
+- **Fayda (Upside & Benefits)**: Because adverse events (20.48%) are uniformly distributed across all cohorts without a localized bottleneck, only global population-wide process improvements can lower the systemic mean.
+- **Nuksan (Downside & Limitations)**: Cannot leverage surgical Pareto concentration (80/20 rule) because no concentrated bottleneck cohort exists in the current data.
+- **Collateral Friction (Team / Operational Impact)**: Requires broad organizational alignment across all operating units.
 
 ---
 
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
 *Board ya leadership (Chief Underwriting Officer / Chief Actuary) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'charges in (16639.913, 63770.428]' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'charges in (16639.913, 63770.428]' is 76.12% compared to 1.89% across the remainder of the population (Relative Risk Multiplier: 40.28x across 335 physical records). The empirical separation yields z = 29.15 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 248.7 attributable excess events.
+**Q1: Is the concentration in 'region = southeast' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'region = southeast' is 25.00% compared to 18.79% across the remainder of the population (Relative Risk Multiplier: 1.33x across 364 physical records). The empirical separation yields z = 2.51 (p = 0.0617), indicating that this difference is within random sampling variation at 95% confidence. **Statistical Circuit-Breaker is ACTIVE: Do NOT allocate targeted CapEx to this cohort.**
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 335 records in this high-risk partition, 255 were confirmed adverse events (76.12% precision vs 1.89% rest-of-system baseline, +74.23% excess risk). Targeting this cohort addresses 248.7 attributable excess events while absorbing 80 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Implementing surgical triage on `region = southeast` is **mathematically contraindicated**. Because the cohort event rate (25.00%) is virtually identical to the rest of the population (18.79%, p = 0.0617), flagging this segment acts as a random coin-flip that would burden frontline staff with 273 false alarms for zero attributable risk reduction.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (249 excess events, bringing `charges in (16639.913, 63770.428]` to exact 1.89% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (149 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Neither cohort-specific Surgical CapEx (Pathway B) nor cohort-targeted Structural CapEx is justified when the Statistical Circuit-Breaker is tripped (p = 0.0617). Leadership must freeze cohort spending (Pathway A, $0 CapEx) and audit missing upstream telemetry (Pathway B) before committing capital.
 
 
 ---
@@ -155,14 +155,6 @@
 
 ### 1. Non-Linear Quantile Threshold Cliffs (Top Operational Drivers)
 *Discretized quartile breakdown exposing where gradual performance transitions into structural failure:*
-
-#### 📊 Feature: `charges` (Max Inflection Delta: 70.43%, Chi-Square p: 8.3183e-185 — Statistically Significant)
-| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(1121.873, 4740.287]` | 335 | 0 | **0.0%** | **Optimal Baseline** |
-| **Q2** | `(4740.287, 9382.033]` | 334 | 0 | **0.0%** | **Optimal Baseline** |
-| **Q3** | `(9382.033, 16639.913]` | 334 | 19 | **5.69%** | Transitional Tier |
-| **Q4** | `(16639.913, 63770.428]` | 335 | 255 | **76.12%** | **Structural Cliff Breach** |
 
 #### 📊 Feature: `bmi` (Max Inflection Delta: 4.80%, Chi-Square p: 4.4797e-01 — Uniform Noise — Not Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
@@ -180,17 +172,24 @@
 | **Q3** | `(39.0, 51.0]` | 337 | 72 | **21.36%** | Statistical Noise (p >= 0.05) |
 | **Q4** | `(51.0, 64.0]` | 327 | 58 | **17.74%** | Statistical Noise (p >= 0.05) |
 
+#### 📊 Feature: `children` (Max Inflection Delta: 3.32%, Chi-Square p: 4.8902e-01 — Uniform Noise — Not Significant)
+| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Q1** | `(-0.001, 1.0]` | 898 | 176 | **19.6%** | Statistical Noise (p >= 0.05) |
+| **Q2** | `(1.0, 2.0]` | 240 | 55 | **22.92%** | Statistical Noise (p >= 0.05) |
+| **Q3** | `(2.0, 5.0]` | 200 | 43 | **21.5%** | Statistical Noise (p >= 0.05) |
+
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`charges` vs. `age`)
-*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 6.7971e-116):*
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`children` vs. `age`)
+*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 4.5698e-01):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `charges` (<= 9382.03) & High `age` (> 39.00) | 187 | 0 | **0.0%** | **Optimal Performance Buffer** |
-| **Q2 (Unbuffered Low)** | Low `charges` (<= 9382.03) & Low `age` (<= 39.00) | 482 | 0 | **0.0%** | Baseline Operating Profile |
-| **Q3 (Masked Risk)** | High `charges` (> 9382.03) & High `age` (> 39.00) | 477 | 130 | **27.25%** | Partially Buffered Risk (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `charges` (> 9382.03) & Low `age` (<= 39.00) | 192 | 144 | **75.0%** | **Compound Maximum Risk Exposure** |
+| **Q1 (Optimal Zone)** | Low `children` (<= 1.00) & High `age` (> 39.00) | 438 | 79 | **18.04%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q2 (Unbuffered Low)** | Low `children` (<= 1.00) & Low `age` (<= 39.00) | 460 | 97 | **21.09%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q3 (Masked Risk)** | High `children` (> 1.00) & High `age` (> 39.00) | 226 | 51 | **22.57%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q4 (Catastrophic Zone)** | High `children` (> 1.00) & Low `age` (<= 39.00) | 214 | 47 | **21.96%** | Uniform Noise Stratum (p >= 0.05) |
 
 ---
 
@@ -199,32 +198,32 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Underwriting Audit if charges > 16639.91)** | Operational Filter | 335 | 25.04% | **93.07%** | **1.89%** | 80 | 7.52% |
-| **Policy 2: Surgical (Underwriting Audit if charges > 9382.03)** | Operational Filter | 669 | 50.0% | **100.0%** | **0.0%** | 395 | 37.12% |
-| **Policy 3: Compound (Underwriting Audit if charges > 9382.03 OR age < 39.00)** | Operational Filter | 1,133 | 84.68% | **100.0%** | **0.0%** | 859 | 80.73% |
+| **Policy 1: Conservative (Underwriting Audit if children > 2.00)** | Operational Filter | 200 | 14.95% | **15.69%** | **20.3%** | 157 | 14.76% |
+| **Policy 2: Surgical (Underwriting Audit if children > 1.00)** | Operational Filter | 440 | 32.88% | **35.77%** | **19.6%** | 342 | 32.14% |
+| **Policy 3: Compound (Underwriting Audit if children > 1.00 OR age < 39.00)** | Operational Filter | 891 | 66.59% | **70.07%** | **18.34%** | 699 | 65.7% |
 
 ---
 
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
-**MQ1: At what exact physical threshold does 'charges' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
-> **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'charges'. Across the 4 quartiles, event failure rates escalate from 0.0% in Q1 ((1121.873, 4740.287]) to 76.12% in Q4 ((16639.913, 63770.428]) (Max Delta: 70.43 percentage points, Chi-Square p < 0.0001). This establishes that 'charges' operates as an acute non-linear cliff (step increase of 70.43 percentage points, 2.78x mean delta) rather than a benign linear drift.
+**MQ1: At what exact physical threshold does 'bmi' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
+> **Empirical Data Answer**: Physical quantile profiling across 'bmi' reveals that adverse event rates remain statistically flat across all 4 quartiles, fluctuating narrowly between 18.18% and 22.99% (Q1: 21.19% vs Q4: 22.99%, Max Delta: 4.80 percentage points, Chi-Square p = 0.4480). Because p >= 0.05, this variation is statistically indistinguishable from random sampling noise; 'bmi' does not trigger a physical threshold cliff.
 
-**MQ2: What is the critical operational boundary for secondary driver 'bmi', and does breach of this threshold alter failure probability?**  
-> **Empirical Data Answer**: Empirical distribution across secondary feature 'bmi' shows no statistically significant threshold boundary (Chi-Square p = 0.4480). Event rates between Q1 (21.19%) and Q4 (22.99%) differ by only 1.80 percentage points, confirming that 'bmi' does not independently alter adverse event probability.
+**MQ2: What is the critical operational boundary for secondary driver 'age', and does breach of this threshold alter failure probability?**  
+> **Empirical Data Answer**: Empirical distribution across secondary feature 'age' shows no statistically significant threshold boundary (Chi-Square p = 0.5721). Event rates between Q1 (21.27%) and Q4 (17.74%) differ by only 3.53 percentage points, confirming that 'age' does not independently alter adverse event probability.
 
-**MQ3: Can high levels of protective factor 'age' compensate for elevated risk factor 'charges', or does 'charges' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 6.7971e-116) reveals that within the high 'charges' cohort, elevating 'age' shifts adverse events from 75.0% (Compound Catastrophe) to 27.25% (Masked Risk). Records with elevated 'charges' and high 'age' experience 27.25% failure—2725.0x the 0.0% failure rate (more than double) observed when 'charges' is controlled in the Optimal Zone. Thus, 'charges' exerts an independent negative drag that 'age' cannot fully mask.
+**MQ3: Can high levels of protective factor 'age' compensate for elevated risk factor 'children', or does 'children' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Two-way quadrant partitioning between 'children' and 'age' yields event rates tightly bounded between 18.04% and 22.57% across populated strata (Q1: 18.04%, Q2: 21.09%, Q3: 22.57%, Q4: 21.96%; 2x2 Chi-Square p = 0.4570). Because p >= 0.05, neither feature exerts a statistically significant buffering or compounding interaction effect on 'smoker'.
 
-**MQ4: Does third-order metric 'age' exhibit a statistically significant protective buffer or operational threshold?**  
-> **Empirical Data Answer**: Quartile breakdown of third-order metric 'age' shows statistically uniform event rates from Q1 (21.27%) through Q4 (17.74%) (Max Delta: 3.63 percentage points, Chi-Square p = 0.5721). Because p >= 0.05, 'age' does not act as a statistically significant operational buffer or risk driver.
+**MQ4: Does third-order metric 'children' exhibit a statistically significant protective buffer or operational threshold?**  
+> **Empirical Data Answer**: Quartile breakdown of third-order metric 'children' shows statistically uniform event rates from Q1 (19.6%) through Q4 (21.5%) (Max Delta: 3.32 percentage points, Chi-Square p = 0.4890). Because p >= 0.05, 'children' does not act as a statistically significant operational buffer or risk driver.
 
 **MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 274 catastrophic records reveals that only 33.21% breach two or more critical parameters (charges, children, age) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
+> **Empirical Data Answer**: Tail risk audit across the lowest 274 catastrophic records reveals that only 11.31% breach two or more critical parameters (children, bmi, age) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Underwriting Audit if charges > 16639.91)), 335 records (25.04%) are flagged, capturing 93.07% of all adverse events with 80 false alarms. Under Surgical Triage (Policy 2: Surgical (Underwriting Audit if charges > 9382.03)), flagged volume expands to 669 records (50.0%), capturing 100.0% of adverse events and shifting the unflagged adverse rate to 0.0%, at the cost of 395 false alarms (37.12% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (3.72 vs 2.00 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Underwriting Audit if children > 2.00)), 200 records (14.95%) are flagged, capturing 15.69% of all adverse events with 157 false alarms. Under Surgical Triage (Policy 2: Surgical (Underwriting Audit if children > 1.00)), flagged volume expands to 440 records (32.88%), capturing 35.77% of adverse events and shifting the unflagged adverse rate to 19.6%, at the cost of 342 false alarms (32.14% of normal records). Both policies deliver equivalent marginal defect containment per flagged unit (1.05 recall/scrap ratio), with Surgical triage capturing a greater absolute volume of defects (35.77% vs 15.69%).
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

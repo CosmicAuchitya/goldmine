@@ -236,7 +236,7 @@
     },
     "orthogonal_interaction_matrix": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "2x2 Orthogonal Interaction: price vs depth",
+      "title": "2x2 Orthogonal Interaction: y vs depth",
       "width": 380,
       "height": 260,
       "data": {
@@ -246,36 +246,36 @@
             "label": "Optimal Zone",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 13010,
-            "events": 1039,
-            "failure_rate_pct": 7.99
+            "volume": 13351,
+            "events": 1160,
+            "failure_rate_pct": 8.69
           },
           {
             "quadrant": "Q2",
             "label": "Unbuffered Baseline",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 14098,
-            "events": 684,
-            "failure_rate_pct": 4.85
+            "volume": 13757,
+            "events": 563,
+            "failure_rate_pct": 4.09
           },
           {
             "quadrant": "Q3",
             "label": "Masked Risk",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 13945,
-            "events": 2783,
-            "failure_rate_pct": 19.96
+            "volume": 13493,
+            "events": 2751,
+            "failure_rate_pct": 20.39
           },
           {
             "quadrant": "Q4",
             "label": "Compound Catastrophe",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 12887,
-            "events": 2010,
-            "failure_rate_pct": 15.6
+            "volume": 13339,
+            "events": 2042,
+            "failure_rate_pct": 15.31
           }
         ]
       },
@@ -288,7 +288,7 @@
         "x": {
           "field": "risk_driver_level",
           "type": "nominal",
-          "title": "price"
+          "title": "y"
         },
         "y": {
           "field": "protective_factor_level",

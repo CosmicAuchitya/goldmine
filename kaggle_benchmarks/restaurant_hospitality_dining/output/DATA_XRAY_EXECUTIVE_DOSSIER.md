@@ -97,7 +97,7 @@
   - **Cohort Volume**: 19 records
   - **Adverse Events in Segment**: 15 events
   - **Segment Failure Rate**: **78.95%** (vs. 34.67% rest-of-population baseline — **2.28x Risk Multiplier**)
-  - **Statistical Significance Gate**: **⚠️ CIRCUIT-BREAKER TRIPPED (`z = 3.82, p = 1.0000 >= 0.05`)** — **Uniform Noise Distribution Detected ($0 Cohort CapEx Recommended)**
+  - **Statistical Significance Gate**: **PASSED (`z = 3.82, p = 1.3544e-04`)** — **8.4 Attributable Excess Events (+44.28% above 34.67% rest-of-system baseline)**
 
 ---
 
@@ -106,29 +106,29 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Capital Preservation & Freeze ($0 CapEx — Statistical Circuit-Breaker Active)** | $0 (CapEx Frozen) | Immediate | **$0.00 risk averted (Circuit-Breaker: Noise p = 1.0000 — CapEx Frozen)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 3.82, p = 1.0000 >= 0.05) | Baseline systemic friction (38.11%) continues until stronger causal features or upstream telemetry are captured. |
-| **Pathway B: Telemetry & Root-Cause Instrumentation Audit (Diagnostic Discovery)** | Internal Data Engineering Audit | 2 - 4 Weeks | **$0.00 risk averted (Circuit-Breaker: Noise p = 1.0000 — CapEx Frozen)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 3.82, p = 1.0000 >= 0.05) | Diagnostic phase only; does not immediately lower event volume until new predictive signals are ingested. |
-| **Pathway C: Global Baseline Process Hygiene (System-Wide Non-Cohort Remediation)** | System-Wide Operational Review | 60 - 90 Days | **$0.00 cohort excess risk (Requires Global System Redesign)** | [0 to 0 excess events] (Null Hypothesis Retained: z = 3.82, p = 1.0000 >= 0.05) | Cannot leverage surgical Pareto concentration (80/20 rule) because no concentrated bottleneck cohort exists in the current data. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | $5,000 - $15,000 | 1 - 2 Weeks | **$33.63 risk averted (2 excess adverse events — 25% Excess-Risk Compression)** | [$16.81 to $50.44] (1 to 3 excess events) (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (6 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | $25,000 - $50,000 | 30 - 45 Days | **$84.07 risk averted (5 excess adverse events — 60% Excess-Risk Compression)** | [$50.44 to $117.69] (3 to 7 excess events) (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | $100,000 - $250,000 | 90 - 180 Days | **$134.51 risk averted (8 excess adverse events — 100% Baseline Parity)** | [$84.07 to $201.76] (5 to 12 excess events) (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
 ### 3. Brutal Pros & Cons Matrix (Har Faisle Ka Fayda Aur Nuksan)
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
-#### 🔹 Pathway A: Capital Preservation & Freeze ($0 CapEx — Statistical Circuit-Breaker Active)
-- **Fayda (Upside & Benefits)**: Prevents wasted capital and organizational thrashing on `day = Fri`, where the observed 78.95% rate vs 34.67% baseline is statistically indistinguishable from random sampling noise (p = 1.0000).
-- **Nuksan (Downside & Limitations)**: Baseline systemic friction (38.11%) continues until stronger causal features or upstream telemetry are captured.
-- **Collateral Friction (Team / Operational Impact)**: Zero frontline disruption; protects operational teams from chasing phantom false-positive rules.
+#### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 8.4 attributable excess events in `day = Fri` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (6 excess events) and baseline systemic friction unaddressed.
+- **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
-#### 🔹 Pathway B: Telemetry & Root-Cause Instrumentation Audit (Diagnostic Discovery)
-- **Fayda (Upside & Benefits)**: Identifies the missing upstream operational, clinical, or behavioral variables that actually drive the target outcome, since current schema columns exhibit uniform noise.
-- **Nuksan (Downside & Limitations)**: Diagnostic phase only; does not immediately lower event volume until new predictive signals are ingested.
-- **Collateral Friction (Team / Operational Impact)**: Requires brief collaboration between data engineering and domain subject-matter experts.
+#### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `day = Fri` bottleneck (78.95% vs 34.67% rest-of-system, p = 1.3544e-04, +44.28% attributable excess risk).
+- **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
+- **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
-#### 🔹 Pathway C: Global Baseline Process Hygiene (System-Wide Non-Cohort Remediation)
-- **Fayda (Upside & Benefits)**: Because adverse events (38.11%) are uniformly distributed across all cohorts without a localized bottleneck, only global population-wide process improvements can lower the systemic mean.
-- **Nuksan (Downside & Limitations)**: Cannot leverage surgical Pareto concentration (80/20 rule) because no concentrated bottleneck cohort exists in the current data.
-- **Collateral Friction (Team / Operational Impact)**: Requires broad organizational alignment across all operating units.
+#### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
+- **Fayda (Upside & Benefits)**: Brings `day = Fri` from 78.95% down to exact statistical parity with the rest-of-population baseline (34.67%), eliminating all 8 attributable excess failures.
+- **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
+- **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
 ---
 
@@ -136,13 +136,13 @@
 *Board ya leadership (VP of Hospitality Operations & Guest Experience) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
 **Q1: Is the concentration in 'day = Fri' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'day = Fri' is 78.95% compared to 34.67% across the remainder of the population (Relative Risk Multiplier: 2.28x across 19 physical records). The empirical separation yields z = 3.82 (p = 1.0000), indicating that this difference is within random sampling variation at 95% confidence. **Statistical Circuit-Breaker is ACTIVE: Do NOT allocate targeted CapEx to this cohort.**
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'day = Fri' is 78.95% compared to 34.67% across the remainder of the population (Relative Risk Multiplier: 2.28x across 19 physical records). The empirical separation yields z = 3.82 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 8.4 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Implementing surgical triage on `day = Fri` is **mathematically contraindicated**. Because the cohort event rate (78.95%) is virtually identical to the rest of the population (34.67%, p = 1.0000), flagging this segment acts as a random coin-flip that would burden frontline staff with 4 false alarms for zero attributable risk reduction.
+> **Empirical Data Answer**: Out of 19 records in this high-risk partition, 15 were confirmed adverse events (78.95% precision vs 34.67% rest-of-system baseline, +44.28% excess risk). Targeting this cohort addresses 8.4 attributable excess events while absorbing 4 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Neither cohort-specific Surgical CapEx (Pathway B) nor cohort-targeted Structural CapEx is justified when the Statistical Circuit-Breaker is tripped (p = 1.0000). Leadership must freeze cohort spending (Pathway A, $0 CapEx) and audit missing upstream telemetry (Pathway B) before committing capital.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (8 excess events, bringing `day = Fri` to exact 34.67% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (5 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---
@@ -152,14 +152,6 @@
 
 ### 1. Non-Linear Quantile Threshold Cliffs (Top Operational Drivers)
 *Discretized quartile breakdown exposing where gradual performance transitions into structural failure:*
-
-#### 📊 Feature: `total_bill` (Max Inflection Delta: 16.39%, Chi-Square p: 2.9984e-01 — Uniform Noise — Not Significant)
-| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(3.069, 13.348]` | 61 | 23 | **37.7%** | Statistical Noise (p >= 0.05) |
-| **Q2** | `(13.348, 17.795]` | 61 | 22 | **36.07%** | Statistical Noise (p >= 0.05) |
-| **Q3** | `(17.795, 24.127]` | 61 | 19 | **31.15%** | Statistical Noise (p >= 0.05) |
-| **Q4** | `(24.127, 50.81]` | 61 | 29 | **47.54%** | Statistical Noise (p >= 0.05) |
 
 #### 📊 Feature: `tip` (Max Inflection Delta: 13.08%, Chi-Square p: 5.8527e-01 — Uniform Noise — Not Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
@@ -178,15 +170,15 @@
 
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`total_bill` vs. `size`)
-*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 8.5374e-02):*
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`tip` vs. `size`)
+*Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 7.4972e-02):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `total_bill` (<= 17.80) & High `size` (> 2.00) | 15 | 2 | **13.33%** | Uniform Noise Stratum (p >= 0.05) |
-| **Q2 (Unbuffered Low)** | Low `total_bill` (<= 17.80) & Low `size` (<= 2.00) | 107 | 43 | **40.19%** | Uniform Noise Stratum (p >= 0.05) |
-| **Q3 (Masked Risk)** | High `total_bill` (> 17.80) & High `size` (> 2.00) | 69 | 23 | **33.33%** | Uniform Noise Stratum (p >= 0.05) |
-| **Q4 (Catastrophic Zone)** | High `total_bill` (> 17.80) & Low `size` (<= 2.00) | 53 | 25 | **47.17%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q1 (Optimal Zone)** | Low `tip` (<= 2.90) & High `size` (> 2.00) | 21 | 4 | **19.05%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q2 (Unbuffered Low)** | Low `tip` (<= 2.90) & Low `size` (<= 2.00) | 101 | 39 | **38.61%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q3 (Masked Risk)** | High `tip` (> 2.90) & High `size` (> 2.00) | 63 | 21 | **33.33%** | Uniform Noise Stratum (p >= 0.05) |
+| **Q4 (Catastrophic Zone)** | High `tip` (> 2.90) & Low `size` (<= 2.00) | 59 | 29 | **49.15%** | Uniform Noise Stratum (p >= 0.05) |
 
 ---
 
@@ -195,49 +187,46 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Service Quality Audit if total_bill > 24.13)** | Operational Filter | 61 | 25.0% | **31.18%** | **34.97%** | 32 | 21.19% |
-| **Policy 2: Surgical (Service Quality Audit if total_bill > 17.80)** | Operational Filter | 122 | 50.0% | **51.61%** | **36.89%** | 74 | 49.01% |
-| **Policy 3: Compound (Service Quality Audit if total_bill > 17.80 OR size < 2.00)** | Operational Filter | 126 | 51.64% | **53.76%** | **36.44%** | 76 | 50.33% |
+| **Policy 1: Conservative (Service Quality Audit if tip > 3.56)** | Operational Filter | 61 | 25.0% | **25.81%** | **37.7%** | 37 | 24.5% |
+| **Policy 2: Surgical (Service Quality Audit if tip > 2.90)** | Operational Filter | 122 | 50.0% | **53.76%** | **35.25%** | 72 | 47.68% |
+| **Policy 3: Compound (Service Quality Audit if tip > 2.90 OR size < 2.00)** | Operational Filter | 126 | 51.64% | **55.91%** | **34.75%** | 74 | 49.01% |
 
 ---
 
 ### 4. Confounder Isolation & Simpson's Paradox Defense
 > [!NOTE]
-> **Collinearity Audit between `total_bill` and `tip`**:
-> - Pairwise Pearson Correlation: **r = 0.676**
-> - Macro Target Correlation: `total_bill`: 0.086 | `tip`: 0.006
-> - Stratified Correlation of `tip` across `total_bill` Quartiles:
->   - In `total_bill` stratum `(3.069, 13.348]`: partial r = **0.109**
->   - In `total_bill` stratum `(13.348, 17.795]`: partial r = **0.124**
->   - In `total_bill` stratum `(17.795, 24.127]`: partial r = **0.246**
->   - In `total_bill` stratum `(24.127, 50.81]`: partial r = **-0.336**
-> - **Scientific Finding**: Macro correlation of `tip` is heavily confounded by `total_bill`. Operational intervention must address the root driver rather than the proxy symptom.
+> **Collinearity Audit between `tip` and `size`**:
+> - Pairwise Pearson Correlation: **r = 0.489**
+> - Macro Target Correlation: `tip`: 0.006 | `size`: -0.133
+> - Stratified Correlation of `size` across `tip` Quartiles:
+>   - In `tip` stratum `(0.999, 2.0]`: partial r = **-0.041**
+>   - In `tip` stratum `(2.0, 2.9]`: partial r = **-0.241**
+>   - In `tip` stratum `(2.9, 3.562]`: partial r = **0.04**
+>   - In `tip` stratum `(3.562, 10.0]`: partial r = **-0.383**
+> - **Scientific Finding**: Macro correlation of `size` is heavily confounded by `tip`. Operational intervention must address the root driver rather than the proxy symptom.
 
 ---
 
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
-**MQ1: At what exact physical threshold does 'total_bill' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
-> **Empirical Data Answer**: Physical quantile profiling across 'total_bill' reveals that adverse event rates remain statistically flat across all 4 quartiles, fluctuating narrowly between 31.15% and 47.54% (Q1: 37.7% vs Q4: 47.54%, Max Delta: 16.39 percentage points, Chi-Square p = 0.2998). Because p >= 0.05, this variation is statistically indistinguishable from random sampling noise; 'total_bill' does not trigger a physical threshold cliff.
+**MQ1: At what exact physical threshold does 'tip' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
+> **Empirical Data Answer**: Physical quantile profiling across 'tip' reveals that adverse event rates remain statistically flat across all 4 quartiles, fluctuating narrowly between 29.55% and 42.62% (Q1: 38.46% vs Q4: 39.34%, Max Delta: 13.08 percentage points, Chi-Square p = 0.5853). Because p >= 0.05, this variation is statistically indistinguishable from random sampling noise; 'tip' does not trigger a physical threshold cliff.
 
-**MQ2: What is the critical operational boundary for secondary driver 'tip', and does breach of this threshold alter failure probability?**  
-> **Empirical Data Answer**: Empirical distribution across secondary feature 'tip' shows no statistically significant threshold boundary (Chi-Square p = 0.5853). Event rates between Q1 (38.46%) and Q4 (39.34%) differ by only 0.88 percentage points, confirming that 'tip' does not independently alter adverse event probability.
+**MQ2: What is the critical operational boundary for secondary driver 'size', and does breach of this threshold alter failure probability?**  
+> **Empirical Data Answer**: Empirical distribution across secondary feature 'size' shows no statistically significant threshold boundary (Chi-Square p = 0.1433). Event rates between Q1 (42.5%) and Q4 (28.26%) differ by only 14.24 percentage points, confirming that 'size' does not independently alter adverse event probability.
 
-**MQ3: Can high levels of protective factor 'size' compensate for elevated risk factor 'total_bill', or does 'total_bill' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Two-way quadrant partitioning between 'total_bill' and 'size' yields event rates tightly bounded between 13.33% and 47.17% across populated strata (Q1: 13.33%, Q2: 40.19%, Q3: 33.33%, Q4: 47.17%; 2x2 Chi-Square p = 0.0854). Because p >= 0.05, neither feature exerts a statistically significant buffering or compounding interaction effect on 'smoker'.
+**MQ3: Can high levels of protective factor 'size' compensate for elevated risk factor 'tip', or does 'tip' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Two-way quadrant partitioning between 'tip' and 'size' yields event rates tightly bounded between 19.05% and 49.15% across populated strata (Q1: 19.05%, Q2: 38.61%, Q3: 33.33%, Q4: 49.15%; 2x2 Chi-Square p = 0.0750). Because p >= 0.05, neither feature exerts a statistically significant buffering or compounding interaction effect on 'smoker'.
 
-**MQ4: Does third-order metric 'size' exhibit a statistically significant protective buffer or operational threshold?**  
-> **Empirical Data Answer**: Quartile breakdown of third-order metric 'size' shows statistically uniform event rates from Q1 (42.5%) through Q4 (28.26%) (Max Delta: 10.92 percentage points, Chi-Square p = 0.1433). Because p >= 0.05, 'size' does not act as a statistically significant operational buffer or risk driver.
+**MQ4: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
+> **Empirical Data Answer**: Tail risk audit across the lowest 93 catastrophic records reveals that only 0.0% breach two or more critical parameters (tip, size) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
-**MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 93 catastrophic records reveals that only 10.75% breach two or more critical parameters (total_bill, tip, size) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
+**MQ5: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Service Quality Audit if tip > 3.56)), 61 records (25.0%) are flagged, capturing 25.81% of all adverse events with 37 false alarms. Under Surgical Triage (Policy 2: Surgical (Service Quality Audit if tip > 2.90)), flagged volume expands to 122 records (50.0%), capturing 53.76% of adverse events and shifting the unflagged adverse rate to 35.25%, at the cost of 72 false alarms (47.68% of normal records). Both policies deliver equivalent marginal defect containment per flagged unit (1.03 recall/scrap ratio), with Surgical triage capturing a greater absolute volume of defects (53.76% vs 25.81%).
 
-**MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Service Quality Audit if total_bill > 24.13)), 61 records (25.0%) are flagged, capturing 31.18% of all adverse events with 32 false alarms. Under Surgical Triage (Policy 2: Surgical (Service Quality Audit if total_bill > 17.80)), flagged volume expands to 122 records (50.0%), capturing 51.61% of adverse events and shifting the unflagged adverse rate to 36.89%, at the cost of 74 false alarms (49.01% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (1.25 vs 1.03 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
-
-**MQ7: Does 'tip' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'total_bill' (Simpson's Paradox)?**  
-> **Empirical Data Answer**: At the unadjusted level, 'tip' shows correlation r = 0.006 with the target. However, 'tip' is strongly co-linear with 'total_bill' (r = 0.676). When stratifying across 'total_bill' quartiles, the correlation of 'tip' within strata shifts to ((3.069, 13.348]: r=0.109, (13.348, 17.795]: r=0.124, (17.795, 24.127]: r=0.246). This proves that much of 'tip's macro effect is mediated through its relationship with 'total_bill', warning against isolated policy changes on 'tip' alone.
+**MQ6: Does 'size' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'tip' (Simpson's Paradox)?**  
+> **Empirical Data Answer**: At the unadjusted level, 'size' shows correlation r = -0.133 with the target. However, 'size' is strongly co-linear with 'tip' (r = 0.489). When stratifying across 'tip' quartiles, the correlation of 'size' within strata shifts to ((0.999, 2.0]: r=-0.041, (2.0, 2.9]: r=-0.241, (2.9, 3.562]: r=0.04). This proves that much of 'size's macro effect is mediated through its relationship with 'tip', warning against isolated policy changes on 'size' alone.
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

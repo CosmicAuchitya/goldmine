@@ -19,14 +19,14 @@
   "archetype": "clinical_diagnostic_clarity",
   "archetype_name": "Clinical Diagnostic & Operations Clarity",
   "executive_persona": "Chief Medical Officer / Clinical Ops Director / CHRO",
-  "dfii_score": 19,
+  "dfii_score": 18,
   "dfii_breakdown": {
     "aesthetic_impact": 5,
     "context_fit": 5,
     "implementation_feasibility": 5,
     "performance_safety": 5,
-    "consistency_risk": 1,
-    "dfii": 19
+    "consistency_risk": 2,
+    "dfii": 18
   },
   "design_system": {
     "layout_concept": "Clinical cohort stratification & early-intervention layout",
@@ -40,11 +40,11 @@
     "is_temporal": false,
     "has_monetary_ledger": true,
     "has_secondary_dim": true,
-    "cliffs_count": 4,
+    "cliffs_count": 3,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
-    "circuit_breaker_active": false,
+    "circuit_breaker_active": true,
     "has_worklist": true
   },
   "selected_panels": [
@@ -57,7 +57,7 @@
     {
       "id": "nonlinear_cliff_step_area",
       "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 4 continuous driver(s).",
+      "justification": "Isolates discrete physical inflection points across 3 continuous driver(s).",
       "priority": 2
     },
     {

@@ -40,7 +40,7 @@
     "is_temporal": false,
     "has_monetary_ledger": true,
     "has_secondary_dim": true,
-    "cliffs_count": 7,
+    "cliffs_count": 6,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
@@ -51,7 +51,7 @@
     {
       "id": "nonlinear_cliff_step_area",
       "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 7 continuous driver(s).",
+      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
       "priority": 1
     },
     {

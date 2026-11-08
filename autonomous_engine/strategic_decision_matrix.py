@@ -214,10 +214,13 @@ class MicroLevelForensicInquiryEngine:
                 return True
             return is_synthetic_column(c, self.blueprint)
 
+        coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone'}
         num_candidates = [
             c for c in self.df.select_dtypes(include=[np.number]).columns
-            if c not in [self.target_col, 'Id', 'id']
+            if c not in [self.target_col, self.cost_col, 'Id', 'id']
             and not c.lower().endswith(('_id', '_key'))
+            and c.lower() not in coord_cols
+            and not any(k in c.lower() for k in ['longitude', 'latitude'])
             and not is_index_artifact(c, self.df[c])
             and not is_pseudo_numeric_identifier(c, self.df[c])
             and not is_deterministic_target_leakage(c, self.df[c], self.target_series, self.target_col)
@@ -253,6 +256,12 @@ class MicroLevelForensicInquiryEngine:
                 qbins = pd.qcut(s_col, q=4, duplicates='drop')
                 temp = pd.DataFrame({'bin': qbins, 'target': self.target_series.loc[s_col.index]})
                 grp = temp.groupby('bin', observed=False)['target'].agg(['count', 'sum', 'mean']).reset_index()
+                if len(grp) < 2:
+                    qbins = pd.cut(s_col, bins=2)
+                    temp = pd.DataFrame({'bin': qbins, 'target': self.target_series.loc[s_col.index]})
+                    grp = temp.groupby('bin', observed=False)['target'].agg(['count', 'sum', 'mean']).reset_index()
+                    if len(grp) < 2:
+                        continue
                 rates = grp['mean'].tolist()
                 deltas = [abs(rates[i] - rates[i-1]) for i in range(1, len(rates))]
                 max_delta = max(deltas) if deltas else 0.0
@@ -759,12 +768,12 @@ class MicroLevelForensicInquiryEngine:
             })
 
         # Q4: Secondary Spoilage / Protective Buffer Cliff
-        if len(cliffs) >= 3:
+        if len(cliffs) >= 3 and len(cliffs[2]["bins"]) >= 2:
             third_cliff = cliffs[2]
             col3 = third_cliff["column"]
             b_list3 = third_cliff["bins"]
             q1_r3 = b_list3[0]['rate_pct']
-            q2_r3 = b_list3[1]['rate_pct']
+            q2_r3 = b_list3[1]['rate_pct'] if len(b_list3) > 1 else q1_r3
             q4_r3 = b_list3[-1]['rate_pct']
             
             if not third_cliff.get("is_significant", False):
@@ -1368,7 +1377,7 @@ class StrategicDecisionEngine:
                 return True
             if self.cost_metric and cl == self.cost_metric.lower():
                 return True
-            if cl in ['id', 'fact_surrogate_id', '_is_target_event']:
+            if cl in ['id', 'fact_surrogate_id', '_is_target_event', 'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff']:
                 return True
             if cl in synth_bp or is_synthetic_column(c, self.blueprint):
                 return True
@@ -1387,6 +1396,14 @@ class StrategicDecisionEngine:
             for col in self.columns
         ) if raw_src else False
 
+        has_non_demo_discrete = any(
+            not is_invalid_feature(col)
+            and not is_demographic_attribute(col)
+            and 2 <= self.df[col].nunique(dropna=True) <= 25
+            and (not has_raw_discrete or col in raw_src)
+            for col in self.columns
+        )
+
         candidates = []
         min_cohort_size = max(5, int(self.total_records * 0.03))
         for col in self.columns:
@@ -1394,19 +1411,21 @@ class StrategicDecisionEngine:
                 continue
             if has_raw_discrete and col not in raw_src:
                 continue
+            is_demo = is_demographic_attribute(col)
+            if has_non_demo_discrete and is_demo:
+                continue
             nunq = self.df[col].nunique(dropna=True)
             if 2 <= nunq <= 25:
-                col_omnibus_p = 0.0
-                if nunq >= 3:
+                col_omnibus_p = 1.0
+                if nunq >= 2:
                     try:
                         cont_tab = pd.crosstab(self.df[col], target_series)
                         if cont_tab.shape[0] >= 2 and cont_tab.shape[1] == 2 and (cont_tab.sum(axis=0) > 0).all():
-                            _, col_omnibus_p, _, _ = scipy_stats.chi2_contingency(cont_tab)
+                            _, col_omnibus_p, _, _ = chi2_contingency(cont_tab)
                             col_omnibus_p = float(col_omnibus_p)
                     except Exception:
                         col_omnibus_p = 1.0
 
-                is_demo = is_demographic_attribute(col)
                 temp_df['segment'] = self.df[col]
                 grp = temp_df.groupby('segment', observed=False)['is_target'].agg(['count', 'sum'])
                 for val, row in grp.iterrows():
@@ -1419,7 +1438,7 @@ class StrategicDecisionEngine:
                     k0_cand = max(0, self.target_events - sum_v)
                     z_cand, p_cand = calculate_two_proportion_z_test(sum_v, cnt_v, k0_cand, n0_cand)
                     r0_pct = (k0_cand / n0_cand) * 100.0
-                    is_sig_cand = (p_cand < 0.05) and (col_omnibus_p < 0.05 if nunq >= 3 else True) and (r_pct > r0_pct * 1.10)
+                    is_sig_cand = (p_cand < 0.05) and (col_omnibus_p < 0.05) and (r_pct > r0_pct * 1.10)
                     candidates.append({
                         "segment": f"{col} = {val}",
                         "col": col,
@@ -1427,7 +1446,7 @@ class StrategicDecisionEngine:
                         "is_quantile": False,
                         "is_demo": is_demo,
                         "is_sig": is_sig_cand,
-                        "omnibus_p": col_omnibus_p if nunq >= 3 else p_cand,
+                        "omnibus_p": col_omnibus_p if nunq >= 3 else max(p_cand, col_omnibus_p),
                         "volume": cnt_v,
                         "events": sum_v,
                         "rate_pct": r_pct,
@@ -1438,6 +1457,8 @@ class StrategicDecisionEngine:
         # Also evaluate top quantile cliff bins so continuous bottlenecks are captured if discrete segments are weak/absent
         cliffs = self.micro_engine.analyze_quantile_cliffs()
         for top_c in cliffs[:2]:
+            if is_invalid_feature(top_c['column']) or not top_c.get("is_significant", False):
+                continue
             worst_bin = max(top_c["bins"], key=lambda b: b["rate_pct"])
             cnt_v = int(worst_bin["count"])
             sum_v = int(worst_bin["events"])
@@ -1447,7 +1468,8 @@ class StrategicDecisionEngine:
                 k0_cand = max(0, self.target_events - sum_v)
                 z_cand, p_cand = calculate_two_proportion_z_test(sum_v, cnt_v, k0_cand, n0_cand)
                 r0_pct = (k0_cand / n0_cand) * 100.0
-                is_sig_cand = (p_cand < 0.05) and (r_pct > r0_pct * 1.10)
+                c_chi2_p = float(top_c.get("chi2_p_value", p_cand))
+                is_sig_cand = (p_cand < 0.05) and (c_chi2_p < 0.05) and (r_pct > r0_pct * 1.10)
                 candidates.append({
                     "segment": f"{top_c['column']} in {worst_bin['range']}",
                     "col": top_c['column'],
@@ -1455,7 +1477,7 @@ class StrategicDecisionEngine:
                     "is_quantile": True,
                     "is_demo": False,
                     "is_sig": is_sig_cand,
-                    "omnibus_p": p_cand,
+                    "omnibus_p": max(p_cand, c_chi2_p),
                     "volume": cnt_v,
                     "events": sum_v,
                     "rate_pct": r_pct,

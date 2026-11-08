@@ -97,11 +97,11 @@
 - **Domain Context**: **Aviation Flight Operations & Airline Network Dispatch**
 - **Monitored Population**: **123,984 physical records**
 - **Target Adverse Events (`dep_delay`)**: **23,326 events (18.81%)**
-- **Highest-Observed Candidate Segment**: **`arr_delay in (12.0, 1109.0]`**
-  - **Cohort Volume**: 29,577 records
-  - **Adverse Events in Segment**: 19,084 events
-  - **Segment Failure Rate**: **64.52%** (vs. 4.49% rest-of-population baseline — **14.37x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 230.51, p = 0.0000e+00`)** — **17,755.0 Attributable Excess Events (+60.03% above 4.49% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`hour = 21`**
+  - **Cohort Volume**: 4,429 records
+  - **Adverse Events in Segment**: 1,504 events
+  - **Segment Failure Rate**: **33.96%** (vs. 18.25% rest-of-population baseline — **1.86x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 26.26, p = 0.0000e+00`)** — **695.6 Attributable Excess Events (+15.71% above 18.25% rest-of-system baseline)**
 
 ---
 
@@ -110,9 +110,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **4,439 events prevented (25% Excess-Risk Compression)** | [4,397 to 4,480 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (13,316 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **10,653 events prevented (60% Excess-Risk Compression)** | [10,553 to 10,753 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **17,755 events prevented (100% Baseline Parity)** | [17,589 to 17,921 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **174 events prevented (25% Excess-Risk Compression)** | [158 to 190 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (522 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **417 events prevented (60% Excess-Risk Compression)** | [380 to 455 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **696 events prevented (100% Baseline Parity)** | [633 to 758 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -120,17 +120,17 @@
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
 #### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 17755.0 attributable excess events in `arr_delay in (12.0, 1109.0]` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (13,316 excess events) and baseline systemic friction unaddressed.
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 695.6 attributable excess events in `hour = 21` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (522 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
 #### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `arr_delay in (12.0, 1109.0]` bottleneck (64.52% vs 4.49% rest-of-system, p = 0.0000e+00, +60.03% attributable excess risk).
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `hour = 21` bottleneck (33.96% vs 18.25% rest-of-system, p = 0.0000e+00, +15.71% attributable excess risk).
 - **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
 #### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `arr_delay in (12.0, 1109.0]` from 64.52% down to exact statistical parity with the rest-of-population baseline (4.49%), eliminating all 17,755 attributable excess failures.
+- **Fayda (Upside & Benefits)**: Brings `hour = 21` from 33.96% down to exact statistical parity with the rest-of-population baseline (18.25%), eliminating all 696 attributable excess failures.
 - **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
@@ -139,14 +139,14 @@
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
 *Board ya leadership (Chief Flight Operations Officer / VP of Network Control) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'arr_delay in (12.0, 1109.0]' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'arr_delay in (12.0, 1109.0]' is 64.52% compared to 4.49% across the remainder of the population (Relative Risk Multiplier: 14.37x across 29,577 physical records). The empirical separation yields z = 230.51 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 17755.0 attributable excess events.
+**Q1: Is the concentration in 'hour = 21' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'hour = 21' is 33.96% compared to 18.25% across the remainder of the population (Relative Risk Multiplier: 1.86x across 4,429 physical records). The empirical separation yields z = 26.26 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 695.6 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 29,577 records in this high-risk partition, 19,084 were confirmed adverse events (64.52% precision vs 4.49% rest-of-system baseline, +60.03% excess risk). Targeting this cohort addresses 17755.0 attributable excess events while absorbing 10,493 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Out of 4,429 records in this high-risk partition, 1,504 were confirmed adverse events (33.96% precision vs 18.25% rest-of-system baseline, +15.71% excess risk). Targeting this cohort addresses 695.6 attributable excess events while absorbing 2,925 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (17,755 excess events, bringing `arr_delay in (12.0, 1109.0]` to exact 4.49% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (10,653 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (696 excess events, bringing `hour = 21` to exact 18.25% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (417 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---
@@ -157,41 +157,41 @@
 ### 1. Non-Linear Quantile Threshold Cliffs (Top Operational Drivers)
 *Discretized quartile breakdown exposing where gradual performance transitions into structural failure:*
 
-#### 📊 Feature: `arr_delay` (Max Inflection Delta: 53.79%, Chi-Square p: 0.0000e+00 — Statistically Significant)
+#### 📊 Feature: `hour` (Max Inflection Delta: 9.78%, Chi-Square p: 0.0000e+00 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(-75.001, -18.0]` | 30,576 | 195 | **0.64%** | **Optimal Baseline** |
-| **Q2** | `(-18.0, -6.0]` | 30,896 | 644 | **2.08%** | Transitional Tier |
-| **Q3** | `(-6.0, 12.0]` | 30,378 | 3,262 | **10.74%** | Transitional Tier |
-| **Q4** | `(12.0, 1109.0]` | 29,577 | 19,084 | **64.52%** | **Structural Cliff Breach** |
+| **Q1** | `(4.999, 9.0]` | 38,794 | 3,176 | **8.19%** | **Optimal Baseline** |
+| **Q2** | `(9.0, 13.0]` | 27,489 | 4,124 | **15.0%** | Transitional Tier |
+| **Q3** | `(13.0, 17.0]` | 32,353 | 8,018 | **24.78%** | Transitional Tier |
+| **Q4** | `(17.0, 23.0]` | 25,348 | 8,008 | **31.59%** | **Peak Vulnerability Stratum** |
 
-#### 📊 Feature: `dep_time` (Max Inflection Delta: 16.49%, Chi-Square p: 0.0000e+00 — Statistically Significant)
+#### 📊 Feature: `month` (Max Inflection Delta: 9.28%, Chi-Square p: 9.5501e-219 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(0.999, 856.0]` | 30,525 | 1,769 | **5.8%** | **Optimal Baseline** |
-| **Q2** | `(856.0, 1329.0]` | 30,376 | 3,927 | **12.93%** | Transitional Tier |
-| **Q3** | `(1329.0, 1726.0]` | 30,581 | 6,345 | **20.75%** | Transitional Tier |
-| **Q4** | `(1726.0, 2400.0]` | 30,306 | 11,285 | **37.24%** | **Structural Cliff Breach** |
+| **Q1** | `(0.999, 4.0]` | 39,707 | 6,875 | **17.31%** | Transitional Tier |
+| **Q2** | `(4.0, 7.0]` | 31,940 | 7,838 | **24.54%** | **Peak Vulnerability Stratum** |
+| **Q3** | `(7.0, 10.0]` | 31,815 | 4,855 | **15.26%** | **Optimal Baseline** |
+| **Q4** | `(10.0, 12.0]` | 20,522 | 3,758 | **18.31%** | Transitional Tier |
 
-#### 📊 Feature: `avgdelay` (Max Inflection Delta: 13.19%, Chi-Square p: 0.0000e+00 — Statistically Significant)
+#### 📊 Feature: `totflight` (Max Inflection Delta: 3.66%, Chi-Square p: 1.9654e-50 — Statistically Significant)
 | Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(-13.001, 2.0]` | 31,043 | 1,666 | **5.37%** | **Optimal Baseline** |
-| **Q2** | `(2.0, 8.451]` | 30,959 | 3,742 | **12.09%** | Transitional Tier |
-| **Q3** | `(8.451, 17.701]` | 31,322 | 7,013 | **22.39%** | Transitional Tier |
-| **Q4** | `(17.701, 334.0]` | 30,648 | 10,905 | **35.58%** | **Peak Vulnerability Stratum** |
+| **Q1** | `(0.999, 84.0]` | 31,058 | 6,431 | **20.71%** | **Peak Vulnerability Stratum** |
+| **Q2** | `(84.0, 170.0]` | 34,184 | 6,382 | **18.67%** | Transitional Tier |
+| **Q3** | `(170.0, 267.0]` | 27,989 | 5,545 | **19.81%** | Transitional Tier |
+| **Q4** | `(267.0, 365.0]` | 30,753 | 4,968 | **16.15%** | **Optimal Baseline** |
 
 ---
 
-### 2. 2x2 Orthogonal Feature Interaction Matrix (`arr_delay` vs. `totflight`)
+### 2. 2x2 Orthogonal Feature Interaction Matrix (`hour` vs. `totflight`)
 *Testing feature buffering, compounding risk, and cross-variable overrides (2x2 Chi-Square p: 0.0000e+00):*
 
 | Quadrant | Physical Stratum | Monitored Volume | Target Events | Failure Rate % | Operational Impact |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1 (Optimal Zone)** | Low `arr_delay` (<= -6.00) & High `totflight` (> 170.00) | 30,596 | 400 | **1.31%** | **Optimal Performance Buffer** |
-| **Q2 (Unbuffered Low)** | Low `arr_delay` (<= -6.00) & Low `totflight` (<= 170.00) | 33,433 | 580 | **1.73%** | Baseline Operating Profile |
-| **Q3 (Masked Risk)** | High `arr_delay` (> -6.00) & High `totflight` (> 170.00) | 28,146 | 10,113 | **35.93%** | Partially Buffered Risk (Elevated Drag) |
-| **Q4 (Catastrophic Zone)** | High `arr_delay` (> -6.00) & Low `totflight` (<= 170.00) | 31,809 | 12,233 | **38.46%** | **Compound Maximum Risk Exposure** |
+| **Q1 (Optimal Zone)** | Low `hour` (<= 13.00) & High `totflight` (> 170.00) | 31,611 | 3,183 | **10.07%** | **Optimal Performance Buffer** |
+| **Q2 (Unbuffered Low)** | Low `hour` (<= 13.00) & Low `totflight` (<= 170.00) | 34,672 | 4,117 | **11.87%** | Baseline Operating Profile |
+| **Q3 (Masked Risk)** | High `hour` (> 13.00) & High `totflight` (> 170.00) | 27,131 | 7,330 | **27.02%** | Partially Buffered Risk (Elevated Drag) |
+| **Q4 (Catastrophic Zone)** | High `hour` (> 13.00) & Low `totflight` (<= 170.00) | 30,570 | 8,696 | **28.45%** | **Compound Maximum Risk Exposure** |
 
 ---
 
@@ -200,49 +200,32 @@
 
 | Triage Policy | Cutoff Rule | Flagged / Discarded Volume | Scrap % | Defect Recall (Caught) | Retained Defect % | False Alarms / Discards | False Discard % |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Policy 1: Conservative (Turnaround Triage if arr_delay > 12.00)** | Operational Filter | 29,577 | 23.86% | **81.81%** | **4.49%** | 10,493 | 10.42% |
-| **Policy 2: Surgical (Turnaround Triage if arr_delay > -6.00)** | Operational Filter | 59,955 | 48.36% | **95.8%** | **1.53%** | 37,609 | 37.36% |
-| **Policy 3: Compound (Turnaround Triage if arr_delay > -6.00 OR totflight < 170.00)** | Operational Filter | 91,813 | 74.05% | **98.19%** | **1.31%** | 68,909 | 68.46% |
-
----
-
-### 4. Confounder Isolation & Simpson's Paradox Defense
-> [!NOTE]
-> **Collinearity Audit between `air_time` and `tz`**:
-> - Pairwise Pearson Correlation: **r = -0.897**
-> - Macro Target Correlation: `air_time`: 0.0 | `tz`: -0.006
-> - Stratified Correlation of `tz` across `air_time` Quartiles:
->   - In `air_time` stratum `(20.999, 102.0]`: partial r = **-0.034**
->   - In `air_time` stratum `(102.0, 128.0]`: partial r = **-0.031**
->   - In `air_time` stratum `(128.0, 160.0]`: partial r = **-0.036**
->   - In `air_time` stratum `(160.0, 490.0]`: partial r = **0.023**
-> - **Scientific Finding**: Macro correlation of `tz` is heavily confounded by `air_time`. Operational intervention must address the root driver rather than the proxy symptom.
+| **Policy 1: Conservative (Turnaround Triage if hour > 17.00)** | Operational Filter | 25,348 | 20.44% | **34.33%** | **15.53%** | 17,340 | 17.23% |
+| **Policy 2: Surgical (Turnaround Triage if hour > 13.00)** | Operational Filter | 57,701 | 46.54% | **68.7%** | **11.01%** | 41,675 | 41.4% |
+| **Policy 3: Compound (Turnaround Triage if hour > 13.00 OR totflight < 170.00)** | Operational Filter | 91,054 | 73.44% | **85.8%** | **10.06%** | 71,041 | 70.58% |
 
 ---
 
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
-**MQ1: At what exact physical threshold does 'arr_delay' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
-> **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'arr_delay'. Across the 4 quartiles, event failure rates escalate from 0.64% in Q1 ((-75.001, -18.0]) to 64.52% in Q4 ((12.0, 1109.0]) (Max Delta: 53.79 percentage points, Chi-Square p < 0.0001). This establishes that 'arr_delay' operates as an acute non-linear cliff (step increase of 53.79 percentage points, 2.53x mean delta) rather than a benign linear drift.
+**MQ1: At what exact physical threshold does 'hour' trigger a non-linear inflection in adverse outcomes, and is the transition gradual or a discrete cliff?**  
+> **Empirical Data Answer**: Physical quantile profiling identifies inflection dynamics in 'hour'. Across the 4 quartiles, event failure rates escalate from 8.19% in Q1 ((4.999, 9.0]) to 31.59% in Q4 ((17.0, 23.0]) (Max Delta: 9.78 percentage points, Chi-Square p < 0.0001). This establishes that 'hour' exhibits a progressive gradient across quartiles (step ratio 1.25x mean progression) rather than an isolated singular cliff.
 
-**MQ2: What is the critical operational boundary for secondary driver 'dep_time', and does breach of this threshold alter failure probability?**  
-> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'dep_time' quartile threshold (Chi-Square p = 0.0000e+00). In high-risk Q4 ((1726.0, 2400.0]), the adverse rate is 37.24%, compared to 5.8% in favorable Q1 ((0.999, 856.0]). Managing 'dep_time' into its favorable operating window delivers a 31.44 percentage point risk reduction.
+**MQ2: What is the critical operational boundary for secondary driver 'month', and does breach of this threshold alter failure probability?**  
+> **Empirical Data Answer**: Empirical distribution establishes a critical boundary at 'month' quartile threshold (Chi-Square p = 9.5501e-219). In high-risk Q4 ((10.0, 12.0]), the adverse rate is 18.31%, compared to 17.31% in favorable Q1 ((0.999, 4.0]). Managing 'month' into its favorable operating window delivers a 1.00 percentage point risk reduction.
 
-**MQ3: Can high levels of protective factor 'totflight' compensate for elevated risk factor 'arr_delay', or does 'arr_delay' exert an overriding destructive effect?**  
-> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'arr_delay' cohort, elevating 'totflight' shifts adverse events from 38.46% (Compound Catastrophe) to 35.93% (Masked Risk). Records with elevated 'arr_delay' and high 'totflight' experience 35.93% failure—27.43x the 1.31% failure rate (more than double) observed when 'arr_delay' is controlled in the Optimal Zone. Thus, 'arr_delay' exerts an independent negative drag that 'totflight' cannot fully mask.
+**MQ3: Can high levels of protective factor 'totflight' compensate for elevated risk factor 'hour', or does 'hour' exert an overriding destructive effect?**  
+> **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 0.0000e+00) reveals that within the high 'hour' cohort, elevating 'totflight' shifts adverse events from 28.45% (Compound Catastrophe) to 27.02% (Masked Risk). Records with elevated 'hour' and high 'totflight' experience 27.02% failure—2.68x the 10.07% failure rate (more than double) observed when 'hour' is controlled in the Optimal Zone. Thus, 'hour' exerts an independent negative drag that 'totflight' cannot fully mask.
 
-**MQ4: At what level does third-order metric 'avgdelay' begin compromising operational yield?**  
-> **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 0.0000e+00) shows that 'avgdelay' escalates by 30.21 percentage points from 5.37% in Q1 ((-13.001, 2.0]) to 35.58% in Q4 ((17.701, 334.0]). This isolates Q4 as a statistically significant vulnerability zone requiring threshold monitoring.
+**MQ4: How significantly does third-order metric 'totflight' buffer against failure, and what is the minimum safe threshold?**  
+> **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 1.9654e-50) shows that lower levels of 'totflight' incur 20.71% adverse events in Q1 ((0.999, 84.0]), whereas elevating 'totflight' into Q4 ((267.0, 365.0]) reduces adverse events by 4.56 percentage points down to 16.15%. This isolates Q1 as the primary vulnerability stratum.
 
 **MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 23326 catastrophic records reveals that 54.95% breach two or more critical parameters (arr_delay, dep_time, totflight) simultaneously. Catastrophic degradation is an emergent compound phenomenon rather than a single isolated defect.
+> **Empirical Data Answer**: Tail risk audit across the lowest 23326 catastrophic records reveals that only 19.54% breach two or more critical parameters (hour, minute, totflight) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
 **MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
-> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Turnaround Triage if arr_delay > 12.00)), 29577 records (23.86%) are flagged, capturing 81.81% of all adverse events with 10493 false alarms. Under Surgical Triage (Policy 2: Surgical (Turnaround Triage if arr_delay > -6.00)), flagged volume expands to 59955 records (48.36%), capturing 95.8% of adverse events and shifting the unflagged adverse rate to 1.53%, at the cost of 37609 false alarms (37.36% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (3.43 vs 1.98 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
-
-**MQ7: Does 'tz' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'air_time' (Simpson's Paradox)?**  
-> **Empirical Data Answer**: At the unadjusted level, 'tz' shows correlation r = -0.006 with the target. However, 'tz' is strongly co-linear with 'air_time' (r = -0.897). When stratifying across 'air_time' quartiles, the correlation of 'tz' within strata shifts to ((20.999, 102.0]: r=-0.034, (102.0, 128.0]: r=-0.031, (128.0, 160.0]: r=-0.036). This proves that much of 'tz's macro effect is mediated through its relationship with 'air_time', warning against isolated policy changes on 'tz' alone.
+> **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Turnaround Triage if hour > 17.00)), 25348 records (20.44%) are flagged, capturing 34.33% of all adverse events with 17340 false alarms. Under Surgical Triage (Policy 2: Surgical (Turnaround Triage if hour > 13.00)), flagged volume expands to 57701 records (46.54%), capturing 68.7% of adverse events and shifting the unflagged adverse rate to 11.01%, at the cost of 41675 false alarms (41.4% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (1.68 vs 1.48 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

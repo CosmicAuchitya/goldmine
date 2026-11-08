@@ -70,13 +70,13 @@
   ],
   "dimensions": {
     "primary_dimension": {
-      "name": "job",
-      "cardinality": 12,
+      "name": "poutcome",
+      "cardinality": 3,
       "type": "categorical_segment"
     },
     "secondary_dimension": {
-      "name": "poutcome",
-      "cardinality": 3,
+      "name": "job",
+      "cardinality": 12,
       "type": "categorical_subsegment"
     }
   }

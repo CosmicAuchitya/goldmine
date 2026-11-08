@@ -40,7 +40,7 @@
     "is_temporal": false,
     "has_monetary_ledger": false,
     "has_secondary_dim": true,
-    "cliffs_count": 10,
+    "cliffs_count": 9,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
@@ -57,7 +57,7 @@
     {
       "id": "nonlinear_cliff_step_area",
       "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 10 continuous driver(s).",
+      "justification": "Isolates discrete physical inflection points across 9 continuous driver(s).",
       "priority": 3
     },
     {
@@ -75,7 +75,7 @@
     {
       "id": "secondary_cross_tab_heatmap",
       "name": "2D Cross-Tabulation Risk Concentration Heatmap",
-      "justification": "Bivariate categorical cross-tab (job x poutcome) exposes sub-node vulnerability hubs.",
+      "justification": "Bivariate categorical cross-tab (poutcome x job) exposes sub-node vulnerability hubs.",
       "priority": 7
     },
     {

@@ -1,7 +1,7 @@
 {
   "project_title": "Enterprise Analytics & Dimensional Architecture for raw_data",
   "fact_table": "housing",
-  "target_metric": "ocean_proximity",
+  "target_metric": "median_house_value",
   "primary_id_column": "fact_surrogate_id",
   "cardinality_defense_plan": {
     "dimension_aggregation_strategies": "Pre-aggregate any 1:N dimensions before merge to preserve 1:1 fact integrity",

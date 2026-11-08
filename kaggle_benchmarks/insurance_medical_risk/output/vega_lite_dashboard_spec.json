@@ -101,38 +101,38 @@
     },
     "threshold_cliff": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Non-Linear Threshold Cliff Inflection: charges",
+      "title": "Non-Linear Threshold Cliff Inflection: bmi",
       "width": 600,
       "height": 260,
       "data": {
         "values": [
           {
-            "quantile_tier": "Q1: (1121.873, 4740.287]",
+            "quantile_tier": "Q1: (15.959000000000001, 26.296]",
             "tier_index": 1,
             "volume": 335,
-            "adverse_events": 0,
-            "failure_rate_pct": 0.0
+            "adverse_events": 71,
+            "failure_rate_pct": 21.19
           },
           {
-            "quantile_tier": "Q2: (4740.287, 9382.033]",
+            "quantile_tier": "Q2: (26.296, 30.4]",
             "tier_index": 2,
-            "volume": 334,
-            "adverse_events": 0,
-            "failure_rate_pct": 0.0
+            "volume": 338,
+            "adverse_events": 66,
+            "failure_rate_pct": 19.53
           },
           {
-            "quantile_tier": "Q3: (9382.033, 16639.913]",
+            "quantile_tier": "Q3: (30.4, 34.694]",
             "tier_index": 3,
-            "volume": 334,
-            "adverse_events": 19,
-            "failure_rate_pct": 5.69
+            "volume": 330,
+            "adverse_events": 60,
+            "failure_rate_pct": 18.18
           },
           {
-            "quantile_tier": "Q4: (16639.913, 63770.428]",
+            "quantile_tier": "Q4: (34.694, 53.13]",
             "tier_index": 4,
             "volume": 335,
-            "adverse_events": 255,
-            "failure_rate_pct": 76.12
+            "adverse_events": 77,
+            "failure_rate_pct": 22.99
           }
         ]
       },
@@ -148,7 +148,7 @@
               "field": "quantile_tier",
               "type": "nominal",
               "sort": "tier_index",
-              "title": "Quantile Tier (charges)"
+              "title": "Quantile Tier (bmi)"
             },
             "y": {
               "field": "failure_rate_pct",
@@ -208,7 +208,7 @@
     },
     "orthogonal_interaction_matrix": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "2x2 Orthogonal Interaction: age vs charges",
+      "title": "2x2 Orthogonal Interaction: age vs children",
       "width": 380,
       "height": 260,
       "data": {
@@ -218,36 +218,36 @@
             "label": "Optimal Zone",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 187,
-            "events": 0,
-            "failure_rate_pct": 0.0
+            "volume": 438,
+            "events": 79,
+            "failure_rate_pct": 18.04
           },
           {
             "quadrant": "Q2",
             "label": "Unbuffered Baseline",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 482,
-            "events": 0,
-            "failure_rate_pct": 0.0
+            "volume": 460,
+            "events": 97,
+            "failure_rate_pct": 21.09
           },
           {
             "quadrant": "Q3",
             "label": "Masked Risk",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 477,
-            "events": 130,
-            "failure_rate_pct": 27.25
+            "volume": 226,
+            "events": 51,
+            "failure_rate_pct": 22.57
           },
           {
             "quadrant": "Q4",
             "label": "Compound Catastrophe",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 192,
-            "events": 144,
-            "failure_rate_pct": 75.0
+            "volume": 214,
+            "events": 47,
+            "failure_rate_pct": 21.96
           }
         ]
       },
@@ -265,7 +265,7 @@
         "y": {
           "field": "protective_factor_level",
           "type": "nominal",
-          "title": "charges"
+          "title": "children"
         },
         "color": {
           "field": "failure_rate_pct",
@@ -314,24 +314,24 @@
         "values": [
           {
             "policy": "Policy 1: Conservative",
-            "scrap_pct": 25.04,
-            "recall_pct": 93.07,
-            "retained_defect_rate": 1.89,
-            "false_discards": 80
+            "scrap_pct": 14.95,
+            "recall_pct": 15.69,
+            "retained_defect_rate": 20.3,
+            "false_discards": 157
           },
           {
             "policy": "Policy 2: Surgical",
-            "scrap_pct": 50.0,
-            "recall_pct": 100.0,
-            "retained_defect_rate": 0.0,
-            "false_discards": 395
+            "scrap_pct": 32.88,
+            "recall_pct": 35.77,
+            "retained_defect_rate": 19.6,
+            "false_discards": 342
           },
           {
             "policy": "Policy 3: Compound",
-            "scrap_pct": 84.68,
-            "recall_pct": 100.0,
-            "retained_defect_rate": 0.0,
-            "false_discards": 859
+            "scrap_pct": 66.59,
+            "recall_pct": 70.07,
+            "retained_defect_rate": 18.34,
+            "false_discards": 699
           }
         ]
       },

@@ -19,41 +19,42 @@
 ### 3. Economic Moats (Core Value Drivers & Operational Excellence)
 *Top performers demonstrating minimum friction and maximum operational stability:*
 
-| origin | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
+| cylinders | Volume | Target Events | Reliability % | Vulnerability % | Operational Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **japan** | 79 | 5 | **93.67%** | 6.33% | **High Reliability Leader** |
-| **europe** | 70 | 8 | **88.57%** | 11.43% | **High Reliability Leader** |
-| **usa** | 249 | 147 | **40.96%** | 59.04% | Sub-Baseline Performer |
+| **4** | 204 | 8 | **96.08%** | 3.92% | **High Reliability Leader** |
+| **6** | 84 | 51 | **39.29%** | 60.71% | Sub-Baseline Performer |
+| **8** | 103 | 99 | **3.88%** | 96.12% | Sub-Baseline Performer |
 
 ---
 
 ### 4. Operational Bottlenecks & Adverse Event Concentration
 *Concentrated operational friction ranked by physical adverse event volume:*
 
-| origin | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| cylinders | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
 | :--- | :--- | :--- | :--- | :--- |
-| **usa** | 249 | 147 | **59.04%** | **91.88%** |
-| **europe** | 70 | 8 | **11.43%** | **5.0%** |
-| **japan** | 79 | 5 | **6.33%** | **3.12%** |
+| **8** | 103 | 99 | **96.12%** | **61.88%** |
+| **6** | 84 | 51 | **60.71%** | **31.87%** |
+| **4** | 204 | 8 | **3.92%** | **5.0%** |
+| **3** | 4 | 2 | **50.0%** | **1.25%** |
+| **5** | 3 | 0 | **0.0%** | **0.0%** |
 
 ---
 
-### 5. Secondary Segment / Node Bottlenecks (weight_tier)
+### 5. Secondary Segment / Node Bottlenecks (origin)
 *Sub-nodes exhibiting concentrated physical failure events:*
 
-| weight_tier | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
+| origin | Total Volume | Target Volume | Vulnerability Rate % | Share of Adverse Events % |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tier 4 (Elevated)** | 100 | 98 | **98.0%** | 61.25% |
-| **Tier 3 (High)** | 99 | 53 | **53.54%** | 33.12% |
-| **Tier 2 (Moderate)** | 99 | 8 | **8.08%** | 5.0% |
-| **Tier 1 (Low)** | 100 | 1 | **1.0%** | 0.62% |
+| **usa** | 249 | 147 | **59.04%** | 91.88% |
+| **europe** | 70 | 8 | **11.43%** | 5.0% |
+| **japan** | 79 | 5 | **6.33%** | 3.12% |
 
 ---
 
 ### 7. Causality vs. Correlation & Confounding Variable Guardrail
 > [!IMPORTANT]
 > **Correlation $\neq$ Causation Alert (Simpson's Paradox & Confounder Defense)**:
-> - Observed risk in `origin` may be confounded by underlying volume distributions, scale effects, or `weight_tier` concentration.
+> - Observed risk in `cylinders` may be confounded by underlying volume distributions, scale effects, or `origin` concentration.
 > - **Analyst Action**: Never implement operational policy changes based solely on bivariate grouping. Always control for exposure volume and transaction velocity before attributing direct causality.
 
 ---
@@ -74,7 +75,7 @@
 
 > *"Good morning. Across our audited footprint of **398 physical records**, our system identified **160 critical events (40.2%)**, driving an aggregate volume of **160 critical quality events (40.2%)**.*
 > 
-> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `origin` (rate spread: 52.71 percentage points, 9.33x relative separation, Chi-Square p = 3.9737e-22): the top leak segment accounts for **91.9% of all adverse quality events**.*
+> *Our root-cause forensic analysis proves that this drag is statistically concentrated across `cylinders` (rate spread: 92.20 percentage points, 24.52x relative separation, Chi-Square p = 3.6410e-57): the top leak segment accounts for **61.9% of all adverse quality events**.*
 > 
 > *Rather than speculative intuition, we recommend an initial targeted operational remediation on our excess-risk bottleneck cohort (detailed in the Strategic Decision Matrix below), while a 10% global baseline improvement models autonomously prevent **16 defective outcomes** within the next operational cycle."*
 
@@ -88,11 +89,11 @@
 - **Domain Context**: **Automotive Fleet Powertrain & Emissions Decarbonization**
 - **Monitored Population**: **398 physical records**
 - **Target Adverse Events (`mpg`)**: **160 events (40.2%)**
-- **Highest-Observed Candidate Segment**: **`horsepower in (126.0, 230.0]`**
-  - **Cohort Volume**: 98 records
-  - **Adverse Events in Segment**: 96 events
-  - **Segment Failure Rate**: **97.96%** (vs. 21.33% rest-of-population baseline — **4.59x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 13.43, p = 0.0000e+00`)** — **75.1 Attributable Excess Events (+76.63% above 21.33% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`cylinders = 8`**
+  - **Cohort Volume**: 103 records
+  - **Adverse Events in Segment**: 99 events
+  - **Segment Failure Rate**: **96.12%** (vs. 20.68% rest-of-population baseline — **4.65x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 13.44, p = 0.0000e+00`)** — **77.7 Attributable Excess Events (+75.44% above 20.68% rest-of-system baseline)**
 
 ---
 
@@ -101,9 +102,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **19 events prevented (25% Excess-Risk Compression)** | [17 to 20 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (56 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **45 events prevented (60% Excess-Risk Compression)** | [42 to 48 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **75 events prevented (100% Baseline Parity)** | [70 to 80 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **19 events prevented (25% Excess-Risk Compression)** | [18 to 21 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (59 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **47 events prevented (60% Excess-Risk Compression)** | [43 to 50 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **78 events prevented (100% Baseline Parity)** | [72 to 84 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -111,17 +112,17 @@
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
 #### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 75.1 attributable excess events in `horsepower in (126.0, 230.0]` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (56 excess events) and baseline systemic friction unaddressed.
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 77.7 attributable excess events in `cylinders = 8` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (59 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
 #### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `horsepower in (126.0, 230.0]` bottleneck (97.96% vs 21.33% rest-of-system, p = 0.0000e+00, +76.63% attributable excess risk).
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `cylinders = 8` bottleneck (96.12% vs 20.68% rest-of-system, p = 0.0000e+00, +75.44% attributable excess risk).
 - **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
 #### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `horsepower in (126.0, 230.0]` from 97.96% down to exact statistical parity with the rest-of-population baseline (21.33%), eliminating all 75 attributable excess failures.
+- **Fayda (Upside & Benefits)**: Brings `cylinders = 8` from 96.12% down to exact statistical parity with the rest-of-population baseline (20.68%), eliminating all 78 attributable excess failures.
 - **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
@@ -130,14 +131,14 @@
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
 *Board ya leadership (VP of Powertrain Engineering / Head of Fleet Decarbonization) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'horsepower in (126.0, 230.0]' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'horsepower in (126.0, 230.0]' is 97.96% compared to 21.33% across the remainder of the population (Relative Risk Multiplier: 4.59x across 98 physical records). The empirical separation yields z = 13.43 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 75.1 attributable excess events.
+**Q1: Is the concentration in 'cylinders = 8' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'cylinders = 8' is 96.12% compared to 20.68% across the remainder of the population (Relative Risk Multiplier: 4.65x across 103 physical records). The empirical separation yields z = 13.44 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 77.7 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 98 records in this high-risk partition, 96 were confirmed adverse events (97.96% precision vs 21.33% rest-of-system baseline, +76.63% excess risk). Targeting this cohort addresses 75.1 attributable excess events while absorbing 2 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Out of 103 records in this high-risk partition, 99 were confirmed adverse events (96.12% precision vs 20.68% rest-of-system baseline, +75.44% excess risk). Targeting this cohort addresses 77.7 attributable excess events while absorbing 4 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (75 excess events, bringing `horsepower in (126.0, 230.0]` to exact 21.33% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (45 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (78 excess events, bringing `cylinders = 8` to exact 20.68% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (47 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---

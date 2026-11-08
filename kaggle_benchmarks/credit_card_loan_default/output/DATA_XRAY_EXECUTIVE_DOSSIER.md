@@ -171,14 +171,6 @@
 | **Q3** | `(0.0994, 0.148]` | 500 | 94 | **18.8%** | Transitional Tier |
 | **Q4** | `(0.148, 0.2]` | 500 | 189 | **37.8%** | **Structural Cliff Breach** |
 
-#### 📊 Feature: `Loan` (Max Inflection Delta: 16.40%, Chi-Square p: 5.3029e-57 — Statistically Significant)
-| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Q1** | `(1.377, 1939.709]` | 500 | 0 | **0.0%** | **Optimal Baseline** |
-| **Q2** | `(1939.709, 3974.719]` | 500 | 31 | **6.2%** | Transitional Tier |
-| **Q3** | `(3974.719, 6432.411]` | 500 | 85 | **17.0%** | Transitional Tier |
-| **Q4** | `(6432.411, 13766.051]` | 500 | 167 | **33.4%** | **Structural Cliff Breach** |
-
 ---
 
 ### 2. 2x2 Orthogonal Feature Interaction Matrix (`Loan to Income` vs. `Age`)
@@ -204,20 +196,6 @@
 
 ---
 
-### 4. Confounder Isolation & Simpson's Paradox Defense
-> [!NOTE]
-> **Collinearity Audit between `Loan` and `Loan to Income`**:
-> - Pairwise Pearson Correlation: **r = 0.847**
-> - Macro Target Correlation: `Loan`: 0.377 | `Loan to Income`: 0.433
-> - Stratified Correlation of `Loan to Income` across `Loan` Quartiles:
->   - In `Loan` stratum `(1.377, 1939.709]`: partial r = **0.0**
->   - In `Loan` stratum `(1939.709, 3974.719]`: partial r = **0.418**
->   - In `Loan` stratum `(3974.719, 6432.411]`: partial r = **0.393**
->   - In `Loan` stratum `(6432.411, 13766.051]`: partial r = **0.173**
-> - **Scientific Finding**: Macro correlation of `Loan to Income` is heavily confounded by `Loan`. Operational intervention must address the root driver rather than the proxy symptom.
-
----
-
 ### 5. Micro-Level Forensic Questions & Empirical Answers (Executive Q&A)
 *Autonomously formulated investigative questions and data-grounded physical proof:*
 
@@ -230,17 +208,11 @@
 **MQ3: Can high levels of protective factor 'Age' compensate for elevated risk factor 'Loan to Income', or does 'Loan to Income' exert an overriding destructive effect?**  
 > **Empirical Data Answer**: Cross-quadrant analysis (2x2 Chi-Square p = 1.6641e-220) reveals that within the high 'Loan to Income' cohort, elevating 'Age' shifts adverse events from 57.87% (Compound Catastrophe) to 0.0% (Masked Risk). Records with elevated 'Loan to Income' and high 'Age' achieve a 0.0% failure rate, which closely approaches the 0.0% Optimal Zone rate and demonstrates that high 'Age' effectively buffers the risk of elevated 'Loan to Income'.
 
-**MQ4: At what level does third-order metric 'Loan' begin compromising operational yield?**  
-> **Empirical Data Answer**: Quartile breakdown (Chi-Square p = 5.3029e-57) shows that 'Loan' escalates by 33.40 percentage points from 0.0% in Q1 ((1.377, 1939.709]) to 33.4% in Q4 ((6432.411, 13766.051]). This isolates Q4 as a statistically significant vulnerability zone requiring threshold monitoring.
+**MQ4: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
+> **Empirical Data Answer**: Tail risk audit across the lowest 283 catastrophic records reveals that only 45.94% breach two or more critical parameters (Loan to Income, Age) simultaneously. Catastrophic degradation is predominantly driven by single-variable deviation, where extreme breach in an isolated critical metric is sufficient to trigger failure.
 
-**MQ5: Are catastrophic bottom-tier failures driven by isolated single-variable anomalies or compound multi-system breaches?**  
-> **Empirical Data Answer**: Tail risk audit across the lowest 283 catastrophic records reveals that 69.96% breach two or more critical parameters (Loan to Income, Loan, Age) simultaneously. Catastrophic degradation is an emergent compound phenomenon rather than a single isolated defect.
-
-**MQ6: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
+**MQ5: If operations establishes a pre-screening / triage gate, what is the exact trade-off between adverse event capture (recall), flagged volume, and false alarms?**  
 > **Empirical Data Answer**: Under Conservative Triage (Policy 1: Conservative (Underwriting Audit if Loan to Income > 0.15)), 500 records (25.0%) are flagged, capturing 66.78% of all adverse events with 311 false alarms. Under Surgical Triage (Policy 2: Surgical (Underwriting Audit if Loan to Income > 0.10)), flagged volume expands to 1000 records (50.0%), capturing 100.0% of adverse events and shifting the unflagged adverse rate to 0.0%, at the cost of 717 false alarms (41.76% of normal records). Conservative triage delivers the higher marginal defect containment per flagged unit (2.67 vs 2.00 recall/scrap ratio), while Surgical triage captures a greater absolute volume of defects.
-
-**MQ7: Does 'Loan to Income' independently drive outcomes, or is its apparent impact an illusion confounded by collinearity with 'Loan' (Simpson's Paradox)?**  
-> **Empirical Data Answer**: At the unadjusted level, 'Loan to Income' shows correlation r = 0.433 with the target. However, 'Loan to Income' is strongly co-linear with 'Loan' (r = 0.847). When stratifying across 'Loan' quartiles, the correlation of 'Loan to Income' within strata shifts to ((1.377, 1939.709]: r=0.0, (1939.709, 3974.719]: r=0.418, (3974.719, 6432.411]: r=0.393). This proves that much of 'Loan to Income's macro effect is mediated through its relationship with 'Loan', warning against isolated policy changes on 'Loan to Income' alone.
 
 ---
 *Generated autonomously by Enterprise Strategic Decision & Micro-Forensic Engine V4.0 (Zero Bias & Statistical Circuit-Breaker Verified)*

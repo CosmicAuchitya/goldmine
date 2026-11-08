@@ -92,11 +92,11 @@
 - **Domain Context**: **Healthcare & Clinical Outcomes**
 - **Monitored Population**: **768 physical records**
 - **Target Adverse Events (`Outcome`)**: **268 events (34.9%)**
-- **Highest-Observed Candidate Segment**: **`Glucose in (140.25, 199.0]`**
-  - **Cohort Volume**: 192 records
-  - **Adverse Events in Segment**: 132 events
-  - **Segment Failure Rate**: **68.75%** (vs. 23.61% rest-of-population baseline — **2.91x Risk Multiplier**)
-  - **Statistical Significance Gate**: **PASSED (`z = 11.36, p = 0.0000e+00`)** — **86.7 Attributable Excess Events (+45.14% above 23.61% rest-of-system baseline)**
+- **Highest-Observed Candidate Segment**: **`Pregnancies = 9`**
+  - **Cohort Volume**: 28 records
+  - **Adverse Events in Segment**: 18 events
+  - **Segment Failure Rate**: **64.29%** (vs. 33.78% rest-of-population baseline — **1.9x Risk Multiplier**)
+  - **Statistical Significance Gate**: **PASSED (`z = 3.32, p = 8.8762e-04`)** — **8.5 Attributable Excess Events (+30.5% above 33.78% rest-of-system baseline)**
 
 ---
 
@@ -105,9 +105,9 @@
 
 | Strategic Pathway | Capital / Effort | Time Horizon | Projected Risk Reduction | 95% Confidence Interval | Primary Trade-Off |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **22 events prevented (25% Excess-Risk Compression)** | [18 to 25 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (65 excess events) and baseline systemic friction unaddressed. |
-| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **52 events prevented (60% Excess-Risk Compression)** | [43 to 61 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
-| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **87 events prevented (100% Baseline Parity)** | [72 to 101 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
+| **Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)** | Internal Staff Hours (No CapEx) | 1 - 2 Weeks | **2 events prevented (25% Excess-Risk Compression)** | [1 to 3 events] (95% Attributable Risk CI) | Leaves 75% of cohort excess risk (7 excess events) and baseline systemic friction unaddressed. |
+| **Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)** | Dedicated Protocol Buffer & Daily Monitoring | 30 - 45 Days | **5 events prevented (60% Excess-Risk Compression)** | [2 to 8 events] (95% Attributable Risk CI) | Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage. |
+| **Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)** | Dedicated Telemetry / Automated Infrastructure Revamp | 90 - 180 Days | **9 events prevented (100% Baseline Parity)** | [3 to 14 events] (95% Attributable Risk CI) | High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering. |
 
 ---
 
@@ -115,17 +115,17 @@
 *Unbiased evaluation of upside, downside risks, and collateral friction for each pathway:*
 
 #### 🔹 Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)
-- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 86.7 attributable excess events in `Glucose in (140.25, 199.0]` via lightweight queue alerts.
-- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (65 excess events) and baseline systemic friction unaddressed.
+- **Fayda (Upside & Benefits)**: Zero organizational disruption; captures initial 25% of the 8.5 attributable excess events in `Pregnancies = 9` via lightweight queue alerts.
+- **Nuksan (Downside & Limitations)**: Leaves 75% of cohort excess risk (7 excess events) and baseline systemic friction unaddressed.
 - **Collateral Friction (Team / Operational Impact)**: Minor alert-fatigue among frontline staff if threshold rules are too sensitive.
 
 #### 🔹 Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)
-- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `Glucose in (140.25, 199.0]` bottleneck (68.75% vs 23.61% rest-of-system, p = 0.0000e+00, +45.14% attributable excess risk).
+- **Fayda (Upside & Benefits)**: Highest Return on Invested Effort; directly targets the statistically verified `Pregnancies = 9` bottleneck (64.29% vs 33.78% rest-of-system, p = 8.8762e-04, +30.5% attributable excess risk).
 - **Nuksan (Downside & Limitations)**: Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.
 - **Collateral Friction (Team / Operational Impact)**: Requires cross-departmental coordination; minor initial resistance during protocol adoption.
 
 #### 🔹 Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)
-- **Fayda (Upside & Benefits)**: Brings `Glucose in (140.25, 199.0]` from 68.75% down to exact statistical parity with the rest-of-population baseline (23.61%), eliminating all 87 attributable excess failures.
+- **Fayda (Upside & Benefits)**: Brings `Pregnancies = 9` from 64.29% down to exact statistical parity with the rest-of-population baseline (33.78%), eliminating all 9 attributable excess failures.
 - **Nuksan (Downside & Limitations)**: High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.
 - **Collateral Friction (Team / Operational Impact)**: Heavy operational friction during system migration; requires ongoing engineering maintenance.
 
@@ -134,14 +134,14 @@
 ### 4. Executive Devil's Advocate: Counter-Questions & Empirical Answers
 *Board ya leadership (Chief Medical Officer / Clinical Operations Board) dwara pooche jaane wale kathin sawal aur data-grounded jawab:*
 
-**Q1: Is the concentration in 'Glucose in (140.25, 199.0]' statistically genuine or just random cohort noise?**  
-> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Glucose in (140.25, 199.0]' is 68.75% compared to 23.61% across the remainder of the population (Relative Risk Multiplier: 2.91x across 192 physical records). The empirical separation yields z = 11.36 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 86.7 attributable excess events.
+**Q1: Is the concentration in 'Pregnancies = 9' statistically genuine or just random cohort noise?**  
+> **Empirical Data Answer**: It is statistically evaluated. The event rate in 'Pregnancies = 9' is 64.29% compared to 33.78% across the remainder of the population (Relative Risk Multiplier: 1.9x across 28 physical records). The empirical separation yields z = 3.32 (p < 0.001), exceeding the rigorous 3-sigma standard of statistical evidence with 8.5 attributable excess events.
 
 **Q2: If we implement Pathway B (Surgical Triage), what is the risk of False Positives overloading our capacity?**  
-> **Empirical Data Answer**: Out of 192 records in this high-risk partition, 132 were confirmed adverse events (68.75% precision vs 23.61% rest-of-system baseline, +45.14% excess risk). Targeting this cohort addresses 86.7 attributable excess events while absorbing 60 non-event reviews across the cohort cycle.
+> **Empirical Data Answer**: Out of 28 records in this high-risk partition, 18 were confirmed adverse events (64.29% precision vs 33.78% rest-of-system baseline, +30.50% excess risk). Targeting this cohort addresses 8.5 attributable excess events while absorbing 10 non-event reviews across the cohort cycle.
 
 **Q3: Why should we not immediately jump to Pathway C (Full System Re-architecture)?**  
-> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (87 excess events, bringing `Glucose in (140.25, 199.0]` to exact 23.61% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (52 excess events) in 30-45 days at a fraction of the cost.
+> **Empirical Data Answer**: Pathway C models 100% elimination of the cohort's attributable excess risk (9 excess events, bringing `Pregnancies = 9` to exact 33.78% baseline parity), but requires 90-180 days and heavy CapEx. Pathway B captures 60% of the excess-risk reduction (5 excess events) in 30-45 days at a fraction of the cost.
 
 
 ---

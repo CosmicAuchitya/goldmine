@@ -12,17 +12,17 @@
     "anti_hallucination_gate": "PASSED (100.0% Truth Grounded)"
   },
   "target_outcome": {
-    "column_name": "ocean_proximity",
-    "target_description": "ocean_proximity == 'INLAND' (Depressed Asset Tier)",
-    "adverse_condition_dax": "'bi_ready_fact'[ocean_proximity] = \"INLAND\"",
-    "adverse_condition_sql": "CAST(\"ocean_proximity\" AS VARCHAR) = 'INLAND'",
-    "total_adverse_events": 6551,
-    "adverse_event_rate_pct": 31.74
+    "column_name": "median_house_value",
+    "target_description": "median_house_value <= $119,600 (Distressed Asset Valuation)",
+    "adverse_condition_dax": "'bi_ready_fact'[median_house_value] <= 1.196e+05",
+    "adverse_condition_sql": "COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) <= 119600.0",
+    "total_adverse_events": 5162,
+    "adverse_event_rate_pct": 25.01
   },
   "financial_exposure": {
     "monetary_column": "median_house_value",
     "has_monetary_ledger": true,
-    "total_adverse_capital_drag": 817600123.0,
+    "total_adverse_capital_drag": 445929796.0,
     "total_portfolio_volume": 4269504061.0,
     "currency_unit": "$"
   },
@@ -40,42 +40,42 @@
     {
       "id": "m_target_events",
       "name": "Target Events",
-      "dax_formula": "CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[ocean_proximity] = \"INLAND\")",
-      "sql_formula": "COALESCE(SUM(CASE WHEN CAST(\"ocean_proximity\" AS VARCHAR) = 'INLAND' THEN 1 ELSE 0 END), 0)",
+      "dax_formula": "CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[median_house_value] <= 1.196e+05)",
+      "sql_formula": "COALESCE(SUM(CASE WHEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) <= 119600.0 THEN 1 ELSE 0 END), 0)",
       "metric_type": "filtered_count",
       "format": "#,0",
       "direction": "minimize",
-      "audited_value": 6551
+      "audited_value": 5162
     },
     {
       "id": "m_adverse_rate",
       "name": "Adverse Event Rate %",
       "dax_formula": "DIVIDE([Target Events], [Total Volume], 0)",
-      "sql_formula": "ROUND(100.0 * COALESCE(SUM(CASE WHEN CAST(\"ocean_proximity\" AS VARCHAR) = 'INLAND' THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0), 2)",
+      "sql_formula": "ROUND(100.0 * COALESCE(SUM(CASE WHEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) <= 119600.0 THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0), 2)",
       "metric_type": "ratio",
       "format": "0.00%",
       "direction": "minimize",
-      "audited_value": 31.74
+      "audited_value": 25.01
     },
     {
       "id": "m_system_reliability",
       "name": "System Reliability %",
       "dax_formula": "1 - [Adverse Event Rate %]",
-      "sql_formula": "ROUND(100.0 - (100.0 * COALESCE(SUM(CASE WHEN CAST(\"ocean_proximity\" AS VARCHAR) = 'INLAND' THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0)), 2)",
+      "sql_formula": "ROUND(100.0 - (100.0 * COALESCE(SUM(CASE WHEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) <= 119600.0 THEN 1 ELSE 0 END), 0) / NULLIF(COUNT(*), 0)), 2)",
       "metric_type": "derived_ratio",
       "format": "0.00%",
       "direction": "maximize",
-      "audited_value": 68.26
+      "audited_value": 74.99
     },
     {
       "id": "m_adverse_capital_drag",
       "name": "Total Adverse Capital Drag ($)",
-      "dax_formula": "CALCULATE(SUM('bi_ready_fact'[median_house_value]), 'bi_ready_fact'[ocean_proximity] = \"INLAND\")",
-      "sql_formula": "COALESCE(SUM(CASE WHEN CAST(\"ocean_proximity\" AS VARCHAR) = 'INLAND' THEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) ELSE 0.0 END), 0.0)",
+      "dax_formula": "CALCULATE(SUM('bi_ready_fact'[median_house_value]), 'bi_ready_fact'[median_house_value] <= 1.196e+05)",
+      "sql_formula": "COALESCE(SUM(CASE WHEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) <= 119600.0 THEN COALESCE(TRY_CAST(\"median_house_value\" AS DOUBLE), 0.0) ELSE 0.0 END), 0.0)",
       "metric_type": "financial_sum",
       "format": "$#,0.00",
       "direction": "minimize",
-      "audited_value": 817600123.0
+      "audited_value": 445929796.0
     },
     {
       "id": "m_portfolio_volume",
@@ -90,13 +90,13 @@
   ],
   "dimensions": {
     "primary_dimension": {
-      "name": "housing_median_age",
-      "cardinality": 52,
+      "name": "ocean_proximity",
+      "cardinality": 5,
       "type": "categorical_segment"
     },
     "secondary_dimension": {
-      "name": "longitude",
-      "cardinality": 844,
+      "name": "median_income",
+      "cardinality": 12928,
       "type": "categorical_subsegment"
     }
   }

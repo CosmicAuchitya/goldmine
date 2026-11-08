@@ -16,11 +16,11 @@ Total Verified Records: 20,640 (Zero Duplication Verified)
 Total Records = 
 COUNTROWS('bi_ready_fact')
 
-// 2. Monitored Target Events (ocean_proximity)
+// 2. Monitored Target Events (median_house_value)
 Target Events = 
 CALCULATE(
     COUNTROWS('bi_ready_fact'),
-    'bi_ready_fact'[ocean_proximity] = "INLAND"
+    'bi_ready_fact'[median_house_value] = 1
 )
 
 // 3. System Target Event Vulnerability Rate %
@@ -35,7 +35,7 @@ System Reliability Rate % =
 Total Adverse Capital Drag ($) = 
 CALCULATE(
     SUM('bi_ready_fact'[median_house_value]),
-    'bi_ready_fact'[ocean_proximity] = "INLAND"
+    'bi_ready_fact'[median_house_value] = 1
 )
 
 // 5b. Total Baseline Portfolio Volume ($)
@@ -51,7 +51,7 @@ DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
 
 ### 3. Tableau Calculated Fields Equivalent
 - **[Total Records]**: `COUNT([longitude])`
-- **[Target Events]**: `SUM([ocean_proximity])`
+- **[Target Events]**: `SUM([median_house_value])`
 - **[Event Rate %]**: `[Target Events] / [Total Records]`
 - **[Total Financial Friction ($)]**: `SUM([median_house_value])`
 

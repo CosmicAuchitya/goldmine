@@ -4,93 +4,30 @@
   "specs": {
     "primary_dimension_risk": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Risk Exposure & Capital Drag across job",
+      "title": "Risk Exposure & Capital Drag across poutcome",
       "width": 600,
       "height": 280,
       "data": {
         "values": [
           {
-            "segment": "student",
-            "volume": 875,
-            "target_events": 275,
-            "adverse_rate_pct": 31.43,
+            "segment": "success",
+            "volume": 1373,
+            "target_events": 894,
+            "adverse_rate_pct": 65.11,
             "capital_drag": 0.0
           },
           {
-            "segment": "retired",
-            "volume": 1720,
-            "target_events": 434,
-            "adverse_rate_pct": 25.23,
+            "segment": "failure",
+            "volume": 4252,
+            "target_events": 605,
+            "adverse_rate_pct": 14.23,
             "capital_drag": 0.0
           },
           {
-            "segment": "unemployed",
-            "volume": 1014,
-            "target_events": 144,
-            "adverse_rate_pct": 14.2,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "admin.",
-            "volume": 10422,
-            "target_events": 1352,
-            "adverse_rate_pct": 12.97,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "management",
-            "volume": 2924,
-            "target_events": 328,
-            "adverse_rate_pct": 11.22,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "unknown",
-            "volume": 330,
-            "target_events": 37,
-            "adverse_rate_pct": 11.21,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "technician",
-            "volume": 6743,
-            "target_events": 730,
-            "adverse_rate_pct": 10.83,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "self-employed",
-            "volume": 1421,
-            "target_events": 149,
-            "adverse_rate_pct": 10.49,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "housemaid",
-            "volume": 1060,
-            "target_events": 106,
-            "adverse_rate_pct": 10.0,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "entrepreneur",
-            "volume": 1456,
-            "target_events": 124,
-            "adverse_rate_pct": 8.52,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "services",
-            "volume": 3969,
-            "target_events": 323,
-            "adverse_rate_pct": 8.14,
-            "capital_drag": 0.0
-          },
-          {
-            "segment": "blue-collar",
-            "volume": 9254,
-            "target_events": 638,
-            "adverse_rate_pct": 6.89,
+            "segment": "nonexistent",
+            "volume": 35563,
+            "target_events": 3141,
+            "adverse_rate_pct": 8.83,
             "capital_drag": 0.0
           }
         ]
@@ -104,7 +41,7 @@
           "field": "segment",
           "type": "nominal",
           "sort": "-x",
-          "title": "job"
+          "title": "poutcome"
         },
         "x": {
           "field": "adverse_rate_pct",
@@ -257,7 +194,7 @@
     },
     "orthogonal_interaction_matrix": {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "2x2 Orthogonal Interaction: nr_employed vs duration",
+      "title": "2x2 Orthogonal Interaction: nr_employed vs previous",
       "width": 380,
       "height": 260,
       "data": {
@@ -267,36 +204,36 @@
             "label": "Optimal Zone",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 11067,
-            "events": 32,
-            "failure_rate_pct": 0.29
+            "volume": 19184,
+            "events": 1071,
+            "failure_rate_pct": 5.58
           },
           {
             "quadrant": "Q2",
             "label": "Unbuffered Baseline",
             "risk_driver_level": "Low Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 9638,
-            "events": 532,
-            "failure_rate_pct": 5.52
+            "volume": 16379,
+            "events": 2070,
+            "failure_rate_pct": 12.64
           },
           {
             "quadrant": "Q3",
             "label": "Masked Risk",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "High Protective Factor",
-            "volume": 8850,
-            "events": 1066,
-            "failure_rate_pct": 12.05
+            "volume": 733,
+            "events": 27,
+            "failure_rate_pct": 3.68
           },
           {
             "quadrant": "Q4",
             "label": "Compound Catastrophe",
             "risk_driver_level": "High Risk Driver",
             "protective_factor_level": "Low Protective Factor",
-            "volume": 11633,
-            "events": 3010,
-            "failure_rate_pct": 25.87
+            "volume": 4892,
+            "events": 1472,
+            "failure_rate_pct": 30.09
           }
         ]
       },
@@ -314,7 +251,7 @@
         "y": {
           "field": "protective_factor_level",
           "type": "nominal",
-          "title": "duration"
+          "title": "previous"
         },
         "color": {
           "field": "failure_rate_pct",
@@ -363,24 +300,24 @@
         "values": [
           {
             "policy": "Policy 1: Conservative",
-            "scrap_pct": 24.97,
-            "recall_pct": 64.63,
-            "retained_defect_rate": 5.31,
-            "false_discards": 7287
+            "scrap_pct": 2.58,
+            "recall_pct": 11.47,
+            "retained_defect_rate": 10.24,
+            "false_discards": 532
           },
           {
             "policy": "Policy 2: Surgical",
-            "scrap_pct": 49.73,
-            "recall_pct": 87.84,
-            "retained_defect_rate": 2.72,
-            "false_discards": 16407
+            "scrap_pct": 13.66,
+            "recall_pct": 32.31,
+            "retained_defect_rate": 8.83,
+            "false_discards": 4126
           },
           {
             "policy": "Policy 3: Compound",
-            "scrap_pct": 64.53,
-            "recall_pct": 99.31,
-            "retained_defect_rate": 0.22,
-            "false_discards": 21969
+            "scrap_pct": 34.58,
+            "recall_pct": 71.75,
+            "retained_defect_rate": 4.87,
+            "false_discards": 10912
           }
         ]
       },

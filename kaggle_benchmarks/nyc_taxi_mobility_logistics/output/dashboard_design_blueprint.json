@@ -16,9 +16,9 @@
       "Fuel Price Spikes without Escalation Clauses"
     ]
   },
-  "archetype": "industrial_scada_telemetry",
-  "archetype_name": "Industrial SCADA Process Telemetry",
-  "executive_persona": "VP Operations, Plant Director & Head of QA",
+  "archetype": "editorial_commerce_studio",
+  "archetype_name": "Editorial Commerce & CX Studio",
+  "executive_persona": "Chief Operating Officer (COO) & VP Growth / CX",
   "dfii_score": 19,
   "dfii_breakdown": {
     "aesthetic_impact": 5,
@@ -29,10 +29,10 @@
     "dfii": 19
   },
   "design_system": {
-    "layout_concept": "Process control layout leading with parameter cliffs & tolerance frontier",
-    "default_theme": "dark",
-    "font_display": "'Consolas', 'Courier New', monospace",
-    "font_body": "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+    "layout_concept": "Magazine-style asymmetric story header with CX and margin friction layout",
+    "default_theme": "light",
+    "font_display": "'Georgia', 'Cambria', 'Palatino Linotype', serif",
+    "font_body": "-apple-system, 'Segoe UI', Roboto, sans-serif"
   },
   "data_shape_diagnostics": {
     "total_records": 6433,
@@ -40,7 +40,7 @@
     "is_temporal": false,
     "has_monetary_ledger": true,
     "has_secondary_dim": true,
-    "cliffs_count": 6,
+    "cliffs_count": 4,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
@@ -49,21 +49,15 @@
   },
   "selected_panels": [
     {
-      "id": "nonlinear_cliff_step_area",
-      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
-      "priority": 1
-    },
-    {
-      "id": "orthogonal_2x2_quadrant",
-      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
-      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
       "priority": 2
     },
     {
-      "id": "triage_efficiency_frontier",
-      "name": "Operational Intake Screening Yield Frontier",
-      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
       "priority": 3
     },
     {
@@ -75,19 +69,25 @@
     {
       "id": "secondary_cross_tab_heatmap",
       "name": "2D Cross-Tabulation Risk Concentration Heatmap",
-      "justification": "Bivariate categorical cross-tab (dropoff_borough x pickup_borough) exposes sub-node vulnerability hubs.",
+      "justification": "Bivariate categorical cross-tab (dropoff_borough x color) exposes sub-node vulnerability hubs.",
+      "priority": 5
+    },
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 4 continuous driver(s).",
       "priority": 6
     },
     {
-      "id": "exposure_vs_risk_bubble",
-      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
-      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
       "priority": 7
     },
     {
-      "id": "pareto_loss_waterfall",
-      "name": "Pareto Cumulative Financial Loss Waterfall",
-      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
       "priority": 8
     },
     {

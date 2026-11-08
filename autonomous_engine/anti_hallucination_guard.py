@@ -740,6 +740,14 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
                     for prohibited in ("15% reduction", "35% reduction", "65% failure reduction"):
                         if prohibited in sum_text:
                             physics_violations.append(f"Plain Business Summary Circuit-Breaker Contradiction: Promised '{prohibited}' when Statistical Circuit-Breaker froze CapEx!")
+                redline_m = re.search(r"Key Operational Red-Line\*\*:\s*In metric\s*`([^`]+)`", sum_text)
+                if redline_m:
+                    rl_col = redline_m.group(1).strip()
+                    noise_pat = r"#### Feature:\s*`" + re.escape(rl_col) + r"`[\s\S]{0,300}?Uniform Noise\s*—\s*Not Significant"
+                    if re.search(noise_pat, dos_text):
+                        physics_violations.append(
+                            f"Plain Business Summary Red-Line Noise Contradiction: Reported `{rl_col}` as a Key Operational Red-Line when Dossier proves `{rl_col}` is Uniform Noise (p >= 0.05)!"
+                        )
         except Exception as se:
             physics_violations.append(f"Plain Business Summary Audit Error: {se}")
 

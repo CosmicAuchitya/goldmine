@@ -19,14 +19,14 @@
   "archetype": "editorial_commerce_studio",
   "archetype_name": "Editorial Commerce & CX Studio",
   "executive_persona": "Chief Operating Officer (COO) & VP Growth / CX",
-  "dfii_score": 19,
+  "dfii_score": 18,
   "dfii_breakdown": {
     "aesthetic_impact": 5,
     "context_fit": 5,
     "implementation_feasibility": 5,
     "performance_safety": 5,
-    "consistency_risk": 1,
-    "dfii": 19
+    "consistency_risk": 2,
+    "dfii": 18
   },
   "design_system": {
     "layout_concept": "Magazine-style asymmetric story header with CX and margin friction layout",
@@ -40,11 +40,11 @@
     "is_temporal": true,
     "has_monetary_ledger": true,
     "has_secondary_dim": true,
-    "cliffs_count": 6,
+    "cliffs_count": 5,
     "has_2x2_interaction": true,
     "has_triage_policies": true,
     "is_imbalanced_rare_event": false,
-    "circuit_breaker_active": false,
+    "circuit_breaker_active": true,
     "has_worklist": true
   },
   "selected_panels": [
@@ -75,7 +75,7 @@
     {
       "id": "nonlinear_cliff_step_area",
       "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
-      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
+      "justification": "Isolates discrete physical inflection points across 5 continuous driver(s).",
       "priority": 6
     },
     {

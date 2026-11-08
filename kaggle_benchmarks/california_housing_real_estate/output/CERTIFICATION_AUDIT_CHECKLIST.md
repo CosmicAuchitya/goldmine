@@ -15,7 +15,7 @@ The following physical checks have been deterministically audited by the engine:
 - [x] **Zero Cartesian Multiplicity Drift**: `20,640` input rows &rarr; `20,640` fact rows (**100% Preserved**).
 - [x] **Primary Key Uniqueness**: `0` duplicate identifier keys detected.
 - [x] **Zero Hallucinated Columns**: All 11 columns physically exist in the Parquet schema.
-- [x] **Adverse Capital Accounting**: Total financial drag calculated strictly where `_is_target_event == 1` (\$817,600,123.00 across `6,551` adverse events; 31.74%), preserving non-adverse baseline volume.
+- [x] **Adverse Capital Accounting**: Total financial drag calculated strictly where `_is_target_event == 1` (\$445,929,796.00 across `5,162` adverse events; 25.01%), preserving non-adverse baseline volume.
 - [x] **Statistical Circuit-Breaker**: Two-proportion pooled $z$-test and Chi-Square significance gate verified.
 
 ---
@@ -24,7 +24,7 @@ The following physical checks have been deterministically audited by the engine:
 Please check each box after validating with business stakeholders:
 
 #### A. Metric Definition & Grain Verification
-- [ ] **Target Outcome Meaning**: Confirmed that `ocean_proximity == 'INLAND' (Depressed Asset Tier)` (DAX: `'bi_ready_fact'[ocean_proximity] = "INLAND"`) reflects true operational adverse breach per organizational risk policy.
+- [ ] **Target Outcome Meaning**: Confirmed that `median_house_value <= $119,600 (Distressed Asset Valuation)` (DAX: `'bi_ready_fact'[median_house_value] <= 1.196e+05`) reflects true operational adverse breach per organizational risk policy.
 - [ ] **Financial Ledger Scope**: Confirmed that `median_house_value` accurately represents direct financial exposure / revenue-at-risk rather than arbitrary accounting allocations.
 - [ ] **Grain Integrity**: Confirmed that 1 row = 1 distinct business entity without temporal duplication.
 

@@ -87,6 +87,7 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type']
     location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'branch', 'location', 'airport']
 
+    coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff'}
     cat_cols = []
     for c in cols:
         if c in [target_col, cost_col] or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
@@ -96,18 +97,27 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
         if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
             continue
         c_low = c.lower().strip()
+        if c_low in coord_cols or any(k in c_low for k in ['longitude', 'latitude']):
+            continue
         if c_low.endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code')):
             continue
         if any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']):
             continue
         nunique = df[c].nunique()
-        if 2 <= nunique <= 50 and is_categorical_or_string_series(df[c]):
+        is_low_card_int = (
+            pd.api.types.is_integer_dtype(df[c])
+            and 2 <= nunique <= 10
+            and not any(t in c_low for t in ['year', 'month', 'day', 'hour', 'minute', 'age', 'count', 'num', 'sibsp', 'parch', 'previous', 'campaign', 'size'])
+        )
+        if (2 <= nunique <= 50 and is_categorical_or_string_series(df[c])) or is_low_card_int:
             cat_cols.append((c, nunique))
 
     # Fallback for purely numeric datasets: find low-cardinality discrete features
     if not cat_cols:
         for c in cols:
             if c in [target_col, cost_col] or c.lower().endswith(('_id', '_key')) or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
+                continue
+            if c.lower().strip() in coord_cols or any(k in c.lower() for k in ['longitude', 'latitude']):
                 continue
             if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
                 continue
@@ -121,6 +131,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     if not cat_cols:
         for c in cols:
             if c in [target_col, cost_col] or c.lower().endswith(('_id', '_key')) or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
+                continue
+            if c.lower().strip() in coord_cols or any(k in c.lower() for k in ['longitude', 'latitude']):
                 continue
             if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
                 continue
@@ -138,19 +150,31 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             return 0.0
         try:
             s_col = df[col_name]
+            min_cat_n = max(5, int(len(df) * 0.02))
             if pd.api.types.is_numeric_dtype(s_col) and s_col.nunique() > 20:
                 s_binned = pd.qcut(s_col, q=4, duplicates='drop')
-                rates = bin_target.groupby(s_binned, observed=False).mean()
+                grp = bin_target.groupby(s_binned, observed=False).agg(['count', 'mean'])
             else:
-                rates = bin_target.groupby(s_col, observed=False).mean()
-            return float(rates.max() - rates.min())
+                grp = bin_target.groupby(s_col, observed=False).agg(['count', 'mean'])
+            valid_rates = grp.loc[grp['count'] >= min_cat_n, 'mean']
+            if len(valid_rates) < 2:
+                rates = grp['mean']
+                return float(rates.max() - rates.min()) if len(rates) >= 2 else 0.0
+            return float(valid_rates.max() - valid_rates.min())
         except Exception:
             return 0.0
 
     entity_matches = [c for c in business_candidates if any(k in c.lower() for k in business_entity_keywords)]
     if entity_matches:
         entity_matches.sort(key=compute_dispersion, reverse=True)
-        primary_dim = entity_matches[0]
+        # Only prefer entity_matches[0] if no other business candidate has >2x higher dispersion
+        best_ent = entity_matches[0]
+        business_candidates.sort(key=compute_dispersion, reverse=True)
+        best_bus = business_candidates[0]
+        if compute_dispersion(best_bus) > compute_dispersion(best_ent) * 2.0 and compute_dispersion(best_bus) >= 0.15:
+            primary_dim = best_bus
+        else:
+            primary_dim = best_ent
     elif business_candidates:
         business_candidates.sort(key=compute_dispersion, reverse=True)
         primary_dim = business_candidates[0]
@@ -174,6 +198,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             num_fallbacks = [
                 c for c in cols
                 if c not in [target_col, cost_col, primary_dim]
+                and c.lower().strip() not in coord_cols
+                and not any(k in c.lower() for k in ['longitude', 'latitude'])
                 and not c.lower().endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code'))
                 and not is_index_artifact(c, df[c])
                 and not is_pseudo_numeric_identifier(c, df[c])

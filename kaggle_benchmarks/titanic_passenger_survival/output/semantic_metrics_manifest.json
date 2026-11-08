@@ -90,7 +90,7 @@
   ],
   "dimensions": {
     "primary_dimension": {
-      "name": "Embarked",
+      "name": "Pclass",
       "cardinality": 3,
       "type": "categorical_segment"
     },

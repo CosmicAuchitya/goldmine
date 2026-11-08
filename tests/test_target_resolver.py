@@ -7,7 +7,7 @@ UNIT TESTS: CANONICAL TARGET & MONETARY EXPOSURE RESOLVER
 import pytest
 import numpy as np
 import pandas as pd
-from autonomous_engine.target_resolver import resolve_canonical_target_and_cost
+from autonomous_engine.target_resolver import resolve_canonical_target_and_cost, is_deterministic_target_leakage
 
 
 def test_discrete_churn_target_resolution():
@@ -212,10 +212,10 @@ def test_benchmarks_94_95_96_target_and_cost_resolution():
         "ocean_proximity": ["NEAR BAY", "NEAR BAY", "INLAND", "INLAND"]
     })
     res_house = resolve_canonical_target_and_cost(df_house)
-    assert res_house["target_col"] == "ocean_proximity"
+    assert res_house["target_col"] == "median_house_value"
     assert res_house["cost_col"] == "median_house_value"
     assert res_house["is_financial"] is True
-    assert int(res_house["binary_target"].sum()) == 2  # INLAND is depressed tier
+    assert int(res_house["binary_target"].sum()) == 1  # bottom quartile distressed valuation tier
 
     # Benchmark 96: Supermarket Commercial Sales & Branch Operations
     df_market = pd.DataFrame({
@@ -234,13 +234,14 @@ def test_benchmarks_94_95_96_target_and_cost_resolution():
 
 
 def test_benchmarks_97_98_99_100_target_and_cost_resolution():
-    """Verify target and cost detection on schemas matching Benchmarks 97, 98, 99, 100."""
+    """Verify target and cost detection and post-event leakage immunity on schemas matching Benchmarks 97, 98, 99, 100."""
     # Benchmark 97: Aviation Flight Delays & Airline Operations
     df_flight = pd.DataFrame({
         "carrier": ["AA", "DL", "UA", "B6"],
         "origin": ["JFK", "LGA", "EWR", "JFK"],
         "dest": ["MIA", "ATL", "ORD", "BOS"],
         "arr_time": [830.0, 915.0, 1145.0, 1420.0],
+        "arr_delay": [5.0, 50.0, -10.0, 25.0],
         "sched_dep_time": [600, 700, 930, 1200],
         "dep_delay": [2.0, 45.0, -4.0, 22.0],
         "distance": [1089, 762, 719, 187]
@@ -250,6 +251,8 @@ def test_benchmarks_97_98_99_100_target_and_cost_resolution():
     assert res_flight["cost_col"] is None
     assert res_flight["is_financial"] is False
     assert int(res_flight["binary_target"].sum()) == 2  # 45.0, 22.0 > 15 mins
+    assert is_deterministic_target_leakage("arr_delay", df_flight["arr_delay"], res_flight["binary_target"], "dep_delay") is True
+    assert is_deterministic_target_leakage("sched_dep_time", df_flight["sched_dep_time"], res_flight["binary_target"], "dep_delay") is False
 
     # Benchmark 98: Automotive Fleet Fuel Efficiency & Decarbonization
     df_mpg = pd.DataFrame({
@@ -294,4 +297,5 @@ def test_benchmarks_97_98_99_100_target_and_cost_resolution():
     assert res_tips["cost_col"] == "total_bill"
     assert res_tips["is_financial"] is True
     assert int(res_tips["binary_target"].sum()) == 1
+
 
