@@ -1,0 +1,196 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "flightdata": {
+      "table_name": "flightdata",
+      "filename": "flightdata.csv",
+      "selected_sheet": null,
+      "estimated_rows": 123984,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Unnamed: 0",
+        "year",
+        "month",
+        "day",
+        "dep_time",
+        "sched_dep_time",
+        "dep_delay",
+        "arr_time",
+        "sched_arr_time",
+        "arr_delay",
+        "carrier",
+        "flight",
+        "tailnum",
+        "origin",
+        "dest",
+        "air_time",
+        "distance",
+        "hour",
+        "minute",
+        "time_hour",
+        "flightb",
+        "totflight",
+        "avgdelay",
+        "airline",
+        "airport",
+        "lat",
+        "lon",
+        "alt",
+        "tz",
+        "dst",
+        "tzone"
+      ],
+      "potential_keys": [
+        "dep_time",
+        "sched_dep_time",
+        "arr_time",
+        "sched_arr_time",
+        "carrier",
+        "flight",
+        "tailnum",
+        "air_time",
+        "time_hour",
+        "flightb",
+        "totflight",
+        "airline",
+        "airport"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "Unnamed: 0",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 1
+        },
+        {
+          "name": "year",
+          "dtype": "int64",
+          "sample_values": [
+            "2013"
+          ],
+          "nunique_in_sample": 1,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "month",
+          "dtype": "int64",
+          "sample_values": [
+            "1"
+          ],
+          "nunique_in_sample": 1,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "day",
+          "dtype": "int64",
+          "sample_values": [
+            "1",
+            "2",
+            "3"
+          ],
+          "nunique_in_sample": 7,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "dep_time",
+          "dtype": "float64",
+          "sample_values": [
+            "542.0",
+            "554.0",
+            "555.0"
+          ],
+          "nunique_in_sample": 815,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "sched_dep_time",
+          "dtype": "int64",
+          "sample_values": [
+            "540",
+            "600",
+            "558"
+          ],
+          "nunique_in_sample": 291,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "dep_delay",
+          "dtype": "float64",
+          "sample_values": [
+            "2.0",
+            "-6.0",
+            "-4.0"
+          ],
+          "nunique_in_sample": 130,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "arr_time",
+          "dtype": "float64",
+          "sample_values": [
+            "923.0",
+            "812.0",
+            "740.0"
+          ],
+          "nunique_in_sample": 874,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "sched_arr_time",
+          "dtype": "int64",
+          "sample_values": [
+            "850",
+            "837",
+            "728"
+          ],
+          "nunique_in_sample": 528,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "arr_delay",
+          "dtype": "float64",
+          "sample_values": [
+            "33.0",
+            "-25.0",
+            "12.0"
+          ],
+          "nunique_in_sample": 166,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "carrier",
+          "dtype": "str",
+          "sample_values": [
+            "AA",
+            "DL",
+            "UA"
+          ],
+          "nunique_in_sample": 8,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "flight",
+          "dtype": "int64",
+          "sample_values": [
+            "1141",
+            "461",
+            "1696"
+          ],
+          "nunique_in_sample": 554,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

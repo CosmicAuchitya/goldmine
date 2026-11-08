@@ -1,0 +1,245 @@
+fact_surrogate_id,priority_rank,action_queue,_is_target_event,empirical_cohort_risk_pct,monetary_exposure,exposure_column_source,primary_risk_reason,recommended_next_step,day,tip,size
+95,1,PREVENTIVE_RETENTION_WATCH,0,93.95,22.75,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Fri,3.25,2
+92,2,PREVENTIVE_RETENTION_WATCH,0,93.95,22.49,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Fri,3.5,2
+100,3,PREVENTIVE_RETENTION_WATCH,0,93.95,12.46,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Fri,1.5,2
+224,4,PREVENTIVE_RETENTION_WATCH,0,78.95,15.98,total_bill,Cohort day='Fri' (79.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Fri,3.0,3
+58,5,PREVENTIVE_RETENTION_WATCH,0,63.28,26.41,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.5,2
+29,6,PREVENTIVE_RETENTION_WATCH,0,63.28,21.7,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,4.3,2
+105,7,PREVENTIVE_RETENTION_WATCH,0,63.28,20.92,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,4.08,2
+22,8,PREVENTIVE_RETENTION_WATCH,0,63.28,20.29,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.75,2
+69,9,PREVENTIVE_RETENTION_WATCH,0,63.28,20.23,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.01,2
+25,10,PREVENTIVE_RETENTION_WATCH,0,63.28,19.82,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.18,2
+30,11,PREVENTIVE_RETENTION_WATCH,0,63.28,19.65,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.0,2
+109,12,PREVENTIVE_RETENTION_WATCH,0,63.28,18.24,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.76,2
+21,13,PREVENTIVE_RETENTION_WATCH,0,63.28,17.92,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,4.08,2
+243,14,PREVENTIVE_RETENTION_WATCH,0,63.28,17.82,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.75,2
+35,15,PREVENTIVE_RETENTION_WATCH,0,63.28,17.78,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.27,2
+67,16,PREVENTIVE_RETENTION_WATCH,0,63.28,16.45,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.47,2
+23,17,PREVENTIVE_RETENTION_WATCH,0,63.28,15.77,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.23,2
+33,18,PREVENTIVE_RETENTION_WATCH,0,63.28,15.06,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.0,2
+75,19,PREVENTIVE_RETENTION_WATCH,0,63.28,14.73,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.2,2
+111,20,PREVENTIVE_RETENTION_WATCH,0,63.28,14.0,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.0,2
+27,21,PREVENTIVE_RETENTION_WATCH,0,63.28,13.37,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.0,2
+229,22,PREVENTIVE_RETENTION_WATCH,0,63.28,13.28,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.72,2
+28,23,PREVENTIVE_RETENTION_WATCH,0,63.28,12.69,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.0,2
+71,24,PREVENTIVE_RETENTION_WATCH,0,63.28,12.02,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.97,2
+233,25,PREVENTIVE_RETENTION_WATCH,0,63.28,11.61,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.39,2
+234,26,PREVENTIVE_RETENTION_WATCH,0,63.28,10.77,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.47,2
+76,27,PREVENTIVE_RETENTION_WATCH,0,63.28,10.51,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.25,2
+236,28,PREVENTIVE_RETENTION_WATCH,0,63.28,10.07,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.25,2
+31,29,PREVENTIVE_RETENTION_WATCH,0,63.28,9.55,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.45,2
+112,30,PREVENTIVE_RETENTION_WATCH,0,63.28,7.25,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,1.0,1
+213,31,PREVENTIVE_RETENTION_WATCH,0,48.28,48.33,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,9.0,4
+60,32,PREVENTIVE_RETENTION_WATCH,0,48.28,48.27,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,6.73,4
+24,33,PREVENTIVE_RETENTION_WATCH,0,48.28,39.42,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,7.58,4
+239,34,PREVENTIVE_RETENTION_WATCH,0,48.28,35.83,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,4.67,3
+40,35,PREVENTIVE_RETENTION_WATCH,0,48.28,31.27,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,5.0,3
+240,36,PREVENTIVE_RETENTION_WATCH,0,48.28,29.03,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,5.92,3
+36,37,PREVENTIVE_RETENTION_WATCH,0,48.28,24.06,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.6,3
+34,38,PREVENTIVE_RETENTION_WATCH,0,48.28,20.69,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.45,4
+20,39,PREVENTIVE_RETENTION_WATCH,0,48.28,20.65,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.35,3
+228,40,PREVENTIVE_RETENTION_WATCH,0,48.28,20.45,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.0,4
+66,41,PREVENTIVE_RETENTION_WATCH,0,48.28,20.08,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.15,3
+39,42,PREVENTIVE_RETENTION_WATCH,0,48.28,18.69,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.31,3
+32,43,PREVENTIVE_RETENTION_WATCH,0,48.28,18.35,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.5,4
+26,44,PREVENTIVE_RETENTION_WATCH,0,48.28,17.81,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.34,4
+65,45,PREVENTIVE_RETENTION_WATCH,0,48.28,17.59,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.64,3
+72,46,PREVENTIVE_RETENTION_WATCH,0,48.28,17.07,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.0,3
+38,47,PREVENTIVE_RETENTION_WATCH,0,48.28,16.93,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,3.07,3
+37,48,PREVENTIVE_RETENTION_WATCH,0,48.28,16.31,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.0,3
+41,49,PREVENTIVE_RETENTION_WATCH,0,48.28,16.04,total_bill,Cohort day='Sat' (48.3% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sat,2.24,3
+89,50,PREVENTIVE_RETENTION_WATCH,0,42.42,24.71,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,5.85,2
+79,51,PREVENTIVE_RETENTION_WATCH,0,42.42,22.76,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.0,2
+90,52,PREVENTIVE_RETENTION_WATCH,0,42.42,21.16,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.0,2
+132,53,PREVENTIVE_RETENTION_WATCH,0,42.42,20.27,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.83,2
+131,54,PREVENTIVE_RETENTION_WATCH,0,42.42,19.08,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.5,2
+244,55,PREVENTIVE_RETENTION_WATCH,0,42.42,18.78,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.0,2
+88,56,PREVENTIVE_RETENTION_WATCH,0,42.42,18.28,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,4.0,2
+135,57,PREVENTIVE_RETENTION_WATCH,0,42.42,18.26,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.25,2
+141,58,PREVENTIVE_RETENTION_WATCH,0,42.42,17.47,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.5,2
+80,59,PREVENTIVE_RETENTION_WATCH,0,42.42,17.29,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.71,2
+82,60,PREVENTIVE_RETENTION_WATCH,0,42.42,16.66,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,3.4,2
+145,61,PREVENTIVE_RETENTION_WATCH,0,42.42,16.43,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.3,2
+85,62,PREVENTIVE_RETENTION_WATCH,0,42.42,15.98,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.03,2
+124,63,PREVENTIVE_RETENTION_WATCH,0,42.42,15.95,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+128,64,PREVENTIVE_RETENTION_WATCH,0,42.42,14.52,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+123,65,PREVENTIVE_RETENTION_WATCH,0,42.42,14.26,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.5,2
+138,66,PREVENTIVE_RETENTION_WATCH,0,42.42,14.15,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+122,67,PREVENTIVE_RETENTION_WATCH,0,42.42,13.42,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.68,2
+140,68,PREVENTIVE_RETENTION_WATCH,0,42.42,13.16,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.75,2
+87,69,PREVENTIVE_RETENTION_WATCH,0,42.42,13.03,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+125,70,PREVENTIVE_RETENTION_WATCH,0,42.42,12.48,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.52,2
+119,71,PREVENTIVE_RETENTION_WATCH,0,42.42,12.43,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.8,2
+134,72,PREVENTIVE_RETENTION_WATCH,0,42.42,12.26,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+148,73,PREVENTIVE_RETENTION_WATCH,0,42.42,11.87,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.63,2
+121,74,PREVENTIVE_RETENTION_WATCH,0,42.42,11.69,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.31,2
+129,75,PREVENTIVE_RETENTION_WATCH,0,42.42,11.38,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+133,76,PREVENTIVE_RETENTION_WATCH,0,42.42,11.17,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.5,2
+118,77,PREVENTIVE_RETENTION_WATCH,0,42.42,10.65,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.5,2
+137,78,PREVENTIVE_RETENTION_WATCH,0,42.42,10.33,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+83,79,PREVENTIVE_RETENTION_WATCH,0,42.42,10.07,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.83,1
+149,80,PREVENTIVE_RETENTION_WATCH,0,42.42,9.78,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.73,2
+127,81,PREVENTIVE_RETENTION_WATCH,0,42.42,8.52,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.48,2
+136,82,PREVENTIVE_RETENTION_WATCH,0,42.42,8.51,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.25,2
+146,83,PREVENTIVE_RETENTION_WATCH,0,42.42,8.35,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.5,2
+196,84,PREVENTIVE_RETENTION_WATCH,0,42.42,7.56,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.44,2
+150,85,PREVENTIVE_RETENTION_WATCH,0,42.42,7.51,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.0,2
+114,86,PREVENTIVE_RETENTION_WATCH,0,40.0,23.95,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.55,2
+4,87,PREVENTIVE_RETENTION_WATCH,0,40.0,23.68,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.31,2
+47,88,PREVENTIVE_RETENTION_WATCH,0,40.0,22.23,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.0,2
+16,89,PREVENTIVE_RETENTION_WATCH,0,40.0,21.58,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.92,2
+167,90,PREVENTIVE_RETENTION_WATCH,0,40.0,20.76,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.24,2
+56,91,PREVENTIVE_RETENTION_WATCH,0,40.0,19.49,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.51,2
+46,92,PREVENTIVE_RETENTION_WATCH,0,40.0,18.29,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.0,2
+50,93,PREVENTIVE_RETENTION_WATCH,0,40.0,18.04,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.0,2
+42,94,PREVENTIVE_RETENTION_WATCH,0,40.0,17.46,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.54,2
+116,95,PREVENTIVE_RETENTION_WATCH,0,40.0,17.31,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.5,2
+1,96,PREVENTIVE_RETENTION_WATCH,0,40.0,16.99,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.01,2
+13,97,PREVENTIVE_RETENTION_WATCH,0,40.0,15.42,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.57,2
+9,98,PREVENTIVE_RETENTION_WATCH,0,40.0,15.04,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.96,2
+15,99,PREVENTIVE_RETENTION_WATCH,0,40.0,14.83,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.02,2
+10,100,PREVENTIVE_RETENTION_WATCH,0,40.0,14.78,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.23,2
+151,101,PREVENTIVE_RETENTION_WATCH,0,40.0,14.07,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.5,2
+43,102,PREVENTIVE_RETENTION_WATCH,0,40.0,13.94,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.06,2
+164,103,PREVENTIVE_RETENTION_WATCH,0,40.0,13.81,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,2
+159,104,PREVENTIVE_RETENTION_WATCH,0,40.0,13.39,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.61,2
+152,105,PREVENTIVE_RETENTION_WATCH,0,40.0,13.13,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,2
+162,106,PREVENTIVE_RETENTION_WATCH,0,40.0,12.66,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.5,2
+51,107,PREVENTIVE_RETENTION_WATCH,0,40.0,12.54,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.5,2
+52,108,PREVENTIVE_RETENTION_WATCH,0,40.0,10.29,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.6,2
+11,109,PREVENTIVE_RETENTION_WATCH,0,40.0,10.27,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.71,2
+54,110,PREVENTIVE_RETENTION_WATCH,0,40.0,9.94,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.56,2
+44,111,PREVENTIVE_RETENTION_WATCH,0,40.0,9.68,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.32,2
+7,112,PREVENTIVE_RETENTION_WATCH,0,40.0,8.77,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,2
+143,113,PREVENTIVE_RETENTION_WATCH,0,27.42,41.19,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,5.0,5
+86,114,PREVENTIVE_RETENTION_WATCH,0,27.42,34.83,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,5.17,4
+142,115,PREVENTIVE_RETENTION_WATCH,0,27.42,34.3,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,6.7,6
+126,116,PREVENTIVE_RETENTION_WATCH,0,27.42,29.8,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,4.2,6
+78,117,PREVENTIVE_RETENTION_WATCH,0,27.42,27.2,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,4.0,4
+144,118,PREVENTIVE_RETENTION_WATCH,0,27.42,27.05,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,5.0,6
+120,119,PREVENTIVE_RETENTION_WATCH,0,27.42,24.08,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.92,4
+130,120,PREVENTIVE_RETENTION_WATCH,0,27.42,22.82,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,2.18,3
+147,121,PREVENTIVE_RETENTION_WATCH,0,27.42,18.64,total_bill,Cohort day='Thur' (27.4% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Thur,1.36,3
+157,122,PREVENTIVE_RETENTION_WATCH,0,25.0,48.17,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.0,6
+113,123,PREVENTIVE_RETENTION_WATCH,0,25.0,38.07,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,4.0,3
+12,124,PREVENTIVE_RETENTION_WATCH,0,25.0,35.26,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.0,4
+53,125,PREVENTIVE_RETENTION_WATCH,0,25.0,34.81,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.2,4
+48,126,PREVENTIVE_RETENTION_WATCH,0,25.0,32.4,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,6.0,4
+168,127,PREVENTIVE_RETENTION_WATCH,0,25.0,31.71,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,4.5,4
+45,128,PREVENTIVE_RETENTION_WATCH,0,25.0,30.4,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.6,4
+117,129,PREVENTIVE_RETENTION_WATCH,0,25.0,29.93,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.07,4
+156,130,PREVENTIVE_RETENTION_WATCH,0,25.0,29.85,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.14,5
+49,131,PREVENTIVE_RETENTION_WATCH,0,25.0,28.55,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.05,3
+8,132,PREVENTIVE_RETENTION_WATCH,0,25.0,26.88,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.12,4
+115,133,PREVENTIVE_RETENTION_WATCH,0,25.0,25.71,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,4.0,3
+55,134,PREVENTIVE_RETENTION_WATCH,0,25.0,25.56,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,4.34,4
+6,135,PREVENTIVE_RETENTION_WATCH,0,25.0,25.29,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,4.71,4
+158,136,PREVENTIVE_RETENTION_WATCH,0,25.0,25.0,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.75,4
+5,137,PREVENTIVE_RETENTION_WATCH,0,25.0,24.59,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.61,4
+154,138,PREVENTIVE_RETENTION_WATCH,0,25.0,24.55,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,4
+166,139,PREVENTIVE_RETENTION_WATCH,0,25.0,24.52,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.48,3
+161,140,PREVENTIVE_RETENTION_WATCH,0,25.0,21.5,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.5,4
+3,141,PREVENTIVE_RETENTION_WATCH,0,25.0,21.01,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.5,3
+186,142,PREVENTIVE_RETENTION_WATCH,0,25.0,20.69,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,5.0,5
+155,143,PREVENTIVE_RETENTION_WATCH,0,25.0,19.77,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,4
+14,144,PREVENTIVE_RETENTION_WATCH,0,25.0,18.43,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.0,4
+153,145,PREVENTIVE_RETENTION_WATCH,0,25.0,17.26,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.74,3
+19,146,PREVENTIVE_RETENTION_WATCH,0,25.0,16.97,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.5,3
+160,147,PREVENTIVE_RETENTION_WATCH,0,25.0,16.49,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,4
+18,148,PREVENTIVE_RETENTION_WATCH,0,25.0,16.29,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,3.71,3
+163,149,PREVENTIVE_RETENTION_WATCH,0,25.0,16.21,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,2.0,3
+2,150,PREVENTIVE_RETENTION_WATCH,0,25.0,10.34,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.66,3
+17,151,PREVENTIVE_RETENTION_WATCH,0,25.0,10.33,total_bill,Cohort day='Sun' (25.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,Sun,1.67,3
+171,1,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,50.81,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,10.0,3
+183,2,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,45.35,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.5,3
+103,3,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,44.3,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.5,3
+198,4,REALIZED_LOSS_RECOVERY_AUDIT,1,27.42,43.11,total_bill,Cohort day='Thur' (27.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,5.0,4
+185,5,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,40.55,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.0,2
+96,6,REALIZED_LOSS_RECOVERY_AUDIT,1,78.95,40.17,total_bill,Cohort day='Fri' (79.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,4.73,4
+208,7,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,38.73,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.0,4
+57,8,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,38.01,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.0,4
+181,9,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,34.65,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.68,4
+180,10,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,34.63,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.55,2
+176,11,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,32.9,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.11,2
+238,12,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,32.83,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.17,2
+84,13,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,32.68,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,5.0,2
+174,14,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,31.85,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.18,2
+188,15,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,30.46,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,2.0,5
+220,16,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,30.14,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.09,4
+211,17,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,30.06,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,3
+91,18,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,28.97,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,3.0,2
+193,19,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,28.44,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.56,2
+215,20,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,28.17,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,6.5,3
+217,21,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,28.15,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.0,5
+97,22,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,27.28,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,4.0,2
+241,23,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,27.18,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,2
+73,24,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,26.86,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.14,2
+207,25,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,26.59,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.41,3
+212,26,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,25.89,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,5.16,4
+74,27,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,25.28,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,5.0,2
+108,28,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,25.21,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,4.29,2
+209,29,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,24.27,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.03,2
+231,30,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,24.01,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,4
+182,31,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,23.33,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,5.65,2
+184,32,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,23.17,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,6.5,4
+190,33,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,23.1,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,4.0,3
+242,34,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,22.67,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,2
+104,35,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,22.42,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.48,2
+230,36,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,22.12,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.88,2
+99,37,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,21.01,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,3.0,2
+187,38,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,20.9,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.5,3
+205,39,REALIZED_LOSS_RECOVERY_AUDIT,1,27.42,20.53,total_bill,Cohort day='Thur' (27.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,4.0,4
+107,40,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,20.49,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,4.06,2
+61,41,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,20.29,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.21,2
+192,42,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,19.81,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,4.19,2
+81,43,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,19.44,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,3.0,2
+201,44,REALIZED_LOSS_RECOVERY_AUDIT,1,27.42,18.71,total_bill,Cohort day='Thur' (27.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,4.0,3
+64,45,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,18.29,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.76,4
+189,46,REALIZED_LOSS_RECOVERY_AUDIT,1,25.0,18.15,total_bill,Cohort day='Sun' (25.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.5,3
+77,47,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,17.92,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.08,2
+177,48,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,17.89,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,2.0,2
+165,49,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,17.51,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,3.0,2
+175,50,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,16.82,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,4.0,2
+195,51,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,16.58,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,4.0,2
+206,52,REALIZED_LOSS_RECOVERY_AUDIT,1,27.42,16.47,total_bill,Cohort day='Thur' (27.4% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,3.23,3
+204,53,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,16.4,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.5,2
+94,54,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,16.32,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,4.3,2
+226,55,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,16.27,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,2.5,2
+139,56,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,16.0,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.0,2
+172,57,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,15.81,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.16,2
+232,58,REALIZED_LOSS_RECOVERY_AUDIT,1,48.28,15.69,total_bill,Cohort day='Sat' (48.3% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.0,3
+191,59,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,15.69,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,1.5,2
+235,60,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,15.53,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,3.0,2
+194,61,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,15.48,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.02,2
+102,62,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,15.38,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,3.0,2
+106,63,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,15.36,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.64,2
+70,64,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,15.01,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.09,2
+178,65,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,14.48,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,2.0,2
+110,66,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,14.31,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,4.0,2
+62,67,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,13.81,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,2
+200,68,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,13.51,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.0,2
+222,69,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,13.42,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,3.48,2
+225,70,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,13.42,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,1.58,2
+214,71,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,13.27,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.5,2
+199,72,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,13.0,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.0,2
+203,73,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,13.0,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.0,2
+216,74,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,12.9,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.1,2
+210,75,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,12.76,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.23,2
+202,76,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,12.74,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.01,2
+237,77,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,12.6,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.0,2
+221,78,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,12.16,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,2.2,2
+98,79,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,12.03,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,1.5,2
+218,80,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,11.59,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.5,2
+101,81,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,11.35,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,2.5,2
+59,82,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,11.24,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.76,2
+63,83,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,11.02,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.98,2
+170,84,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,10.63,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,2.0,2
+169,85,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,10.59,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.61,2
+197,86,REALIZED_LOSS_RECOVERY_AUDIT,1,42.42,10.34,total_bill,Cohort day='Thur' (27.4% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Thur,2.0,2
+227,87,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,10.09,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,2.0,2
+179,88,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,9.6,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,4.0,2
+223,89,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,8.58,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,1.92,1
+219,90,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,7.74,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.44,2
+173,91,REALIZED_LOSS_RECOVERY_AUDIT,1,40.0,7.25,total_bill,Cohort day='Sun' (25.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sun,5.15,2
+93,92,REALIZED_LOSS_RECOVERY_AUDIT,1,93.95,5.75,total_bill,Cohort day='Fri' (79.0% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Fri,1.0,2
+68,93,REALIZED_LOSS_RECOVERY_AUDIT,1,63.28,3.07,total_bill,Cohort day='Sat' (48.3% risk); size <= 2.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,Sat,1.0,1

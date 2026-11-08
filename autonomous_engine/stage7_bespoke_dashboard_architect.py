@@ -562,11 +562,11 @@ def judge_dashboard_architecture(
     ]):
         archetype_key = "nordic_saas_command"
     elif any(k in combined_signals for k in [
-        'ecommerce', 'customer_service', 'csat', 'order', 'retail', 'marketplace', 'buyer', 'seller', 'sku', 'cart', 'ticket', 'booking', 'hotel'
+        'ecommerce', 'customer_service', 'csat', 'order', 'retail', 'marketplace', 'buyer', 'seller', 'sku', 'cart', 'ticket', 'booking', 'hotel', 'tip', 'tips', 'dining', 'restaurant'
     ]):
         archetype_key = "editorial_commerce_studio"
     elif any(k in combined_signals for k in [
-        'manufacturing', 'wine', 'quality', 'scada', 'machine', 'sensor', 'chemical', 'acidity', 'alcohol', 'power', 'turbine', 'maintenance', 'scrap', 'logistics', 'freight'
+        'manufacturing', 'wine', 'quality', 'scada', 'machine', 'sensor', 'chemical', 'acidity', 'alcohol', 'power', 'turbine', 'maintenance', 'scrap', 'logistics', 'freight', 'flight', 'flights', 'dep_delay', 'arr_delay', 'carrier', 'airline', 'airport', 'mpg', 'cylinders', 'horsepower', 'powertrain'
     ]):
         archetype_key = "industrial_scada_telemetry"
     elif any(k in combined_signals for k in [

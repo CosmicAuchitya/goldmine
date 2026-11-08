@@ -1,0 +1,107 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "tips": {
+      "table_name": "tips",
+      "filename": "tips.csv",
+      "selected_sheet": null,
+      "estimated_rows": 244,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "total_bill",
+        "tip",
+        "sex",
+        "smoker",
+        "day",
+        "time",
+        "size"
+      ],
+      "potential_keys": [
+        "total_bill",
+        "time"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "total_bill",
+          "dtype": "float64",
+          "sample_values": [
+            "16.99",
+            "10.34",
+            "21.01"
+          ],
+          "nunique_in_sample": 229,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "tip",
+          "dtype": "float64",
+          "sample_values": [
+            "1.01",
+            "1.66",
+            "3.5"
+          ],
+          "nunique_in_sample": 123,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "sex",
+          "dtype": "str",
+          "sample_values": [
+            "Female",
+            "Male"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "smoker",
+          "dtype": "str",
+          "sample_values": [
+            "No",
+            "Yes"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "day",
+          "dtype": "str",
+          "sample_values": [
+            "Sun",
+            "Sat",
+            "Thur"
+          ],
+          "nunique_in_sample": 4,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "time",
+          "dtype": "str",
+          "sample_values": [
+            "Dinner",
+            "Lunch"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "size",
+          "dtype": "int64",
+          "sample_values": [
+            "2",
+            "3",
+            "4"
+          ],
+          "nunique_in_sample": 6,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

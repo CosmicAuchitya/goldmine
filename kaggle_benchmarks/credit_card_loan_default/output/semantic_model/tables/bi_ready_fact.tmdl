@@ -1,0 +1,76 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 2,000"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Default] = 1)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 283"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[Loan]), 'bi_ready_fact'[Default] = 1)
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $2,058,218.46"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[Loan])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $8,888,739.39"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column Income
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Income
+		lineageTag: col-fact-Income
+
+	column Age
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Age
+		lineageTag: col-fact-Age
+		formatString: 0.00
+
+	column Loan
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Loan
+		lineageTag: col-fact-Loan
+		formatString: 0.00
+
+	column Loan to Income
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: Loan to Income
+		lineageTag: col-fact-Loan to Income
+		formatString: $#,0.00
+
+	column Default
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Default
+		lineageTag: col-fact-Default
+		formatString: #,0
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

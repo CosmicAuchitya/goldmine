@@ -1,0 +1,95 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 398"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[mpg] <= 20)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 160"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column mpg
+		dataType: double
+		summarizeBy: average
+		sourceColumn: mpg
+		lineageTag: col-fact-mpg
+		formatString: 0.00
+
+	column cylinders
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: cylinders
+		lineageTag: col-fact-cylinders
+		formatString: #,0
+
+	column displacement
+		dataType: double
+		summarizeBy: average
+		sourceColumn: displacement
+		lineageTag: col-fact-displacement
+		formatString: 0.00
+
+	column horsepower
+		dataType: double
+		summarizeBy: average
+		sourceColumn: horsepower
+		lineageTag: col-fact-horsepower
+		formatString: 0.00
+
+	column weight
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: weight
+		lineageTag: col-fact-weight
+		formatString: #,0
+
+	column acceleration
+		dataType: double
+		summarizeBy: average
+		sourceColumn: acceleration
+		lineageTag: col-fact-acceleration
+		formatString: 0.00%
+
+	column model_year
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: model_year
+		lineageTag: col-fact-model_year
+		formatString: #,0
+
+	column origin
+		dataType: string
+		summarizeBy: none
+		sourceColumn: origin
+		lineageTag: col-fact-origin
+
+	column name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: name
+		lineageTag: col-fact-name
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

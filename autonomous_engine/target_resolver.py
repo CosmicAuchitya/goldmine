@@ -337,13 +337,13 @@ def resolve_canonical_target_and_cost(
         has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
         if has_spatial:
             canonical_targets = [
-                'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
+                'dep_delay', 'arr_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
                 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
                 'ocean_proximity', 'payment', 'target', 'response', 'label'
             ]
         else:
             canonical_targets = [
-                'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn',
+                'dep_delay', 'arr_delay', 'delay', 'mpg', 'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn',
                 'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
                 'customer stratification rating', 'ocean_proximity', 'payment'
             ]
@@ -354,6 +354,9 @@ def resolve_canonical_target_and_cost(
                     if s_test.notna().mean() > 0.90:
                         n_pos = int((s_test == 1).sum()) if set(s_test.dropna().unique()).issubset({0, 1}) else 0
                         if n_pos >= 10:
+                            target_col = c
+                            break
+                        elif cand_name in ['dep_delay', 'arr_delay', 'delay', 'mpg']:
                             target_col = c
                             break
                     elif df[c].nunique() == 2 or (c.lower() == 'cut' and df[c].nunique() <= 10):
@@ -404,7 +407,17 @@ def resolve_canonical_target_and_cost(
 
     # Fallback to last column if still none
     if not target_col:
-        valid_cols = [c for c in cols if not is_index_artifact(c) and not is_demographic_attribute(c) and not c.lower().endswith(('_id', '_key'))]
+        BAD_FALLBACK_TARGETS = [
+            'tz', 'timezone', 'tzone', 'dst', 'longitude', 'latitude', 'lat', 'lon', 'coord',
+            'pickup', 'dropoff', 'datetime', 'timestamp', 'date', 'time', 'sched', 'arr_time', 'dep_time', 'hour', 'minute'
+        ]
+        valid_cols = [
+            c for c in cols
+            if not is_index_artifact(c)
+            and not is_demographic_attribute(c)
+            and not c.lower().endswith(('_id', '_key'))
+            and not any(b in c.lower() for b in BAD_FALLBACK_TARGETS)
+        ]
         target_col = valid_cols[-1] if valid_cols else cols[-1]
 
     # -------------------------------------------------------------
@@ -515,6 +528,22 @@ def resolve_canonical_target_and_cost(
                     thresh = float(s_clean.min())
             binary_target = (s_clean <= thresh).astype(int)
             target_desc = f"{target_col} <= {thresh:.2f}"
+        elif any(k in target_col.lower() for k in ['dep_delay', 'arr_delay', 'delay']):
+            # Aviation FAA / DOT delay threshold (15 minutes or more past scheduled time)
+            if s_clean.max() >= 15:
+                thresh = 15.0
+            else:
+                thresh = float(s_clean.quantile(0.75))
+            binary_target = (s_clean > thresh).astype(int)
+            target_desc = f"{target_col} > {thresh:.0f} mins (Flight Delay)"
+        elif target_col.lower() in ['mpg', 'fuel_efficiency', 'mileage']:
+            # Automotive fleet fuel efficiency: <= 20 mpg low fuel economy breach (fuel guzzlers)
+            if (s_clean <= 20).sum() > 0 and (s_clean <= 20).mean() <= 0.60:
+                thresh = 20.0
+            else:
+                thresh = float(s_clean.quantile(0.25))
+            binary_target = (s_clean <= thresh).astype(int)
+            target_desc = f"{target_col} <= {thresh:.1f} mpg (Low Fuel Efficiency)"
         elif any(k in target_col.lower() for k in ['stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
             # For volume/yield metrics: bottom quartile is adverse underperformance
             thresh = float(s_clean.quantile(0.25)) if s_clean.quantile(0.25) > 0 else float(s_clean.median())
@@ -536,7 +565,7 @@ def resolve_canonical_target_and_cost(
     # -------------------------------------------------------------
     # Strict financial keywords representing physical currency ledgers
     cost_keywords = [
-        'loan_amount', 'loanamount', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
+        'loan_amount', 'loanamount', 'loan', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
         'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income'
     ]
@@ -558,7 +587,7 @@ def resolve_canonical_target_and_cost(
         # Exclude count metrics (preserving 'discount')
         if bool(re.search(r'(?<!dis)count', c_low)):
             continue
-        has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$|_)', c_low))
+        has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$)', c_low)) or (c_low.startswith('arr_') and not any(k in c_low for k in ['time', 'delay', 'date', 'hour', 'min', 'minute', 'airport', 'city', 'loc', 'flight', 'station']))
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
         money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income']
         if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr):
@@ -579,7 +608,7 @@ def resolve_canonical_target_and_cost(
 
     if candidate_cost_cols:
         priority_cost = [
-            'loan_amount', 'loanamount', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
+            'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
             'revenue', 'mrr', 'arr', 'sales', 'total', 'gross income', 'gross_income', 'billing_amount', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',
             'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'

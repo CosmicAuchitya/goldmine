@@ -1,0 +1,92 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "credit_default": {
+      "table_name": "credit_default",
+      "filename": "credit_default.csv",
+      "selected_sheet": null,
+      "estimated_rows": 2000,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Income",
+        "Age",
+        "Loan",
+        "Loan to Income",
+        "Default"
+      ],
+      "potential_keys": [
+        "Income",
+        "Age",
+        "Loan",
+        "Loan to Income"
+      ],
+      "strictly_unique_primary_keys": [
+        "Income",
+        "Age",
+        "Loan",
+        "Loan to Income"
+      ],
+      "recommended_primary_key": "Income",
+      "sample_columns": [
+        {
+          "name": "Income",
+          "dtype": "float64",
+          "sample_values": [
+            "66155.9251",
+            "34415.15397",
+            "57317.17006"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Age",
+          "dtype": "float64",
+          "sample_values": [
+            "59.01701507",
+            "48.1171531",
+            "63.10804949"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Loan",
+          "dtype": "float64",
+          "sample_values": [
+            "8106.532131",
+            "6564.745018",
+            "8020.953296"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Loan to Income",
+          "dtype": "float64",
+          "sample_values": [
+            "0.122536751",
+            "0.190751581",
+            "0.1399398"
+          ],
+          "nunique_in_sample": 2000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Default",
+          "dtype": "int64",
+          "sample_values": [
+            "0",
+            "1"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

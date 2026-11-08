@@ -233,5 +233,65 @@ def test_benchmarks_94_95_96_target_and_cost_resolution():
     assert int(res_market["binary_target"].sum()) == 1  # 4.2 <= q25 (4.65)
 
 
+def test_benchmarks_97_98_99_100_target_and_cost_resolution():
+    """Verify target and cost detection on schemas matching Benchmarks 97, 98, 99, 100."""
+    # Benchmark 97: Aviation Flight Delays & Airline Operations
+    df_flight = pd.DataFrame({
+        "carrier": ["AA", "DL", "UA", "B6"],
+        "origin": ["JFK", "LGA", "EWR", "JFK"],
+        "dest": ["MIA", "ATL", "ORD", "BOS"],
+        "arr_time": [830.0, 915.0, 1145.0, 1420.0],
+        "sched_dep_time": [600, 700, 930, 1200],
+        "dep_delay": [2.0, 45.0, -4.0, 22.0],
+        "distance": [1089, 762, 719, 187]
+    })
+    res_flight = resolve_canonical_target_and_cost(df_flight)
+    assert res_flight["target_col"] == "dep_delay"
+    assert res_flight["cost_col"] is None
+    assert res_flight["is_financial"] is False
+    assert int(res_flight["binary_target"].sum()) == 2  # 45.0, 22.0 > 15 mins
 
+    # Benchmark 98: Automotive Fleet Fuel Efficiency & Decarbonization
+    df_mpg = pd.DataFrame({
+        "mpg": [18.0, 28.0, 15.0, 34.0],
+        "cylinders": [8, 4, 8, 4],
+        "displacement": [307.0, 140.0, 350.0, 98.0],
+        "horsepower": [130.0, 90.0, 165.0, 70.0],
+        "weight": [3504, 2264, 3693, 2125],
+        "origin": ["usa", "usa", "usa", "japan"]
+    })
+    res_mpg = resolve_canonical_target_and_cost(df_mpg)
+    assert res_mpg["target_col"] == "mpg"
+    assert res_mpg["cost_col"] is None
+    assert res_mpg["is_financial"] is False
+    assert int(res_mpg["binary_target"].sum()) == 2  # 18.0, 15.0 <= 20.0 mpg
+
+    # Benchmark 99: Credit Card Loan Default Risk
+    df_credit = pd.DataFrame({
+        "Income": [66155.9, 34415.1, 57317.1, 66952.6],
+        "Age": [59.0, 48.1, 63.1, 18.5],
+        "Loan": [8106.5, 6564.7, 8020.9, 8770.1],
+        "Loan to Income": [0.12, 0.19, 0.14, 0.13],
+        "Default": [0, 0, 0, 1]
+    })
+    res_credit = resolve_canonical_target_and_cost(df_credit)
+    assert res_credit["target_col"] == "Default"
+    assert res_credit["cost_col"] == "Loan"
+    assert res_credit["is_financial"] is True
+    assert int(res_credit["binary_target"].sum()) == 1
+
+    # Benchmark 100: Hospitality Restaurant Dining Gratuity Yield
+    df_tips = pd.DataFrame({
+        "total_bill": [16.99, 10.34, 21.01, 23.68],
+        "tip": [1.01, 1.66, 3.50, 3.31],
+        "sex": ["Female", "Male", "Male", "Male"],
+        "smoker": ["No", "No", "No", "Yes"],
+        "day": ["Sun", "Sun", "Sun", "Sun"],
+        "time": ["Dinner", "Dinner", "Dinner", "Dinner"]
+    })
+    res_tips = resolve_canonical_target_and_cost(df_tips)
+    assert res_tips["target_col"] == "smoker"
+    assert res_tips["cost_col"] == "total_bill"
+    assert res_tips["is_financial"] is True
+    assert int(res_tips["binary_target"].sum()) == 1
 

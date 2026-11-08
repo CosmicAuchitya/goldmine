@@ -100,7 +100,8 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
     BAD_TARGET_KEYWORDS = [
         'link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary',
         'text', 'comment', 'review', 'path', 'href', 'pickup', 'dropoff', 'datetime', 'timestamp',
-        'date', 'time', 'longitude', 'latitude', 'lat', 'lon', 'coord'
+        'date', 'time', 'longitude', 'latitude', 'lat', 'lon', 'coord', 'tz', 'timezone', 'tzone', 'dst',
+        'sched_arr_time', 'sched_dep_time', 'arr_time', 'dep_time', 'carrier', 'tailnum', 'origin', 'dest'
     ]
     has_spatial = 'x' in [c.lower() for c in cols] and 'y' in [c.lower() for c in cols]
     clean_cols = [c for c in cols if not any(b in c.lower() for b in BAD_TARGET_KEYWORDS) and not c.lower().endswith(('_id', '_key', '_uuid'))]
@@ -108,16 +109,16 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
         clean_cols = [c for c in clean_cols if c.lower() not in ('x', 'y', 'z')]
     
     target = None
-    # Priority 0: Exact canonical response / outcome columns (e.g. 'y', 'cut', 'customer stratification rating', 'ocean_proximity', 'payment')
+    # Priority 0: Exact canonical response / outcome columns (e.g. 'dep_delay', 'mpg', 'y', 'cut', 'customer stratification rating', 'ocean_proximity', 'payment')
     if has_spatial:
         canonical_response = [
-            'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
+            'dep_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
             'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
             'ocean_proximity', 'payment', 'target', 'response'
         ]
     else:
         canonical_response = [
-            'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit',
+            'dep_delay', 'delay', 'mpg', 'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit',
             'subscribed', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default',
             'fraud', 'customer stratification rating', 'ocean_proximity', 'payment'
         ]

@@ -1,0 +1,93 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 244"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[smoker] = "Yes")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 93"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[total_bill]), 'bi_ready_fact'[smoker] = "Yes")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $1,930.34"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[total_bill])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $4,827.77"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column total_bill
+		dataType: double
+		summarizeBy: average
+		sourceColumn: total_bill
+		lineageTag: col-fact-total_bill
+		formatString: 0.00
+
+	column tip
+		dataType: double
+		summarizeBy: average
+		sourceColumn: tip
+		lineageTag: col-fact-tip
+		formatString: 0.00
+
+	column sex
+		dataType: string
+		summarizeBy: none
+		sourceColumn: sex
+		lineageTag: col-fact-sex
+
+	column smoker
+		dataType: string
+		summarizeBy: none
+		sourceColumn: smoker
+		lineageTag: col-fact-smoker
+
+	column day
+		dataType: string
+		summarizeBy: none
+		sourceColumn: day
+		lineageTag: col-fact-day
+
+	column time
+		dataType: string
+		summarizeBy: none
+		sourceColumn: time
+		lineageTag: col-fact-time
+
+	column size
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: size
+		lineageTag: col-fact-size
+		formatString: #,0
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

@@ -1,0 +1,228 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 123,984"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[dep_delay] >= 16)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 23,326"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column year
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: year
+		lineageTag: col-fact-year
+		formatString: #,0
+
+	column month
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: month
+		lineageTag: col-fact-month
+		formatString: #,0
+
+	column day
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: day
+		lineageTag: col-fact-day
+		formatString: #,0
+
+	column dep_time
+		dataType: double
+		summarizeBy: average
+		sourceColumn: dep_time
+		lineageTag: col-fact-dep_time
+		formatString: 0.00
+
+	column sched_dep_time
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: sched_dep_time
+		lineageTag: col-fact-sched_dep_time
+		formatString: #,0
+
+	column dep_delay
+		dataType: double
+		summarizeBy: average
+		sourceColumn: dep_delay
+		lineageTag: col-fact-dep_delay
+		formatString: 0.00
+
+	column arr_time
+		dataType: double
+		summarizeBy: average
+		sourceColumn: arr_time
+		lineageTag: col-fact-arr_time
+		formatString: 0.00
+
+	column sched_arr_time
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: sched_arr_time
+		lineageTag: col-fact-sched_arr_time
+		formatString: #,0
+
+	column arr_delay
+		dataType: double
+		summarizeBy: average
+		sourceColumn: arr_delay
+		lineageTag: col-fact-arr_delay
+		formatString: 0.00
+
+	column carrier
+		dataType: string
+		summarizeBy: none
+		sourceColumn: carrier
+		lineageTag: col-fact-carrier
+
+	column flight
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: flight
+		lineageTag: col-fact-flight
+		formatString: #,0
+
+	column tailnum
+		dataType: string
+		summarizeBy: none
+		sourceColumn: tailnum
+		lineageTag: col-fact-tailnum
+
+	column origin
+		dataType: string
+		summarizeBy: none
+		sourceColumn: origin
+		lineageTag: col-fact-origin
+
+	column dest
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dest
+		lineageTag: col-fact-dest
+
+	column air_time
+		dataType: double
+		summarizeBy: average
+		sourceColumn: air_time
+		lineageTag: col-fact-air_time
+		formatString: 0.00
+
+	column distance
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: distance
+		lineageTag: col-fact-distance
+		formatString: #,0
+
+	column hour
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: hour
+		lineageTag: col-fact-hour
+		formatString: #,0
+
+	column minute
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: minute
+		lineageTag: col-fact-minute
+		formatString: #,0
+
+	column time_hour
+		dataType: string
+		summarizeBy: none
+		sourceColumn: time_hour
+		lineageTag: col-fact-time_hour
+
+	column flightb
+		dataType: string
+		summarizeBy: none
+		sourceColumn: flightb
+		lineageTag: col-fact-flightb
+
+	column totflight
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: totflight
+		lineageTag: col-fact-totflight
+		formatString: #,0
+
+	column avgdelay
+		dataType: double
+		summarizeBy: average
+		sourceColumn: avgdelay
+		lineageTag: col-fact-avgdelay
+		formatString: 0.00
+
+	column airline
+		dataType: string
+		summarizeBy: none
+		sourceColumn: airline
+		lineageTag: col-fact-airline
+
+	column airport
+		dataType: string
+		summarizeBy: none
+		sourceColumn: airport
+		lineageTag: col-fact-airport
+
+	column lat
+		dataType: double
+		summarizeBy: average
+		sourceColumn: lat
+		lineageTag: col-fact-lat
+		formatString: 0.00
+
+	column lon
+		dataType: double
+		summarizeBy: average
+		sourceColumn: lon
+		lineageTag: col-fact-lon
+		formatString: 0.00
+
+	column alt
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: alt
+		lineageTag: col-fact-alt
+		formatString: #,0
+
+	column tz
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: tz
+		lineageTag: col-fact-tz
+		formatString: #,0
+
+	column dst
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dst
+		lineageTag: col-fact-dst
+
+	column tzone
+		dataType: string
+		summarizeBy: none
+		sourceColumn: tzone
+		lineageTag: col-fact-tzone
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

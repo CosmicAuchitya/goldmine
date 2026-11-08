@@ -477,6 +477,12 @@ class MicroLevelForensicInquiryEngine:
             verb = "Evacuation Triage if"
         elif dom_key == "luxury_gemology_retail":
             verb = "Quality Re-Cut if"
+        elif dom_key == "aviation_flight_operations":
+            verb = "Turnaround Triage if"
+        elif dom_key == "automotive_fleet_powertrain":
+            verb = "Powertrain Re-Engineering if"
+        elif dom_key == "restaurant_dining_hospitality":
+            verb = "Service Quality Audit if"
         elif dom_key == "urban_mobility_fleet":
             verb = "Fare Reconciliation if"
         elif dom_key == "real_estate_valuation":
@@ -1115,7 +1121,8 @@ class StrategicDecisionEngine:
             'insurance', 'smoker', 'bmi', 'premium', 'premiums', 'policy',
             'underwriting', 'actuary', 'actuarial', 'coverage'
         ]
-        if _matches_domain(insurance_kw):
+        has_dining_signal = any(k in all_tokens for k in ['total_bill', 'tip', 'dining'])
+        if _matches_domain(insurance_kw) and not has_dining_signal:
             return {
                 "domain_key": "insurance_underwriting",
                 "domain_name": "Insurance Underwriting & Actuarial Risk",
@@ -1185,6 +1192,49 @@ class StrategicDecisionEngine:
                 "unit_symbol": "$",
                 "is_financial": True,
                 "persona": "Chief Risk Officer / CFO"
+            }
+
+        # Aviation & Commercial Flight Operations
+        aviation_kw = [
+            'flight', 'flights', 'dep_delay', 'arr_delay', 'sched_dep_time', 'sched_arr_time',
+            'carrier', 'tailnum', 'air_time', 'airport', 'airline', 'avgdelay'
+        ]
+        if _matches_domain(aviation_kw):
+            return {
+                "domain_key": "aviation_flight_operations",
+                "domain_name": "Aviation Flight Operations & Airline Network Dispatch",
+                "unit_name": "Severe Flight Delays (> 15 mins) & Schedule Disruption",
+                "unit_symbol": "Flights",
+                "is_financial": False,
+                "persona": "Chief Flight Operations Officer / VP of Network Control"
+            }
+
+        # Automotive Engineering & Fleet Powertrain
+        powertrain_kw = [
+            'mpg', 'cylinders', 'displacement', 'horsepower', 'acceleration', 'model_year', 'powertrain'
+        ]
+        if _matches_domain(powertrain_kw):
+            return {
+                "domain_key": "automotive_fleet_powertrain",
+                "domain_name": "Automotive Fleet Powertrain & Emissions Decarbonization",
+                "unit_name": "Low Fuel Efficiency Vehicles (<= 20 mpg) & Fleet Carbon Footprint",
+                "unit_symbol": "Vehicles",
+                "is_financial": False,
+                "persona": "VP of Powertrain Engineering / Head of Fleet Decarbonization"
+            }
+
+        # Restaurant & Dining Food & Beverage
+        dining_kw = [
+            'total_bill', 'tip', 'smoker', 'dining', 'table'
+        ]
+        if _matches_domain(dining_kw) and any(k in all_tokens for k in ['total_bill', 'tip']):
+            return {
+                "domain_key": "restaurant_dining_hospitality",
+                "domain_name": "Hospitality Restaurant Operations & Dining Guest Experience",
+                "unit_name": "Substandard Gratuity / Smoking Party Dining Checks",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Hospitality Operations & Guest Experience"
             }
 
         # 6. Check Logistics / Supply Chain

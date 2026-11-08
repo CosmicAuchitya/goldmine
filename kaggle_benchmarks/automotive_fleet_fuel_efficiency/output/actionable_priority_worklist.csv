@@ -1,0 +1,399 @@
+fact_surrogate_id,priority_rank,action_queue,_is_target_event,empirical_cohort_risk_pct,monetary_exposure,exposure_column_source,primary_risk_reason,recommended_next_step,cylinders,displacement
+365,1,PREVENTIVE_RETENTION_WATCH,0,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,8,350.0
+299,2,PREVENTIVE_RETENTION_WATCH,0,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Preventive Outreach / Retention Offer / Quality Check Before Failure,8,350.0
+252,3,PREVENTIVE_RETENTION_WATCH,0,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,302.0
+301,4,PREVENTIVE_RETENTION_WATCH,0,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,8,260.0
+16,5,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,198.0
+18,6,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+242,7,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,146.0
+193,8,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,250.0
+192,9,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,225.0
+195,10,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,232.0
+25,11,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,199.0
+102,12,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,198.0
+127,13,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+114,14,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,155.0
+254,15,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+334,16,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,168.0
+363,17,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,146.0
+307,18,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,173.0
+255,19,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+308,20,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,173.0
+285,21,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,225.0
+281,22,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,231.0
+388,23,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,262.0
+390,24,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,232.0
+387,25,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,181.0
+342,26,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,173.0
+362,27,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,168.0
+361,28,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,145.0
+364,29,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,231.0
+366,30,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+257,31,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,225.0
+284,32,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,232.0
+260,33,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+259,34,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,231.0
+194,35,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,200.0
+227,36,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,231.0
+165,37,PREVENTIVE_RETENTION_WATCH,0,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,6,231.0
+335,38,PREVENTIVE_RETENTION_WATCH,0,50.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='3' (50.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,70.0
+244,39,PREVENTIVE_RETENTION_WATCH,0,50.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='3' (50.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,3,80.0
+33,40,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+31,41,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+32,42,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,113.0
+53,43,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,88.0
+50,44,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+51,45,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,116.0
+47,46,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+130,47,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+123,48,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+119,49,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,116.0
+118,50,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,68.0
+111,51,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,108.0
+115,52,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+103,53,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+110,54,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+146,55,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,83.0
+131,56,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+133,57,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+132,58,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,71.0
+143,59,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+144,60,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+145,61,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,76.0
+142,62,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+169,63,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+171,64,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+172,65,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,134.0
+173,66,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+174,67,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+176,68,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+178,69,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,115.0
+179,70,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+180,71,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+147,72,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+149,73,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,116.0
+148,74,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+150,75,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+151,76,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,108.0
+152,77,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+168,78,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+187,79,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,101.0
+186,80,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+185,81,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+184,82,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,116.0
+183,83,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,107.0
+182,84,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+181,85,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+52,86,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+57,87,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+58,88,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,113.0
+59,89,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.5
+60,90,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+62,91,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+54,92,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,71.0
+55,93,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,72.0
+56,94,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+80,95,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,96.0
+79,96,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+78,97,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+81,98,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+84,99,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+85,100,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+83,101,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+82,102,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+21,103,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,110.0
+22,104,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,107.0
+23,105,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,104.0
+24,106,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+30,107,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+15,108,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,113.0
+20,109,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+19,110,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+247,111,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,78.0
+246,112,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+245,113,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+243,114,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+240,115,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+241,116,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+238,117,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+239,118,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+235,119,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+234,120,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+237,121,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+236,122,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+221,123,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+218,124,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,111.0
+219,125,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+220,126,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+199,127,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+198,128,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+197,129,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+217,130,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+207,131,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+206,132,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+205,133,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+204,134,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+196,135,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+272,136,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,156.0
+271,137,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,134.0
+270,138,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+273,139,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+256,140,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+268,141,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,134.0
+269,142,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+318,143,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+319,144,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,134.0
+297,145,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+302,146,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+304,147,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+303,148,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+306,149,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+305,150,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+309,151,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+310,152,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+311,153,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,89.0
+312,154,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+313,155,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,86.0
+314,156,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+315,157,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+316,158,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+326,159,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+327,160,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,90.0
+320,161,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+321,162,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+280,163,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+279,164,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,89.0
+274,165,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+277,166,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,121.0
+296,167,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+283,168,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+295,169,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,86.0
+294,170,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,89.0
+300,171,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,141.0
+267,172,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+248,173,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+249,174,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+359,175,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+358,176,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+360,177,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,141.0
+333,178,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,89.0
+330,179,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+329,180,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,146.0
+331,181,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+332,182,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+325,183,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+324,184,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,156.0
+323,185,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,86.0
+322,186,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,108.0
+341,187,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,156.0
+343,188,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,135.0
+344,189,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,79.0
+336,190,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,122.0
+349,191,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,89.0
+348,192,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,85.0
+347,193,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+346,194,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,81.0
+345,195,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,86.0
+350,196,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+352,197,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+351,198,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+357,199,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,108.0
+356,200,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,107.0
+355,201,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,100.0
+354,202,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+338,203,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,107.0
+339,204,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,135.0
+340,205,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+337,206,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+382,207,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,107.0
+381,208,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+380,209,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+353,210,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,98.0
+371,211,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,112.0
+368,212,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,112.0
+369,213,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,112.0
+370,214,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,112.0
+375,215,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+376,216,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+377,217,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+378,218,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+379,219,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,105.0
+372,220,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,135.0
+373,221,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+374,222,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+391,223,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,144.0
+392,224,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,135.0
+393,225,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,151.0
+383,226,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,108.0
+386,227,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+385,228,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+384,229,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,91.0
+389,230,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,156.0
+395,231,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,97.0
+396,232,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,135.0
+397,233,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,120.0
+394,234,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,140.0
+398,235,PREVENTIVE_RETENTION_WATCH,0,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,4,119.0
+328,236,PREVENTIVE_RETENTION_WATCH,0,0.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='5' (0.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,121.0
+275,237,PREVENTIVE_RETENTION_WATCH,0,0.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='5' (0.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,131.0
+298,238,PREVENTIVE_RETENTION_WATCH,0,0.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='5' (0.0% risk),Preventive Outreach / Retention Offer / Quality Check Before Failure,5,183.0
+2,1,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+8,2,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,440.0
+7,3,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,454.0
+6,4,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,429.0
+13,5,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+12,6,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,340.0
+10,7,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,390.0
+9,8,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,455.0
+26,9,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,360.0
+40,10,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+41,11,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+42,12,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+43,13,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,383.0
+29,14,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+28,15,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+27,16,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,307.0
+45,17,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+44,18,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+39,19,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+88,20,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+71,21,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+75,22,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+74,23,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,307.0
+73,24,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+68,25,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,429.0
+69,26,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+70,27,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+67,28,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+64,29,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+65,30,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+66,31,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+63,32,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+225,33,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+231,34,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+232,35,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+141,36,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+125,37,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+233,38,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+251,39,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+230,40,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+288,41,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+289,42,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+290,43,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+291,44,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+293,45,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,360.0
+87,46,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+86,47,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+76,48,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+96,49,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,455.0
+93,50,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+94,51,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+95,52,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,440.0
+90,53,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+89,54,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+91,55,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,429.0
+92,56,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+97,57,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,360.0
+137,58,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+117,59,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+116,60,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+106,61,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,360.0
+107,62,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+104,63,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+105,64,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+138,65,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+139,66,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+140,67,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+222,68,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,305.0
+215,69,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+216,70,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+213,71,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+214,72,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+191,73,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+189,74,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+188,75,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,305.0
+190,76,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+160,77,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,351.0
+286,78,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,305.0
+287,79,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+266,80,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+224,81,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+209,82,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+223,83,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,260.0
+157,84,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,400.0
+158,85,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,350.0
+159,86,REALIZED_LOSS_RECOVERY_AUDIT,1,100.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+265,87,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+263,88,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,305.0
+5,89,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+1,90,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,307.0
+3,91,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+4,92,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,304.0
+11,93,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,383.0
+292,94,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,267.0
+167,95,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,302.0
+14,96,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,455.0
+122,97,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,318.0
+250,98,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,260.0
+166,99,REALIZED_LOSS_RECOVERY_AUDIT,1,96.12,,NONE_PHYSICAL_UNITS,Cohort cylinders='8' (96.1% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,8,262.0
+162,100,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+202,101,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+136,102,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+200,103,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+161,104,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,231.0
+134,105,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+135,106,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,258.0
+164,107,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+163,108,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,258.0
+228,109,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+212,110,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,168.0
+261,111,REALIZED_LOSS_RECOVERY_AUDIT,1,75.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk); weight >= 3608.00 Cliff Breach,Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+17,112,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,199.0
+46,113,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,258.0
+36,114,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+37,115,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+34,116,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+35,117,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+38,118,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+100,119,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+129,120,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+99,121,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+98,122,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+49,123,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+48,124,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+128,125,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+156,126,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+154,127,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+155,128,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+262,129,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,258.0
+258,130,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+211,131,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,156.0
+203,132,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,258.0
+201,133,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+226,134,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+253,135,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,231.0
+229,136,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+101,137,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,250.0
+108,138,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+124,139,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,156.0
+153,140,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+126,141,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,198.0
+170,142,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+175,143,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,171.0
+177,144,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,232.0
+278,145,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,163.0
+282,146,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,200.0
+264,147,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,231.0
+276,148,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,163.0
+317,149,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+367,150,REALIZED_LOSS_RECOVERY_AUDIT,1,60.71,,NONE_PHYSICAL_UNITS,Cohort cylinders='6' (60.7% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,6,225.0
+112,151,REALIZED_LOSS_RECOVERY_AUDIT,1,50.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='3' (50.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,70.0
+72,152,REALIZED_LOSS_RECOVERY_AUDIT,1,50.0,,NONE_PHYSICAL_UNITS,Cohort cylinders='3' (50.0% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,3,70.0
+109,153,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,97.0
+113,154,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,122.0
+121,155,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,121.0
+120,156,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,114.0
+61,157,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,140.0
+77,158,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,121.0
+208,159,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,130.0
+210,160,REALIZED_LOSS_RECOVERY_AUDIT,1,3.92,,NONE_PHYSICAL_UNITS,Cohort cylinders='4' (3.9% risk),Loss Recovery / Root-Cause Defect Audit / Collections Follow-up,4,120.0

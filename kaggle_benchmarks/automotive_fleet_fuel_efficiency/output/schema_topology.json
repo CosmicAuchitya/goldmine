@@ -1,0 +1,134 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "mpg": {
+      "table_name": "mpg",
+      "filename": "mpg.csv",
+      "selected_sheet": null,
+      "estimated_rows": 398,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "mpg",
+        "cylinders",
+        "displacement",
+        "horsepower",
+        "weight",
+        "acceleration",
+        "model_year",
+        "origin",
+        "name"
+      ],
+      "potential_keys": [
+        "weight",
+        "name"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "mpg",
+          "dtype": "float64",
+          "sample_values": [
+            "18.0",
+            "15.0",
+            "16.0"
+          ],
+          "nunique_in_sample": 129,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "cylinders",
+          "dtype": "int64",
+          "sample_values": [
+            "8",
+            "4",
+            "6"
+          ],
+          "nunique_in_sample": 5,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "displacement",
+          "dtype": "float64",
+          "sample_values": [
+            "307.0",
+            "350.0",
+            "318.0"
+          ],
+          "nunique_in_sample": 82,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "horsepower",
+          "dtype": "float64",
+          "sample_values": [
+            "130.0",
+            "165.0",
+            "150.0"
+          ],
+          "nunique_in_sample": 93,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "weight",
+          "dtype": "int64",
+          "sample_values": [
+            "3504",
+            "3693",
+            "3436"
+          ],
+          "nunique_in_sample": 351,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "acceleration",
+          "dtype": "float64",
+          "sample_values": [
+            "12.0",
+            "11.5",
+            "11.0"
+          ],
+          "nunique_in_sample": 95,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "model_year",
+          "dtype": "int64",
+          "sample_values": [
+            "70",
+            "71",
+            "72"
+          ],
+          "nunique_in_sample": 13,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "origin",
+          "dtype": "str",
+          "sample_values": [
+            "usa",
+            "japan",
+            "europe"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "name",
+          "dtype": "str",
+          "sample_values": [
+            "[MASKED_NAME]",
+            "[MASKED_NAME]",
+            "[MASKED_NAME]"
+          ],
+          "nunique_in_sample": 305,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}
