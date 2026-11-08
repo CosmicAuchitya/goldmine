@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</title>
+    <style>
+        /* =====================================================================
+           BESPOKE DESIGN SYSTEM: EDITORIAL COMMERCE & CX STUDIO
+           Zero External CDNs & Dynamic CSS Variable Palettes
+           ===================================================================== */
+        :root {
+            --canvas-bg: #141413;
+            --card-bg: #1C1917;
+            --border-color: #292524;
+            --accent-primary: #F59E0B;
+            --accent-secondary: #10B981;
+            --text-main: #F5F5F4;
+            --text-muted: #A8A29E;
+            --font-display: 'Georgia', 'Cambria', 'Palatino Linotype', serif;
+            --font-body: -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --card-radius: 8px;
+            --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="light"] {
+            --canvas-bg: #FAF7F2;
+            --card-bg: #FFFFFF;
+            --border-color: #E7E5E4;
+            --accent-primary: #D97706;
+            --accent-secondary: #059669;
+            --text-main: #1C1917;
+            --text-muted: #78716C;
+            --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--canvas-bg);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            padding: 24px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Command Bar */
+        .cmd-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .brand-meta h1 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .brand-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-verified {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        .badge-circuit-breaker {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+        }
+        .badge-persona {
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Header Controls */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-ctrl {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        .btn-ctrl:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Slicer Ribbon */
+        .slicer-ribbon {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-elevation);
+        }
+        .slicer-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+        .chips-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        .chip {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .chip:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+        .chip.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .slicer-select {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Executive Banner */
+        .exec-banner {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(244, 63, 94, 0.04));
+            border-left: 4px solid var(--accent-primary);
+            border-radius: 0 var(--card-radius) var(--card-radius) 0;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .exec-banner.cb-alert {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.06));
+            border-left-color: #f59e0b;
+        }
+
+        /* Hero KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-elevation);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border-color);
+        }
+        .kpi-card.accent-red::after { background: #f43f5e; }
+        .kpi-card.accent-green::after { background: #10b981; }
+        .kpi-card.accent-gold::after { background: var(--accent-primary); }
+        .kpi-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .kpi-val {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Main 12-Column Responsive Bento Grid & Archetype Structural Geometry */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .panel-card {
+            grid-column: span 6;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-elevation);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .panel-card.span-12, .panel-card.full-width { grid-column: span 12; }
+        .panel-card.span-8 { grid-column: span 8; }
+        .panel-card.span-7 { grid-column: span 7; }
+        .panel-card.span-6 { grid-column: span 6; }
+        .panel-card.span-5 { grid-column: span 5; }
+        .panel-card.span-4 { grid-column: span 4; }
+        @media (max-width: 1100px) {
+            .panel-card, .panel-card.span-8, .panel-card.span-7, .panel-card.span-5, .panel-card.span-4 {
+                grid-column: span 12;
+            }
+        }
+
+        /* Bespoke Structural Differentiation per Executive Archetype */
+        body[data-archetype="swiss_institutional_terminal"] {
+            --card-radius: 2px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .cmd-bar {
+            border-top: 3px double var(--accent-primary);
+            padding-top: 16px;
+        }
+        body[data-archetype="swiss_institutional_terminal"] .kpi-val {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+        }
+
+        body[data-archetype="nordic_saas_command"] {
+            --card-radius: 12px;
+        }
+        body[data-archetype="nordic_saas_command"] .panel-card {
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(6, 182, 212, 0.28);
+        }
+
+        body[data-archetype="editorial_commerce_studio"] {
+            --card-radius: 14px;
+        }
+        body[data-archetype="editorial_commerce_studio"] .cmd-bar {
+            border-bottom: 3px double var(--border-color);
+        }
+        body[data-archetype="editorial_commerce_studio"] .brand-meta h1 {
+            font-size: 27px;
+            letter-spacing: -0.01em;
+        }
+
+        body[data-archetype="industrial_scada_telemetry"] {
+            --card-radius: 3px;
+        }
+        body[data-archetype="industrial_scada_telemetry"] .panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            border-top: 2px solid var(--accent-primary);
+            border-right: 2px solid var(--accent-primary);
+            pointer-events: none;
+        }
+        .scada-led {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            margin-right: 6px;
+        }
+
+        body[data-archetype="clinical_diagnostic_clarity"] {
+            --card-radius: 10px;
+        }
+        body[data-archetype="clinical_diagnostic_clarity"] .panel-card {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Ontology & Governance Drawer */
+        .ont-strip {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .ont-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 3px 9px;
+        }
+        details.gov-drawer {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 14px 18px;
+            margin-top: 12px;
+        }
+        details.gov-drawer summary {
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .pathway-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .pathway-card {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 12px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .panel-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .svg-container {
+            width: 100%;
+            min-height: 280px;
+            position: relative;
+            flex: 1;
+        }
+
+        /* Tooltip */
+        #chart-tooltip {
+            position: fixed;
+            display: none;
+            background: rgba(15, 23, 42, 0.95);
+            color: #ffffff;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            max-width: 280px;
+        }
+
+        /* What-If Simulator */
+        .sim-box {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+        .sim-slider-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+        }
+        .sim-slider {
+            flex: 1;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+        }
+        .sim-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .btn-preset {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-preset:hover {
+            border-color: var(--accent-primary);
+        }
+        .sim-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .sim-res-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* Worklist Explorer */
+        .worklist-ctrls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .worklist-tabs {
+            display: flex;
+            gap: 8px;
+        }
+        .wl-tab {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .wl-tab.active {
+            background: var(--accent-primary);
+            color: #ffffff;
+            border-color: var(--accent-primary);
+        }
+        .wl-search {
+            background: var(--canvas-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 240px;
+            outline: none;
+        }
+        .table-wrap {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        .worklist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .worklist-table th {
+            background: var(--canvas-bg);
+            position: sticky;
+            top: 0;
+            padding: 8px 12px;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+        .worklist-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .worklist-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Print Media */
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; padding: 0; }
+            .cmd-bar button, .slicer-ribbon, .sim-slider-row, .sim-buttons, .worklist-ctrls { display: none !important; }
+            .panel-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            #chart-tooltip { display: none !important; }
+        }
+    </style>
+</head>
+<body data-archetype="editorial_commerce_studio">
+    <div id="chart-tooltip"></div>
+
+    <!-- Top Command Bar -->
+    <header class="cmd-bar">
+        <div class="brand-meta">
+            <h1 id="ui-title">Enterprise Analytics &amp; Dimensional Architecture for raw_data — Executive Forensic Command Cockpit</h1>
+            <div class="brand-badges">
+                <span class="badge badge-persona">Chief Operating Officer (COO) &amp; VP Growth / CX</span>
+                <span class="badge badge-persona">Editorial Commerce &amp; CX Studio</span>
+                <span class="badge badge-verified">&check; 100% DuckDB Ground Truth (0 Drift)</span>
+                
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-ctrl" id="lang-btn" onclick="toggleLanguage()">🇮🇳 Hinglish Switch</button>
+            <button class="btn-ctrl" id="theme-btn" onclick="toggleTheme()">☀️ Light / 🌙 Dark</button>
+            <button class="btn-ctrl" onclick="window.print()">🖨️ Print / PDF</button>
+        </div>
+    </header>
+
+    <!-- Domain Ontology Intelligence Strip -->
+    <div class="ont-strip">
+        <span class="ont-pill"><strong>Ontology:</strong> E-Commerce &amp; Omnichannel Retail (ECOM)</span>
+        <span class="ont-pill"><strong>Layout:</strong> Magazine-style asymmetric story header with CX and margin friction layout</span>
+        <span class="ont-pill"><strong>DFII Score:</strong> 19 / 19 (9 Adaptive Panels)</span>
+    </div>
+
+    <!-- Cross-Filter Slicer Ribbon -->
+    <div class="slicer-ribbon">
+        <div class="slicer-label" data-en="Filter by Customer type:" data-hi="Customer type Se Filter Karein:">
+            Filter by Customer type:
+        </div>
+        <div class="chips-container" id="prim-chips">
+            <button class="chip active" onclick="setPrimaryFilter('All')">All Segments</button>
+        </div>
+        
+        <div class="slicer-label" style="margin-left: 12px;" data-en="Branch:" data-hi="Branch:">
+            Branch:
+        </div>
+        <select class="slicer-select" id="sec-select" onchange="setSecondaryFilter(this.value)">
+            <option value="All">All Branch</option>
+        </select>
+        
+        <button class="btn-ctrl" style="padding: 4px 10px; font-size: 11px;" onclick="resetFilters()">Reset</button>
+    </div>
+
+    <!-- Executive Insight Strip -->
+    <div class="exec-banner " id="exec-banner">
+        <div>
+            <strong id="exec-banner-tag" data-en="Executive Bottleneck Insight:" data-hi="Karyakari Bottleneck Jankari:">
+                Executive Bottleneck Insight:
+            </strong>
+            <span id="exec-banner-text">Group `Gender = Female` exhibits the highest statistically verified adverse concentration at 19.76% (vs 15.03% rest-of-business baseline, 1.31x lift, z = 1.97, 23.7 excess events).</span>
+        </div>
+        <div style="font-size: 12px; font-weight: 700; white-space: nowrap;">
+            Status: 🟢 Statistically Validated
+        </div>
+    </div>
+
+    <!-- Hero KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card accent-gold">
+            <div class="kpi-title" data-en="Audited Records" data-hi="Kul Records">Audited Records</div>
+            <div class="kpi-val" id="kpi-records">1,000</div>
+            <div class="kpi-sub" data-en="Zero Cartesian Drift" data-hi="100% Asli Records">Zero Cartesian Drift</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Events" data-hi="Failure / Nuksan Events">Adverse Events</div>
+            <div class="kpi-val" id="kpi-events">174</div>
+            <div class="kpi-sub" id="kpi-rate-sub">Failure Rate: 17.40%</div>
+        </div>
+        <div class="kpi-card accent-green">
+            <div class="kpi-title" data-en="System Reliability" data-hi="System Ki Suraksha">System Reliability</div>
+            <div class="kpi-val" id="kpi-reliability">82.60%</div>
+            <div class="kpi-sub" data-en="Unbreached Operating Profile" data-hi="Surakshit Operating Profile">Unbreached Operating Profile</div>
+        </div>
+        <div class="kpi-card accent-red">
+            <div class="kpi-title" data-en="Adverse Capital Drag" data-hi="Direct Financial Nuksan">
+                Adverse Capital Drag
+            </div>
+            <div class="kpi-val" id="kpi-drag">
+                $60,308.99
+            </div>
+            <div class="kpi-sub" id="kpi-drag-sub">
+                Out of $322,966.75 total
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Visual Panels Grid -->
+    <div class="dashboard-grid" id="main-panels-container">
+        <!-- Panels are injected and rendered via native SVG engine -->
+    </div>
+
+    <!-- Collapsible Statistical Proof, Pathways & Design Governance Drawer -->
+    <details class="gov-drawer" id="gov-drawer">
+        <summary data-en="🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit" data-hi="🔬 Statistical Saboot, 3 Raste (A/B/C) Aur Design Governance Audit">
+            🔬 Statistical Proof, Strategic Options (A/B/C) &amp; Design Governance Audit
+        </summary>
+        <div id="gov-drawer-body" style="margin-top: 12px;"></div>
+    </details>
+
+    <!-- Footer -->
+    <footer>
+        <div>Generated Autonomously by DataX-Ray Stage 7 Bespoke Dashboard Architect &bull; Verified Physical Ground Truth</div>
+        <div>Engine Version: V5.5 &bull; Archetype: editorial_commerce_studio &bull; DFII Impact Index: 19/19 &bull; Zero External CDNs</div>
+    </footer>
+
+    <!-- =====================================================================
+         CLIENT-SIDE APPLICATION LOGIC & ZERO-CDN NATIVE SVG RENDERERS
+         ===================================================================== -->
+    <script>
+        const DASHBOARD_PAYLOAD = /*__DXR_PAYLOAD_START__*/{"meta": {"dataset_name": "supermarket_retail_operations", "engine": "DataX-Ray Bespoke Architecture V5.5", "archetype": "editorial_commerce_studio", "archetype_name": "Editorial Commerce \u0026 CX Studio", "executive_persona": "Chief Operating Officer (COO) \u0026 VP Growth / CX", "title_en": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit", "title_hi": "Enterprise Analytics \u0026 Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit", "generated_timestamp": "2026-11-08 09:12:54"}, "ontology": {"ontology_key": "ecommerce_retail", "domain_code": "ECOM", "domain_name": "E-Commerce \u0026 Omnichannel Retail", "key_metrics_kpis": ["Gross Merchandise Value (GMV)", "Net Realized Revenue (Completed Orders Only)", "Average Order Value (AOV)", "Return \u0026 Cancellation Rate (%)"], "hidden_leakage_risks": ["RTO (Return to Origin) \u0026 Reverse Courier Fees", "Damaged Goods in Transit", "Discount Burn without Volume Lift"]}, "dfii": {"aesthetic_impact": 5, "context_fit": 5, "implementation_feasibility": 5, "performance_safety": 5, "consistency_risk": 1, "dfii": 19}, "design_system": {"layout_concept": "Magazine-style asymmetric story header with CX and margin friction layout", "default_theme": "light", "font_display": "'Georgia', 'Cambria', 'Palatino Linotype', serif", "font_body": "-apple-system, 'Segoe UI', Roboto, sans-serif"}, "selected_panels": ["temporal_momentum_ribbon", "pareto_loss_waterfall", "segment_vulnerability_lollipop", "secondary_cross_tab_heatmap", "nonlinear_cliff_step_area", "orthogonal_2x2_quadrant", "triage_efficiency_frontier", "what_if_counterfactual_simulator", "actionable_worklist_explorer"], "selected_panels_detail": [{"id": "temporal_momentum_ribbon", "name": "Temporal Failure Rate \u0026 Volume Momentum", "justification": "Verified calendar timestamps detected; tracks Period-over-Period adverse momentum.", "priority": 1}, {"id": "pareto_loss_waterfall", "name": "Pareto Cumulative Financial Loss Waterfall", "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.", "priority": 2}, {"id": "segment_vulnerability_lollipop", "name": "Primary Segment Vulnerability \u0026 Wilson 95% CIs", "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.", "priority": 4}, {"id": "secondary_cross_tab_heatmap", "name": "2D Cross-Tabulation Risk Concentration Heatmap", "justification": "Bivariate categorical cross-tab (Customer type x Branch) exposes sub-node vulnerability hubs.", "priority": 5}, {"id": "nonlinear_cliff_step_area", "name": "Non-Linear Parameter Threshold Cliff \u0026 Danger Zone", "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).", "priority": 6}, {"id": "orthogonal_2x2_quadrant", "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix", "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.", "priority": 7}, {"id": "triage_efficiency_frontier", "name": "Operational Intake Screening Yield Frontier", "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.", "priority": 8}, {"id": "what_if_counterfactual_simulator", "name": "What-If Counterfactual ROI \u0026 Excess-Risk Simulator", "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.", "priority": 9}, {"id": "actionable_worklist_explorer", "name": "Actionable Priority Worklist \u0026 Incident Triage Table", "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.", "priority": 10}], "rejected_panels_detail": [{"id": "exposure_vs_risk_bubble", "name": "Exposure Volume vs Adverse Risk Bubble Dispersion", "reason": "Insufficient categorical depth (\u003c 3 cohorts) for multi-dimensional bubble dispersion."}], "global_kpis": {"total_records": 1000, "adverse_events": 174, "adverse_rate_pct": 17.4, "system_reliability_pct": 82.6, "has_monetary_ledger": true, "currency_unit": "$", "cost_column": "Total", "adverse_capital_drag": 60308.99, "total_portfolio_volume": 322966.75}, "circuit_breaker": {"active": false, "p_value": 0.048507, "z_stat": 1.97, "relative_risk_multiplier": 1.31, "excess_events": 23.7}, "bottleneck": {"segment": "Gender = Female", "volume": 501, "events": 99, "rate_pct": 19.76, "rest_rate_pct": 15.03, "excess_events": 23.7, "narrative_en": "Group `Gender = Female` exhibits the highest statistically verified adverse concentration at 19.76% (vs 15.03% rest-of-business baseline, 1.31x lift, z = 1.97, 23.7 excess events).", "narrative_hi": "Group `Gender = Female` mein sabse zyada parmanit nuksan dar 19.76% hai (baaki business mein 15.03%, 1.31x zyada jokhim, 23.7 roke ja sakne wale excess events)."}, "what_if_model": {"excess_events": 23.7, "excess_ci_low": 0.2, "excess_ci_high": 47.2, "avg_cost_per_event": 346.944818, "cohort_adverse_dollars": 34347.54, "bottleneck_segment": "Gender = Female", "bottleneck_rate_pct": 19.76, "rest_rate_pct": 15.03}, "pathways": [{"path_name": "Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)", "strategy_type": "Low CapEx / Immediate Operational Triage", "implementation_cost": "$5,000 - $15,000", "time_to_impact": "1 - 2 Weeks", "projected_friction_reduction": "$2,081.67 risk averted (6 excess adverse events \u2014 25% Excess-Risk Compression)", "statistical_confidence_interval": "[$0.00 to $4,163.34] (0 to 12 excess events) (95% Attributable Risk CI)", "fayda_pros": "Zero organizational disruption; captures initial 25% of the 23.7 attributable excess events in `Gender = Female` via lightweight queue alerts.", "nuksan_cons": "Leaves 75% of cohort excess risk (18 excess events) and baseline systemic friction unaddressed.", "collateral_friction": "Minor alert-fatigue among frontline staff if threshold rules are too sensitive."}, {"path_name": "Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)", "strategy_type": "Moderate CapEx / Targeted Clinical or Operational Protocol", "implementation_cost": "$25,000 - $50,000", "time_to_impact": "30 - 45 Days", "projected_friction_reduction": "$4,857.23 risk averted (14 excess adverse events \u2014 60% Excess-Risk Compression)", "statistical_confidence_interval": "[$0.00 to $9,714.45] (0 to 28 excess events) (95% Attributable Risk CI)", "fayda_pros": "Highest Return on Invested Effort; directly targets the statistically verified `Gender = Female` bottleneck (19.76% vs 15.03% rest-of-system, p = 4.8507e-02, +4.73% attributable excess risk).", "nuksan_cons": "Does not reduce the rest-of-system baseline failure rate; requires training frontline staff on cohort-specific triage.", "collateral_friction": "Requires cross-departmental coordination; minor initial resistance during protocol adoption."}, {"path_name": "Pathway C: Structural (100% Excess-Risk Elimination \u2014 Full Cohort Parity with Baseline)", "strategy_type": "High CapEx / Infrastructure \u0026 Automated Remediation", "implementation_cost": "$100,000 - $250,000", "time_to_impact": "90 - 180 Days", "projected_friction_reduction": "$8,326.68 risk averted (24 excess adverse events \u2014 100% Baseline Parity)", "statistical_confidence_interval": "[$0.00 to $16,306.41] (0 to 47 excess events) (95% Attributable Risk CI)", "fayda_pros": "Brings `Gender = Female` from 19.76% down to exact statistical parity with the rest-of-population baseline (15.03%), eliminating all 24 attributable excess failures.", "nuksan_cons": "High upfront capital expenditure and 90-180 day payback horizon; cannot push failure rates below the rest-of-system baseline without global re-engineering.", "collateral_friction": "Heavy operational friction during system migration; requires ongoing engineering maintenance."}], "cube_slices": [{"prim_val": "Member", "sec_val": "A", "volume": 167, "adverse_events": 35, "adverse_rate_pct": 20.96, "adverse_cost": 11580.25, "total_cost": 53637.48}, {"prim_val": "Member", "sec_val": "B", "volume": 165, "adverse_events": 36, "adverse_rate_pct": 21.82, "adverse_cost": 11954.99, "total_cost": 53704.69}, {"prim_val": "Member", "sec_val": "C", "volume": 169, "adverse_events": 27, "adverse_rate_pct": 15.98, "adverse_cost": 11013.78, "total_cost": 56881.28}, {"prim_val": "Normal", "sec_val": "A", "volume": 173, "adverse_events": 25, "adverse_rate_pct": 14.45, "adverse_cost": 8426.13, "total_cost": 52562.9}, {"prim_val": "Normal", "sec_val": "B", "volume": 167, "adverse_events": 30, "adverse_rate_pct": 17.96, "adverse_cost": 10762.2, "total_cost": 52492.99}, {"prim_val": "Normal", "sec_val": "C", "volume": 159, "adverse_events": 21, "adverse_rate_pct": 13.21, "adverse_cost": 6571.65, "total_cost": 53687.42}], "prim_dim_name": "Customer type", "sec_dim_name": "Branch", "prim_segments": ["Member", "Normal"], "sec_segments": ["A", "B", "C"], "widgets_data": {"temporal": {"is_temporal": true, "date_column": "Date", "pop_delta_pp": 3.33, "trend_direction": "WORSENING", "periods": [{"period": "2019-01", "total_records": 352, "adverse_events": 62, "adverse_rate_pct": 17.61, "adverse_capital_drag": 24388.78, "has_monetary_column": true}, {"period": "2019-02", "total_records": 303, "adverse_events": 47, "adverse_rate_pct": 15.51, "adverse_capital_drag": 12973.42, "has_monetary_column": true}, {"period": "2019-03", "total_records": 345, "adverse_events": 65, "adverse_rate_pct": 18.84, "adverse_capital_drag": 22946.78, "has_monetary_column": true}]}, "pareto": [{"segment": "Member", "adverse_cost": 34549.01, "cumulative_drag": 34549.01, "cumulative_pct": 57.3}, {"segment": "Normal", "adverse_cost": 25759.98, "cumulative_drag": 60308.99, "cumulative_pct": 100.0}], "lollipop": [{"segment": "Member", "volume": 501, "events": 98, "rate_pct": 19.56, "ci_low": 16.32, "ci_high": 23.26, "adverse_cost": 34549.01}, {"segment": "Normal", "volume": 499, "events": 76, "rate_pct": 15.23, "ci_low": 12.34, "ci_high": 18.65, "adverse_cost": 25759.98}], "heatmap": {"has_heatmap": true, "prim_dim": "Customer type", "sec_dim": "Branch", "rows": ["Member", "Normal"], "cols": ["A", "B", "C"], "cells": [{"prim_val": "Member", "sec_val": "A", "volume": 167, "events": 35, "rate_pct": 20.96, "adverse_cost": 11580.25}, {"prim_val": "Member", "sec_val": "B", "volume": 165, "events": 36, "rate_pct": 21.82, "adverse_cost": 11954.99}, {"prim_val": "Member", "sec_val": "C", "volume": 169, "events": 27, "rate_pct": 15.98, "adverse_cost": 11013.78}, {"prim_val": "Normal", "sec_val": "A", "volume": 173, "events": 25, "rate_pct": 14.45, "adverse_cost": 8426.13}, {"prim_val": "Normal", "sec_val": "B", "volume": 167, "events": 30, "rate_pct": 17.96, "adverse_cost": 10762.2}, {"prim_val": "Normal", "sec_val": "C", "volume": 159, "events": 21, "rate_pct": 13.21, "adverse_cost": 6571.65}]}, "bubble": [{"segment": "Member", "volume": 501, "events": 98, "rate_pct": 19.56, "ci_low": 16.32, "ci_high": 23.26, "adverse_cost": 34549.01}, {"segment": "Normal", "volume": 499, "events": 76, "rate_pct": 15.23, "ci_low": 12.34, "ci_high": 18.65, "adverse_cost": 25759.98}], "cliffs": [{"column": "Tax 5%", "max_delta": 0.064, "mean_delta": 0.047999999999999994, "spread": 0.07999999999999999, "step_ratio": 1.33, "is_significant": false, "is_cliff": false, "correlation": 0.044142266963864016, "chi2": 6.32, "p_value": 0.09713749237632541, "bins": [{"range": "(0.507, 5.925]", "count": 250, "events": 48, "rate_pct": 19.2}, {"range": "(5.925, 12.088]", "count": 250, "events": 32, "rate_pct": 12.8}, {"range": "(12.088, 22.445]", "count": 250, "events": 42, "rate_pct": 16.8}, {"range": "(22.445, 49.65]", "count": 250, "events": 52, "rate_pct": 20.8}]}, {"column": "Gross income", "max_delta": 0.064, "mean_delta": 0.047999999999999994, "spread": 0.07999999999999999, "step_ratio": 1.33, "is_significant": false, "is_cliff": false, "correlation": 0.044142266963864016, "chi2": 6.32, "p_value": 0.09713749237632541, "bins": [{"range": "(0.507, 5.925]", "count": 250, "events": 48, "rate_pct": 19.2}, {"range": "(5.925, 12.088]", "count": 250, "events": 32, "rate_pct": 12.8}, {"range": "(12.088, 22.445]", "count": 250, "events": 42, "rate_pct": 16.8}, {"range": "(22.445, 49.65]", "count": 250, "events": 52, "rate_pct": 20.8}]}, {"column": "Total", "max_delta": 0.064, "mean_delta": 0.047999999999999994, "spread": 0.07999999999999999, "step_ratio": 1.33, "is_significant": false, "is_cliff": false, "correlation": 0.044142266963864, "chi2": 6.32, "p_value": 0.09713749237632541, "bins": [{"range": "(10.677000000000001, 124.422]", "count": 250, "events": 48, "rate_pct": 19.2}, {"range": "(124.422, 253.848]", "count": 250, "events": 32, "rate_pct": 12.8}, {"range": "(253.848, 471.35]", "count": 250, "events": 42, "rate_pct": 16.8}, {"range": "(471.35, 1042.65]", "count": 250, "events": 52, "rate_pct": 20.8}]}, {"column": "Cost of goods sold", "max_delta": 0.064, "mean_delta": 0.047999999999999994, "spread": 0.07999999999999999, "step_ratio": 1.33, "is_significant": false, "is_cliff": false, "correlation": 0.044142266963863995, "chi2": 6.32, "p_value": 0.09713749237632541, "bins": [{"range": "(10.169, 118.498]", "count": 250, "events": 48, "rate_pct": 19.2}, {"range": "(118.498, 241.76]", "count": 250, "events": 32, "rate_pct": 12.8}, {"range": "(241.76, 448.905]", "count": 250, "events": 42, "rate_pct": 16.8}, {"range": "(448.905, 993.0]", "count": 250, "events": 52, "rate_pct": 20.8}]}, {"column": "Unit price", "max_delta": 0.03999999999999998, "mean_delta": 0.026666666666666655, "spread": 0.043999999999999984, "step_ratio": 1.5, "is_significant": false, "is_cliff": false, "correlation": 0.023089102209085402, "chi2": 2.14, "p_value": 0.5432634104972693, "bins": [{"range": "(10.079, 32.875]", "count": 250, "events": 40, "rate_pct": 16.0}, {"range": "(32.875, 55.23]", "count": 250, "events": 41, "rate_pct": 16.4}, {"range": "(55.23, 77.935]", "count": 250, "events": 51, "rate_pct": 20.4}, {"range": "(77.935, 99.96]", "count": 250, "events": 42, "rate_pct": 16.8}]}, {"column": "Quantity", "max_delta": 0.025750934118370178, "mean_delta": 0.019525691766903303, "spread": 0.025750934118370178, "step_ratio": 1.32, "is_significant": false, "is_cliff": false, "correlation": 0.011067519363018839, "chi2": 0.68, "p_value": 0.8770832865421752, "bins": [{"range": "(0.999, 3.0]", "count": 293, "events": 48, "rate_pct": 16.38}, {"range": "(3.0, 5.0]", "count": 211, "events": 40, "rate_pct": 18.96}, {"range": "(5.0, 8.0]", "count": 285, "events": 48, "rate_pct": 16.84}, {"range": "(8.0, 10.0]", "count": 211, "events": 38, "rate_pct": 18.01}]}], "interaction": {"pos_driver": "Tax 5%", "neg_driver": "Quantity", "med_pos": 12.088000000000001, "med_neg": 5.0, "op_pos_hi": "\u003e", "op_pos_lo": "\u003c=", "op_neg_hi": "\u003e", "op_neg_lo": "\u003c=", "p_value": 0.5683318668139268, "quad_spread": 6.35, "is_significant": false, "quadrants": {"Q1_optimal": {"name": "Optimal Zone (Low Tax 5% \u0026 High Quantity)", "count": 113, "events": 16, "rate": 14.16}, "Q2_unbuffered": {"name": "Unbuffered Baseline (Low Tax 5% \u0026 Low Quantity)", "count": 387, "events": 64, "rate": 16.54}, "Q3_masked": {"name": "Masked Risk (High Tax 5% \u0026 High Quantity)", "count": 383, "events": 70, "rate": 18.28}, "Q4_catastrophic": {"name": "Compound Catastrophe (High Tax 5% \u0026 Low Quantity)", "count": 117, "events": 24, "rate": 20.51}}}, "triage": [{"policy_name": "Policy 1: Conservative (Service Quality Audit if Tax 5% \u003e 22.45)", "scrap_count": 250, "scrap_pct": 25.0, "defects_caught": 52, "recall_pct": 29.89, "false_discards": 198, "false_discard_pct": 23.97, "retained_count": 750, "retained_defect_rate": 16.27}, {"policy_name": "Policy 2: Surgical (Service Quality Audit if Tax 5% \u003e 12.09)", "scrap_count": 500, "scrap_pct": 50.0, "defects_caught": 94, "recall_pct": 54.02, "false_discards": 406, "false_discard_pct": 49.15, "retained_count": 500, "retained_defect_rate": 16.0}, {"policy_name": "Policy 3: Compound (Service Quality Audit if Surgical Gate OR Gross income \u003c 5.92)", "scrap_count": 750, "scrap_pct": 75.0, "defects_caught": 142, "recall_pct": 81.61, "false_discards": 608, "false_discard_pct": 73.61, "retained_count": 250, "retained_defect_rate": 12.8}], "worklist_rows": [{"Invoice ID": "815-11-1168", "priority_rank": 1, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 523.84, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 99.78}, {"Invoice ID": "868-52-7573", "priority_rank": 2, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 523.37, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 99.69}, {"Invoice ID": "416-13-5917", "priority_rank": 3, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 509.41, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 97.03}, {"Invoice ID": "667-23-5919", "priority_rank": 4, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 507.68, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 96.7}, {"Invoice ID": "160-22-2687", "priority_rank": 5, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 503.74, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 95.95}, {"Invoice ID": "607-76-6216", "priority_rank": 6, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 485.57, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 92.49}, {"Invoice ID": "782-95-9291", "priority_rank": 7, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 484.52, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 92.29}, {"Invoice ID": "719-89-8991", "priority_rank": 8, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 479.9, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 91.41}, {"Invoice ID": "361-85-2571", "priority_rank": 9, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 469.77, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 89.48}, {"Invoice ID": "145-94-9061", "priority_rank": 10, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 463.89, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 88.36}, {"Invoice ID": "800-09-8606", "priority_rank": 11, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 458.69, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 87.37}, {"Invoice ID": "401-09-4232", "priority_rank": 12, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 455.12, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 86.69}, {"Invoice ID": "550-84-8664", "priority_rank": 13, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 451.03, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 85.91}, {"Invoice ID": "389-70-2397", "priority_rank": 14, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 439.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 83.66}, {"Invoice ID": "851-98-3555", "priority_rank": 15, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 435.12, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 82.88}, {"Invoice ID": "834-83-1826", "priority_rank": 16, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 430.71, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 82.04}, {"Invoice ID": "316-55-4634", "priority_rank": 17, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 420.26, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 80.05}, {"Invoice ID": "566-71-1091", "priority_rank": 18, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 404.36, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 77.02}, {"Invoice ID": "362-58-8315", "priority_rank": 19, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 401.73, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 76.52}, {"Invoice ID": "369-82-2676", "priority_rank": 20, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 397.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 75.66}, {"Invoice ID": "775-72-1988", "priority_rank": 21, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 384.72, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 73.28}, {"Invoice ID": "420-11-4919", "priority_rank": 22, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 374.8, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 71.39}, {"Invoice ID": "249-42-3782", "priority_rank": 23, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 367.55, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 70.01}, {"Invoice ID": "783-09-1637", "priority_rank": 24, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 354.01, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 67.43}, {"Invoice ID": "741-73-3559", "priority_rank": 25, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 353.17, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 67.27}, {"Invoice ID": "422-29-8786", "priority_rank": 26, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 352.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 67.09}, {"Invoice ID": "498-41-1961", "priority_rank": 27, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 350.07, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 66.68}, {"Invoice ID": "815-04-6282", "priority_rank": 28, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 341.09, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 64.97}, {"Invoice ID": "676-39-6028", "priority_rank": 29, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 338.31, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 64.44}, {"Invoice ID": "374-38-5555", "priority_rank": 30, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 334.48, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 63.71}, {"Invoice ID": "129-29-8530", "priority_rank": 31, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 328.76, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 62.62}, {"Invoice ID": "563-91-7120", "priority_rank": 32, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 324.29, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 61.77}, {"Invoice ID": "291-21-5991", "priority_rank": 33, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 321.77, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 61.29}, {"Invoice ID": "425-85-2085", "priority_rank": 34, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 288.02, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 54.86}, {"Invoice ID": "211-05-0490", "priority_rank": 35, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 272.58, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 51.92}, {"Invoice ID": "470-32-9057", "priority_rank": 36, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 269.54, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 51.34}, {"Invoice ID": "449-16-6770", "priority_rank": 37, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 266.65, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 50.79}, {"Invoice ID": "307-85-2293", "priority_rank": 38, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 263.97, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 50.28}, {"Invoice ID": "360-39-5055", "priority_rank": 39, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 256.78, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 48.91}, {"Invoice ID": "190-59-3964", "priority_rank": 40, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 247.59, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 47.16}, {"Invoice ID": "365-64-0515", "priority_rank": 41, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 246.49, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 46.95}, {"Invoice ID": "162-48-8011", "priority_rank": 42, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 234.1, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 44.59}, {"Invoice ID": "755-12-3214", "priority_rank": 43, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 232.16, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 44.22}, {"Invoice ID": "695-28-6250", "priority_rank": 44, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 226.06, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 43.06}, {"Invoice ID": "209-61-0206", "priority_rank": 45, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 225.28, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 42.91}, {"Invoice ID": "662-72-2873", "priority_rank": 46, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 214.94, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 40.94}, {"Invoice ID": "831-64-0259", "priority_rank": 47, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 208.69, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 39.75}, {"Invoice ID": "521-18-7827", "priority_rank": 48, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 206.8, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 39.39}, {"Invoice ID": "288-62-1085", "priority_rank": 49, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 202.34, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 38.54}, {"Invoice ID": "258-69-7810", "priority_rank": 50, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 193.46, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 36.85}, {"Invoice ID": "373-88-1424", "priority_rank": 51, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 188.0, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 35.81}, {"Invoice ID": "258-92-7466", "priority_rank": 52, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 187.32, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 35.68}, {"Invoice ID": "636-48-8204", "priority_rank": 53, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 181.44, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 34.56}, {"Invoice ID": "214-30-2776", "priority_rank": 54, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 181.07, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 34.49}, {"Invoice ID": "831-07-6050", "priority_rank": 55, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 171.73, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 32.71}, {"Invoice ID": "870-54-3162", "priority_rank": 56, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 169.31, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 32.25}, {"Invoice ID": "767-54-1907", "priority_rank": 57, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 155.19, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 29.56}, {"Invoice ID": "120-54-2248", "priority_rank": 58, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 151.51, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 28.86}, {"Invoice ID": "527-09-6272", "priority_rank": 59, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 149.36, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 28.45}, {"Invoice ID": "715-20-1673", "priority_rank": 60, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 149.0, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 28.38}, {"Invoice ID": "892-05-6689", "priority_rank": 61, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 148.68, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 28.32}, {"Invoice ID": "816-72-8853", "priority_rank": 62, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 146.63, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 27.93}, {"Invoice ID": "585-86-8361", "priority_rank": 63, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 143.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 27.28}, {"Invoice ID": "700-81-1757", "priority_rank": 64, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 138.13, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 26.31}, {"Invoice ID": "102-06-2002", "priority_rank": 65, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 132.56, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 25.25}, {"Invoice ID": "560-30-5617", "priority_rank": 66, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 130.04, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 24.77}, {"Invoice ID": "372-26-1506", "priority_rank": 67, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 125.06, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 23.82}, {"Invoice ID": "291-32-1427", "priority_rank": 68, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 115.18, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 21.94}, {"Invoice ID": "132-23-6451", "priority_rank": 69, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 110.09, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 20.97}, {"Invoice ID": "756-01-7507", "priority_rank": 70, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 107.0, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 20.38}, {"Invoice ID": "604-70-6476", "priority_rank": 71, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 94.18, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 17.94}, {"Invoice ID": "394-43-4238", "priority_rank": 72, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 93.29, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 17.77}, {"Invoice ID": "364-33-8584", "priority_rank": 73, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 92.56, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 17.63}, {"Invoice ID": "450-28-2866", "priority_rank": 74, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 91.56, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 17.44}, {"Invoice ID": "226-31-3081", "priority_rank": 75, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 80.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 15.28}, {"Invoice ID": "835-16-0096", "priority_rank": 76, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 77.18, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 14.7}, {"Invoice ID": "732-67-5346", "priority_rank": 77, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 72.4, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 13.79}, {"Invoice ID": "273-84-2164", "priority_rank": 78, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 63.26, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 12.05}, {"Invoice ID": "389-25-3394", "priority_rank": 79, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 62.0, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 11.81}, {"Invoice ID": "790-38-4466", "priority_rank": 80, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 57.7, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 10.99}, {"Invoice ID": "587-73-4862", "priority_rank": 81, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 56.12, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 10.69}, {"Invoice ID": "664-14-2882", "priority_rank": 82, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 19.61, "monetary_exposure": 55.28, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='5' (19.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 5, "Unit price": 10.53}, {"Invoice ID": "437-53-3084", "priority_rank": 83, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 209.77, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 99.89}, {"Invoice ID": "446-47-6729", "priority_rank": 84, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 209.62, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 99.82}, {"Invoice ID": "471-41-2823", "priority_rank": 85, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 209.56, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 99.79}, {"Invoice ID": "174-36-3675", "priority_rank": 86, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 208.68, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 99.37}, {"Invoice ID": "514-37-2845", "priority_rank": 87, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 208.42, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 99.25}, {"Invoice ID": "714-02-3114", "priority_rank": 88, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 207.48, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 98.8}, {"Invoice ID": "409-33-9708", "priority_rank": 89, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 206.81, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 98.48}, {"Invoice ID": "595-11-5460", "priority_rank": 90, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 202.82, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 96.58}, {"Invoice ID": "642-61-4706", "priority_rank": 91, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 196.14, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 93.4}, {"Invoice ID": "282-35-2475", "priority_rank": 92, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 195.95, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 93.31}, {"Invoice ID": "142-72-4741", "priority_rank": 93, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 195.72, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 93.2}, {"Invoice ID": "618-34-8551", "priority_rank": 94, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 195.68, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 93.18}, {"Invoice ID": "339-18-7061", "priority_rank": 95, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 195.26, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 92.98}, {"Invoice ID": "189-17-4241", "priority_rank": 96, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 184.11, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 87.67}, {"Invoice ID": "746-68-6593", "priority_rank": 97, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 183.04, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 87.16}, {"Invoice ID": "744-82-9138", "priority_rank": 98, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 180.87, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 86.13}, {"Invoice ID": "859-97-6048", "priority_rank": 99, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 176.92, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 84.25}, {"Invoice ID": "589-02-8023", "priority_rank": 100, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 175.92, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 83.77}, {"Invoice ID": "756-93-1854", "priority_rank": 101, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 175.04, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 83.35}, {"Invoice ID": "548-48-3156", "priority_rank": 102, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 175.01, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 83.34}, {"Invoice ID": "848-42-2560", "priority_rank": 103, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 172.01, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 81.91}, {"Invoice ID": "289-65-5721", "priority_rank": 104, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 170.88, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 81.37}, {"Invoice ID": "186-71-5196", "priority_rank": 105, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 167.03, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 79.54}, {"Invoice ID": "135-13-8269", "priority_rank": 106, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 165.65, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 78.88}, {"Invoice ID": "423-80-0988", "priority_rank": 107, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 160.44, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 76.4}, {"Invoice ID": "173-57-2300", "priority_rank": 108, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 153.05, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 72.88}, {"Invoice ID": "355-34-6244", "priority_rank": 109, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 152.02, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 72.39}, {"Invoice ID": "198-66-9832", "priority_rank": 110, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 151.28, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 72.04}, {"Invoice ID": "373-14-0504", "priority_rank": 111, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 150.42, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 71.63}, {"Invoice ID": "334-64-2006", "priority_rank": 112, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 147.67, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 70.32}, {"Invoice ID": "207-73-1363", "priority_rank": 113, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 145.97, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 69.51}, {"Invoice ID": "620-02-2046", "priority_rank": 114, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 145.74, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 69.4}, {"Invoice ID": "181-94-6432", "priority_rank": 115, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 145.59, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 69.33}, {"Invoice ID": "286-75-7818", "priority_rank": 116, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 145.07, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 69.08}, {"Invoice ID": "200-16-5952", "priority_rank": 117, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 137.86, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 65.65}, {"Invoice ID": "767-97-4650", "priority_rank": 118, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 136.14, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 64.83}, {"Invoice ID": "556-97-7101", "priority_rank": 119, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 132.76, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 63.22}, {"Invoice ID": "816-57-2053", "priority_rank": 120, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 127.83, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 60.87}, {"Invoice ID": "339-38-9982", "priority_rank": 121, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 125.71, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 59.86}, {"Invoice ID": "448-81-5016", "priority_rank": 122, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 125.52, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 59.77}, {"Invoice ID": "545-07-8534", "priority_rank": 123, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 122.47, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 58.32}, {"Invoice ID": "745-74-0715", "priority_rank": 124, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 121.86, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 58.03}, {"Invoice ID": "349-97-8902", "priority_rank": 125, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 121.57, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 57.89}, {"Invoice ID": "848-07-1692", "priority_rank": 126, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 120.16, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 57.22}, {"Invoice ID": "554-53-8700", "priority_rank": 127, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 117.83, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 56.11}, {"Invoice ID": "794-32-2436", "priority_rank": 128, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 116.91, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 55.67}, {"Invoice ID": "883-69-1285", "priority_rank": 129, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 104.83, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 49.92}, {"Invoice ID": "241-96-5076", "priority_rank": 130, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 103.11, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 49.1}, {"Invoice ID": "702-72-0487", "priority_rank": 131, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 97.88, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 46.61}, {"Invoice ID": "106-35-6779", "priority_rank": 132, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 93.11, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 44.34}, {"Invoice ID": "574-57-9721", "priority_rank": 133, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 90.87, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 43.27}, {"Invoice ID": "213-72-6612", "priority_rank": 134, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 90.82, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 43.25}, {"Invoice ID": "172-42-8274", "priority_rank": 135, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 80.37, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 38.27}, {"Invoice ID": "546-80-2899", "priority_rank": 136, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 79.15, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 37.69}, {"Invoice ID": "316-68-6352", "priority_rank": 137, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 76.36, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 36.36}, {"Invoice ID": "665-32-9167", "priority_rank": 138, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 76.15, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 36.26}, {"Invoice ID": "220-28-1851", "priority_rank": 139, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 72.93, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 34.73}, {"Invoice ID": "686-41-0932", "priority_rank": 140, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 72.87, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 34.7}, {"Invoice ID": "838-78-4295", "priority_rank": 141, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 70.29, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 33.47}, {"Invoice ID": "794-42-3736", "priority_rank": 142, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 69.99, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 33.33}, {"Invoice ID": "825-94-5922", "priority_rank": 143, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 53.15, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 25.31}, {"Invoice ID": "442-48-3607", "priority_rank": 144, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 49.31, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 23.48}, {"Invoice ID": "569-71-4390", "priority_rank": 145, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 45.93, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 21.87}, {"Invoice ID": "105-10-6182", "priority_rank": 146, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 45.11, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 21.48}, {"Invoice ID": "687-15-1097", "priority_rank": 147, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 44.35, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 21.12}, {"Invoice ID": "324-92-3863", "priority_rank": 148, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 43.87, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 20.89}, {"Invoice ID": "242-55-6721", "priority_rank": 149, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 33.94, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 16.16}, {"Invoice ID": "859-71-0933", "priority_rank": 150, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 32.53, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 15.49}, {"Invoice ID": "617-15-4209", "priority_rank": 151, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 32.28, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 15.37}, {"Invoice ID": "549-23-9016", "priority_rank": 152, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 31.23, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 14.87}, {"Invoice ID": "883-17-4236", "priority_rank": 153, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 30.22, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 14.39}, {"Invoice ID": "840-76-5966", "priority_rank": 154, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 26.8, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 12.76}, {"Invoice ID": "838-02-1821", "priority_rank": 155, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 26.73, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 12.73}, {"Invoice ID": "633-91-1052", "priority_rank": 156, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.68, "monetary_exposure": 25.26, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='2' (18.7% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 2, "Unit price": 12.03}, {"Invoice ID": "148-41-7930", "priority_rank": 157, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.63, "monetary_exposure": 734.71, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='7' (18.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 7, "Unit price": 99.96}, {"Invoice ID": "189-52-0236", "priority_rank": 158, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.63, "monetary_exposure": 731.69, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='7' (18.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 7, "Unit price": 99.55}, {"Invoice ID": "253-12-6086", "priority_rank": 159, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.63, "monetary_exposure": 723.24, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='7' (18.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 7, "Unit price": 98.4}, {"Invoice ID": "189-40-5216", "priority_rank": 160, "action_queue": "PREVENTIVE_RETENTION_WATCH", "_is_target_event": 0, "empirical_cohort_risk_pct": 18.63, "monetary_exposure": 708.32, "exposure_column_source": "Total", "primary_risk_reason": "Cohort Quantity='7' (18.6% risk)", "recommended_next_step": "Preventive Outreach / Retention Offer / Quality Check Before Failure", "Quantity": 7, "Unit price": 96.37}]}}/*__DXR_PAYLOAD_END__*/;
+
+        let currentLang = 'en';
+        let currentTheme = 'light';
+        let activePrim = 'All';
+        let activeSec = 'All';
+        let currentSimPct = 60;
+        let currentCliffIdx = 0;
+        let currentWlSearch = '';
+        let TOOLTIP_REGISTRY = [];
+
+        function escHtml(s) {
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function regTip(htmlContent) {
+            const id = TOOLTIP_REGISTRY.length;
+            TOOLTIP_REGISTRY.push(htmlContent);
+            return id;
+        }
+
+        function wilsonCI95(events, n) {
+            if (!n || n <= 0) return [0, 0];
+            const z = 1.959964;
+            const p = events / n;
+            const denom = 1 + (z * z) / n;
+            const center = (p + (z * z) / (2 * n)) / denom;
+            const half = (z * Math.sqrt((p * (1 - p) + (z * z) / (4 * n)) / n)) / denom;
+            return [Math.max(0, (center - half) * 100), Math.min(100, (center + half) * 100)];
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            renderAllCharts();
+        }
+
+        // Bilingual Toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('lang-btn').textContent = currentLang === 'en' ? '🇮🇳 Hinglish Switch' : '🇬🇧 English Switch';
+            document.getElementById('ui-title').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.meta.title_en : DASHBOARD_PAYLOAD.meta.title_hi;
+            document.getElementById('exec-banner-text').textContent = currentLang === 'en' ? DASHBOARD_PAYLOAD.bottleneck.narrative_en : DASHBOARD_PAYLOAD.bottleneck.narrative_hi;
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.textContent = currentLang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-hi');
+            });
+
+            renderAllCharts();
+            renderGovernanceDrawer();
+        }
+
+        // Safe Delegated Tooltip & Cross-Filter Event Listeners (100% Immune to Quotes/XSS)
+        const tooltip = document.getElementById('chart-tooltip');
+        function showTooltip(evt, htmlContent) {
+            tooltip.innerHTML = htmlContent;
+            tooltip.style.display = 'block';
+            const x = Math.min(window.innerWidth - 295, evt.clientX + 14);
+            const y = Math.min(window.innerHeight - 130, evt.clientY + 14);
+            tooltip.style.left = Math.max(8, x) + 'px';
+            tooltip.style.top = Math.max(8, y) + 'px';
+        }
+        function hideTooltip() {
+            tooltip.style.display = 'none';
+        }
+
+        function bindDelegatedPanelEvents() {
+            const panelHost = document.getElementById('main-panels-container');
+            if (!panelHost || panelHost.dataset.delegated === '1') return;
+            panelHost.dataset.delegated = '1';
+
+            panelHost.addEventListener('mousemove', (evt) => {
+                const el = evt.target.closest('[data-tip-id]');
+                if (!el) { hideTooltip(); return; }
+                const tid = Number(el.getAttribute('data-tip-id'));
+                if (!Number.isNaN(tid) && TOOLTIP_REGISTRY[tid]) {
+                    showTooltip(evt, TOOLTIP_REGISTRY[tid]);
+                }
+            });
+            panelHost.addEventListener('mouseleave', hideTooltip);
+
+            panelHost.addEventListener('click', (evt) => {
+                const el = evt.target.closest('[data-prim-seg], [data-sec-seg]');
+                if (!el) return;
+                const pSeg = el.getAttribute('data-prim-seg');
+                const sSeg = el.getAttribute('data-sec-seg');
+                if (pSeg) {
+                    activePrim = (activePrim === pSeg && !sSeg) ? 'All' : pSeg;
+                    document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                        c.classList.toggle('active', c.dataset.segVal === activePrim);
+                    });
+                }
+                if (sSeg) {
+                    activeSec = sSeg;
+                    const secSel = document.getElementById('sec-select');
+                    if (secSel) secSel.value = sSeg;
+                }
+                recalcMicroCube();
+            });
+        }
+
+        // Slicer Filtering & Micro-Cube Recalculation
+        function initSlicers() {
+            const chipsBox = document.getElementById('prim-chips');
+            chipsBox.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.className = 'chip active';
+            allBtn.dataset.segVal = 'All';
+            allBtn.textContent = 'All Segments';
+            allBtn.onclick = () => setPrimaryFilter('All');
+            chipsBox.appendChild(allBtn);
+
+            DASHBOARD_PAYLOAD.prim_segments.forEach(seg => {
+                const btn = document.createElement('button');
+                btn.className = 'chip';
+                btn.dataset.segVal = seg;
+                btn.textContent = seg;
+                btn.onclick = () => setPrimaryFilter(seg);
+                chipsBox.appendChild(btn);
+            });
+
+            const secSelect = document.getElementById('sec-select');
+            if (secSelect) {
+                secSelect.innerHTML = '<option value="All">All ' + escHtml(DASHBOARD_PAYLOAD.sec_dim_name) + '</option>';
+                DASHBOARD_PAYLOAD.sec_segments.forEach(seg => {
+                    const opt = document.createElement('option');
+                    opt.value = seg;
+                    opt.textContent = seg;
+                    secSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function setPrimaryFilter(val) {
+            activePrim = val;
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === val);
+            });
+            recalcMicroCube();
+        }
+
+        function setSecondaryFilter(val) {
+            activeSec = val;
+            recalcMicroCube();
+        }
+
+        function resetFilters() {
+            activePrim = 'All';
+            activeSec = 'All';
+            const secSel = document.getElementById('sec-select');
+            if (secSel) secSel.value = 'All';
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.segVal === 'All');
+            });
+            recalcMicroCube();
+        }
+
+        function getActiveSegmentBreakdown() {
+            if (activeSec === 'All') {
+                return DASHBOARD_PAYLOAD.widgets_data.lollipop || [];
+            }
+            const bySeg = {};
+            DASHBOARD_PAYLOAD.cube_slices.filter(s => s.sec_val === activeSec).forEach(s => {
+                if (!bySeg[s.prim_val]) bySeg[s.prim_val] = { segment: s.prim_val, volume: 0, events: 0, adverse_cost: 0 };
+                bySeg[s.prim_val].volume += s.volume;
+                bySeg[s.prim_val].events += s.adverse_events;
+                bySeg[s.prim_val].adverse_cost += s.adverse_cost;
+            });
+            return Object.values(bySeg).map(d => {
+                const r = d.volume > 0 ? (d.events / d.volume) * 100 : 0;
+                const [lo, hi] = wilsonCI95(d.events, d.volume);
+                return { segment: d.segment, volume: d.volume, events: d.events, rate_pct: r, ci_low: lo, ci_high: hi, adverse_cost: d.adverse_cost };
+            }).sort((a, b) => b.rate_pct - a.rate_pct);
+        }
+
+        function recalcMicroCube() {
+            const slices = DASHBOARD_PAYLOAD.cube_slices.filter(s => {
+                const matchP = (activePrim === 'All' || s.prim_val === activePrim);
+                const matchS = (activeSec === 'All' || s.sec_val === activeSec);
+                return matchP && matchS;
+            });
+
+            let totRec = 0, totEv = 0, totAdvCost = 0, totCost = 0;
+            slices.forEach(s => {
+                totRec += s.volume;
+                totEv += s.adverse_events;
+                totAdvCost += s.adverse_cost;
+                totCost += s.total_cost;
+            });
+
+            const rPct = totRec > 0 ? (totEv / totRec) * 100.0 : 0.0;
+            const relPct = 100.0 - rPct;
+
+            document.getElementById('kpi-records').textContent = totRec.toLocaleString();
+            document.getElementById('kpi-events').textContent = totEv.toLocaleString();
+            document.getElementById('kpi-rate-sub').textContent = 'Failure Rate: ' + rPct.toFixed(2) + '%';
+            document.getElementById('kpi-reliability').textContent = relPct.toFixed(2) + '%';
+
+            if (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                document.getElementById('kpi-drag').textContent = '$' + totAdvCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('kpi-drag-sub').textContent = 'Out of $' + totCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' total';
+            } else {
+                document.getElementById('kpi-drag').textContent = totEv.toLocaleString() + ' units';
+            }
+
+            renderAllCharts();
+        }
+
+        // =====================================================================
+        // NATIVE INTERACTIVE SVG CHART RENDERERS (ALL 10 CATALOG WIDGETS)
+        // =====================================================================
+        function renderLollipopChart(container) {
+            const data = getActiveSegmentBreakdown();
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No segment data.</p>'; return; }
+
+            const maxRate = Math.max(...data.map(d => d.ci_high), 10);
+            const baseline = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+            const w = 540, h = Math.max(250, data.length * 34 + 34);
+            const padL = 135, padR = 48, padT = 22, padB = 24;
+            const chartW = w - padL - padR;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+
+            const bx = padL + Math.min(1, baseline / maxRate) * chartW;
+            svg += `<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${h - padB}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.5" />`;
+            svg += `<text x="${bx}" y="${padT - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Baseline ${baseline.toFixed(1)}%</text>`;
+
+            data.slice(0, 14).forEach((d, i) => {
+                const y = padT + i * 34 + 16;
+                const cx = padL + (d.rate_pct / maxRate) * chartW;
+                const xLow = padL + (d.ci_low / maxRate) * chartW;
+                const xHigh = padL + (d.ci_high / maxRate) * chartW;
+                const isHighlighted = (activePrim === 'All' || activePrim === d.segment);
+                const opacity = isHighlighted ? 1.0 : 0.28;
+                const shortLbl = d.segment.length > 18 ? d.segment.substring(0, 17) + '…' : d.segment;
+
+                svg += `<text x="${padL - 10}" y="${y + 4}" fill="var(--text-main)" font-size="11" font-weight="600" text-anchor="end" opacity="${opacity}">${escHtml(shortLbl)}</text>`;
+                svg += `<line x1="${xLow}" y1="${y}" x2="${xHigh}" y2="${y}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xLow}" y1="${y - 4}" x2="${xLow}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${xHigh}" y1="${y - 4}" x2="${xHigh}" y2="${y + 4}" stroke="var(--text-muted)" stroke-width="2" opacity="${opacity}" />`;
+                svg += `<line x1="${padL}" y1="${y}" x2="${cx}" y2="${y}" stroke="var(--accent-primary)" stroke-width="2.5" opacity="${opacity}" />`;
+
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Wilson 95% CI: [${d.ci_low.toFixed(1)}% to ${d.ci_high.toFixed(1)}%]<br>Volume: ${d.volume.toLocaleString()}<br>Adverse Events: ${d.events.toLocaleString()}` +
+                    (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${y}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" opacity="${opacity}" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${xHigh + 7}" y="${y + 4}" fill="var(--accent-primary)" font-size="11" font-weight="700" opacity="${opacity}">${d.rate_pct.toFixed(1)}%</text>`;
+            });
+
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderParetoChart(container) {
+            if (!DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>';
+                return;
+            }
+            const segs = getActiveSegmentBreakdown().slice().sort((a, b) => b.adverse_cost - a.adverse_cost).slice(0, 12);
+            const totDrag = Math.max(segs.reduce((acc, x) => acc + x.adverse_cost, 0), 0.01);
+            let cum = 0;
+            const data = segs.map(s => {
+                cum += s.adverse_cost;
+                return { segment: s.segment, adverse_cost: s.adverse_cost, cumulative_pct: (cum / totDrag) * 100.0 };
+            });
+            if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No monetary Pareto data.</p>'; return; }
+
+            const w = 520, h = 260;
+            const padL = 56, padR = 38, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxDrag = Math.max(...data.map(d => d.adverse_cost), 1);
+            const n = data.length;
+            const barW = Math.max(12, (chartW / n) - 8);
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const y80 = padT + (1 - 0.8) * chartH;
+            svg += `<line x1="${padL}" y1="${y80}" x2="${w - padR}" y2="${y80}" stroke="#f43f5e" stroke-dasharray="3,3" stroke-width="1.5" />`;
+            svg += `<text x="${w - padR}" y="${y80 - 4}" fill="#f43f5e" font-size="10" text-anchor="end">80% Pareto Line</text>`;
+
+            let polyPoints = [];
+            data.forEach((d, i) => {
+                const x = padL + i * (chartW / n) + 4;
+                const barH = (d.adverse_cost / maxDrag) * chartH;
+                const y = padT + chartH - barH;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Adverse Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}<br>Cumulative Share: ${d.cumulative_pct.toFixed(1)}%`);
+
+                svg += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="var(--accent-primary)" opacity="${isHi ? '0.88' : '0.28'}" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${x + barW/2}" y="${h - padB + 14}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(d.segment.substring(0, 9))}</text>`;
+
+                const cx = x + barW / 2;
+                const cy = padT + (1 - (d.cumulative_pct / 100)) * chartH;
+                polyPoints.push(`${cx},${cy}`);
+            });
+
+            if (polyPoints.length > 1) {
+                svg += `<polyline points="${polyPoints.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="2.5" />`;
+                polyPoints.forEach((pt, i) => {
+                    const [px, py] = pt.split(',');
+                    const d = data[i];
+                    const tipId = regTip(`<strong>${escHtml(d.segment)}</strong><br>Cumulative Loss Concentration: ${d.cumulative_pct.toFixed(1)}%`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4" fill="#f43f5e" stroke="var(--card-bg)" stroke-width="1.5" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTemporalChart(container) {
+            const tempObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+            const periods = tempObj.periods || [];
+            if (!periods.length) return;
+
+            const w = 520, h = 260;
+            const padL = 48, padR = 36, padT = 28, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...periods.map(p => Number(p.adverse_rate_pct || 0)), 5);
+            const maxVol = Math.max(...periods.map(p => Number(p.total_records ?? p.total_volume ?? 1)), 1);
+            const n = periods.length;
+            const barW = Math.max(6, Math.min(28, (chartW / n) * 0.55));
+            const stepLabel = Math.max(1, Math.ceil(n / 8));
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            let pts = [];
+
+            periods.forEach((p, i) => {
+                const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                const rate = Number(p.adverse_rate_pct || 0);
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (rate / maxRate)) * chartH;
+                const vH = (vol / maxVol) * (chartH * 0.65);
+                pts.push(`${x},${y}`);
+
+                svg += `<rect x="${x - barW/2}" y="${padT + chartH - vH}" width="${barW}" height="${vH}" fill="var(--accent-primary)" opacity="0.18" rx="2" />`;
+                if (i % stepLabel === 0 || i === n - 1) {
+                    svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${escHtml(p.period)}</text>`;
+                }
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(99, 102, 241, 0.12)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-secondary)" stroke-width="3" />`;
+                periods.forEach((p, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const vol = Number(p.total_records ?? p.total_volume ?? 0);
+                    const ev = Number(p.adverse_events || 0);
+                    const rate = Number(p.adverse_rate_pct || 0);
+                    const tipId = regTip(`<strong>Period: ${escHtml(p.period)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="4.5" fill="var(--accent-secondary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCrossTabHeatmap(container) {
+            const hm = DASHBOARD_PAYLOAD.widgets_data.heatmap || {};
+            const rows = hm.rows || [], cols = hm.cols || [], cells = hm.cells || [];
+            if (!rows.length || !cols.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient secondary cross-tab dimensions.</p>';
+                return;
+            }
+            const cellMap = {};
+            let maxRate = 5;
+            cells.forEach(c => {
+                cellMap[c.prim_val + '|||' + c.sec_val] = c;
+                if (c.rate_pct > maxRate) maxRate = c.rate_pct;
+            });
+
+            const w = 540, h = Math.max(250, rows.length * 28 + 64);
+            const padL = 128, padR = 18, padT = 44, padB = 16;
+            const cellW = (w - padL - padR) / cols.length;
+            const cellH = (h - padT - padB) / rows.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            cols.forEach((colVal, ci) => {
+                const cx = padL + ci * cellW + cellW / 2;
+                const lbl = colVal.length > 10 ? colVal.substring(0, 9) + '…' : colVal;
+                svg += `<text x="${cx}" y="${padT - 10}" fill="var(--text-muted)" font-size="9.5" font-weight="600" text-anchor="middle">${escHtml(lbl)}</text>`;
+            });
+
+            rows.forEach((rowVal, ri) => {
+                const ry = padT + ri * cellH;
+                const rLbl = rowVal.length > 17 ? rowVal.substring(0, 16) + '…' : rowVal;
+                svg += `<text x="${padL - 8}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="10" font-weight="600" text-anchor="end">${escHtml(rLbl)}</text>`;
+                cols.forEach((colVal, ci) => {
+                    const rx = padL + ci * cellW;
+                    const c = cellMap[rowVal + '|||' + colVal];
+                    const vol = c ? c.volume : 0;
+                    const rate = c ? c.rate_pct : 0;
+                    const ev = c ? c.events : 0;
+                    const alpha = vol > 0 ? Math.min(0.90, 0.14 + (rate / maxRate) * 0.76) : 0.04;
+                    const fillCol = vol > 0 ? `rgba(244, 63, 94, ${alpha.toFixed(2)})` : 'var(--canvas-bg)';
+                    const tipId = regTip(
+                        `<strong>${escHtml(rowVal)} &times; ${escHtml(colVal)}</strong><br>Failure Rate: ${rate.toFixed(2)}%<br>Volume: ${vol.toLocaleString()}<br>Adverse Events: ${ev.toLocaleString()}` +
+                        (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger && c ? `<br>Drag: $${c.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                    );
+                    svg += `<rect x="${rx + 1.5}" y="${ry + 1.5}" width="${Math.max(4, cellW - 3)}" height="${Math.max(4, cellH - 3)}" fill="${fillCol}" stroke="var(--border-color)" rx="3" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(rowVal)}" data-sec-seg="${escHtml(colVal)}" />`;
+                    if (vol > 0 && cellW >= 38) {
+                        svg += `<text x="${rx + cellW / 2}" y="${ry + cellH / 2 + 4}" fill="var(--text-main)" font-size="9.5" font-weight="700" text-anchor="middle" pointer-events="none">${rate.toFixed(1)}%</text>`;
+                    }
+                });
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderExposureBubbleChart(container) {
+            const data = getActiveSegmentBreakdown().slice(0, 14);
+            if (data.length < 2) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Insufficient cohort dispersion for bubble plot.</p>';
+                return;
+            }
+            const w = 520, h = 260;
+            const padL = 52, padR = 36, padT = 26, padB = 38;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxVol = Math.max(...data.map(d => d.volume), 1);
+            const maxRate = Math.max(...data.map(d => d.rate_pct), 10) * 1.12;
+            const isMon = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const maxImpact = Math.max(...data.map(d => isMon ? d.adverse_cost : d.events), 1);
+            const baseRate = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const by = padT + (1 - Math.min(1, baseRate / maxRate)) * chartH;
+            svg += `<line x1="${padL}" y1="${by}" x2="${w - padR}" y2="${by}" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.2" />`;
+            svg += `<text x="${w - padR}" y="${by - 5}" fill="var(--text-muted)" font-size="9.5" text-anchor="end">Mean Rate ${baseRate.toFixed(1)}%</text>`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Cohort Volume (Records) &rarr;</text>`;
+
+            data.forEach(d => {
+                const cx = padL + (d.volume / maxVol) * (chartW * 0.90) + chartW * 0.04;
+                const cy = padT + (1 - (d.rate_pct / maxRate)) * chartH;
+                const impact = isMon ? d.adverse_cost : d.events;
+                const r = 6 + Math.sqrt(Math.max(0, impact) / maxImpact) * 18;
+                const isHi = (activePrim === 'All' || activePrim === d.segment);
+                const fill = d.rate_pct >= baseRate ? '#f43f5e' : 'var(--accent-primary)';
+                const tipId = regTip(
+                    `<strong>${escHtml(d.segment)}</strong><br>Volume: ${d.volume.toLocaleString()}<br>Failure Rate: ${d.rate_pct.toFixed(2)}%<br>Events: ${d.events.toLocaleString()}` +
+                    (isMon ? `<br>Capital Drag: $${d.adverse_cost.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}` : '')
+                );
+                svg += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="${fill}" fill-opacity="${isHi ? '0.68' : '0.20'}" stroke="${fill}" stroke-width="2" style="cursor:pointer;" data-tip-id="${tipId}" data-prim-seg="${escHtml(d.segment)}" />`;
+                svg += `<text x="${cx}" y="${cy - r - 4}" fill="var(--text-main)" font-size="9.5" font-weight="600" text-anchor="middle" opacity="${isHi ? '1' : '0.35'}" pointer-events="none">${escHtml(d.segment.substring(0, 12))}</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderCliffChart(container, selectedIndex = 0) {
+            const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+            if (!cliffs.length) return;
+            const cliff = cliffs[selectedIndex] || cliffs[0];
+            const bins = cliff.bins || [];
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 42;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+            const maxRate = Math.max(...bins.map(b => b.rate_pct), 10) * 1.1;
+            const n = bins.length;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            const pTxt = cliff.p_value < 0.0001 ? 'p < 0.0001' : ('p = ' + Number(cliff.p_value).toFixed(4));
+            svg += `<text x="${w - padR}" y="16" fill="#f43f5e" font-size="10" font-weight="700" text-anchor="end">${escHtml(cliff.column)} &bull; Max Jump +${(cliff.max_delta * 100).toFixed(1)}pp (${pTxt})</text>`;
+
+            let pts = [];
+            bins.forEach((b, i) => {
+                const x = padL + (i / Math.max(n - 1, 1)) * chartW;
+                const y = padT + (1 - (b.rate_pct / maxRate)) * chartH;
+                pts.push(`${x},${y}`);
+                svg += `<text x="${x}" y="${h - padB + 15}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">Q${i+1}: ${escHtml(String(b.range).substring(0, 13))}</text>`;
+            });
+
+            if (pts.length > 1) {
+                const areaPts = `${padL},${padT + chartH} ` + pts.join(' ') + ` ${padL + chartW},${padT + chartH}`;
+                svg += `<polygon points="${areaPts}" fill="rgba(244, 63, 94, 0.16)" />`;
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="3" />`;
+
+                bins.forEach((b, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const tipId = regTip(`<strong>${escHtml(cliff.column)} (Q${i+1})</strong><br>Range: ${escHtml(b.range)}<br>Failure Rate: ${b.rate_pct.toFixed(2)}%<br>Volume: ${b.count.toLocaleString()}<br>Events: ${b.events.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="5.5" fill="#f43f5e" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 9}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${b.rate_pct.toFixed(1)}%</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function render2x2Quadrant(container) {
+            const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+            const q = inter.quadrants;
+            if (!q) return;
+
+            const posName = inter.pos_driver || 'Risk Driver';
+            const negName = inter.neg_driver || 'Buffer';
+            const medPos = inter.med_pos !== undefined ? Number(inter.med_pos).toFixed(2) : '';
+            const medNeg = inter.med_neg !== undefined ? Number(inter.med_neg).toFixed(2) : '';
+
+            const w = 480, h = 260;
+            const pad = 18;
+            const boxW = (w - pad * 3) / 2;
+            const boxH = (h - pad * 3) / 2;
+
+            const quadBoxes = [
+                { key: 'Q1_optimal', title: 'Q1: Optimal Zone', x: pad, y: pad, color: '#10b981', desc: `Low ${posName} (≤${medPos}) & High ${negName}` },
+                { key: 'Q2_unbuffered', title: 'Q2: Unbuffered Baseline', x: pad * 2 + boxW, y: pad, color: '#38bdf8', desc: `Low ${posName} & Low ${negName} (≤${medNeg})` },
+                { key: 'Q3_masked', title: 'Q3: Masked Risk', x: pad, y: pad * 2 + boxH, color: '#f59e0b', desc: `High ${posName} (>${medPos}) & High ${negName}` },
+                { key: 'Q4_catastrophic', title: 'Q4: Compound Catastrophe', x: pad * 2 + boxW, y: pad * 2 + boxH, color: '#f43f5e', desc: `High ${posName} & Low ${negName}` }
+            ];
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            quadBoxes.forEach(qb => {
+                const d = q[qb.key] || { count: 0, events: 0, rate: 0.0 };
+                const tipId = regTip(`<strong>${escHtml(qb.title)}</strong><br>${escHtml(qb.desc)}<br>Volume: ${d.count.toLocaleString()}<br>Events: ${d.events.toLocaleString()}<br>Failure Rate: ${d.rate.toFixed(2)}%`);
+                const shortDesc = qb.desc.length > 36 ? qb.desc.substring(0, 35) + '…' : qb.desc;
+
+                svg += `<rect x="${qb.x}" y="${qb.y}" width="${boxW}" height="${boxH}" fill="var(--card-bg)" stroke="${qb.color}" stroke-width="2" rx="6" data-tip-id="${tipId}" />`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 22}" fill="${qb.color}" font-size="11.5" font-weight="700" pointer-events="none">${escHtml(qb.title)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 40}" fill="var(--text-muted)" font-size="9.5" pointer-events="none">${escHtml(shortDesc)}</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 72}" fill="var(--text-main)" font-size="19" font-weight="800" pointer-events="none">${d.rate.toFixed(2)}%</text>`;
+                svg += `<text x="${qb.x + 12}" y="${qb.y + 90}" fill="var(--text-muted)" font-size="10" pointer-events="none">${d.count.toLocaleString()} records (${d.events.toLocaleString()} events)</text>`;
+            });
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        function renderTriageYieldChart(container) {
+            const triage = DASHBOARD_PAYLOAD.widgets_data.triage || [];
+            if (!triage.length) return;
+
+            const w = 520, h = 260;
+            const padL = 50, padR = 40, padT = 30, padB = 40;
+            const chartW = w - padL - padR, chartH = h - padT - padB;
+
+            let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
+            svg += `<text x="${padL + chartW / 2}" y="${h - 6}" fill="var(--text-muted)" font-size="10" text-anchor="middle">Flagged / Intake Hold % &rarr;</text>`;
+            let pts = [];
+
+            triage.forEach(t => {
+                const x = padL + (t.scrap_pct / 100) * chartW;
+                const y = padT + (1 - (t.recall_pct / 100)) * chartH;
+                pts.push(`${x},${y}`);
+            });
+
+            if (pts.length > 1) {
+                svg += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent-primary)" stroke-width="3" stroke-dasharray="4,3" />`;
+                triage.forEach((t, i) => {
+                    const [px, py] = pts[i].split(',');
+                    const polName = t.policy_name.split('(')[0].trim();
+                    const tipId = regTip(`<strong>${escHtml(t.policy_name)}</strong><br>Flagged/Scrap: ${t.scrap_pct.toFixed(1)}%<br>Defect Recall: ${t.recall_pct.toFixed(1)}%<br>Retained Defect Rate: ${t.retained_defect_rate.toFixed(2)}%<br>False Alarms: ${t.false_discards.toLocaleString()}`);
+                    svg += `<circle cx="${px}" cy="${py}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${tipId}" />`;
+                    svg += `<text x="${px}" y="${Number(py) - 10}" fill="var(--text-main)" font-size="10" font-weight="700" text-anchor="middle">${escHtml(polName)} (${t.recall_pct.toFixed(0)}% recall)</text>`;
+                });
+            }
+            svg += `</svg>`;
+            container.innerHTML = svg;
+        }
+
+        // =====================================================================
+        // WHAT-IF COUNTERFACTUAL SIMULATOR (100% PHYSICAL EXCESS-RISK MATH)
+        // =====================================================================
+        function initWhatIfSimulator(container) {
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const pathways = Array.isArray(DASHBOARD_PAYLOAD.pathways) ? DASHBOARD_PAYLOAD.pathways : [];
+
+            let pathCardsHtml = '';
+            if (pathways.length) {
+                pathCardsHtml = `<div class="pathway-grid">` + pathways.map(pw => `
+                    <div class="pathway-card">
+                        <div style="font-weight:700;color:var(--accent-primary);margin-bottom:4px;">${escHtml(pw.path_name)}</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+                            <strong>Cost:</strong> ${escHtml(pw.implementation_cost)} &bull; <strong>Timeline:</strong> ${escHtml(pw.time_to_impact)}
+                        </div>
+                        <div style="font-size:11px;margin-bottom:4px;"><strong>Impact:</strong> ${escHtml(pw.projected_friction_reduction)}</div>
+                        <div style="font-size:11px;color:#10b981;margin-bottom:3px;"><strong>Pros (Fayda):</strong> ${escHtml(pw.fayda_pros)}</div>
+                        <div style="font-size:11px;color:#f59e0b;"><strong>Cons / Friction:</strong> ${escHtml(pw.nuksan_cons)}</div>
+                    </div>
+                `).join('') + `</div>`;
+            }
+
+            let htmlStr = `
+                <div class="sim-box">
+                    <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-en="Simulate Excess-Risk Mitigation (% Parity with Baseline):" data-hi="Excess-Risk Bachav Ka Live Simulation Karein (% Parity):">
+                        Simulate Excess-Risk Mitigation (% Parity with Baseline):
+                    </div>
+                    ${cbActive ? `
+                    <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:10px;border-radius:6px;font-size:12px;color:#f59e0b;margin-bottom:12px;">
+                        🛑 <strong>Statistical Circuit-Breaker Active ($0 CapEx Freeze):</strong> Observed difference is within random sampling noise (p &ge; 0.05). Targeted CapEx is frozen to protect capital.
+                    </div>
+                    ` : `
+                    <div class="sim-buttons">
+                        <button class="btn-preset" onclick="setSimValue(25)">Pathway A: 25% (Conservative)</button>
+                        <button class="btn-preset" onclick="setSimValue(60)">Pathway B: 60% (Surgical)</button>
+                        <button class="btn-preset" onclick="setSimValue(100)">Pathway C: 100% (Structural Parity)</button>
+                    </div>
+                    <div class="sim-slider-row">
+                        <span style="font-size:12px;color:var(--text-muted);">0%</span>
+                        <input type="range" min="0" max="100" value="${currentSimPct}" class="sim-slider" id="sim-slider" oninput="updateWhatIfDisplay()" />
+                        <span style="font-size:12px;font-weight:700;width:45px;" id="sim-val-display">${currentSimPct}%</span>
+                    </div>
+                    `}
+                    <div class="sim-results">
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Averted Excess Events" data-hi="Roke Gaye Excess Events">Averted Excess Events</div>
+                            <div class="kpi-val" id="sim-averted-ev" style="font-size:20px;color:#10b981;">0</div>
+                            <div class="kpi-sub" id="sim-ev-ci">95% CI: [0 to 0]</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Projected Risk Averted" data-hi="Bachaya Gaya Financial Nuksan">Projected Risk Averted</div>
+                            <div class="kpi-val" id="sim-averted-drag" style="font-size:20px;color:var(--accent-primary);">$0.00</div>
+                            <div class="kpi-sub" id="sim-drag-ci">Physical Ledger Grounded</div>
+                        </div>
+                        <div class="sim-res-card">
+                            <div class="kpi-title" data-en="Post-Mitigation Bottleneck Rate" data-hi="Sudhaar Ke Baad Bottleneck Dar">Post-Mitigation Bottleneck Rate</div>
+                            <div class="kpi-val" id="sim-post-rate" style="font-size:20px;color:var(--text-main);">0.00%</div>
+                            <div class="kpi-sub" id="sim-post-sub">Target Cohort Compression</div>
+                        </div>
+                    </div>
+                    ${pathCardsHtml}
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            updateWhatIfDisplay();
+        }
+
+        function setSimValue(v) {
+            currentSimPct = Number(v);
+            const slider = document.getElementById('sim-slider');
+            if (slider) {
+                slider.value = currentSimPct;
+                updateWhatIfDisplay();
+            }
+        }
+
+        function updateWhatIfDisplay() {
+            const slider = document.getElementById('sim-slider');
+            if (slider) currentSimPct = Number(slider.value);
+            const pct = currentSimPct;
+            const valDisp = document.getElementById('sim-val-display');
+            if (valDisp) valDisp.textContent = pct + '%';
+
+            const elEv = document.getElementById('sim-averted-ev');
+            const elEvCi = document.getElementById('sim-ev-ci');
+            const elDrag = document.getElementById('sim-averted-drag');
+            const elDragCi = document.getElementById('sim-drag-ci');
+            const elPost = document.getElementById('sim-post-rate');
+            const elPostSub = document.getElementById('sim-post-sub');
+            if (!elEv || !elDrag) return;
+
+            const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const isMonetary = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const wm = DASHBOARD_PAYLOAD.what_if_model || {};
+            const excessEv = Number(wm.excess_events ?? DASHBOARD_PAYLOAD.bottleneck.excess_events ?? 0);
+            const ciLo = Number(wm.excess_ci_low ?? 0);
+            const ciHi = Number(wm.excess_ci_high ?? 0);
+            const avgCost = Number(wm.avg_cost_per_event ?? 0);
+            const botRate = Number(wm.bottleneck_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rate_pct ?? 0);
+            const restRate = Number(wm.rest_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rest_rate_pct ?? 0);
+
+            if (cbActive) {
+                elEv.textContent = '0 events';
+                if (elEvCi) elEvCi.textContent = 'Noise Gate Active (p >= 0.05)';
+                elDrag.textContent = isMonetary ? '$0.00 ($0 Freeze)' : '0 units ($0 Freeze)';
+                if (elDragCi) elDragCi.textContent = 'CapEx Frozen — Random Variation';
+                if (elPost) elPost.textContent = botRate.toFixed(2) + '%';
+                if (elPostSub) elPostSub.textContent = 'No cohort intervention advised';
+                return;
+            }
+
+            const avertedEv = pct === 0 ? 0 : Math.max(1, Math.round(excessEv * (pct / 100)));
+            const evLo = Math.max(0, Math.round(ciLo * (pct / 100)));
+            const evHi = Math.max(evLo, Math.round(ciHi * (pct / 100)));
+
+            elEv.textContent = avertedEv.toLocaleString() + ' events';
+            if (elEvCi) elEvCi.textContent = `95% CI: [${evLo.toLocaleString()} to ${evHi.toLocaleString()} events]`;
+
+            if (isMonetary) {
+                const avertedDol = avertedEv * avgCost;
+                const dolLo = evLo * avgCost;
+                const dolHi = evHi * avgCost;
+                elDrag.textContent = '$' + avertedDol.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                if (elDragCi) elDragCi.textContent = `95% CI: [$${dolLo.toLocaleString(undefined, {maximumFractionDigits:0})} to $${dolHi.toLocaleString(undefined, {maximumFractionDigits:0})}]`;
+            } else {
+                elDrag.textContent = avertedEv.toLocaleString() + ' physical units';
+                if (elDragCi) elDragCi.textContent = 'Zero fabricated currency (*1000 ban)';
+            }
+
+            const newRate = Math.max(restRate, botRate - (botRate - restRate) * (pct / 100));
+            if (elPost) elPost.textContent = newRate.toFixed(2) + '%';
+            if (elPostSub) elPostSub.textContent = `Down from ${botRate.toFixed(2)}% toward ${restRate.toFixed(2)}% baseline`;
+        }
+
+        // =====================================================================
+        // ACTIONABLE WORKLIST EXPLORER TABLE
+        // =====================================================================
+        let currentWlQueue = 'PREVENTIVE_RETENTION_WATCH';
+        function initWorklistExplorer(container) {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            if (!rows.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);padding:20px;">No priority worklist rows discovered.</p>';
+                return;
+            }
+            const nPrev = rows.filter(r => r.action_queue === 'PREVENTIVE_RETENTION_WATCH').length;
+            const nRec = rows.filter(r => r.action_queue === 'REALIZED_LOSS_RECOVERY_AUDIT').length;
+
+            let htmlStr = `
+                <div class="worklist-ctrls">
+                    <div class="worklist-tabs">
+                        <button class="wl-tab ${currentWlQueue === 'PREVENTIVE_RETENTION_WATCH' ? 'active' : ''}" id="tab-prev" onclick="switchWlQueue('PREVENTIVE_RETENTION_WATCH')">Preventive Retention Watch (${nPrev})</button>
+                        <button class="wl-tab ${currentWlQueue === 'REALIZED_LOSS_RECOVERY_AUDIT' ? 'active' : ''}" id="tab-rec" onclick="switchWlQueue('REALIZED_LOSS_RECOVERY_AUDIT')">Realized Loss Recovery (${nRec})</button>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" class="wl-search" id="wl-search" value="${escHtml(currentWlSearch)}" placeholder="Search ID, cohort, reason..." oninput="filterWorklistTable()" />
+                        <button class="btn-ctrl" onclick="downloadWorklistCSV()">⬇️ Export CSV</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="worklist-table" id="worklist-table">
+                        <thead id="wl-thead"></thead>
+                        <tbody id="wl-tbody"></tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = htmlStr;
+            renderWorklistTable();
+        }
+
+        function switchWlQueue(queueName) {
+            currentWlQueue = queueName;
+            document.getElementById('tab-prev')?.classList.toggle('active', queueName === 'PREVENTIVE_RETENTION_WATCH');
+            document.getElementById('tab-rec')?.classList.toggle('active', queueName === 'REALIZED_LOSS_RECOVERY_AUDIT');
+            renderWorklistTable();
+        }
+
+        function getFilteredWorklistRows() {
+            const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
+            const pCol = DASHBOARD_PAYLOAD.prim_dim_name;
+            const query = currentWlSearch.toLowerCase();
+            return rows.filter(r => {
+                if (r.action_queue !== currentWlQueue) return false;
+                if (activePrim !== 'All' && pCol && Object.prototype.hasOwnProperty.call(r, pCol) && String(r[pCol]) !== activePrim) return false;
+                if (!query) return true;
+                return Object.values(r).some(v => String(v ?? '').toLowerCase().includes(query));
+            });
+        }
+
+        function renderWorklistTable() {
+            const searchEl = document.getElementById('wl-search');
+            if (searchEl) currentWlSearch = searchEl.value || '';
+            const filtered = getFilteredWorklistRows();
+
+            const thead = document.getElementById('wl-thead');
+            const tbody = document.getElementById('wl-tbody');
+            if (!thead || !tbody) return;
+
+            if (!filtered.length) {
+                thead.innerHTML = '';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">No matching records in this queue for active filter.</td></tr>';
+                return;
+            }
+
+            const cols = Object.keys(filtered[0]).filter(c => c !== '_is_target_event' && c !== 'action_queue').slice(0, 7);
+            let thHtml = '<tr>';
+            cols.forEach(c => thHtml += '<th>' + escHtml(c.replace(/_/g, ' ')) + '</th>');
+            thHtml += '</tr>';
+            thead.innerHTML = thHtml;
+
+            let trHtml = '';
+            filtered.slice(0, 60).forEach(r => {
+                trHtml += '<tr>';
+                cols.forEach(c => {
+                    const v = r[c];
+                    const disp = (v === null || v === undefined || v === '') ? '—' : v;
+                    trHtml += '<td>' + escHtml(disp) + '</td>';
+                });
+                trHtml += '</tr>';
+            });
+            tbody.innerHTML = trHtml;
+        }
+
+        function filterWorklistTable() {
+            renderWorklistTable();
+        }
+
+        function downloadWorklistCSV() {
+            const rows = getFilteredWorklistRows();
+            const exportRows = rows.length ? rows : (DASHBOARD_PAYLOAD.widgets_data.worklist_rows || []);
+            if (!exportRows.length) return;
+            const cols = Object.keys(exportRows[0]);
+            let csv = cols.join(',') + '\n';
+            exportRows.forEach(r => {
+                csv += cols.map(c => '"' + String(r[c] ?? '').replace(/"/g, '""') + '"').join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'actionable_priority_worklist.csv';
+            a.click();
+        }
+
+        // =====================================================================
+        // GOVERNANCE PROOF DRAWER & ARCHETYPE BENTO SPAN ENGINE
+        // =====================================================================
+        function getArchetypeSpanClass(pId, idx) {
+            if (pId === 'actionable_worklist_explorer' || pId === 'what_if_counterfactual_simulator') return 'span-12 full-width';
+            const arch = DASHBOARD_PAYLOAD.meta.archetype;
+            if (arch === 'nordic_saas_command' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'swiss_institutional_terminal' && idx < 2) return idx === 0 ? 'span-7' : 'span-5';
+            if (arch === 'industrial_scada_telemetry' && idx < 2) return idx === 0 ? 'span-8' : 'span-4';
+            if (arch === 'editorial_commerce_studio' && idx === 0 && pId === 'temporal_momentum_ribbon') return 'span-12';
+            return 'span-6';
+        }
+
+        function renderGovernanceDrawer() {
+            const box = document.getElementById('gov-drawer-body');
+            if (!box) return;
+            const cb = DASHBOARD_PAYLOAD.circuit_breaker || {};
+            const dfii = DASHBOARD_PAYLOAD.dfii || {};
+            const ont = DASHBOARD_PAYLOAD.ontology || {};
+            const sel = DASHBOARD_PAYLOAD.selected_panels_detail || [];
+            const rej = DASHBOARD_PAYLOAD.rejected_panels_detail || [];
+
+            const kpiList = (ont.key_metrics_kpis || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const leakList = (ont.hidden_leakage_risks || []).map(k => `<li>${escHtml(k)}</li>`).join('');
+            const selRows = sel.map(p => `<tr><td><strong>${escHtml(p.name)}</strong></td><td style="color:#10b981;">SELECTED (P${p.priority})</td><td>${escHtml(p.justification)}</td></tr>`).join('');
+            const rejRows = rej.map(p => `<tr><td>${escHtml(p.name)}</td><td style="color:var(--text-muted);">REJECTED</td><td>${escHtml(p.reason)}</td></tr>`).join('');
+
+            box.innerHTML = `
+                <div class="pathway-grid" style="margin-bottom:14px;">
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Statistical Hypothesis Proof</div>
+                        <div>Two-Proportion z-Stat: <strong>${Number(cb.z_stat || 0).toFixed(2)}</strong></div>
+                        <div>Two-Tailed p-Value: <strong>${Number(cb.p_value ?? 1).toExponential(3)}</strong></div>
+                        <div>Relative Risk Lift: <strong>${Number(cb.relative_risk_multiplier || 1).toFixed(2)}x</strong></div>
+                        <div>Attributable Excess Events: <strong>${Number(cb.excess_events || 0).toFixed(1)}</strong></div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">DFII Design Score (${dfii.dfii || 16} / 19)</div>
+                        <div>Aesthetic Impact: ${dfii.aesthetic_impact || 5}/5 &bull; Context Fit: ${dfii.context_fit || 5}/5</div>
+                        <div>Feasibility: ${dfii.implementation_feasibility || 5}/5 &bull; Perf Safety: ${dfii.performance_safety || 5}/5</div>
+                        <div>Consistency Risk Penalty: -${dfii.consistency_risk || 1}</div>
+                    </div>
+                    <div class="pathway-card">
+                        <div style="font-weight:700;margin-bottom:4px;">Ontology Watchpoints (${escHtml(ont.domain_code || 'GEN')})</div>
+                        <ul style="padding-left:16px;margin-top:4px;">${leakList || kpiList}</ul>
+                    </div>
+                </div>
+                <div class="table-wrap" style="max-height:240px;">
+                    <table class="worklist-table">
+                        <thead><tr><th>Catalog Widget</th><th>Decision</th><th>Mathematical / Shape Justification</th></tr></thead>
+                        <tbody>${selRows}${rejRows}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function onCliffFeatureChange(val) {
+            currentCliffIdx = Number(val) || 0;
+            const cBox = document.getElementById('chart-cliff');
+            if (cBox) renderCliffChart(cBox, currentCliffIdx);
+        }
+
+        // =====================================================================
+        // ASSEMBLE ALL 10 CATALOG PANELS & INITIALIZE
+        // =====================================================================
+        function renderAllCharts() {
+            const container = document.getElementById('main-panels-container');
+            if (!container) return;
+            TOOLTIP_REGISTRY = [];
+            container.innerHTML = '';
+
+            const panels = DASHBOARD_PAYLOAD.selected_panels || [];
+
+            panels.forEach((pId, idx) => {
+                const card = document.createElement('div');
+                card.className = 'panel-card ' + getArchetypeSpanClass(pId, idx);
+
+                if (pId === 'segment_vulnerability_lollipop') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Primary Segment Vulnerability &amp; Wilson 95% CIs' : 'Segments Ki Kamzori Aur 95% Confidence Bounds'}</div>
+                                <div class="panel-desc">Ranked failure rate across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} cohorts (click any node to cross-filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-lollipop"></div>
+                    `;
+                    container.appendChild(card);
+                    renderLollipopChart(card.querySelector('#chart-lollipop'));
+                }
+                else if (pId === 'pareto_loss_waterfall') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Pareto 80/20 Cumulative Financial Loss Waterfall' : 'Pareto 80/20 Financial Nuksan Waterfall'}</div>
+                                <div class="panel-desc">Cumulative adverse capital concentration across ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-pareto"></div>
+                    `;
+                    container.appendChild(card);
+                    renderParetoChart(card.querySelector('#chart-pareto'));
+                }
+                else if (pId === 'temporal_momentum_ribbon') {
+                    const tObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {};
+                    const popStr = tObj.pop_delta_pp !== undefined ? ` (${tObj.pop_delta_pp >= 0 ? '+' : ''}${Number(tObj.pop_delta_pp).toFixed(2)}pp PoP &bull; ${escHtml(tObj.trend_direction || 'STABLE')})` : '';
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Temporal Failure Rate &amp; Volume Momentum' : 'Samay Ke Sath Failure Rate Aur Volume Trend'}</div>
+                                <div class="panel-desc">Dual-axis volume bars &amp; adverse rate trajectory via ${escHtml(tObj.date_column || 'Date')}${popStr}.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-temporal"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTemporalChart(card.querySelector('#chart-temporal'));
+                }
+                else if (pId === 'secondary_cross_tab_heatmap') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2D Cross-Tabulation Risk Concentration Heatmap' : '2D Cross-Tab Risk Concentration Heatmap'}</div>
+                                <div class="panel-desc">Intersectional hotspot matrix: ${escHtml(DASHBOARD_PAYLOAD.prim_dim_name)} &times; ${escHtml(DASHBOARD_PAYLOAD.sec_dim_name)} (click cell to filter).</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-heatmap"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCrossTabHeatmap(card.querySelector('#chart-heatmap'));
+                }
+                else if (pId === 'exposure_vs_risk_bubble') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Exposure Volume vs Adverse Risk Bubble Dispersion' : 'Volume Banam Nuksan Dar Bubble Dispersion'}</div>
+                                <div class="panel-desc">Separates high-volume systemic friction from low-volume niche outliers.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-bubble"></div>
+                    `;
+                    container.appendChild(card);
+                    renderExposureBubbleChart(card.querySelector('#chart-bubble'));
+                }
+                else if (pId === 'nonlinear_cliff_step_area') {
+                    const cliffs = DASHBOARD_PAYLOAD.widgets_data.cliffs || [];
+                    let selHtml = '';
+                    if (cliffs.length >= 2) {
+                        selHtml = `<select class="slicer-select" onchange="onCliffFeatureChange(this.value)">` +
+                            cliffs.slice(0, 6).map((c, ci) => `<option value="${ci}" ${ci === currentCliffIdx ? 'selected' : ''}>${escHtml(c.column)}</option>`).join('') +
+                            `</select>`;
+                    }
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Non-Linear Parameter Threshold Cliff &amp; Danger Zone' : 'Khatre Ki Laal Rekha (Parameter Threshold Cliff)'}</div>
+                                <div class="panel-desc">Empirical quartile discretization exposing acute tipping points.</div>
+                            </div>
+                            ${selHtml}
+                        </div>
+                        <div class="svg-container" id="chart-cliff"></div>
+                    `;
+                    container.appendChild(card);
+                    renderCliffChart(card.querySelector('#chart-cliff'), currentCliffIdx);
+                }
+                else if (pId === 'orthogonal_2x2_quadrant') {
+                    const inter = DASHBOARD_PAYLOAD.widgets_data.interaction || {};
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? '2x2 Orthogonal Risk vs Protective Buffer Matrix' : '2x2 Risk Banam Protective Buffer Matrix'}</div>
+                                <div class="panel-desc">${escHtml(inter.pos_driver || 'Risk')} vs ${escHtml(inter.neg_driver || 'Buffer')} interaction quadrants.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-quadrant"></div>
+                    `;
+                    container.appendChild(card);
+                    render2x2Quadrant(card.querySelector('#chart-quadrant'));
+                }
+                else if (pId === 'triage_efficiency_frontier') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Operational Intake Screening Yield Frontier' : 'Intake Screening Aur Defect Recall Curve'}</div>
+                                <div class="panel-desc">Trade-off curve between intake hold/scrap % and defect containment recall %.</div>
+                            </div>
+                        </div>
+                        <div class="svg-container" id="chart-triage"></div>
+                    `;
+                    container.appendChild(card);
+                    renderTriageYieldChart(card.querySelector('#chart-triage'));
+                }
+                else if (pId === 'what_if_counterfactual_simulator') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'What-If Counterfactual ROI &amp; Excess-Risk Simulator' : 'Agar Hum Faisla Badlein Toh Kitna Bachav Hoga (What-If ROI)?'}</div>
+                                <div class="panel-desc">Interactive epidemiological excess-risk compression with 95% confidence bounds &amp; 3-pathway advisory.</div>
+                            </div>
+                        </div>
+                        <div id="sim-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWhatIfSimulator(card.querySelector('#sim-container'));
+                }
+                else if (pId === 'actionable_worklist_explorer') {
+                    card.innerHTML = `
+                        <div class="panel-header">
+                            <div>
+                                <div class="panel-title">${currentLang === 'en' ? 'Actionable Priority Worklist &amp; Incident Triage' : 'Aaj Subah Team Ke Liye Actionable Priority List'}</div>
+                                <div class="panel-desc">Two-Queue row-level prioritization for preventive retention and realized loss recovery.</div>
+                            </div>
+                        </div>
+                        <div id="worklist-container"></div>
+                    `;
+                    container.appendChild(card);
+                    initWorklistExplorer(card.querySelector('#worklist-container'));
+                }
+            });
+        }
+
+        // Window onload
+        window.addEventListener('DOMContentLoaded', () => {
+            bindDelegatedPanelEvents();
+            initSlicers();
+            renderAllCharts();
+            renderGovernanceDrawer();
+        });
+    </script>
+</body>
+</html>

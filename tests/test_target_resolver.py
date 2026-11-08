@@ -184,4 +184,54 @@ def test_benchmarks_91_92_93_target_and_cost_resolution():
     assert int(res_diab["binary_target"].sum()) == 2
 
 
+def test_benchmarks_94_95_96_target_and_cost_resolution():
+    """Verify target and cost detection on schemas matching Benchmarks 94, 95, 96."""
+    # Benchmark 94: NYC Taxi Mobility & Urban Fleet Operations
+    df_taxi = pd.DataFrame({
+        "pickup": ["2019-03-23 20:21:09", "2019-03-04 16:11:55", "2019-03-14 21:28:44", "2019-03-20 11:40:44"],
+        "dropoff": ["2019-03-23 20:27:24", "2019-03-04 16:19:00", "2019-03-14 21:34:38", "2019-03-20 11:49:41"],
+        "distance": [1.60, 0.79, 1.00, 1.30],
+        "fare": [7.0, 6.0, 6.0, 7.5],
+        "tip": [2.15, 1.0, 0.0, 1.0],
+        "total": [12.95, 11.3, 7.8, 12.8],
+        "payment": ["credit card", "credit card", "cash", "credit card"]
+    })
+    res_taxi = resolve_canonical_target_and_cost(df_taxi)
+    assert res_taxi["target_col"] == "payment"
+    assert res_taxi["cost_col"] == "total"
+    assert res_taxi["is_financial"] is True
+    assert int(res_taxi["binary_target"].sum()) == 1  # cash is minority
+
+    # Benchmark 95: California Housing Asset Valuation
+    df_house = pd.DataFrame({
+        "longitude": [-122.23, -122.22, -122.24, -122.25],
+        "latitude": [37.88, 37.86, 37.85, 37.85],
+        "housing_median_age": [41.0, 21.0, 52.0, 52.0],
+        "median_income": [8.3252, 8.3014, 7.2574, 5.6431],
+        "median_house_value": [452600.0, 358500.0, 124000.0, 115000.0],
+        "ocean_proximity": ["NEAR BAY", "NEAR BAY", "INLAND", "INLAND"]
+    })
+    res_house = resolve_canonical_target_and_cost(df_house)
+    assert res_house["target_col"] == "ocean_proximity"
+    assert res_house["cost_col"] == "median_house_value"
+    assert res_house["is_financial"] is True
+    assert int(res_house["binary_target"].sum()) == 2  # INLAND is depressed tier
+
+    # Benchmark 96: Supermarket Commercial Sales & Branch Operations
+    df_market = pd.DataFrame({
+        "Invoice ID": ["101", "102", "103", "104"],
+        "Branch": ["A", "B", "C", "A"],
+        "Product line": ["Health", "Electronic", "Home", "Fashion"],
+        "Unit price": [74.69, 15.28, 46.33, 58.22],
+        "Total": [548.97, 80.22, 145.94, 244.52],
+        "Customer stratification rating": [9.1, 4.2, 8.0, 4.8]
+    })
+    res_market = resolve_canonical_target_and_cost(df_market)
+    assert res_market["target_col"] == "Customer stratification rating"
+    assert res_market["cost_col"] == "Total"
+    assert res_market["is_financial"] is True
+    assert int(res_market["binary_target"].sum()) == 1  # 4.2 <= q25 (4.65)
+
+
+
 

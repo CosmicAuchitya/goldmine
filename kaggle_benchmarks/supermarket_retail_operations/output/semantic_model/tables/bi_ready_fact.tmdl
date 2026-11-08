@@ -1,0 +1,152 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 1,000"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Customer stratification rating] <= 5)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 174"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[Total]), 'bi_ready_fact'[Customer stratification rating] <= 5)
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $60,308.99"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[Total])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $322,966.75"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column Invoice ID
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Invoice ID
+		lineageTag: col-fact-Invoice ID
+
+	column Branch
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Branch
+		lineageTag: col-fact-Branch
+
+	column City
+		dataType: string
+		summarizeBy: none
+		sourceColumn: City
+		lineageTag: col-fact-City
+
+	column Customer type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Customer type
+		lineageTag: col-fact-Customer type
+
+	column Gender
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Gender
+		lineageTag: col-fact-Gender
+
+	column Product line
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Product line
+		lineageTag: col-fact-Product line
+
+	column Unit price
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: Unit price
+		lineageTag: col-fact-Unit price
+		formatString: $#,0.00
+
+	column Quantity
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Quantity
+		lineageTag: col-fact-Quantity
+		formatString: #,0
+
+	column Tax 5%
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Tax 5%
+		lineageTag: col-fact-Tax 5%
+		formatString: 0.00
+
+	column Total
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Total
+		lineageTag: col-fact-Total
+		formatString: 0.00
+
+	column Date
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Date
+		lineageTag: col-fact-Date
+
+	column Time
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Time
+		lineageTag: col-fact-Time
+
+	column Payment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Payment
+		lineageTag: col-fact-Payment
+
+	column Cost of goods sold
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: Cost of goods sold
+		lineageTag: col-fact-Cost of goods sold
+		formatString: $#,0.00
+
+	column Gross margin percentage
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Gross margin percentage
+		lineageTag: col-fact-Gross margin percentage
+		formatString: 0.00%
+
+	column Gross income
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: Gross income
+		lineageTag: col-fact-Gross income
+		formatString: $#,0.00
+
+	column Customer stratification rating
+		dataType: double
+		summarizeBy: average
+		sourceColumn: Customer stratification rating
+		lineageTag: col-fact-Customer stratification rating
+		formatString: 0.00
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

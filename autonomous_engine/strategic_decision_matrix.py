@@ -477,6 +477,12 @@ class MicroLevelForensicInquiryEngine:
             verb = "Evacuation Triage if"
         elif dom_key == "luxury_gemology_retail":
             verb = "Quality Re-Cut if"
+        elif dom_key == "urban_mobility_fleet":
+            verb = "Fare Reconciliation if"
+        elif dom_key == "real_estate_valuation":
+            verb = "Valuation Appraisal if"
+        elif dom_key == "retail_commercial_supermarket":
+            verb = "Service Quality Audit if"
         elif dom_key == "food_beverage_manufacturing":
             verb = "Scrap if"
         elif dom_key == "hr_workforce":
@@ -1122,7 +1128,7 @@ class StrategicDecisionEngine:
         # 6. Check Hospitality & Travel / Lodging Revenue Management
         hospitality_kw = [
             'hotel', 'hotels', 'booking', 'bookings', 'reservation', 'reservations',
-            'guest', 'guests', 'adr', 'room', 'rooms', 'checkin', 'checkout'
+            'guest', 'guests', 'adr', 'checkin', 'checkout'
         ]
         if _matches_domain(hospitality_kw):
             return {
@@ -1136,8 +1142,8 @@ class StrategicDecisionEngine:
 
         # 7. Check Maritime Transportation Safety & Evacuation Logistics
         maritime_kw = [
-            'titanic', 'pclass', 'survived', 'fare', 'cabin', 'embarked',
-            'vessel', 'passenger', 'passengers', 'voyage', 'ship', 'maritime'
+            'titanic', 'pclass', 'cabin', 'embarked',
+            'vessel', 'voyage', 'ship', 'maritime'
         ]
         if _matches_domain(maritime_kw):
             return {
@@ -1225,6 +1231,51 @@ class StrategicDecisionEngine:
                 "unit_symbol": "Streams",
                 "is_financial": False,
                 "persona": "Global Head of Editorial & Music Programming / VP of Content Analytics"
+            }
+
+        # 9. Check Urban Mobility & Fleet Logistics
+        mobility_kw = [
+            'taxi', 'taxis', 'pickup', 'dropoff', 'fare', 'trip', 'trips',
+            'borough', 'tolls', 'meter', 'hailed'
+        ]
+        if _matches_domain(mobility_kw):
+            return {
+                "domain_key": "urban_mobility_fleet",
+                "domain_name": "Urban Mobility, Fleet Operations & Transit Logistics",
+                "unit_name": "Unreconciled Cash Rides & Fleet Transit Drag",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Fleet Operations & Urban Transit Logistics"
+            }
+
+        # 10. Check Real Estate Valuation & Mortgage Asset Risk
+        real_estate_kw = [
+            'housing', 'house', 'households', 'ocean_proximity', 'median_house_value',
+            'median_income', 'bedrooms', 'rooms', 'realty', 'property'
+        ]
+        if _matches_domain(real_estate_kw):
+            return {
+                "domain_key": "real_estate_valuation",
+                "domain_name": "Real Estate Asset Valuation & Mortgage Collateral Risk",
+                "unit_name": "Depressed Valuation Exposure & Collateral Risk",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "Chief Real Estate Investment Officer / Head of Portfolio Valuation"
+            }
+
+        # 11. Check Supermarket & Retail Commercial Operations
+        supermarket_kw = [
+            'supermarket', 'branch', 'product line', 'customer type', 'cogs',
+            'gross income', 'gross margin', 'unit price'
+        ]
+        if _matches_domain(supermarket_kw):
+            return {
+                "domain_key": "retail_commercial_supermarket",
+                "domain_name": "Retail Commercial Sales & Supermarket Branch Operations",
+                "unit_name": "Substandard CSAT Transactions & Margin Leak",
+                "unit_symbol": "$",
+                "is_financial": True,
+                "persona": "VP of Retail Operations & Commercial Merchandising"
             }
 
         # Default Enterprise Operations

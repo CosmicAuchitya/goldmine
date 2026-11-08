@@ -1,0 +1,147 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "housing": {
+      "table_name": "housing",
+      "filename": "housing.csv",
+      "selected_sheet": null,
+      "estimated_rows": 20640,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "longitude",
+        "latitude",
+        "housing_median_age",
+        "total_rooms",
+        "total_bedrooms",
+        "population",
+        "households",
+        "median_income",
+        "median_house_value",
+        "ocean_proximity"
+      ],
+      "potential_keys": [
+        "total_rooms",
+        "total_bedrooms",
+        "median_income"
+      ],
+      "strictly_unique_primary_keys": [],
+      "recommended_primary_key": "fact_surrogate_id",
+      "sample_columns": [
+        {
+          "name": "longitude",
+          "dtype": "float64",
+          "sample_values": [
+            "-122.23",
+            "-122.22",
+            "-122.24"
+          ],
+          "nunique_in_sample": 197,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "latitude",
+          "dtype": "float64",
+          "sample_values": [
+            "37.88",
+            "37.86",
+            "37.85"
+          ],
+          "nunique_in_sample": 215,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "housing_median_age",
+          "dtype": "float64",
+          "sample_values": [
+            "41.0",
+            "21.0",
+            "52.0"
+          ],
+          "nunique_in_sample": 51,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "total_rooms",
+          "dtype": "float64",
+          "sample_values": [
+            "880.0",
+            "7099.0",
+            "1467.0"
+          ],
+          "nunique_in_sample": 1616,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "total_bedrooms",
+          "dtype": "float64",
+          "sample_values": [
+            "129.0",
+            "1106.0",
+            "190.0"
+          ],
+          "nunique_in_sample": 866,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "population",
+          "dtype": "float64",
+          "sample_values": [
+            "322.0",
+            "2401.0",
+            "496.0"
+          ],
+          "nunique_in_sample": 1331,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "households",
+          "dtype": "float64",
+          "sample_values": [
+            "126.0",
+            "1138.0",
+            "177.0"
+          ],
+          "nunique_in_sample": 839,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "median_income",
+          "dtype": "float64",
+          "sample_values": [
+            "8.3252",
+            "8.3014",
+            "7.2574"
+          ],
+          "nunique_in_sample": 1785,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "median_house_value",
+          "dtype": "float64",
+          "sample_values": [
+            "452600.0",
+            "358500.0",
+            "352100.0"
+          ],
+          "nunique_in_sample": 1352,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "ocean_proximity",
+          "dtype": "str",
+          "sample_values": [
+            "NEAR BAY",
+            "<1H OCEAN",
+            "INLAND"
+          ],
+          "nunique_in_sample": 4,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

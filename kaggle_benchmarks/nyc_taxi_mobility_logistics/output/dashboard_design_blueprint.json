@@ -1,0 +1,117 @@
+{
+  "dataset_name": "nyc_taxi_mobility_logistics",
+  "matched_ontology": {
+    "ontology_key": "logistics_freight",
+    "domain_code": "LOGISTICS",
+    "domain_name": "Logistics, Freight Forwarding & Warehousing",
+    "key_metrics_kpis": [
+      "On-Time In-Full (OTIF %)",
+      "Cost Per Ton-Kilometer",
+      "Empty Miles / Deadhead Percentage (%)",
+      "Volumetric vs Actual Weight Discrepancy Capture Rate"
+    ],
+    "hidden_leakage_risks": [
+      "Demurrage & Detention Charges (\u092a\u094b\u0930\u094d\u091f \u092f\u093e \u0935\u0947\u092f\u0930\u0939\u093e\u0909\u0938 \u092e\u0947\u0902 \u092b\u0902\u0938\u093e \u0930\u0939\u0928\u0947 \u092a\u0930 \u091c\u0941\u0930\u094d\u092e\u093e\u0928\u093e)",
+      "Pilferage & Goods Damage in Transit",
+      "Fuel Price Spikes without Escalation Clauses"
+    ]
+  },
+  "archetype": "industrial_scada_telemetry",
+  "archetype_name": "Industrial SCADA Process Telemetry",
+  "executive_persona": "VP Operations, Plant Director & Head of QA",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "Process control layout leading with parameter cliffs & tolerance frontier",
+    "default_theme": "dark",
+    "font_display": "'Consolas', 'Courier New', monospace",
+    "font_body": "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 6433,
+    "total_columns": 15,
+    "is_temporal": false,
+    "has_monetary_ledger": true,
+    "has_secondary_dim": true,
+    "cliffs_count": 6,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
+      "priority": 1
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 2
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 3
+    },
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 4
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (dropoff_borough x pickup_borough) exposes sub-node vulnerability hubs.",
+      "priority": 6
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 7
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit"
+  }
+}

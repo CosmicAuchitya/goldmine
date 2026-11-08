@@ -1,0 +1,117 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 20,640"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[ocean_proximity] = "INLAND")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 6,551"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[median_house_value]), 'bi_ready_fact'[ocean_proximity] = "INLAND")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $817,600,123.00"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[median_house_value])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $4,269,504,061.00"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column longitude
+		dataType: double
+		summarizeBy: average
+		sourceColumn: longitude
+		lineageTag: col-fact-longitude
+		formatString: 0.00
+
+	column latitude
+		dataType: double
+		summarizeBy: average
+		sourceColumn: latitude
+		lineageTag: col-fact-latitude
+		formatString: 0.00
+
+	column housing_median_age
+		dataType: double
+		summarizeBy: average
+		sourceColumn: housing_median_age
+		lineageTag: col-fact-housing_median_age
+		formatString: 0.00
+
+	column total_rooms
+		dataType: double
+		summarizeBy: average
+		sourceColumn: total_rooms
+		lineageTag: col-fact-total_rooms
+		formatString: 0.00
+
+	column total_bedrooms
+		dataType: double
+		summarizeBy: average
+		sourceColumn: total_bedrooms
+		lineageTag: col-fact-total_bedrooms
+		formatString: 0.00
+
+	column population
+		dataType: double
+		summarizeBy: average
+		sourceColumn: population
+		lineageTag: col-fact-population
+		formatString: 0.00
+
+	column households
+		dataType: double
+		summarizeBy: average
+		sourceColumn: households
+		lineageTag: col-fact-households
+		formatString: 0.00
+
+	column median_income
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: median_income
+		lineageTag: col-fact-median_income
+		formatString: $#,0.00
+
+	column median_house_value
+		dataType: double
+		summarizeBy: average
+		sourceColumn: median_house_value
+		lineageTag: col-fact-median_house_value
+		formatString: 0.00
+
+	column ocean_proximity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: ocean_proximity
+		lineageTag: col-fact-ocean_proximity
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

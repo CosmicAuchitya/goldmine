@@ -1,0 +1,185 @@
+{
+  "dataset_name": "raw_data",
+  "tables": {
+    "supermarket_sales": {
+      "table_name": "supermarket_sales",
+      "filename": "supermarket_sales.csv",
+      "selected_sheet": null,
+      "estimated_rows": 1000,
+      "delimiter": ",",
+      "encoding": "utf-8",
+      "columns": [
+        "Invoice ID",
+        "Branch",
+        "City",
+        "Customer type",
+        "Gender",
+        "Product line",
+        "Unit price",
+        "Quantity",
+        "Tax 5%",
+        "Total",
+        "Date",
+        "Time",
+        "Payment",
+        "Cost of goods sold",
+        "Gross margin percentage",
+        "Gross income",
+        "Customer stratification rating"
+      ],
+      "potential_keys": [
+        "Invoice ID",
+        "City",
+        "Customer type",
+        "Product line",
+        "Unit price",
+        "Tax 5%",
+        "Total",
+        "Date",
+        "Time",
+        "Cost of goods sold",
+        "Gross income",
+        "Customer stratification rating"
+      ],
+      "strictly_unique_primary_keys": [
+        "Invoice ID"
+      ],
+      "recommended_primary_key": "Invoice ID",
+      "sample_columns": [
+        {
+          "name": "Invoice ID",
+          "dtype": "str",
+          "sample_values": [
+            "[REDACTED_SSN]",
+            "[REDACTED_SSN]",
+            "[REDACTED_SSN]"
+          ],
+          "nunique_in_sample": 1000,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Branch",
+          "dtype": "str",
+          "sample_values": [
+            "A",
+            "C",
+            "B"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "City",
+          "dtype": "str",
+          "sample_values": [
+            "Yangon",
+            "Naypyitaw",
+            "Mandalay"
+          ],
+          "nunique_in_sample": 3,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Customer type",
+          "dtype": "str",
+          "sample_values": [
+            "Member",
+            "Normal"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Gender",
+          "dtype": "str",
+          "sample_values": [
+            "Female",
+            "Male"
+          ],
+          "nunique_in_sample": 2,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Product line",
+          "dtype": "str",
+          "sample_values": [
+            "Health and beauty",
+            "Electronic accessories",
+            "Home and lifestyle"
+          ],
+          "nunique_in_sample": 6,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Unit price",
+          "dtype": "float64",
+          "sample_values": [
+            "74.69",
+            "15.28",
+            "46.33"
+          ],
+          "nunique_in_sample": 943,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Quantity",
+          "dtype": "int64",
+          "sample_values": [
+            "7",
+            "5",
+            "8"
+          ],
+          "nunique_in_sample": 10,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Tax 5%",
+          "dtype": "float64",
+          "sample_values": [
+            "26.1415",
+            "3.82",
+            "16.2155"
+          ],
+          "nunique_in_sample": 990,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Total",
+          "dtype": "float64",
+          "sample_values": [
+            "548.9715",
+            "80.22",
+            "340.5255"
+          ],
+          "nunique_in_sample": 990,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Date",
+          "dtype": "str",
+          "sample_values": [
+            "1/5/2019",
+            "3/8/2019",
+            "3/3/2019"
+          ],
+          "nunique_in_sample": 89,
+          "is_index_artifact": 0
+        },
+        {
+          "name": "Time",
+          "dtype": "str",
+          "sample_values": [
+            "13:08",
+            "10:29",
+            "13:23"
+          ],
+          "nunique_in_sample": 506,
+          "is_index_artifact": 0
+        }
+      ]
+    }
+  },
+  "relational_hints": [],
+  "cardinality_hazards": [],
+  "composite_key_relations": []
+}

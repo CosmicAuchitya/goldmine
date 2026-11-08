@@ -1,0 +1,114 @@
+{
+  "dataset_name": "california_housing_real_estate",
+  "matched_ontology": {
+    "ontology_key": "b2d_developer_tools",
+    "domain_code": "B2D",
+    "domain_name": "Business-to-Developer (B2D / API-First & DevTools)",
+    "key_metrics_kpis": [
+      "Time to First Hello World (TTFHW) - \u092a\u0939\u0932\u0940 \u0938\u092b\u0932 API \u0915\u0949\u0932 \u092e\u0947\u0902 \u0932\u0917\u093e \u0938\u092e\u092f",
+      "Monthly Active Developers (MAD)",
+      "P95 & P99 Latency (\u0935\u093f\u0932\u0902\u092c\u0924\u093e / \u0938\u093f\u0938\u094d\u091f\u092e \u0938\u094d\u092a\u0940\u0921)",
+      "API Error Rate (5xx \u0938\u0930\u094d\u0935\u0930 \u090f\u0930\u0930 \u092a\u094d\u0930\u0924\u093f\u0936\u0924)"
+    ],
+    "hidden_leakage_risks": [
+      "Free Tier Abuse / Bot Traffic (\u092b\u094d\u0930\u0940 \u0915\u094b\u091f\u093e \u091a\u0942\u0938\u0928\u0947 \u0935\u093e\u0932\u0947 \u092c\u0949\u091f\u094d\u0938)",
+      "Unmetered API Usage (\u092e\u0940\u091f\u0930\u0940\u0902\u0917 \u0938\u093f\u0938\u094d\u091f\u092e \u092e\u0947\u0902 \u092c\u0917 \u091c\u093f\u0938\u0938\u0947 \u092c\u093f\u0932 \u0928 \u092c\u0928\u0947)",
+      "High Egress Latency \u091c\u093f\u0938\u0938\u0947 \u0921\u0947\u0935\u0932\u092a\u0930\u094d\u0938 \u0938\u094d\u0935\u093f\u091a \u0915\u0930 \u091c\u093e\u090f\u0902",
+      "Credit Card Chargebacks on Unmonitored Spikes (\u0905\u0928\u091a\u093e\u0939\u0947 \u0913\u0935\u0930\u090f\u091c \u092a\u0930 \u0935\u093f\u0935\u093e\u0926)"
+    ]
+  },
+  "archetype": "nordic_saas_command",
+  "archetype_name": "Nordic SaaS Command Center",
+  "executive_persona": "Chief Revenue Officer (CRO) & VP Customer Success",
+  "dfii_score": 17,
+  "dfii_breakdown": {
+    "aesthetic_impact": 4,
+    "context_fit": 4,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 17
+  },
+  "design_system": {
+    "layout_concept": "8-col / 4-col executive bento layout with prominent MRR leakage focus",
+    "default_theme": "dark",
+    "font_display": "'Trebuchet MS', 'Segoe UI Variable Display', system-ui, sans-serif",
+    "font_body": "'Trebuchet MS', 'Segoe UI', -apple-system, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 20640,
+    "total_columns": 11,
+    "is_temporal": false,
+    "has_monetary_ledger": true,
+    "has_secondary_dim": false,
+    "cliffs_count": 9,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 9 continuous driver(s).",
+      "priority": 5
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 7
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."
+    },
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "reason": "No valid non-synthetic primary dimension detected."
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "reason": "Secondary dimension either not detected or cardinality outside 2-15 range."
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "reason": "Insufficient categorical depth (< 3 cohorts) for multi-dimensional bubble dispersion."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit"
+  }
+}

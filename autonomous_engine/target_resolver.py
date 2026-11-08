@@ -319,10 +319,13 @@ def resolve_canonical_target_and_cost(
     if blueprint and blueprint.get("target_metric") in cols:
         bp_cand = blueprint.get("target_metric")
         c_low = bp_cand.lower()
-        is_bad_bp = any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'path', 'href', 'title'])
+        is_bad_bp = any(b in c_low for b in [
+            'link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary',
+            'path', 'href', 'title', 'longitude', 'latitude', 'pickup', 'dropoff', 'datetime', 'timestamp'
+        ]) or c_low in ['lon', 'lat']
         is_artifact = is_index_artifact(bp_cand)
         is_spatial = c_low in ('x', 'y', 'z') and 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
-        is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income', 'fare']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
+        is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income', 'fare', 'value']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
         is_demographic = is_demographic_attribute(bp_cand)
         has_discrete_targets = any(
             any(k in c.lower() for k in target_keywords) and (df[c].nunique() <= 10) and not c.lower().endswith(('_id', '_key', '_code', '_num')) and not is_index_artifact(c)
@@ -333,9 +336,17 @@ def resolve_canonical_target_and_cost(
     if not target_col:
         has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
         if has_spatial:
-            canonical_targets = ['is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome', 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'target', 'response', 'label']
+            canonical_targets = [
+                'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
+                'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
+                'ocean_proximity', 'payment', 'target', 'response', 'label'
+            ]
         else:
-            canonical_targets = ['y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn', 'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud']
+            canonical_targets = [
+                'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn',
+                'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
+                'customer stratification rating', 'ocean_proximity', 'payment'
+            ]
         for cand_name in canonical_targets:
             for c in cols:
                 if c.lower() == cand_name and not is_index_artifact(c):
@@ -426,13 +437,17 @@ def resolve_canonical_target_and_cost(
         is_adv = s_str.str.contains(unconditional_adverse, regex=True)
         # Exclude sentinel missing value tokens from being considered genuine adverse or non-adverse categories
         known_missing = {'unknown', 'none', 'null', 'nan', '', 'na', 'n/a'}
-        clean_mask = ~s_str.isin(known_missing)
-        clean_unique = [v for v in s_str.unique() if v not in known_missing]
+        clean_mask = s_raw.notna() & ~s_str.isin(known_missing)
+        clean_unique = [str(v).lower().strip() for v in s_raw.dropna().unique() if str(v).lower().strip() not in known_missing]
 
         if target_col.lower() == 'cut' and any(k in s_str.unique() for k in ['ideal', 'premium', 'fair']):
             is_cut_sub = s_str.isin(['fair', 'good'])
             binary_target = is_cut_sub.astype(int)
             target_desc = f"{target_col} in ['Fair', 'Good'] (Substandard Cut)"
+        elif target_col.lower() in ['ocean_proximity', 'proximity'] and any(k in s_str.unique() for k in ['inland', 'near bay', 'near ocean']):
+            is_inland = s_str == 'inland'
+            binary_target = is_inland.astype(int)
+            target_desc = f"{target_col} == 'INLAND' (Depressed Asset Tier)"
         elif is_adv.sum() > 0:
             binary_target = is_adv.astype(int)
             target_desc = f"{target_col} Adverse State"
@@ -523,7 +538,7 @@ def resolve_canonical_target_and_cost(
     cost_keywords = [
         'loan_amount', 'loanamount', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
-        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare'
+        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income'
     ]
     # Synthetic / non-financial terms to explicitly exclude
     excluded_cost_terms = [
@@ -545,7 +560,7 @@ def resolve_canonical_target_and_cost(
             continue
         has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$|_)', c_low))
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
-        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare']
+        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income']
         if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr):
             continue
         # Exclude pure date/time columns that end with time units unless they contain explicit money words
@@ -564,7 +579,9 @@ def resolve_canonical_target_and_cost(
 
     if candidate_cost_cols:
         priority_cost = [
-            'loan_amount', 'loanamount', 'credit_amount', 'revenue', 'mrr', 'arr', 'sales', 'billing_amount', 'billing', 'valormensal', 'totalgasto', 'salary', 'income',
+            'loan_amount', 'loanamount', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
+            'revenue', 'mrr', 'arr', 'sales', 'total', 'gross income', 'gross_income', 'billing_amount', 'billing',
+            'valormensal', 'totalgasto', 'salary', 'income',
             'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'
         ]
         candidate_cost_cols.sort(key=lambda col: next((i for i, pc in enumerate(priority_cost) if pc in col.lower()), 999))

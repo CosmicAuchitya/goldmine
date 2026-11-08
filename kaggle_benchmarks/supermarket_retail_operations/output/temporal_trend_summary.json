@@ -1,0 +1,37 @@
+{
+  "is_temporal_dataset": true,
+  "date_column": "Date",
+  "granularity": "monthly",
+  "period_count": 3,
+  "period_over_period_rate_delta_pp": 3.33,
+  "first_to_last_rate_delta_pp": 1.23,
+  "peak_risk_period": "2019-03",
+  "trend_direction": "WORSENING",
+  "summary_note": "Temporal series audited across 3 monthly periods via 'Date'.",
+  "periods": [
+    {
+      "period": "2019-01",
+      "total_records": 352,
+      "adverse_events": 62,
+      "adverse_rate_pct": 17.61,
+      "adverse_capital_drag": 24388.78,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2019-02",
+      "total_records": 303,
+      "adverse_events": 47,
+      "adverse_rate_pct": 15.51,
+      "adverse_capital_drag": 12973.42,
+      "has_monetary_column": true
+    },
+    {
+      "period": "2019-03",
+      "total_records": 345,
+      "adverse_events": 65,
+      "adverse_rate_pct": 18.84,
+      "adverse_capital_drag": 22946.78,
+      "has_monetary_column": true
+    }
+  ]
+}

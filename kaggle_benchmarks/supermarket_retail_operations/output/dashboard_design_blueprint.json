@@ -1,0 +1,117 @@
+{
+  "dataset_name": "supermarket_retail_operations",
+  "matched_ontology": {
+    "ontology_key": "ecommerce_retail",
+    "domain_code": "ECOM",
+    "domain_name": "E-Commerce & Omnichannel Retail",
+    "key_metrics_kpis": [
+      "Gross Merchandise Value (GMV)",
+      "Net Realized Revenue (Completed Orders Only)",
+      "Average Order Value (AOV)",
+      "Return & Cancellation Rate (%)"
+    ],
+    "hidden_leakage_risks": [
+      "RTO (Return to Origin) & Reverse Courier Fees",
+      "Damaged Goods in Transit",
+      "Discount Burn without Volume Lift"
+    ]
+  },
+  "archetype": "editorial_commerce_studio",
+  "archetype_name": "Editorial Commerce & CX Studio",
+  "executive_persona": "Chief Operating Officer (COO) & VP Growth / CX",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "Magazine-style asymmetric story header with CX and margin friction layout",
+    "default_theme": "light",
+    "font_display": "'Georgia', 'Cambria', 'Palatino Linotype', serif",
+    "font_body": "-apple-system, 'Segoe UI', Roboto, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 1000,
+    "total_columns": 17,
+    "is_temporal": true,
+    "has_monetary_ledger": true,
+    "has_secondary_dim": true,
+    "cliffs_count": 6,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "justification": "Verified calendar timestamps detected; tracks Period-over-Period adverse momentum.",
+      "priority": 1
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "priority": 2
+    },
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 4
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (Customer type x Branch) exposes sub-node vulnerability hubs.",
+      "priority": 5
+    },
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 6 continuous driver(s).",
+      "priority": 6
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 7
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "reason": "Insufficient categorical depth (< 3 cohorts) for multi-dimensional bubble dispersion."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Enterprise Analytics & Dimensional Architecture for raw_data \u2014 Karyakari Business Command Cockpit"
+  }
+}

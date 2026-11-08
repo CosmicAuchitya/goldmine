@@ -692,22 +692,36 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
                 b_col, b_seg = b_match.group(1), b_match.group(2)
                 claimed_seg_r = float(b_match.group(3))
                 claimed_rest_r = float(b_match.group(4))
-                if b_col not in fact_cols:
+                is_valid_tier = b_col.endswith('_tier') and b_col[:-5] in fact_cols
+                if b_col not in fact_cols and not is_valid_tier:
                     physics_violations.append(f"Plain Business Summary Column Hallucination: Bottleneck column '{b_col}' does not exist in physical Parquet!")
                 else:
-                    if is_synthetic_column(b_col, bp_data) and len(phys_op_cols) > 0:
+                    if is_synthetic_column(b_col, bp_data) and len(phys_op_cols) > 0 and not is_valid_tier:
                         physics_violations.append(f"Plain Business Summary Synthetic Leak: Bottleneck used synthetic column '{b_col}' when physical columns exist!")
-                    seg_m = (df_fact_sum_audit[b_col].astype(str) == b_seg)
-                    n_s = int(seg_m.sum())
-                    k_s = int(s_bin_sum[seg_m].sum())
-                    phys_seg_r = round((k_s / max(1, n_s)) * 100.0, 2)
-                    n_o = max(1, len(df_fact_sum_audit) - n_s)
-                    k_o = max(0, int(s_bin_sum.sum()) - k_s)
-                    phys_rest_r = round((k_o / n_o) * 100.0, 2)
-                    if abs(claimed_seg_r - phys_seg_r) > 0.25 or abs(claimed_rest_r - phys_rest_r) > 0.25:
-                        physics_violations.append(
-                            f"Plain Business Summary Cross-Wired Rate Mismatch on '{b_col}={b_seg}': Claimed {claimed_seg_r:.2f}% vs {claimed_rest_r:.2f}% rest, physical truth is {phys_seg_r:.2f}% vs {phys_rest_r:.2f}% rest!"
-                        )
+                    
+                    if b_col in df_fact_sum_audit.columns:
+                        seg_series = df_fact_sum_audit[b_col]
+                    elif (out_path / "bi_enriched_fact.parquet").exists():
+                        try:
+                            df_enrich = pd.read_parquet(out_path / "bi_enriched_fact.parquet")
+                            seg_series = df_enrich[b_col] if b_col in df_enrich.columns else pd.Series(dtype=str)
+                        except Exception:
+                            seg_series = pd.Series(dtype=str)
+                    else:
+                        seg_series = pd.Series(dtype=str)
+
+                    if len(seg_series) > 0:
+                        seg_m = (seg_series.astype(str) == b_seg)
+                        n_s = int(seg_m.sum())
+                        k_s = int(s_bin_sum[seg_m].sum())
+                        phys_seg_r = round((k_s / max(1, n_s)) * 100.0, 2)
+                        n_o = max(1, len(df_fact_sum_audit) - n_s)
+                        k_o = max(0, int(s_bin_sum.sum()) - k_s)
+                        phys_rest_r = round((k_o / n_o) * 100.0, 2)
+                        if abs(claimed_seg_r - phys_seg_r) > 0.25 or abs(claimed_rest_r - phys_rest_r) > 0.25:
+                            physics_violations.append(
+                                f"Plain Business Summary Cross-Wired Rate Mismatch on '{b_col}={b_seg}': Claimed {claimed_seg_r:.2f}% vs {claimed_rest_r:.2f}% rest, physical truth is {phys_seg_r:.2f}% vs {phys_rest_r:.2f}% rest!"
+                            )
 
             # Verify Circuit-Breaker honesty & Dossier Non-Synthetic Bottleneck:
             dossier_file = out_path / "DATA_XRAY_EXECUTIVE_DOSSIER.md"

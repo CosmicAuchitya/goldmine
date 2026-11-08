@@ -1,0 +1,138 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 6,433"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[payment] = "cash")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 1,812"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[total]), 'bi_ready_fact'[payment] = "cash")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $26,594.45"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[total])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $119,124.97"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column pickup
+		dataType: string
+		summarizeBy: none
+		sourceColumn: pickup
+		lineageTag: col-fact-pickup
+
+	column dropoff
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dropoff
+		lineageTag: col-fact-dropoff
+
+	column passengers
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: passengers
+		lineageTag: col-fact-passengers
+		formatString: #,0
+
+	column distance
+		dataType: double
+		summarizeBy: average
+		sourceColumn: distance
+		lineageTag: col-fact-distance
+		formatString: 0.00
+
+	column fare
+		dataType: double
+		summarizeBy: average
+		sourceColumn: fare
+		lineageTag: col-fact-fare
+		formatString: 0.00
+
+	column tip
+		dataType: double
+		summarizeBy: average
+		sourceColumn: tip
+		lineageTag: col-fact-tip
+		formatString: 0.00
+
+	column tolls
+		dataType: double
+		summarizeBy: average
+		sourceColumn: tolls
+		lineageTag: col-fact-tolls
+		formatString: 0.00
+
+	column total
+		dataType: double
+		summarizeBy: average
+		sourceColumn: total
+		lineageTag: col-fact-total
+		formatString: 0.00
+
+	column color
+		dataType: string
+		summarizeBy: none
+		sourceColumn: color
+		lineageTag: col-fact-color
+
+	column payment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: payment
+		lineageTag: col-fact-payment
+
+	column pickup_zone
+		dataType: string
+		summarizeBy: none
+		sourceColumn: pickup_zone
+		lineageTag: col-fact-pickup_zone
+
+	column dropoff_zone
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dropoff_zone
+		lineageTag: col-fact-dropoff_zone
+
+	column pickup_borough
+		dataType: string
+		summarizeBy: none
+		sourceColumn: pickup_borough
+		lineageTag: col-fact-pickup_borough
+
+	column dropoff_borough
+		dataType: string
+		summarizeBy: none
+		sourceColumn: dropoff_borough
+		lineageTag: col-fact-dropoff_borough
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source
