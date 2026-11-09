@@ -245,6 +245,22 @@ except ImportError:
     except ImportError:
         synthesize_bespoke_dashboard = None
 
+try:
+    from autonomous_engine.action_ledger import ActionLedger
+except ImportError:
+    try:
+        from action_ledger import ActionLedger
+    except ImportError:
+        ActionLedger = None
+
+try:
+    from autonomous_engine.historical_drift_radar import analyze_historical_drift
+except ImportError:
+    try:
+        from historical_drift_radar import analyze_historical_drift
+    except ImportError:
+        analyze_historical_drift = None
+
 WORKSPACE_ROOT = _WORKSPACE_ROOT
 
 
@@ -650,6 +666,52 @@ with tabs[0]:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
+        # Closed-Loop ROI Action Ledger Banner
+        if ActionLedger is not None:
+            al = ActionLedger()
+            roi_summary = al.get_roi_summary(active_dataset_name)
+            if roi_summary.get("total_actions_resolved", 0) > 0 or roi_summary.get("verified_saved_capital", 0) > 0:
+                sym = roi_summary.get("currency_symbol", "$")
+                saved_amt = roi_summary.get("verified_saved_capital", 0.0)
+                roi_mult = roi_summary.get("roi_multiplier", 0.0)
+                st.markdown(
+                    f'<div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 12px 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">'
+                    f'<span style="color: #6ee7b7; font-weight: 600;">🛡️ <b>Verified Capital Saved (Closed-Loop Action Ledger):</b></span>'
+                    f'<span style="font-family: monospace; font-size: 1.15rem; font-weight: 800; color: #a7f3d0;">{sym}{saved_amt:,.2f} ({roi_mult:.1f}x Subscription ROI)</span>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+
+        # Historical Drift Radar Callout
+        drift_file = out_p / "historical_drift_summary.json"
+        if not drift_file.exists() and analyze_historical_drift is not None:
+            try:
+                analyze_historical_drift(out_p, tenant_id=active_dataset_name)
+            except Exception:
+                pass
+
+        if drift_file.exists():
+            try:
+                drift_data = json.loads(drift_file.read_text(encoding="utf-8"))
+                traj = drift_data.get("trajectory", "BASELINE")
+                badge_color = "#10b981" if traj == "IMPROVING" else ("#f43f5e" if traj == "DETERIORATING" else "#f59e0b")
+                notes = drift_data.get("executive_drift_notes", {})
+                note_text = notes.get("hinglish" if "Hinglish" in persona_mode else "english", "")
+                deltas = drift_data.get("deltas", {})
+                rate_d = deltas.get("event_rate_delta_pct", 0.0)
+                st.markdown(
+                    f'<div style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 12px 18px; margin-bottom: 14px;">'
+                    f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">'
+                    f'<span>🛰️ <b>Historical Drift Radar & Institutional Memory:</b></span>'
+                    f'<span style="background: {badge_color}22; color: {badge_color}; border: 1px solid {badge_color}66; padding: 2px 10px; border-radius: 12px; font-weight: 700; font-family: monospace; font-size: 0.8rem;">{traj} ({rate_d:+.2f}%)</span>'
+                    f'</div>'
+                    f'<div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.4;">{html.escape(note_text)}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+            except Exception:
+                pass
+
         if "Technical" in persona_mode:
             st.markdown(
                 f'<div class="tech-audit-bar">'
@@ -777,6 +839,34 @@ with tabs[1]:
             }
             display_df = df_filtered.head(row_slider).rename(columns=col_rename)
             st.dataframe(display_df, use_container_width=True)
+
+            # Frontline Intervention & Action Ledger Logger
+            if ActionLedger is not None:
+                with st.expander("⚡ Log Frontline Intervention & Lock Verified Savings (Action Ledger)"):
+                    al = ActionLedger()
+                    id_col_cand = df_filtered.columns[0]
+                    c_act1, c_act2, c_act3 = st.columns([2, 1, 1])
+                    with c_act1:
+                        entity_list = [str(x) for x in df_filtered.head(50)[id_col_cand].dropna().unique().tolist()]
+                        chosen_entity = st.selectbox("Select Flagged Record:", entity_list) if entity_list else None
+                    with c_act2:
+                        action_type = st.selectbox("Intervention Type:", ["RETAINED", "CONTACTED", "DISCOUNT_OFFERED", "TRIAGE_ESCALATED", "ROOT_CAUSE_FIXED"])
+                    with c_act3:
+                        st.markdown("<br>", unsafe_allow_html=True)
+                        if st.button("✅ Mark Resolved & Save", use_container_width=True) and chosen_entity:
+                            m_rows = df_filtered[df_filtered[id_col_cand].astype(str) == str(chosen_entity)]
+                            exposure_val = float(m_rows["monetary_exposure"].iloc[0]) if not m_rows.empty and "monetary_exposure" in m_rows.columns else 250.0
+                            al.record_action(
+                                tenant_id=active_dataset_name,
+                                entity_id=str(chosen_entity),
+                                run_id=active_dataset_name,
+                                action_type=action_type,
+                                notes="Frontline intervention recorded via Streamlit worklist.",
+                                monetary_exposure=exposure_val,
+                                status="RESOLVED"
+                            )
+                            st.success(f"Intervention recorded for {chosen_entity}! ${exposure_val:,.2f} registered in Action Ledger.")
+                            st.rerun()
 
 # =============================================================================
 # TAB 3: Ask DataX-Ray (Two-Way Conversational Q&A)

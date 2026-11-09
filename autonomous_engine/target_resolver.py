@@ -339,8 +339,12 @@ def resolve_canonical_target_and_cost(
         'admission type', 'admission_type', 'diagnosis', 'abnormal', 'emergency'
     ]
 
+    # 1.0 Explicit User Override Gate (from 1-Second Intent Handshake)
+    if blueprint and blueprint.get("target_override") in cols:
+        target_col = blueprint.get("target_override")
+
     # 1.1 Check Blueprint hint first (excluding artifacts, URLs, free text, or pure monetary ledgers when discrete target exists)
-    if blueprint and blueprint.get("target_metric") in cols:
+    if not target_col and blueprint and blueprint.get("target_metric") in cols:
         bp_cand = blueprint.get("target_metric")
         c_low = bp_cand.lower()
         is_bad_bp = any(b in c_low for b in [
@@ -627,7 +631,9 @@ def resolve_canonical_target_and_cost(
             if (s_c > 0).mean() > 0.85 and s_c.sum() > 0:
                 candidate_cost_cols.append(c)
 
-    if candidate_cost_cols:
+    if blueprint and blueprint.get("cost_override") in cols:
+        cost_col = blueprint.get("cost_override")
+    elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
             'revenue', 'mrr', 'arr', 'sales', 'total', 'gross income', 'gross_income', 'billing_amount', 'billing',

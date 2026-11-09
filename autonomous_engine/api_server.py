@@ -24,6 +24,8 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+import io
+import zipfile
 
 import numpy as np
 import pandas as pd
@@ -38,14 +40,21 @@ try:
     from .master_orchestrator import run_master_pipeline
     from .anti_hallucination_guard import run_anti_hallucination_audit
     from .conversational_qa_engine import ConversationalBusinessQAEngine
+    from .action_ledger import ActionLedger
+    from .historical_drift_radar import analyze_historical_drift
+    from .target_resolver import resolve_canonical_target_and_cost
 except ImportError:
     from common_utils import resolve_safe_workspace_path
     from kaggle_harvester import safe_extract_zip
     from master_orchestrator import run_master_pipeline
     from anti_hallucination_guard import run_anti_hallucination_audit
     from conversational_qa_engine import ConversationalBusinessQAEngine
+    from action_ledger import ActionLedger
+    from historical_drift_radar import analyze_historical_drift
+    from target_resolver import resolve_canonical_target_and_cost
 
 WORKSPACE_ROOT = Path.cwd().resolve()
+WEB_CLIENT_PATH = Path(__file__).resolve().parent / "web_client.html"
 MAX_UPLOAD_BYTES = 200 * 1024 * 1024  # 200 MB
 CHUNK_SIZE = 1024 * 1024  # 1 MB stream chunk
 ALLOWED_EXTENSIONS = {".csv", ".tsv", ".txt", ".xlsx", ".xls", ".parquet", ".zip"}
@@ -62,14 +71,27 @@ ALLOWED_ARTIFACTS = {
     "semantic_metrics_manifest.json",
     "vega_lite_dashboard_spec.json",
     "temporal_trend_summary.json",
+    "historical_drift_summary.json",
     "bi_ready_fact.parquet"
 }
+
+action_ledger = ActionLedger()
 
 app = FastAPI(
     title="DataX-Ray Autonomous Engine API",
     description="Enterprise Autonomous AI Data Engineering, Forensic Analytics, Grounded Q&A & Bespoke Dashboard Server",
     version="5.5.0"
 )
+
+
+class WorklistActionRequest(BaseModel):
+    tenant_id: str = Field("default_tenant", description="Tenant or workspace ID")
+    entity_id: str = Field(..., description="Unique ID of customer, transaction, or unit")
+    run_id: str = Field("", description="Run identifier where entity was flagged")
+    action_type: str = Field("CONTACTED", description="Intervention type: CONTACTED, DISCOUNT_OFFERED, TRIAGE_ESCALATED, ROOT_CAUSE_FIXED, REPLACED, RETAINED")
+    notes: str = Field("", description="Intervention notes or frontline commentary")
+    monetary_exposure: float = Field(0.0, description="Amount of revenue or capital at risk")
+    status: str = Field("RESOLVED", description="Intervention status: OPEN, IN_PROGRESS, RESOLVED, DISMISSED")
 
 
 class JobRecord:
@@ -80,7 +102,9 @@ class JobRecord:
         run_root: Path,
         mode: str = "ai",
         region_profile: str = "US",
-        language: str = "english"
+        language: str = "english",
+        target_override: Optional[str] = None,
+        cost_override: Optional[str] = None
     ):
         self.job_id = job_id
         self.tenant_id = tenant_id
@@ -88,6 +112,8 @@ class JobRecord:
         self.mode = mode
         self.region_profile = region_profile
         self.language = language
+        self.target_override = target_override
+        self.cost_override = cost_override
         self.status = "QUEUED"  # QUEUED, PROCESSING, COMPLETED, FAILED, PURGED
         self.current_stage = "QUEUED"
         self.progress_pct = 0
@@ -137,7 +163,9 @@ def _execute_job_in_background(job_id: str) -> None:
             data_dir=str(staging_raw),
             output_dir=str(staging_out),
             cache_dir=str(staging_cache),
-            mode=pipeline_mode
+            mode=pipeline_mode,
+            target_override=job.target_override,
+            cost_override=job.cost_override
         )
         if not success:
             job.status = "FAILED"
@@ -200,6 +228,40 @@ def _execute_job_in_background(job_id: str) -> None:
             except Exception:
                 pass
 
+        # Historical Drift Radar Analysis
+        drift_res = {}
+        try:
+            drift_res = analyze_historical_drift(
+                current_out_dir=staging_out,
+                tenant_id=job.tenant_id,
+                current_manifest=manifest_data,
+                current_plain_summary=plain_summary_text
+            )
+        except Exception as de:
+            print(f"[-] Historical drift warning: {de}")
+
+        # Action Ledger Reconciliation
+        try:
+            fact_pq = staging_out / "bi_ready_fact.parquet"
+            if fact_pq.exists():
+                df_fact = pd.read_parquet(fact_pq)
+                id_col = design_bp_data.get("primary_id_column") if isinstance(design_bp_data, dict) else None
+                tgt_col = manifest_data.get("target_outcome", {}).get("column_name")
+                cst_col = manifest_data.get("financial_exposure", {}).get("cost_column")
+                u_sym = manifest_data.get("financial_exposure", {}).get("currency_unit", "$")
+                action_ledger.reconcile_saved_capital(
+                    tenant_id=job.tenant_id,
+                    new_fact_df=df_fact,
+                    id_col=id_col,
+                    target_col=tgt_col,
+                    cost_col=cst_col,
+                    currency_symbol=u_sym
+                )
+        except Exception as le:
+            print(f"[-] Action ledger reconciliation warning: {le}")
+
+        roi_data = action_ledger.get_roi_summary(job.tenant_id)
+
         artifact_urls = {
             name: f"/api/v1/download/{job_id}/{name}"
             for name in ALLOWED_ARTIFACTS
@@ -219,6 +281,8 @@ def _execute_job_in_background(job_id: str) -> None:
             "audit_confidence": audit_res.get("grounding_confidence"),
             "kpis": manifest_data.get("certified_metrics", []),
             "temporal_summary": temporal_data,
+            "historical_drift": drift_res,
+            "roi_summary": roi_data,
             "dashboard_design_blueprint": design_bp_data,
             "plain_summary_markdown": plain_summary_text,
             "worklist_preview": worklist_preview,
@@ -288,10 +352,13 @@ async def submit_job(
     tenant_id: str = Form("default_tenant"),
     mode: str = Form("ai"),
     region_profile: str = Form("US"),
-    language: str = Form("english")
+    language: str = Form("english"),
+    target_override: Optional[str] = Form(None),
+    cost_override: Optional[str] = Form(None)
 ) -> Dict[str, Any]:
     """
     Submits raw dataset files asynchronously for autonomous pipeline execution.
+    Supports optional target_override and cost_override from the 1-Second Intent Handshake.
     Returns HTTP 202 Accepted immediately with polling and live SSE stream links.
     """
     if not files:
@@ -351,7 +418,9 @@ async def submit_job(
             run_root=run_root,
             mode=mode,
             region_profile=region_profile,
-            language=language
+            language=language,
+            target_override=target_override,
+            cost_override=cost_override
         )
         job_manager.submit_job(job_record)
 
@@ -462,17 +531,21 @@ def purge_workspace_data(job_id: str) -> Dict[str, Any]:
 @app.post("/api/v1/analyze-upload", tags=["Pipeline Execution"])
 async def analyze_upload(
     files: List[UploadFile] = File(...),
+    tenant_id: str = Form("default_tenant"),
     mode: str = Form("ai"),
-    language: str = Form("hinglish")
+    language: str = Form("hinglish"),
+    target_override: Optional[str] = Form(None),
+    cost_override: Optional[str] = Form(None)
 ) -> Dict[str, Any]:
     """
     Streams raw dataset files in chunks, extracts ZIPs safely, runs full 7-stage pipeline,
     validates via Anti-Hallucination Guard, and returns audited KPIs, plain-language brief,
-    priority worklist preview, and download links.
+    priority worklist preview, historical drift radar, verified ROI, and download links.
     """
     if not files:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files provided for analysis.")
 
+    safe_tenant = re.sub(r'[^A-Za-z0-9_-]', '_', str(tenant_id).strip()) or "default_tenant"
     run_id = f"run_{int(time.time())}_{uuid.uuid4().hex[:6]}"
     run_root = WORKSPACE_ROOT / "runs" / "uploads" / run_id
     staging_raw = run_root / "raw_data"
@@ -529,7 +602,9 @@ async def analyze_upload(
             data_dir=str(staging_raw),
             output_dir=str(staging_out),
             cache_dir=str(staging_cache),
-            mode=pipeline_mode
+            mode=pipeline_mode,
+            target_override=target_override,
+            cost_override=cost_override
         )
 
         if not success:
@@ -599,6 +674,40 @@ async def analyze_upload(
             except Exception as bpe:
                 print(f"[-] Blueprint read warning: {bpe}")
 
+        # Historical Drift Radar Analysis
+        drift_res = {}
+        try:
+            drift_res = analyze_historical_drift(
+                current_out_dir=staging_out,
+                tenant_id=safe_tenant,
+                current_manifest=manifest_data,
+                current_plain_summary=plain_summary_text
+            )
+        except Exception as de:
+            print(f"[-] Historical drift warning: {de}")
+
+        # Action Ledger Reconciliation
+        try:
+            fact_pq = staging_out / "bi_ready_fact.parquet"
+            if fact_pq.exists():
+                df_fact = pd.read_parquet(fact_pq)
+                id_col = design_bp_data.get("primary_id_column") if isinstance(design_bp_data, dict) else None
+                tgt_col = manifest_data.get("target_outcome", {}).get("column_name")
+                cst_col = manifest_data.get("financial_exposure", {}).get("cost_column")
+                u_sym = manifest_data.get("financial_exposure", {}).get("currency_unit", "$")
+                action_ledger.reconcile_saved_capital(
+                    tenant_id=safe_tenant,
+                    new_fact_df=df_fact,
+                    id_col=id_col,
+                    target_col=tgt_col,
+                    cost_col=cst_col,
+                    currency_symbol=u_sym
+                )
+        except Exception as le:
+            print(f"[-] Action ledger reconciliation warning: {le}")
+
+        roi_data = action_ledger.get_roi_summary(safe_tenant)
+
         # Download URLs
         artifact_urls = {
             name: f"/api/v1/download/{run_id}/{name}"
@@ -611,15 +720,19 @@ async def analyze_upload(
         return {
             "status": "success",
             "run_id": run_id,
+            "tenant_id": safe_tenant,
             "execution_time_seconds": round(time.time() - t_start, 2),
             "output_dir": rel_out_dir,
             "audit_confidence": audit_res.get("grounding_confidence"),
             "kpis": manifest_data.get("certified_metrics", []),
             "temporal_summary": temporal_data,
+            "historical_drift": drift_res,
+            "roi_summary": roi_data,
             "dashboard_design_blueprint": design_bp_data,
             "plain_summary_markdown": plain_summary_text,
             "worklist_preview": worklist_preview,
-            "artifact_download_urls": artifact_urls
+            "artifact_download_urls": artifact_urls,
+            "dashboard_url": f"/api/v1/dashboard/{run_id}"
         }
     except HTTPException:
         raise
@@ -739,3 +852,210 @@ def get_bespoke_dashboard_html(run_id: str) -> HTMLResponse:
 
     content = safe_html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=content, media_type="text/html")
+
+
+# =============================================================================
+# PART 1: PRE-FLIGHT 1-SECOND INTENT HANDSHAKE
+# =============================================================================
+@app.post("/api/v1/preview-intent", tags=["Onboarding & Intent Handshake"])
+async def preview_intent(
+    file: UploadFile = File(...),
+    region_profile: str = Form("US")
+) -> Dict[str, Any]:
+    """
+    1-Second Intent Handshake Endpoint:
+    Quickly scans first chunk (up to 1,000 rows) of uploaded CSV/Excel/ZIP data,
+    detects primary operational target, financial ledger, and currency,
+    and returns pre-flight recommendations with 1-click confirmation parameters.
+    """
+    raw_name = file.filename or "uploaded_data"
+    ext = Path(raw_name).suffix.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file format '{ext}'. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+        )
+
+    # Read first 10MB of data
+    sample_bytes = await file.read(10 * 1024 * 1024)
+    if not sample_bytes:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Uploaded file is empty.")
+
+    try:
+        df_sample = None
+        if ext in (".csv", ".tsv", ".txt"):
+            delim = "\t" if ext == ".tsv" else None
+            try:
+                df_sample = pd.read_csv(io.BytesIO(sample_bytes), sep=delim, nrows=500, encoding="utf-8")
+            except UnicodeDecodeError:
+                df_sample = pd.read_csv(io.BytesIO(sample_bytes), sep=delim, nrows=500, encoding="latin-1")
+        elif ext in (".xlsx", ".xls"):
+            df_sample = pd.read_excel(io.BytesIO(sample_bytes), nrows=500)
+        elif ext == ".parquet":
+            df_sample = pd.read_parquet(io.BytesIO(sample_bytes)).head(500)
+        elif ext == ".zip":
+            with zipfile.ZipFile(io.BytesIO(sample_bytes)) as z:
+                valid_entries = [
+                    n for n in z.namelist()
+                    if not n.startswith("__MACOSX") and Path(n).suffix.lower() in (".csv", ".parquet", ".xlsx")
+                ]
+                if not valid_entries:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="ZIP archive contains no readable CSV, Excel, or Parquet files."
+                    )
+                first_name = valid_entries[0]
+                inner_bytes = z.read(first_name)
+                inner_ext = Path(first_name).suffix.lower()
+                if inner_ext == ".parquet":
+                    df_sample = pd.read_parquet(io.BytesIO(inner_bytes)).head(500)
+                elif inner_ext in (".xlsx", ".xls"):
+                    df_sample = pd.read_excel(io.BytesIO(inner_bytes), nrows=500)
+                else:
+                    df_sample = pd.read_csv(io.BytesIO(inner_bytes), nrows=500)
+    except HTTPException:
+        raise
+    except Exception as read_err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Could not parse sample rows from file '{raw_name}': {read_err}"
+        )
+
+    if df_sample is None or df_sample.empty:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Dataset has 0 readable rows.")
+
+    canonical = resolve_canonical_target_and_cost(df_sample, region_profile=region_profile)
+    target_col = canonical.get("target_col")
+    cost_col = canonical.get("cost_col")
+    target_desc = canonical.get("target_desc") or (f"{target_col} == 1" if target_col else "Adverse Event")
+    unit_symbol = canonical.get("unit_symbol") or "$"
+    currency_code = canonical.get("currency_code")
+    numbering_system = canonical.get("numbering_system") or "western"
+
+    # Candidate targets (discrete / status / rating columns, excluding index and pure coordinate features)
+    candidate_targets = []
+    cols = list(df_sample.columns)
+    for c in cols:
+        c_low = c.lower()
+        if c_low in ('unnamed: 0', 'index', 'id', 'lat', 'lon', 'latitude', 'longitude'):
+            continue
+        nunique = int(df_sample[c].nunique())
+        if (2 <= nunique <= 20) or any(k in c_low for k in ['delay', 'churn', 'cancel', 'default', 'fraud', 'failure', 'rating', 'score', 'status', 'outcome', 'value']):
+            sample_vals = [str(v) for v in df_sample[c].dropna().unique()[:4]]
+            candidate_targets.append({
+                "column": c,
+                "unique_values_count": nunique,
+                "sample_values": sample_vals,
+                "is_detected_default": (c == target_col)
+            })
+
+    # Candidate costs
+    candidate_costs = []
+    for c in cols:
+        c_low = c.lower()
+        if pd.api.types.is_numeric_dtype(df_sample[c]) and c != target_col:
+            if not any(k in c_low for k in ['id', 'key', 'code', 'year', 'month', 'day', 'hour', 'age', 'latitude', 'longitude', 'zip']):
+                s_valid = pd.to_numeric(df_sample[c], errors='coerce').dropna()
+                if len(s_valid) > 0 and (s_valid > 0).mean() > 0.5:
+                    candidate_costs.append({
+                        "column": c,
+                        "sample_mean": round(float(s_valid.mean()), 2),
+                        "unit_symbol": unit_symbol,
+                        "is_detected_default": (c == cost_col)
+                    })
+
+    # Plain question phrasing
+    if cost_col:
+        question_en = f"What is driving adverse '{target_desc}' and how can we recover capital in '{cost_col}'?"
+        question_hi = f"Kyun '{target_desc}' ho raha hai aur '{cost_col}' ka capital loss kaise rokein?"
+    else:
+        question_en = f"What is driving adverse '{target_desc}' and what operational bottlenecks need fixing?"
+        question_hi = f"Kyun '{target_desc}' ho raha hai aur operational bottlenecks ko kaise theek karein?"
+
+    # Clean preview rows
+    df_clean_head = df_sample.head(5).replace([np.inf, -np.inf], np.nan)
+    preview_rows = [
+        {k: (None if pd.isna(v) else v) for k, v in row.items()}
+        for row in df_clean_head.to_dict(orient="records")
+    ]
+
+    return {
+        "status": "success",
+        "filename": raw_name,
+        "sample_rows_count": len(df_sample),
+        "columns_count": len(cols),
+        "columns": cols,
+        "preview_rows": preview_rows,
+        "detected_goal": {
+            "target_col": target_col,
+            "target_desc": target_desc,
+            "cost_col": cost_col,
+            "is_financial": canonical.get("is_financial", False),
+            "unit_symbol": unit_symbol,
+            "currency_code": currency_code,
+            "numbering_system": numbering_system,
+            "business_question_en": question_en,
+            "business_question_hi": question_hi
+        },
+        "candidate_targets": candidate_targets,
+        "candidate_costs": candidate_costs
+    }
+
+
+# =============================================================================
+# PART 2: CLOSED-LOOP ROI ACTION LEDGER ENDPOINTS
+# =============================================================================
+@app.post("/api/v1/worklist/action", tags=["ROI Action Ledger"])
+def record_worklist_action(req: WorklistActionRequest) -> Dict[str, Any]:
+    """
+    Logs frontline operator intervention (e.g. customer contacted, discount offered,
+    retained) on a flagged priority worklist row. Reconciles ROI saved capital.
+    """
+    action_record = action_ledger.record_action(
+        tenant_id=req.tenant_id,
+        entity_id=req.entity_id,
+        run_id=req.run_id,
+        action_type=req.action_type,
+        notes=req.notes,
+        monetary_exposure=req.monetary_exposure,
+        status=req.status
+    )
+    roi_summary = action_ledger.get_roi_summary(req.tenant_id)
+    return {
+        "status": "success",
+        "action": action_record,
+        "roi_summary": roi_summary
+    }
+
+
+@app.get("/api/v1/roi-summary/{tenant_id}", tags=["ROI Action Ledger"])
+def get_roi_summary(tenant_id: str) -> Dict[str, Any]:
+    """Returns certified capital saved, retention success rate, and subscription ROI multiplier."""
+    return action_ledger.get_roi_summary(tenant_id)
+
+
+@app.get("/api/v1/worklist/actions/{tenant_id}", tags=["ROI Action Ledger"])
+def list_worklist_actions(tenant_id: str, limit: int = Query(50, ge=1, le=500)) -> List[Dict[str, Any]]:
+    """Returns recent frontline interventions and reconciliation audit statuses for the tenant."""
+    return action_ledger.list_actions(tenant_id, limit=limit)
+
+
+# =============================================================================
+# PART 4: PRODUCTION SAAS WEB PORTAL
+# =============================================================================
+@app.get("/", tags=["Frontend"])
+@app.get("/app", tags=["Frontend"])
+def serve_web_client() -> HTMLResponse:
+    """Renders the consumer-grade SaaS web portal for business founders and CFOs."""
+    if not WEB_CLIENT_PATH.exists():
+        return HTMLResponse(
+            "<html><body style='font-family:sans-serif;padding:40px;background:#0b0f19;color:#e2e8f0;'>"
+            "<h2>DataX-Ray Autonomous Engine API</h2>"
+            "<p>API server is active on port 8000. Interactive docs available at <a style='color:#38bdf8;' href='/docs'>/docs</a>.</p>"
+            "</body></html>",
+            status_code=200
+        )
+    return HTMLResponse(
+        content=WEB_CLIENT_PATH.read_text(encoding="utf-8"),
+        media_type="text/html"
+    )

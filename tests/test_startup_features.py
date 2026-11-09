@@ -1,0 +1,205 @@
+import io
+import json
+import shutil
+import tempfile
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+from fastapi.testclient import TestClient
+
+from autonomous_engine.action_ledger import ActionLedger
+from autonomous_engine.historical_drift_radar import analyze_historical_drift
+from autonomous_engine.target_resolver import resolve_canonical_target_and_cost
+from autonomous_engine.api_server import app
+
+
+@pytest.fixture
+def temp_dir():
+    d = Path(tempfile.mkdtemp(prefix="test_startup_"))
+    yield d
+    shutil.rmtree(d, ignore_errors=True)
+
+
+@pytest.fixture
+def client():
+    return TestClient(app)
+
+
+def test_action_ledger_lifecycle(temp_dir):
+    """Verifies frontline action recording, provisional locking, and reconciliation."""
+    ledger = ActionLedger(storage_dir=temp_dir)
+    tenant = "test_hotel_group"
+
+    # 1. Initial empty summary
+    initial_roi = ledger.get_roi_summary(tenant)
+    assert initial_roi["total_actions_logged"] == 0
+    assert initial_roi["verified_saved_capital"] == 0.0
+
+    # 2. Record 2 interventions
+    a1 = ledger.record_action(
+        tenant_id=tenant,
+        entity_id="CUST_1001",
+        run_id="run_1",
+        action_type="RETAINED",
+        notes="High-touch concierge call + 10% breakfast credit.",
+        monetary_exposure=450.0,
+        status="RESOLVED"
+    )
+    assert a1["entity_id"] == "CUST_1001"
+    assert a1["status"] == "RESOLVED"
+
+    a2 = ledger.record_action(
+        tenant_id=tenant,
+        entity_id="CUST_1002",
+        run_id="run_1",
+        action_type="DISCOUNT_OFFERED",
+        notes="Room upgrade incentive offered.",
+        monetary_exposure=300.0,
+        status="RESOLVED"
+    )
+
+    # Check updated provisional metrics
+    mid_roi = ledger.get_roi_summary(tenant)
+    assert mid_roi["total_actions_logged"] == 2
+    assert mid_roi["total_actions_resolved"] == 2
+    assert mid_roi["verified_saved_capital"] == 750.0
+    assert mid_roi["roi_multiplier"] > 0
+
+    # 3. Simulate subsequent period fact table
+    # CUST_1001 was successfully retained (is_target_event = 0)
+    # CUST_1002 unfortunately still canceled (is_target_event = 1)
+    # CUST_1003 is a new customer
+    new_data = pd.DataFrame({
+        "customer_id": ["CUST_1001", "CUST_1002", "CUST_1003"],
+        "is_canceled": [0, 1, 0],
+        "_is_target_event": [0, 1, 0],
+        "adr": [450.0, 300.0, 200.0]
+    })
+
+    recon_res = ledger.reconcile_saved_capital(
+        tenant_id=tenant,
+        new_fact_df=new_data,
+        id_col="customer_id",
+        target_col="is_canceled",
+        cost_col="adr",
+        currency_symbol="$"
+    )
+
+    assert recon_res["reconciled_count"] == 2
+    assert recon_res["verified_retained_count"] == 1
+    assert recon_res["verified_saved_capital"] == 450.0
+    assert recon_res["retention_success_rate_pct"] == 50.0
+
+    # Final ROI summary reflects audited physical verification
+    final_roi = ledger.get_roi_summary(tenant)
+    assert final_roi["verified_saved_capital"] == 450.0
+    assert final_roi["verified_averted_events"] == 1
+
+
+def test_historical_drift_radar_analysis(temp_dir):
+    """Verifies baseline registration and period-over-period drift detection."""
+    out_dir = temp_dir / "output"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    manifest_v1 = {
+        "target_outcome": {
+            "column_name": "is_canceled",
+            "total_adverse_events": 120,
+            "adverse_event_rate_pct": 24.0
+        },
+        "financial_exposure": {
+            "cost_column": "adr",
+            "currency_unit": "$",
+            "total_adverse_capital_drag": 18000.0
+        },
+        "governance": {
+            "audited_fact_records": 500
+        }
+    }
+
+    drift_res = analyze_historical_drift(
+        current_out_dir=out_dir,
+        tenant_id="tenant_alpha",
+        current_manifest=manifest_v1,
+        current_plain_summary="Key bottleneck is Lead Time > 30 days."
+    )
+
+    assert drift_res["has_historical_comparison"] is False
+    assert drift_res["trajectory"] == "BASELINE"
+    assert "historical_drift_summary.json" in [f.name for f in out_dir.iterdir()]
+    assert "english" in drift_res["executive_drift_notes"]
+    assert "hinglish" in drift_res["executive_drift_notes"]
+
+
+def test_preview_intent_endpoint(client):
+    """Verifies the 1-Second Pre-Flight Intent Handshake API."""
+    csv_content = (
+        "booking_id,is_canceled,adr,lead_time,market_segment\n"
+        "B001,0,120.5,14,Online TA\n"
+        "B002,1,150.0,45,Offline TA\n"
+        "B003,0,95.0,2,Direct\n"
+        "B004,1,210.0,120,Corporate\n"
+        "B005,0,110.0,7,Direct\n"
+    )
+    files = {"file": ("hotel_sample.csv", io.BytesIO(csv_content.encode("utf-8")), "text/csv")}
+    res = client.post("/api/v1/preview-intent", files=files)
+
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert data["sample_rows_count"] == 5
+    assert "booking_id" in data["columns"]
+
+    goal = data["detected_goal"]
+    assert goal["target_col"] == "is_canceled"
+    assert goal["cost_col"] == "adr"
+    assert goal["unit_symbol"] == "$"
+    assert "cancellations" in goal["business_question_en"].lower() or "is_canceled" in goal["business_question_en"].lower()
+    assert len(data["preview_rows"]) == 5
+
+
+def test_worklist_and_roi_api_endpoints(client):
+    """Verifies FastAPI endpoints for logging frontline actions and querying ROI."""
+    tenant = "api_test_tenant"
+
+    # 1. Log an action
+    payload = {
+        "tenant_id": tenant,
+        "entity_id": "FLIGHT_UA452",
+        "run_id": "run_test_01",
+        "action_type": "ROOT_CAUSE_FIXED",
+        "notes": "Turnaround ground crew re-assigned to gate 14.",
+        "monetary_exposure": 1250.0,
+        "status": "RESOLVED"
+    }
+    res_act = client.post("/api/v1/worklist/action", json=payload)
+    assert res_act.status_code == 200
+    act_data = res_act.json()
+    assert act_data["status"] == "success"
+    assert act_data["action"]["entity_id"] == "FLIGHT_UA452"
+    assert act_data["roi_summary"]["verified_saved_capital"] == 1250.0
+
+    # 2. Get ROI summary
+    res_roi = client.get(f"/api/v1/roi-summary/{tenant}")
+    assert res_roi.status_code == 200
+    roi_data = res_roi.json()
+    assert roi_data["total_actions_resolved"] == 1
+    assert roi_data["verified_saved_capital"] == 1250.0
+
+    # 3. List actions
+    res_list = client.get(f"/api/v1/worklist/actions/{tenant}")
+    assert res_list.status_code == 200
+    list_data = res_list.json()
+    assert len(list_data) >= 1
+    assert list_data[0]["entity_id"] == "FLIGHT_UA452"
+
+
+def test_web_portal_route(client):
+    """Verifies that GET / serves the consumer-grade SaaS web portal."""
+    res = client.get("/")
+    assert res.status_code == 200
+    assert "text/html" in res.headers["content-type"]
+    assert "DataX-Ray Autonomous™" in res.text
+    assert "Intent Handshake" in res.text

@@ -21,6 +21,7 @@ import time
 import shutil
 import argparse
 from pathlib import Path
+from typing import Optional
 
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -123,7 +124,9 @@ def run_master_pipeline(
     data_dir: str = "raw_data",
     output_dir: str = "output",
     cache_dir: str = "cache",
-    mode: str = "ai"
+    mode: str = "ai",
+    target_override: Optional[str] = None,
+    cost_override: Optional[str] = None
 ) -> bool:
     start_total = time.time()
     data_path = Path(data_dir).resolve()
@@ -140,6 +143,10 @@ def run_master_pipeline(
     print(f"[*] Raw Data Directory : {data_path}")
     print(f"[*] Cache Directory    : {cache_path}")
     print(f"[*] Output Directory   : {out_path}")
+    if target_override:
+        print(f"[*] Target Override    : {target_override}")
+    if cost_override:
+        print(f"[*] Cost Override      : {cost_override}")
     print("=" * 80 + "\n")
 
     if not data_path.exists():
@@ -186,6 +193,16 @@ def run_master_pipeline(
             blueprint_json,
             use_llm=(mode.lower() not in ("dag", "templated", "deterministic"))
         )
+        if target_override or cost_override:
+            import json as json_lib
+            if target_override:
+                blueprint["target_override"] = target_override
+                blueprint["target_metric"] = target_override
+            if cost_override:
+                blueprint["cost_override"] = cost_override
+            with open(blueprint_json, "w", encoding="utf-8") as bf:
+                json_lib.dump(blueprint, bf, indent=2)
+
         dur2 = round(time.time() - t0, 2)
         run_mgr.log_stage_telemetry(2, "Blueprint Formulation", dur2, "SUCCESS", {"project": blueprint.get("project_title")})
         print(f"[+] Stage 2 Completed in {dur2}s! (Project: {blueprint.get('project_title', 'Analytics')})", flush=True)
