@@ -542,6 +542,8 @@ Respond with ONLY JSON."""
             for k, v in list(row.items()):
                 if pd.isna(v) or v is None:
                     row[k] = None
+                elif isinstance(v, np.generic):
+                    row[k] = v.item()
 
         spec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -585,6 +587,7 @@ Respond with ONLY JSON."""
                 f"**Query Error**: DuckDB SQL execution mein issue aaya: `{e}`"
             )
             return {
+                "status": "error",
                 "question": question,
                 "language": resolved_lang,
                 "sql_executed": sql,
@@ -593,20 +596,26 @@ Respond with ONLY JSON."""
                 "columns": [],
                 "data": [],
                 "answer_markdown": err_msg,
+                "plain_summary": err_msg,
+                "answer": err_msg,
                 "vega_lite_spec": None,
                 "grounding_verified": False,
                 "error": str(e)
             }
 
-        # Clean inf/nan for JSON serialization
+        # Clean inf/nan for strict JSON serialization
         res_df_clean = res_df.replace([np.inf, -np.inf], np.nan)
-        records = res_df_clean.to_dict(orient="records")
+        records = [
+            {k: (None if pd.isna(v) else (v.item() if isinstance(v, np.generic) else v)) for k, v in row.items()}
+            for row in res_df_clean.to_dict(orient="records")
+        ]
 
         # Format 100% physically grounded answer markdown
         answer_md = self._format_grounded_answer(question, res_df_clean, resolved_lang)
         vega_spec = self._generate_vega_spec(res_df_clean, question)
 
         return {
+            "status": "success",
             "question": question,
             "language": resolved_lang,
             "sql_executed": sql,
@@ -615,6 +624,8 @@ Respond with ONLY JSON."""
             "columns": list(res_df_clean.columns),
             "data": records,
             "answer_markdown": answer_md,
+            "plain_summary": answer_md,
+            "answer": answer_md,
             "vega_lite_spec": vega_spec,
             "grounding_verified": True
         }

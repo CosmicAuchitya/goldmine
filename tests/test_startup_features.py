@@ -197,9 +197,73 @@ def test_worklist_and_roi_api_endpoints(client):
 
 
 def test_web_portal_route(client):
-    """Verifies that GET / serves the consumer-grade SaaS web portal."""
+    """Verifies that GET / serves the bespoke Vanilla CSS SaaS web portal with zero alert() popups."""
     res = client.get("/")
     assert res.status_code == 200
     assert "text/html" in res.headers["content-type"]
-    assert "DataX-Ray Autonomous™" in res.text
-    assert "Intent Handshake" in res.text
+    html = res.text
+    assert "DataX-Ray" in html
+    assert "PRE-FLIGHT SCHEMA &amp; INTENT HANDSHAKE" in html
+    assert "loadCertifiedBenchmark" in html
+    # Quality gates from web-app-development skill audit:
+    assert "window.alert(" not in html
+    assert "alert(" not in html
+    assert "cdn.tailwindcss.com" not in html
+    assert "bg-purple-" not in html
+
+
+def test_certified_benchmarks_and_executive_pulse(client):
+    """Verifies 1-click benchmark playground endpoints and structured executive_pulse extraction."""
+    res_list = client.get("/api/v1/benchmarks")
+    assert res_list.status_code == 200
+    b_list = res_list.json()
+    assert b_list["status"] == "success"
+    bench_ids = [b["id"] for b in b_list["benchmarks"]]
+    assert "hotel_booking_cancellation" in bench_ids
+    assert "supermarket_retail_operations" in bench_ids
+
+    # Load hotel_booking_cancellation and verify exact physical numbers & pulse structure
+    res_hotel = client.get("/api/v1/benchmarks/hotel_booking_cancellation")
+    assert res_hotel.status_code == 200
+    payload = res_hotel.json()
+    assert payload["status"] == "success"
+    assert payload["run_id"] == "hotel_booking_cancellation"
+
+    pulse = payload["executive_pulse"]
+    assert pulse["total_records"] == 119390
+    assert pulse["total_adverse_events"] == 44224
+    assert abs(pulse["overall_adverse_rate_pct"] - 37.04) < 0.1
+    assert abs(pulse["total_capital_drag"] - 4641942.67) < 1.0
+    assert pulse["moat"]["headline"] != ""
+    assert pulse["bottleneck"]["headline"] != ""
+    assert pulse["red_line"]["headline"] != ""
+    assert len(pulse["pathways"]) >= 1
+
+    # Verify bilingual briefs and worklist preview
+    assert len(payload["english_summary_markdown"]) > 100
+    assert len(payload["hinglish_summary_markdown"]) > 100
+    assert len(payload["worklist_preview"]) > 0
+    assert payload["worklist_meta"]["primary_id_column"] != ""
+
+
+def test_conversational_qa_endpoint_and_nan_safety(client):
+    """Verifies /api/v1/ask returns grounded markdown, plain_summary alias, and clean JSON rows."""
+    res = client.post(
+        "/api/v1/ask",
+        json={
+            "output_dir": "kaggle_benchmarks/supermarket_retail_operations/output",
+            "question": "What are the top highest risk segments?",
+            "language": "en",
+            "use_llm": False,
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert len(data["answer_markdown"]) > 20
+    assert data["plain_summary"] == data["answer_markdown"]
+    assert data["answer"] == data["answer_markdown"]
+    assert isinstance(data["columns"], list)
+    assert isinstance(data["data"], list)
+    assert "SELECT" in data["sql_executed"].upper()
+

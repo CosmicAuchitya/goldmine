@@ -1,1274 +1,2477 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataX-Ray Autonomous™ | Enterprise AI Forensic Intelligence & Decision OS</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
-            },
-            surface: {
-              dark: '#080c14',
-              card: '#0f172a',
-              cardHover: '#1e293b',
-              border: '#1e293b',
-              borderHover: '#334155',
-            }
-          }
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataX-Ray — Autonomous Decision Intelligence & Profit Recovery Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-surface: #111827;
+      --bg-elevated: #172033;
+      --bg-subtle: #0c1220;
+      --bg-glass: rgba(17, 24, 39, 0.88);
+      --border-subtle: #1e293b;
+      --border-strong: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --accent-emerald: #10b981;
+      --accent-emerald-soft: rgba(16, 185, 129, 0.12);
+      --accent-amber: #f59e0b;
+      --accent-amber-soft: rgba(245, 158, 11, 0.12);
+      --accent-crimson: #f43f5e;
+      --accent-crimson-soft: rgba(244, 63, 94, 0.12);
+      --accent-sky: #0ea5e9;
+      --accent-sky-soft: rgba(14, 165, 233, 0.12);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-card: 0 10px 30px -10px rgba(2, 6, 23, 0.7);
+      --transition-fast: 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    .tabular-nums {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Top Navigation Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #052e16;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+    }
+
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .control-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .control-pill label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .control-pill input,
+    .control-pill select {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .control-pill select option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .truth-seal {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-emerald-soft);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-emerald);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    /* Main Container */
+    .workspace-shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 28px 80px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent-emerald);
+      color: #042f2e;
+      font-weight: 700;
+      border-color: #34d399;
+    }
+
+    .btn-primary:hover {
+      background: #34d399;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-secondary);
+      background: #1e293b;
+    }
+
+    .btn-sky {
+      background: var(--accent-sky-soft);
+      color: #38bdf8;
+      border-color: rgba(14, 165, 233, 0.35);
+    }
+
+    .btn-sky:hover {
+      background: rgba(14, 165, 233, 0.22);
+      border-color: #38bdf8;
+    }
+
+    .btn-amber {
+      background: var(--accent-amber-soft);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-amber:hover {
+      background: rgba(245, 158, 11, 0.22);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* Onboarding Workbench (Split Layout) */
+    .onboarding-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1080px) {
+      .onboarding-grid {
+        grid-template-columns: 1fr;
       }
     }
-  </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+
+    .panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      box-shadow: var(--shadow-card);
     }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
+
+    .hero-heading {
+      font-size: clamp(24px, 2.6vw, 32px);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin-bottom: 10px;
     }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+
+    .hero-lead {
+      color: var(--text-secondary);
+      font-size: 14.5px;
+      max-width: 62ch;
+      margin-bottom: 22px;
     }
-    ::-webkit-scrollbar-track {
-      background: #080c14;
+
+    .dropzone-box {
+      border: 1.5px dashed var(--border-strong);
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
     }
-    ::-webkit-scrollbar-thumb {
-      background: #1e293b;
-      border-radius: 9999px;
+
+    .dropzone-box:hover,
+    .dropzone-box.drag-over {
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.05);
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
+
+    .dropzone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: var(--accent-emerald);
     }
-    .pulse-glow {
-      box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.3);
+
+    .dropzone-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
     }
-    .success-glow {
-      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+
+    .dropzone-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
     }
-    .danger-glow {
-      box-shadow: 0 0 25px -5px rgba(239, 68, 68, 0.3);
+
+    .architecture-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .arch-item {
+      font-size: 12px;
+    }
+
+    .arch-item strong {
+      display: block;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      margin-bottom: 2px;
+    }
+
+    .arch-item span {
+      color: var(--text-muted);
+      font-size: 11.5px;
+    }
+
+    /* Benchmark Playground Column */
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .benchmark-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .benchmark-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 16px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--transition-fast);
+    }
+
+    .benchmark-item:hover {
+      background: var(--bg-elevated);
+      border-color: var(--accent-emerald);
+      transform: translateX(2px);
+    }
+
+    .benchmark-item.active-bench {
+      background: rgba(16, 185, 129, 0.09);
+      border-color: var(--accent-emerald);
+    }
+
+    .benchmark-meta-left h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .benchmark-meta-left p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .benchmark-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      color: var(--accent-emerald);
+      white-space: nowrap;
+    }
+
+    /* Pre-Flight Intent Handshake Card */
+    .intent-drawer {
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-sky);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 0 35px rgba(14, 165, 233, 0.12);
+    }
+
+    .intent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    @media (max-width: 900px) {
+      .intent-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-field select,
+    .form-field input {
+      width: 100%;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .form-field select:focus,
+    .form-field input:focus {
+      border-color: var(--accent-sky);
+    }
+
+    /* Progress Telemetry Stepper */
+    .telemetry-bar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 22px 26px;
+      margin-bottom: 28px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 14px 0;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #0ea5e9 100%);
+      width: 12%;
+      transition: width 300ms ease;
+    }
+
+    /* Active Workspace Context Banner */
+    .context-ribbon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+    }
+
+    .context-ribbon-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .run-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      background: var(--accent-emerald-soft);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .meta-stat {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .meta-stat strong {
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+    }
+
+    /* Historical Drift Radar Banner */
+    .drift-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 22px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--accent-sky);
+      margin-bottom: 24px;
+    }
+
+    .drift-deltas {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .delta-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      text-align: right;
+    }
+
+    .delta-pill span {
+      display: block;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .delta-pill strong {
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+
+    /* 4-Card Morning Business Pulse Grid */
+    .pulse-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1200px) {
+      .pulse-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .pulse-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pulse-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition-fast);
+    }
+
+    .pulse-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .pulse-card.moat::before { background: var(--accent-emerald); }
+    .pulse-card.bottleneck::before { background: var(--accent-amber); }
+    .pulse-card.redline::before { background: var(--accent-crimson); }
+    .pulse-card.recovery::before { background: var(--accent-sky); }
+
+    .pulse-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pulse-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .pulse-card.moat .pulse-label { color: var(--accent-emerald); }
+    .pulse-card.bottleneck .pulse-label { color: var(--accent-amber); }
+    .pulse-card.redline .pulse-label { color: var(--accent-crimson); }
+    .pulse-card.recovery .pulse-label { color: #38bdf8; }
+
+    .pulse-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .pulse-headline {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .pulse-detail {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.48;
+      margin-bottom: 14px;
+    }
+
+    .pulse-footer {
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 3-Pathway Strategic Decision Matrix + Bilingual Brief Split */
+    .strategy-brief-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1100px) {
+      .strategy-brief-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pathway-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .pathway-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .pathway-card:hover,
+    .pathway-card.selected {
+      background: var(--bg-elevated);
+      border-color: var(--accent-sky);
+    }
+
+    .pathway-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .pathway-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .pathway-roi {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      background: var(--accent-emerald-soft);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .pathway-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .pathway-meta div span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* Executive Brief Markdown Reader */
+    .brief-reader {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      max-height: 410px;
+      overflow-y: auto;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .brief-reader h1,
+    .brief-reader h2,
+    .brief-reader h3 {
+      color: var(--text-primary);
+      font-size: 14.5px;
+      font-weight: 700;
+      margin: 14px 0 6px;
+    }
+
+    .brief-reader h1:first-child,
+    .brief-reader h2:first-child {
+      margin-top: 0;
+    }
+
+    .brief-reader p {
+      margin-bottom: 10px;
+    }
+
+    .brief-reader ul {
+      padding-left: 18px;
+      margin-bottom: 10px;
+    }
+
+    .brief-reader li {
+      margin-bottom: 6px;
+    }
+
+    .brief-reader strong {
+      color: var(--text-primary);
+    }
+
+    .brief-reader blockquote {
+      border-left: 3px solid var(--accent-emerald);
+      padding-left: 12px;
+      color: var(--text-primary);
+      margin: 10px 0;
+      background: rgba(16, 185, 129, 0.05);
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Simulator & Closed-Loop ROI Grid */
+    .sim-roi-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .sim-roi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .slider-group {
+      margin-bottom: 18px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-emerald);
+      cursor: pointer;
+    }
+
+    .sim-output-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .sim-kpi {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .sim-kpi span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .sim-kpi strong {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* Worklist Table Section */
+    .worklist-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .worklist-toolbar {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .filter-tab.active {
+      background: var(--accent-emerald-soft);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+
+    .search-input {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+      min-width: 240px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-emerald);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    table.data-table th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 5;
+    }
+
+    table.data-table td {
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+
+    table.data-table tr:hover td {
+      background: rgba(23, 32, 51, 0.65);
+    }
+
+    .queue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .queue-badge.preventive {
+      background: var(--accent-amber-soft);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .queue-badge.recovery {
+      background: var(--accent-crimson-soft);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .queue-badge.resolved {
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Ask DataX-Ray Copilot Panel */
+    .copilot-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 16px;
+    }
+
+    .copilot-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .copilot-chip:hover {
+      border-color: var(--accent-sky);
+      color: var(--text-primary);
+    }
+
+    .copilot-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .copilot-input-row input {
+      flex: 1;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 11px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .copilot-input-row input:focus {
+      border-color: var(--accent-sky);
+    }
+
+    .qa-response-card {
+      margin-top: 18px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .sql-code-block {
+      margin-top: 12px;
+      background: #060911;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Modal / Intervention Drawer */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      padding: 26px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+
+    .modal-card textarea {
+      width: 100%;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.5;
+      margin: 12px 0;
+      outline: none;
+    }
+
+    /* Toast Notification Stack */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    }
+
+    .toast-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-left: 4px solid var(--accent-emerald);
+      color: var(--text-primary);
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      font-size: 13px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      animation: slideIn 180ms ease-out;
+    }
+
+    .toast-item.warn { border-left-color: var(--accent-amber); }
+    .toast-item.error { border-left-color: var(--accent-crimson); }
+    .toast-item.info { border-left-color: var(--accent-sky); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
-<body class="bg-surface-dark text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+<body>
 
-  <!-- ===================================================================== -->
-  <!-- TOP NAV & ENTERPRISE COMMAND BAR -->
-  <!-- ===================================================================== -->
-  <header class="sticky top-0 z-40 bg-surface-dark/95 backdrop-blur-md border-b border-surface-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Logo & Engine Identity -->
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-sky-400 to-emerald-400 flex items-center justify-center shadow-lg shadow-sky-500/20">
-          <i class="fa-solid fa-atom text-white text-lg"></i>
-        </div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <span class="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-sky-300">DataX-Ray Autonomous™</span>
-            <span class="px-2 py-0.5 text-[10px] font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full tracking-wider uppercase">Zero-Hallucination OS</span>
-          </div>
-          <p class="text-[11px] text-slate-400 font-medium">Closed-Loop Forensic Business Optimization & ROI Ledger</p>
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="brand-cluster">
+      <div class="brand-mark">DX</div>
+      <div>
+        <div class="brand-title">
+          DataX-Ray
+          <span class="brand-subtitle">Autonomous Decision &amp; Profit Engine</span>
         </div>
       </div>
+    </div>
 
-      <!-- Verified ROI Ticker & Tenant Controls -->
-      <div class="flex items-center space-x-4">
-        <!-- Live Verified ROI Ribbon -->
-        <div id="topRoiRibbon" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
-          <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-          <span>Verified Saved:</span>
-          <span id="topRoiSavedVal" class="font-bold text-emerald-200 font-mono">$0</span>
-          <span class="text-emerald-500/60">|</span>
-          <span id="topRoiMultiplier" class="font-bold text-emerald-300 font-mono">0.0x ROI</span>
-        </div>
+    <div class="topbar-controls">
+      <div class="control-pill">
+        <label for="tenantInput">Workspace</label>
+        <input id="tenantInput" type="text" value="founder_workspace" />
+      </div>
 
-        <!-- Tenant Badge -->
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border text-xs text-slate-300">
-          <i class="fa-solid fa-building text-slate-400"></i>
-          <span id="tenantDisplay" class="font-medium">default_tenant</span>
-        </div>
+      <div class="control-pill">
+        <label for="regionSelect">Region</label>
+        <select id="regionSelect">
+          <option value="US">US / Global ($ USD)</option>
+          <option value="IN">India (₹ INR · Lakh/Cr)</option>
+          <option value="EU">Europe (€ EUR)</option>
+          <option value="GB">UK (£ GBP)</option>
+        </select>
+      </div>
 
-        <!-- GDPR DPDP Erasure Button -->
-        <button onclick="confirmPurge()" title="1-Click Right to Erasure (GDPR / DPDP)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-surface-border rounded-lg transition-colors flex items-center space-x-1.5">
-          <i class="fa-solid fa-trash-can"></i>
-          <span class="hidden md:inline">Purge Data</span>
-        </button>
-
-        <a href="/docs" target="_blank" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition-colors flex items-center space-x-1.5">
-          <i class="fa-solid fa-code"></i>
-          <span>API</span>
-        </a>
+      <div class="truth-seal">
+        <span class="pulse-dot"></span>
+        <span>DUCKDB DETERMINISTIC TRUTH</span>
       </div>
     </div>
   </header>
 
-  <!-- ===================================================================== -->
-  <!-- MAIN APPLICATION CONTAINER -->
-  <!-- ===================================================================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <main class="workspace-shell">
 
-    <!-- HERO / QUICK-START INGESTION DOCK -->
-    <section id="ingestSection" class="relative rounded-2xl bg-gradient-to-b from-surface-card to-surface-card/60 border border-surface-border p-8 overflow-hidden shadow-2xl">
-      <!-- Ambient decorative glow -->
-      <div class="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="relative z-10 max-w-3xl mx-auto text-center space-y-4">
-        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
-          <i class="fa-solid fa-bolt text-xs"></i>
-          <span>1-Second Pre-Flight Intent Handshake</span>
+    <!-- Onboarding & Instant Benchmark Workbench -->
+    <section id="onboardingSection" class="onboarding-grid">
+      <!-- Left: File Dropzone & Value Prop -->
+      <div class="panel-card">
+        <div class="section-eyebrow">
+          <span>AUTONOMOUS 7-STAGE DIAGNOSTIC ENGINE</span>
+          <span>CSV · XLSX · PARQUET · ZIP</span>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-          Drop your business data. <br class="hidden sm:inline" />
-          <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">Discover where your money leaks in 10 seconds.</span>
-        </h1>
-        <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
-          No complex data warehouse setup. Upload your messy CSV, Excel, Tally export, or ZIP. Our deterministic DuckDB engine mathematically isolates competitive moats, bottlenecks, and dollar recovery worklists.
+        <h1 class="hero-heading">Turn raw operational ledgers into verified profit recovery.</h1>
+        <p class="hero-lead">
+          Upload any POS, booking, logistics, or loan dataset. DataX-Ray executes deterministic DuckDB aggregations, isolates your #1 bottleneck and tipping-point red-line, and generates a row-level frontline retention worklist with zero hallucinated numbers.
         </p>
 
-        <!-- Drag & Drop Zone -->
-        <div id="dropZone" class="mt-6 border-2 border-dashed border-slate-700 hover:border-sky-400 hover:bg-sky-500/5 rounded-2xl p-8 cursor-pointer transition-all duration-200 group text-center">
-          <input type="file" id="fileInput" class="hidden" accept=".csv,.tsv,.txt,.xlsx,.xls,.parquet,.zip" onchange="handleFileSelected(this.files)" />
-          <div class="flex flex-col items-center space-y-3">
-            <div class="w-16 h-16 rounded-2xl bg-slate-800 group-hover:bg-sky-500/20 text-slate-400 group-hover:text-sky-400 flex items-center justify-center transition-all duration-200 shadow-inner">
-              <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
-            </div>
-            <div>
-              <p class="text-sm font-semibold text-slate-200 group-hover:text-white">
-                Drag and drop your file here, or <span class="text-sky-400 underline underline-offset-4">browse files</span>
-              </p>
-              <p class="text-xs text-slate-500 mt-1">Supports CSV, Excel (.xlsx/.xls), Parquet, and ZIP (up to 200MB)</p>
-            </div>
-            <div class="flex items-center space-x-2 text-[11px] text-slate-400 pt-2">
-              <i class="fa-solid fa-lock text-emerald-400"></i>
-              <span>100% Local Sandboxed • Zero Data Leakage • DPDP/GDPR Ready</span>
-            </div>
+        <div id="dropzone" class="dropzone-box" onclick="document.getElementById('fileInput').click()">
+          <input id="fileInput" type="file" accept=".csv,.tsv,.xlsx,.xls,.parquet,.zip" class="hidden" onchange="handleFileSelection(event)" />
+          <div class="dropzone-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
           </div>
+          <div class="dropzone-title">Drop your dataset here, or click to browse</div>
+          <div class="dropzone-sub">1-second pre-flight schema &amp; currency handshake before full execution</div>
+          <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+            Select Dataset File
+          </button>
         </div>
 
-        <!-- 1-Click Instant Benchmark Demo Buttons -->
-        <div class="pt-6 border-t border-surface-border">
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Or load a live enterprise industry benchmark:</p>
-          <div class="flex flex-wrap items-center justify-center gap-2">
-            <button onclick="loadSampleDemo('supermarket_retail_operations')" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-cardHover border border-surface-border hover:border-slate-600 text-xs text-slate-200 transition-colors flex items-center space-x-1.5">
-              <span>🛒 Supermarket Retail</span>
-            </button>
-            <button onclick="loadSampleDemo('aviation_flight_delays')" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-cardHover border border-surface-border hover:border-slate-600 text-xs text-slate-200 transition-colors flex items-center space-x-1.5">
-              <span>✈️ Aviation Logistics</span>
-            </button>
-            <button onclick="loadSampleDemo('hotel_booking_demand')" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-cardHover border border-surface-border hover:border-slate-600 text-xs text-slate-200 transition-colors flex items-center space-x-1.5">
-              <span>🏨 Hotel Cancellations</span>
-            </button>
-            <button onclick="loadSampleDemo('bank_loan_defaulters')" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-cardHover border border-surface-border hover:border-slate-600 text-xs text-slate-200 transition-colors flex items-center space-x-1.5">
-              <span>💳 Banking Loan Delinquency</span>
-            </button>
-            <button onclick="loadSampleDemo('california_housing_spatial_valuation')" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-cardHover border border-surface-border hover:border-slate-600 text-xs text-slate-200 transition-colors flex items-center space-x-1.5">
-              <span>🏡 Distressed Asset Valuation</span>
-            </button>
+        <div class="architecture-strip">
+          <div class="arch-item">
+            <strong>01 · Zero Jabardasti</strong>
+            <span>100% physical DuckDB SQL math. No invented fallback numbers.</span>
           </div>
+          <div class="arch-item">
+            <strong>02 · Bilingual Briefs</strong>
+            <span>Executive dossiers in Plain English &amp; Simple Hinglish.</span>
+          </div>
+          <div class="arch-item">
+            <strong>03 · Closed-Loop ROI</strong>
+            <span>Track frontline outreach &amp; reconcile saved capital across uploads.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: 1-Click Certified Benchmark Playground -->
+      <div class="panel-card">
+        <div class="section-eyebrow">
+          <span>INSTANT LIVE PLAYGROUND</span>
+          <span class="tabular-nums" style="color: var(--accent-emerald);">&lt; 50ms LOAD</span>
+        </div>
+        <h2 style="font-size: 19px; font-weight: 800; margin-bottom: 6px;">Explore Certified Industry Benchmarks</h2>
+        <p style="font-size: 13px; color: var(--text-secondary);">
+          Click any pre-audited benchmark below to inspect its live Morning Business Pulse, 3-Pathway Strategy Matrix, Priority Worklist, and DuckDB SQL Copilot immediately.
+        </p>
+
+        <div id="benchmarkList" class="benchmark-list">
+          <button type="button" class="benchmark-item" data-bench="hotel_booking_cancellation" onclick="loadCertifiedBenchmark('hotel_booking_cancellation')">
+            <div class="benchmark-meta-left">
+              <h4>Hotel Booking &amp; Cancellation Ledger</h4>
+              <p>Isolate lead-time cancellation cliffs, OTA channel leakage, and room-rate exposure.</p>
+            </div>
+            <span class="benchmark-badge">119,390 Rows · $4.64M Drag</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="supermarket_retail_operations" onclick="loadCertifiedBenchmark('supermarket_retail_operations')">
+            <div class="benchmark-meta-left">
+              <h4>Supermarket POS &amp; Margin Operations</h4>
+              <p>Audit checkout basket sizes, payment friction, and product-line satisfaction across 3 branches.</p>
+            </div>
+            <span class="benchmark-badge">1,000 Rows · $60.3K Drag</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="airline_flight_delays_operations" onclick="loadCertifiedBenchmark('airline_flight_delays_operations')">
+            <div class="benchmark-meta-left">
+              <h4>US Airline Network Delay Audit</h4>
+              <p>Pinpoint departure clock tipping points, carrier propagation bottlenecks, and hub turnaround risk.</p>
+            </div>
+            <span class="benchmark-badge">300,000 Rows · 18.9% Delay</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="credit_card_loan_default" onclick="loadCertifiedBenchmark('credit_card_loan_default')">
+            <div class="benchmark-meta-left">
+              <h4>Credit Card Delinquency &amp; Default Risk</h4>
+              <p>Detect repayment status delinquency cascades, credit limit exposure, and collections queues.</p>
+            </div>
+            <span class="benchmark-badge">30,000 Rows · NT$1.1B Drag</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="california_housing_real_estate" onclick="loadCertifiedBenchmark('california_housing_real_estate')">
+            <div class="benchmark-meta-left">
+              <h4>California Spatial Property Valuation</h4>
+              <p>Evaluate median income valuation corridors, coastal proximity premiums, and age breakpoints.</p>
+            </div>
+            <span class="benchmark-badge">20,640 Tracts · Spatial</span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- LIVE PIPELINE EXECUTION PROGRESS TRACKER -->
-    <section id="progressSection" class="hidden rounded-2xl bg-surface-card border border-surface-border p-6 space-y-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center animate-spin">
-            <i class="fa-solid fa-circle-notch"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-white" id="progressStageTitle">Stage 1: Topology Profiling & Cardinality Scan</h3>
-            <p class="text-xs text-slate-400" id="progressStageDetail">Reading relational headers and screening for leakage...</p>
-          </div>
+    <!-- Pre-Flight 1-Second Intent Handshake Drawer -->
+    <section id="intentHandshakeCard" class="intent-drawer hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: #38bdf8;">PRE-FLIGHT SCHEMA &amp; INTENT HANDSHAKE</div>
+          <h3 id="intentFileTitle" style="font-size: 18px; font-weight: 800;">Dataset Scanned</h3>
+          <p id="intentQuestionSubtitle" style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;"></p>
         </div>
-        <div class="text-right">
-          <span class="text-lg font-bold font-mono text-sky-400" id="progressPctText">15%</span>
-          <p class="text-[11px] text-slate-500 font-mono" id="progressElapsedText">Elapsed: 0.8s</p>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="cancelIntentHandshake()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="executeConfirmedPipeline()">
+            Launch 7-Stage Diagnostic Audit
+          </button>
         </div>
       </div>
 
-      <!-- Animated Progress Bar -->
-      <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-        <div id="progressBarFill" class="bg-gradient-to-r from-sky-500 to-emerald-400 h-2.5 rounded-full transition-all duration-300" style="width: 15%"></div>
-      </div>
-
-      <!-- 7 Micro-Stage Badges -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-2 text-[10px] text-slate-400 font-medium">
-        <div id="badgeStage1" class="px-2 py-1 rounded bg-sky-500/10 border border-sky-500/30 text-sky-300 text-center">1. Topology</div>
-        <div id="badgeStage2" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">2. Blueprint</div>
-        <div id="badgeStage3" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">3. Dynamic ETL</div>
-        <div id="badgeStage4" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">4. Sandbox Fix</div>
-        <div id="badgeStage5" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">5. BI Star Schema</div>
-        <div id="badgeStage6" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">6. Anti-Hallucinate</div>
-        <div id="badgeStage7" class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center">7. Executive UI</div>
+      <div class="intent-grid">
+        <div class="form-field">
+          <label for="confirmTargetSelect">Target Adverse Event Column</label>
+          <select id="confirmTargetSelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmCostSelect">Financial Exposure / Revenue Column</label>
+          <select id="confirmCostSelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmLangSelect">Executive Dossier Language</label>
+          <select id="confirmLangSelect">
+            <option value="bilingual">Bilingual (Plain English + Simple Hinglish)</option>
+            <option value="en">Plain English Only</option>
+            <option value="hi">Simple Hinglish Only</option>
+          </select>
+        </div>
       </div>
     </section>
 
-    <!-- ===================================================================== -->
-    <!-- RESULTS VIEWPORT (Rendered upon pipeline completion) -->
-    <!-- ===================================================================== -->
-    <div id="resultsViewport" class="hidden space-y-8">
+    <!-- Live Job Progress Telemetry -->
+    <section id="jobProgressSection" class="telemetry-bar hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <span class="section-eyebrow" style="color: var(--accent-emerald);">AUTONOMOUS PIPELINE EXECUTION</span>
+          <h3 id="progressStageName" style="font-size: 16px; font-weight: 700;">Initializing DuckDB Engine...</h3>
+        </div>
+        <span id="progressPctLabel" class="tabular-nums" style="font-size: 18px; font-weight: 800; color: var(--accent-emerald);">15%</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressBarFill" class="progress-fill"></div>
+      </div>
+      <p id="progressDetailText" style="font-size: 12.5px; color: var(--text-muted);">
+        Running deterministic schema profiling, cohort risk isolation, and anti-hallucination physics gates...
+      </p>
+    </section>
 
-      <!-- SECTION: CERTIFIED VERIFICATION & RUN BANNER -->
-      <div class="rounded-xl bg-surface-card border border-surface-border p-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-            <i class="fa-solid fa-circle-check text-lg"></i>
+    <!-- =================================================================== -->
+    <!-- EXECUTIVE COMMAND CENTER (HYDRATED ON BENCHMARK OR UPLOAD COMPLETE) -->
+    <!-- =================================================================== -->
+    <div id="executiveConsole" class="hidden">
+
+      <!-- Active Dataset Context Ribbon -->
+      <div class="context-ribbon">
+        <div class="context-ribbon-left">
+          <span id="activeRunBadge" class="run-tag">RUN: hotel_booking_cancellation</span>
+          <span class="meta-stat">Total Records: <strong id="metaTotalRecords">119,390</strong></span>
+          <span class="meta-stat">Adverse Events: <strong id="metaAdverseCount">44,224</strong> (<strong id="metaAdverseRate">37.04%</strong>)</span>
+          <span class="meta-stat">Audited Capital Drag: <strong id="metaCapitalDrag">$16,727,236</strong></span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleOnboardingPanel()">
+            Switch Dataset / Upload New
+          </button>
+          <a id="openFullDashboardLink" href="#" target="_blank" class="btn btn-sky btn-sm">
+            Open Full Multi-Chart HTML Report ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Historical Drift Radar Banner -->
+      <div id="driftRadarBanner" class="drift-banner">
+        <div>
+          <div class="section-eyebrow" style="color: #38bdf8; margin-bottom: 2px;">HISTORICAL DRIFT RADAR · PERIOD-OVER-PERIOD TELEMETRY</div>
+          <h3 id="driftHeadline" style="font-size: 15px; font-weight: 700;">Baseline Diagnostic Snapshot Established</h3>
+          <p id="driftNarrative" style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;"></p>
+        </div>
+        <div class="drift-deltas">
+          <div class="delta-pill">
+            <span>Adverse Rate Δ</span>
+            <strong id="driftRateDelta" class="tabular-nums">0.00 pp</strong>
           </div>
+          <div class="delta-pill">
+            <span>Exposure Δ</span>
+            <strong id="driftExposureDelta" class="tabular-nums">$0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-Card Morning Business Pulse -->
+      <section class="pulse-grid">
+        <!-- 1. Competitive Moat -->
+        <article class="pulse-card moat">
           <div>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm font-bold text-white" id="datasetTitle">Autonomous Executive Run</span>
-              <span class="px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-mono">100.0% VERIFIED TRUTH</span>
+            <div class="pulse-card-header">
+              <span class="pulse-label">01 · Competitive Moat</span>
+              <span id="pulseMoatBadge" class="pulse-badge">--</span>
             </div>
-            <p class="text-xs text-slate-400" id="datasetSubtitle">All numbers physically verified against DuckDB Parquet tables.</p>
+            <h3 id="pulseMoatHeadline" class="pulse-headline">--</h3>
+            <p id="pulseMoatDetail" class="pulse-detail">--</p>
+          </div>
+          <div class="pulse-footer">
+            <span>PROTECT &amp; SCALE ANCHOR</span>
+            <span id="pulseMoatFooter">Verified Cohort</span>
+          </div>
+        </article>
+
+        <!-- 2. Primary Bottleneck -->
+        <article class="pulse-card bottleneck">
+          <div>
+            <div class="pulse-card-header">
+              <span class="pulse-label">02 · #1 Operational Bottleneck</span>
+              <span id="pulseBottleneckBadge" class="pulse-badge">--</span>
+            </div>
+            <h3 id="pulseBottleneckHeadline" class="pulse-headline">--</h3>
+            <p id="pulseBottleneckDetail" class="pulse-detail">--</p>
+          </div>
+          <div class="pulse-footer">
+            <span>PRIMARY RISK CONCENTRATION</span>
+            <span id="pulseBottleneckFooter">Target Driver</span>
+          </div>
+        </article>
+
+        <!-- 3. Danger Red-Line Cliff -->
+        <article class="pulse-card redline">
+          <div>
+            <div class="pulse-card-header">
+              <span class="pulse-label">03 · Danger Red-Line Cliff</span>
+              <span id="pulseRedlineBadge" class="pulse-badge">--</span>
+            </div>
+            <h3 id="pulseRedlineHeadline" class="pulse-headline">--</h3>
+            <p id="pulseRedlineDetail" class="pulse-detail">--</p>
+          </div>
+          <div class="pulse-footer">
+            <span>NON-LINEAR TIPPING POINT</span>
+            <span id="pulseRedlineFooter">Hard Guardrail</span>
+          </div>
+        </article>
+
+        <!-- 4. 30-Day Capital Recovery Target -->
+        <article class="pulse-card recovery">
+          <div>
+            <div class="pulse-card-header">
+              <span class="pulse-label">04 · 30-Day Recovery Target</span>
+              <span id="pulseRecoveryBadge" class="pulse-badge">--</span>
+            </div>
+            <h3 id="pulseRecoveryHeadline" class="pulse-headline">--</h3>
+            <p id="pulseRecoveryDetail" class="pulse-detail">--</p>
+          </div>
+          <div class="pulse-footer">
+            <span>ACTIONABLE RECOVERY POOL</span>
+            <span id="pulseRecoveryFooter">Pathway A Ready</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- 3-Pathway Strategic Decision Matrix & Bilingual Executive Brief -->
+      <section class="strategy-brief-grid">
+        <!-- Left: 3-Pathway Strategic Selector -->
+        <div class="panel-card">
+          <div class="section-eyebrow">
+            <span>STRATEGIC DECISION MATRIX</span>
+            <span>CLICK PATHWAY TO SIMULATE</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Recommended Operational Pathways</h2>
+          <p style="font-size: 13px; color: var(--text-secondary);">
+            Each pathway is grounded in physical cohort variance. Selecting a pathway calibrates the counterfactual ROI simulator below.
+          </p>
+
+          <div id="pathwayStack" class="pathway-stack"></div>
+        </div>
+
+        <!-- Right: Bilingual Plain-Language Executive Brief -->
+        <div class="panel-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <div class="section-eyebrow" style="margin-bottom: 2px;">EXECUTIVE NARRATIVE BRIEF</div>
+              <h2 style="font-size: 18px; font-weight: 800;">Zero-Jargon Business Summary</h2>
+            </div>
+            <div class="lang-switch">
+              <button id="btnBriefEn" type="button" class="lang-btn active" onclick="switchBriefLanguage('en')">🇬🇧 Plain English</button>
+              <button id="btnBriefHi" type="button" class="lang-btn" onclick="switchBriefLanguage('hi')">🇮🇳 Simple Hinglish</button>
+            </div>
+          </div>
+
+          <div id="briefReaderBox" class="brief-reader"></div>
+
+          <div id="artifactDownloadStrip" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle);"></div>
+        </div>
+      </section>
+
+      <!-- What-If Counterfactual Simulator & Closed-Loop ROI Action Ledger -->
+      <section class="sim-roi-grid">
+        <!-- Left: Counterfactual Profit Simulator -->
+        <div class="panel-card">
+          <div class="section-eyebrow">
+            <span>INTERACTIVE COUNTERFACTUAL ENGINE</span>
+            <span id="simBasisLabel" class="tabular-nums">PHYSICAL DRAG BASIS</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">What-If Profit &amp; Risk Recovery Simulator</h2>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px;">
+            Simulate the exact financial and operational impact of containing your primary bottleneck before deploying frontline budget.
+          </p>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="font-weight: 600;">Target Bottleneck Risk Reduction</span>
+              <strong id="simReductionLabel" class="tabular-nums" style="color: var(--accent-emerald);">25% Containment</strong>
+            </div>
+            <input id="simReductionSlider" type="range" min="5" max="60" step="5" value="25" oninput="recalculateSimulator()" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="font-weight: 600;">Estimated Monthly Intervention Budget</span>
+              <strong id="simCostLabel" class="tabular-nums" style="color: var(--text-primary);">$2,500</strong>
+            </div>
+            <input id="simCostSlider" type="range" min="0" max="50000" step="500" value="2500" oninput="recalculateSimulator()" />
+          </div>
+
+          <div class="sim-output-grid">
+            <div class="sim-kpi">
+              <span id="simGrossTitle">Gross Recovered Value</span>
+              <strong id="simGrossValue" style="color: var(--accent-emerald);">$0</strong>
+            </div>
+            <div class="sim-kpi">
+              <span>Net Recovery (After Spend)</span>
+              <strong id="simNetValue" style="color: #38bdf8;">$0</strong>
+            </div>
+            <div class="sim-kpi">
+              <span>Post-Fix Adverse Rate</span>
+              <strong id="simNewRateValue" style="color: var(--accent-amber);">0.0%</strong>
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2">
-          <button onclick="downloadArtifact('actionable_priority_worklist.csv')" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg flex items-center space-x-1.5 transition-colors">
-            <i class="fa-solid fa-file-csv text-emerald-400"></i>
-            <span>Worklist CSV</span>
-          </button>
-          <button onclick="downloadArtifact('PLAIN_BUSINESS_SUMMARY.md')" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg flex items-center space-x-1.5 transition-colors">
-            <i class="fa-solid fa-file-lines text-sky-400"></i>
-            <span>Executive Brief</span>
-          </button>
-          <button onclick="openBespokeDashboard()" class="px-3 py-1.5 text-xs bg-sky-600 hover:bg-sky-500 text-white font-medium rounded-lg shadow-sm flex items-center space-x-1.5 transition-colors">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>Full Dashboard</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- SECTION: 4-CARD MORNING BUSINESS PULSE -->
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-compass text-sky-400"></i>
-            <h2 class="text-lg font-bold text-white tracking-tight">Morning Business Pulse</h2>
-          </div>
-          <span class="text-xs text-slate-400">Executive diagnostic scan across your operation</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          <!-- Card 1: Competitive Moats -->
-          <div class="rounded-xl bg-surface-card border border-emerald-500/20 p-5 space-y-3 hover:border-emerald-500/40 transition-colors">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">🟢 Competitive Moats</span>
-              <i class="fa-solid fa-shield-cat text-emerald-400"></i>
+        <!-- Right: Closed-Loop ROI Ledger -->
+        <div class="panel-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="section-eyebrow">
+              <span>CLOSED-LOOP ROI LEDGER</span>
+              <span>PERSISTENT TENANT AUDIT</span>
             </div>
-            <div>
-              <p class="text-2xl font-extrabold text-white font-mono" id="cardMoatsRate">0.0%</p>
-              <p class="text-xs text-slate-400 mt-1" id="cardMoatsDesc">Dominant high-retention segments</p>
-            </div>
-            <div class="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-300" id="cardMoatsDetail">
-              Top performing clusters operating with zero friction.
-            </div>
-          </div>
-
-          <!-- Card 2: Critical Bottlenecks -->
-          <div class="rounded-xl bg-surface-card border border-rose-500/20 p-5 space-y-3 hover:border-rose-500/40 transition-colors">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-rose-400 uppercase tracking-wider">🔴 Critical Bottlenecks</span>
-              <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
-            </div>
-            <div>
-              <p class="text-2xl font-extrabold text-rose-300 font-mono" id="cardBottleneckRate">0.0%</p>
-              <p class="text-xs text-slate-400 mt-1" id="cardBottleneckDesc">Failure concentration index</p>
-            </div>
-            <div class="p-2.5 rounded-lg bg-rose-950/30 border border-rose-500/20 text-xs text-rose-300" id="cardBottleneckDetail">
-              Primary operational cluster driving bulk adverse events.
-            </div>
-          </div>
-
-          <!-- Card 3: Danger Red-Lines -->
-          <div class="rounded-xl bg-surface-card border border-amber-500/20 p-5 space-y-3 hover:border-amber-500/40 transition-colors">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">⚠️ Danger Red-Lines</span>
-              <i class="fa-solid fa-gauge-high text-amber-400"></i>
-            </div>
-            <div>
-              <p class="text-2xl font-extrabold text-amber-300 font-mono" id="cardRedlineThreshold">p < 0.05</p>
-              <p class="text-xs text-slate-400 mt-1" id="cardRedlineDesc">Statistically certified hazards</p>
-            </div>
-            <div class="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/20 text-xs text-amber-300" id="cardRedlineDetail">
-              Operational inflection thresholds requiring frontline intervention.
-            </div>
-          </div>
-
-          <!-- Card 4: 3 Strategic Pathways -->
-          <div class="rounded-xl bg-surface-card border border-sky-500/20 p-5 space-y-3 hover:border-sky-500/40 transition-colors">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-sky-400 uppercase tracking-wider">🧭 Strategic Pathways</span>
-              <i class="fa-solid fa-road text-sky-400"></i>
-            </div>
-            <div>
-              <p class="text-2xl font-extrabold text-sky-300 font-mono" id="cardStrategyRecommended">Margin Shield</p>
-              <p class="text-xs text-slate-400 mt-1">Recommended executive posture</p>
-            </div>
-            <div class="p-2.5 rounded-lg bg-sky-950/30 border border-sky-500/20 text-xs text-sky-300" id="cardStrategyDetail">
-              1. Aggressive Scale • 2. Capital Preservation • 3. Margin Shield
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- SECTION: HISTORICAL DRIFT RADAR CARD (Part 3) -->
-      <div id="historicalDriftCard" class="rounded-2xl bg-surface-card border border-surface-border p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
-              <i class="fa-solid fa-radar text-lg"></i>
-            </div>
-            <div>
-              <div class="flex items-center space-x-2">
-                <h3 class="text-base font-bold text-white">Historical Drift Radar & Institutional Memory</h3>
-                <span id="driftTrajectoryBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full font-mono bg-slate-800 text-slate-300">BASELINE</span>
-              </div>
-              <p class="text-xs text-slate-400">Run-over-run variance, adverse event momentum, and organizational drift</p>
-            </div>
-          </div>
-
-          <div class="flex items-center space-x-4 text-xs font-mono">
-            <div class="px-3 py-1.5 rounded-lg bg-surface-dark border border-surface-border">
-              <span class="text-slate-400">Adverse Rate Δ:</span>
-              <span id="driftRateDelta" class="font-bold text-white ml-1">0.0%</span>
-            </div>
-            <div class="px-3 py-1.5 rounded-lg bg-surface-dark border border-surface-border">
-              <span class="text-slate-400">Capital Drag Δ:</span>
-              <span id="driftCapitalDelta" class="font-bold text-white ml-1">$0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bilingual Notes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="p-4 rounded-xl bg-surface-dark/70 border border-surface-border space-y-1.5">
-            <div class="flex items-center space-x-2 text-xs font-semibold text-slate-300">
-              <i class="fa-solid fa-flag text-sky-400"></i>
-              <span>Plain English Executive Trajectory Note:</span>
-            </div>
-            <p id="driftNoteEn" class="text-xs text-slate-300 leading-relaxed">
-              Baseline dataset run registered. Historical comparison deltas will appear on your next run.
+            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Verified Saved Capital Tracker</h2>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px;">
+              Every frontline action logged in the Priority Worklist below is recorded in SQLite and automatically reconciled when you upload next month's dataset.
             </p>
-          </div>
 
-          <div class="p-4 rounded-xl bg-surface-dark/70 border border-surface-border space-y-1.5">
-            <div class="flex items-center space-x-2 text-xs font-semibold text-slate-300">
-              <i class="fa-solid fa-comments text-emerald-400"></i>
-              <span>Roman Hinglish Executive Briefing:</span>
-            </div>
-            <p id="driftNoteHi" class="text-xs text-slate-300 leading-relaxed">
-              Yeh aapka baseline run register ho chuka hai. Agli dataset par automatic comparison dekhne ko milega.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION: VERIFIED SAVED CAPITAL & ACTION LEDGER (Part 2) -->
-      <div class="rounded-2xl bg-gradient-to-r from-emerald-950/40 via-surface-card to-sky-950/30 border border-emerald-500/30 p-6 space-y-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="space-y-1">
-            <div class="flex items-center space-x-2">
-              <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wide">
-                Closed-Loop Action Ledger
+            <div style="background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; margin-bottom: 14px;">
+              <span style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--text-muted); display: block;">
+                Total Estimated &amp; Verified Saved Capital
               </span>
-              <span class="text-xs text-slate-400">Proof-of-Value Verification</span>
+              <div id="roiSavedCapitalValue" class="tabular-nums" style="font-size: 28px; font-weight: 800; color: var(--accent-emerald); margin-top: 4px;">
+                $0
+              </div>
+              <div style="display: flex; gap: 18px; margin-top: 12px; font-size: 12.5px; color: var(--text-secondary);">
+                <span>Interventions Logged: <strong id="roiActionsCount" class="tabular-nums" style="color: var(--text-primary);">0</strong></span>
+                <span>Plan ROI Multiplier: <strong id="roiMultiplierBadge" class="tabular-nums" style="color: var(--accent-emerald);">0.0x</strong></span>
+              </div>
             </div>
-            <h3 class="text-xl font-extrabold text-white">Verified Capital Saved & Subscription ROI</h3>
           </div>
 
-          <!-- Live ROI Counter Box -->
-          <div class="flex items-center space-x-6 bg-surface-dark/80 px-6 py-3 rounded-xl border border-emerald-500/30">
-            <div>
-              <p class="text-[11px] uppercase tracking-wider text-slate-400">Verified Saved</p>
-              <p id="ledgerSavedCapital" class="text-2xl font-extrabold text-emerald-400 font-mono">$0</p>
-            </div>
-            <div class="border-l border-slate-700 pl-6">
-              <p class="text-[11px] uppercase tracking-wider text-slate-400">True ROI</p>
-              <p id="ledgerRoiMultiplier" class="text-2xl font-extrabold text-sky-400 font-mono">0.0x</p>
-            </div>
-            <div class="border-l border-slate-700 pl-6 hidden sm:block">
-              <p class="text-[11px] uppercase tracking-wider text-slate-400">Resolved</p>
-              <p id="ledgerResolvedCount" class="text-2xl font-extrabold text-white font-mono">0</p>
-            </div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
+            <span>Click "Intervene" on any worklist row below to log savings.</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadWorklistCsv()">Export Worklist CSV</button>
           </div>
         </div>
+      </section>
 
-        <p class="text-xs text-slate-300">
-          When frontline teams resolve flagged high-risk records in the worklist below, provisional savings are locked. On subsequent dataset uploads, our deterministic reconciliation engine proves whether the adverse event was successfully averted.
-        </p>
-      </div>
-
-      <!-- SECTION: FRONTLINE PRIORITY WORKLIST WITH ACTION BUTTONS -->
-      <div class="rounded-2xl bg-surface-card border border-surface-border p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-4">
+      <!-- Actionable Frontline Priority Worklist Table -->
+      <section class="worklist-panel">
+        <div class="worklist-toolbar">
           <div>
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-              <i class="fa-solid fa-list-check text-sky-400"></i>
-              <span>Actionable Priority Worklist (High-Capital Exposure)</span>
-            </h3>
-            <p class="text-xs text-slate-400">Frontline records prioritized by adverse event risk and financial drag</p>
+            <div class="section-eyebrow" style="margin-bottom: 2px;">FRONTLINE EXECUTION QUEUE</div>
+            <h2 style="font-size: 18px; font-weight: 800;">
+              Actionable Priority Worklist
+              <span id="worklistCountBadge" class="tabular-nums" style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-left: 8px;"></span>
+            </h2>
           </div>
-          <button onclick="downloadArtifact('actionable_priority_worklist.csv')" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg flex items-center space-x-1.5 transition-colors">
-            <i class="fa-solid fa-download"></i>
-            <span>Export Full Worklist</span>
-          </button>
+
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div class="filter-tabs">
+              <button type="button" class="filter-tab active" data-queue="all" onclick="setWorklistQueueFilter('all', this)">All Flagged</button>
+              <button type="button" class="filter-tab" data-queue="Preventive" onclick="setWorklistQueueFilter('Preventive', this)">Preventive Retention Watch</button>
+              <button type="button" class="filter-tab" data-queue="Recovery" onclick="setWorklistQueueFilter('Recovery', this)">Realized Loss Recovery</button>
+            </div>
+            <input id="worklistSearchInput" type="text" class="search-input" placeholder="Search Entity ID or risk reason..." oninput="renderWorklistTable()" />
+          </div>
         </div>
 
-        <!-- Worklist Table -->
-        <div class="overflow-x-auto rounded-xl border border-surface-border">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-surface-dark text-slate-400 uppercase font-mono text-[11px] border-b border-surface-border">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
               <tr>
-                <th class="py-3 px-4">Entity ID</th>
-                <th class="py-3 px-4">Cluster / Segment</th>
-                <th class="py-3 px-4">Exposure ($ / ₹)</th>
-                <th class="py-3 px-4">Recommended Action</th>
-                <th class="py-3 px-4 text-right">Frontline Resolution</th>
+                <th>Rank</th>
+                <th id="thPrimaryId">Entity ID</th>
+                <th>Action Queue</th>
+                <th>Cohort Risk</th>
+                <th>Monetary Exposure</th>
+                <th>Primary Empirical Risk Driver</th>
+                <th>Recommended Frontline Action</th>
+                <th style="text-align: right;">Execute</th>
               </tr>
             </thead>
-            <tbody id="worklistTableBody" class="divide-y divide-surface-border">
-              <!-- Dynamically populated via JavaScript -->
-              <tr>
-                <td colspan="5" class="py-8 text-center text-slate-500">Loading worklist rows...</td>
-              </tr>
-            </tbody>
+            <tbody id="worklistTableBody"></tbody>
           </table>
         </div>
-      </div>
+      </section>
 
-      <!-- SECTION: REAL-TIME WHAT-IF PROFIT SIMULATOR -->
-      <div class="rounded-2xl bg-surface-card border border-surface-border p-6 space-y-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
-            <i class="fa-solid fa-sliders text-base"></i>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-white">Interactive "What-If" Counterfactual Profit Simulator</h3>
-            <p class="text-xs text-slate-400">Estimate recovered revenue if frontline mitigates critical bottleneck failure rates</p>
-          </div>
+      <!-- Grounded Ask DataX-Ray DuckDB SQL Copilot -->
+      <section class="panel-card">
+        <div class="section-eyebrow">
+          <span>CONVERSATIONAL DUCKDB SQL COPILOT</span>
+          <span>100% DETERMINISTIC GROUNDING · ZERO HALLUCINATION</span>
         </div>
+        <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Ask DataX-Ray Anything About This Dataset</h2>
+        <p style="font-size: 13px; color: var(--text-secondary);">
+          Ask in Plain English or Simple Hinglish. Every answer executes a read-only physical DuckDB SQL query against your audited Parquet table.
+        </p>
 
-        <div class="bg-surface-dark p-6 rounded-xl border border-surface-border space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <label class="text-xs font-semibold text-slate-300">
-              Simulate Bottleneck Failure Rate Reduction: <span id="simSliderVal" class="text-sky-400 font-mono text-sm ml-1 font-bold">25%</span>
-            </label>
-            <div class="text-right">
-              <span class="text-xs text-slate-400">Projected Recoverable Capital:</span>
-              <span id="simRecoveredCapital" class="text-lg font-extrabold font-mono text-emerald-400 ml-2">$0</span>
-            </div>
-          </div>
-
-          <input type="range" id="simSlider" min="5" max="80" value="25" step="5" class="w-full accent-sky-500 cursor-pointer" oninput="updateProfitSimulation(this.value)" />
-
-          <div class="flex justify-between text-[10px] text-slate-500 font-mono">
-            <span>5% (Conservative)</span>
-            <span>25% (Frontline Standard)</span>
-            <span>50% (Rigorous Process)</span>
-            <span>80% (Systemic Automation)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION: BILINGUAL "ASK DATAX-RAY" NATURAL LANGUAGE COPILOT -->
-      <div class="rounded-2xl bg-surface-card border border-surface-border p-6 space-y-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
-            <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-white">Ask DataX-Ray (Bilingual English & Roman Hinglish)</h3>
-            <p class="text-xs text-slate-400">Instant answers directly verified by DuckDB SQL on your Parquet tables (Zero hallucination)</p>
-          </div>
-        </div>
-
-        <!-- Sample question chips -->
-        <div class="flex flex-wrap gap-2 text-xs">
-          <button onclick="askCopilot('What are our top 3 most profitable segments?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300">
-            💡 Top 3 most profitable segments?
+        <div id="copilotQuickChips" class="copilot-chips">
+          <button type="button" class="copilot-chip" onclick="askPresetQuestion('What are the top 5 highest risk segments and their total exposure?')">
+            Top 5 highest-risk segments
           </button>
-          <button onclick="askCopilot('Kaunsa segment sabse zyada loss kara raha hai?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300">
-            🗣️ Kaunsa segment sabse zyada loss kara raha hai?
+          <button type="button" class="copilot-chip" onclick="askPresetQuestion('Sabse zyada loss kis segment mein ho raha hai aur kyun?')">
+            Sabse zyada loss kahan ho raha hai? (Hinglish)
           </button>
-          <button onclick="askCopilot('What is our exact adverse event rate and total capital drag?')" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300">
-            📊 Total capital drag breakdown?
+          <button type="button" class="copilot-chip" onclick="askPresetQuestion('Compare average exposure between adverse events and normal records')">
+            Compare exposure: Adverse vs Normal
+          </button>
+          <button type="button" class="copilot-chip" onclick="askPresetQuestion('Show summary statistics and total records count')">
+            Overall dataset audit stats
           </button>
         </div>
 
-        <!-- Input Box -->
-        <div class="flex items-center space-x-2">
-          <input type="text" id="copilotInput" placeholder="Ask any question in English or Hinglish (e.g. 'Bottleneck ko theek karke kitna profit hoga?')..." class="flex-1 bg-surface-dark border border-surface-border focus:border-sky-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none" onkeydown="if(event.key==='Enter') submitCopilotQuestion()" />
-          <button onclick="submitCopilotQuestion()" class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-colors">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span>Ask</span>
+        <div class="copilot-input-row">
+          <input id="copilotQuestionInput" type="text" placeholder="e.g., Which segment has the highest adverse rate and how much revenue is at risk?" onkeydown="if(event.key==='Enter') submitCopilotQuestion()" />
+          <select id="copilotLangSelect" style="background: var(--bg-subtle); border: 1px solid var(--border-strong); color: var(--text-primary); border-radius: var(--radius-sm); padding: 0 12px; font-size: 13px;">
+            <option value="en">🇬🇧 English</option>
+            <option value="hi">🇮🇳 Hinglish</option>
+          </select>
+          <button id="copilotAskBtn" type="button" class="btn btn-primary" onclick="submitCopilotQuestion()">
+            Run SQL Audit
           </button>
         </div>
 
-        <!-- Copilot Response Area -->
-        <div id="copilotResponseArea" class="hidden p-4 rounded-xl bg-surface-dark border border-surface-border space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-sky-400 flex items-center space-x-1.5">
-              <i class="fa-solid fa-robot"></i>
-              <span>Verified Response</span>
-            </span>
-            <span class="px-2 py-0.5 text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-              DuckDB Grounded
-            </span>
-          </div>
-          <p id="copilotAnswerText" class="text-xs text-slate-200 leading-relaxed"></p>
-          <div id="copilotSqlContainer" class="hidden">
-            <p class="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Verified SQL Query Executed:</p>
-            <pre id="copilotSqlText" class="p-2.5 mt-1 rounded bg-slate-900 border border-slate-800 text-[11px] font-mono text-sky-300 overflow-x-auto"></pre>
-          </div>
+        <div id="copilotResultContainer" class="qa-response-card hidden">
+          <div id="copilotAnswerMarkdown" class="brief-reader" style="max-height: none; background: transparent; border: none; padding: 0;"></div>
+          <div id="copilotTableWrapper" class="table-scroll" style="margin-top: 14px; max-height: 260px;"></div>
+          <details style="margin-top: 12px;">
+            <summary style="cursor: pointer; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted);">
+              Inspect Verified DuckDB SQL Query
+            </summary>
+            <pre id="copilotSqlCode" class="sql-code-block"></pre>
+          </details>
         </div>
-      </div>
+      </section>
 
     </div>
-
   </main>
 
-  <!-- ===================================================================== -->
-  <!-- MODAL: 1-SECOND INTENT HANDSHAKE (Part 1 of Product Plan) -->
-  <!-- ===================================================================== -->
-  <div id="intentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-surface-card border border-surface-border rounded-2xl max-w-2xl w-full p-6 space-y-6 shadow-2xl relative">
-      
-      <!-- Modal Header -->
-      <div class="flex items-start justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-400 text-white flex items-center justify-center shadow-md">
-            <i class="fa-solid fa-handshake-simple text-lg"></i>
-          </div>
-          <div>
-            <div class="flex items-center space-x-2">
-              <h3 class="text-lg font-extrabold text-white">1-Second Intent Handshake</h3>
-              <span class="px-2 py-0.5 text-[10px] font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-full font-mono">0.8s Scan</span>
-            </div>
-            <p class="text-xs text-slate-400" id="intentFilename">Analyzing dataset structure...</p>
-          </div>
-        </div>
-        <button onclick="closeIntentModal()" class="text-slate-400 hover:text-white p-1">
-          <i class="fa-solid fa-xmark text-lg"></i>
+  <!-- Frontline Intervention & Outreach Modal -->
+  <div id="interventionModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInterventionModal()">
+    <div class="modal-card">
+      <div class="section-eyebrow" style="color: var(--accent-emerald);">FRONTLINE INTERVENTION &amp; ROI DISPATCH</div>
+      <h3 id="modalEntityTitle" style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Dispatch Intervention</h3>
+      <p id="modalEntitySubtitle" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;"></p>
+
+      <div class="form-field" style="margin-bottom: 12px;">
+        <label for="modalActionStatus">Intervention Resolution Status</label>
+        <select id="modalActionStatus">
+          <option value="retained">Retained / Prevented Loss (Count Toward Saved Capital)</option>
+          <option value="contacted">Contacted / In-Progress Escalation</option>
+          <option value="escalated">Escalated to Operations Lead</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="modalOutreachText">Pre-Drafted Outreach / Operator Audit Note (WhatsApp / CRM Ready)</label>
+        <textarea id="modalOutreachText" rows="4"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openWhatsAppDeepLink()">
+          Send via WhatsApp Web ↗
         </button>
-      </div>
-
-      <!-- Detected Goal Card -->
-      <div class="rounded-xl bg-surface-dark p-4 border border-sky-500/30 space-y-3">
-        <div class="flex items-center space-x-2 text-xs font-semibold text-sky-400">
-          <i class="fa-solid fa-bullseye"></i>
-          <span>We detected your primary business goal:</span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div class="p-3 rounded-lg bg-surface-card border border-surface-border">
-            <span class="text-slate-400 text-[10px] uppercase font-mono">Target Metric / Risk:</span>
-            <p id="intentTargetMetric" class="text-sm font-bold text-white mt-0.5">is_canceled (Adverse Event)</p>
-          </div>
-          <div class="p-3 rounded-lg bg-surface-card border border-surface-border">
-            <span class="text-slate-400 text-[10px] uppercase font-mono">Financial Ledger & Unit:</span>
-            <p id="intentCostMetric" class="text-sm font-bold text-emerald-400 mt-0.5">revenue ($ USD)</p>
-          </div>
-        </div>
-        <div class="p-2.5 rounded-lg bg-sky-950/30 border border-sky-500/20 text-xs text-slate-300">
-          <span class="font-semibold text-sky-300">Core Inquiry:</span>
-          <span id="intentQuestionText" class="ml-1">What is driving cancellations and how much capital can be recovered?</span>
-        </div>
-      </div>
-
-      <!-- Sample Rows Preview (5 rows) -->
-      <div class="space-y-2">
-        <span class="text-xs font-semibold text-slate-400">Dataset Preview (First 5 Rows):</span>
-        <div class="max-h-36 overflow-auto rounded-lg border border-surface-border">
-          <table class="w-full text-left text-[11px] text-slate-300">
-            <thead class="bg-surface-dark text-slate-400 font-mono text-[10px]" id="intentPreviewThead"></thead>
-            <tbody id="intentPreviewTbody" class="divide-y divide-surface-border"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Collapsible Custom Override Section -->
-      <details class="text-xs text-slate-400 border border-surface-border rounded-xl p-3 bg-surface-dark/50">
-        <summary class="cursor-pointer font-semibold text-slate-300 hover:text-white flex items-center justify-between">
-          <span>⚙️ Customize Target or Financial Ledger (Optional Overrides)</span>
-          <i class="fa-solid fa-chevron-down text-xs"></i>
-        </summary>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-3 border-t border-surface-border">
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Target Outcome Override:</label>
-            <select id="intentOverrideTarget" class="w-full bg-surface-card border border-surface-border rounded-lg p-2 text-xs text-white">
-              <option value="">Use Auto-Detected Target</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Financial / Cost Ledger Override:</label>
-            <select id="intentOverrideCost" class="w-full bg-surface-card border border-surface-border rounded-lg p-2 text-xs text-white">
-              <option value="">Use Auto-Detected Ledger</option>
-            </select>
-          </div>
-        </div>
-      </details>
-
-      <!-- Action Buttons -->
-      <div class="flex items-center justify-end space-x-3 pt-2">
-        <button onclick="closeIntentModal()" class="px-4 py-2 text-xs text-slate-400 hover:text-white transition-colors">
-          Cancel
-        </button>
-        <button onclick="launchForensicPipelineFromModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 flex items-center space-x-2 transition-all">
-          <i class="fa-solid fa-play"></i>
-          <span>Confirm & Launch Forensic Analysis</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL: BESPOKE DASHBOARD VIEWER -->
-  <!-- ===================================================================== -->
-  <div id="dashboardModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-md">
-    <div class="bg-surface-card border border-surface-border rounded-2xl w-full h-full flex flex-col overflow-hidden shadow-2xl">
-      <div class="h-12 bg-surface-dark border-b border-surface-border px-4 flex items-center justify-between">
-        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-300">
-          <i class="fa-solid fa-chart-line text-sky-400"></i>
-          <span>Bespoke Executive Dashboard</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <button onclick="toggleFullscreenDashboard()" class="text-xs text-slate-400 hover:text-white px-2 py-1">
-            <i class="fa-solid fa-expand"></i>
-          </button>
-          <button onclick="closeDashboardModal()" class="text-xs text-slate-400 hover:text-white px-2 py-1">
-            <i class="fa-solid fa-xmark text-sm"></i>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeInterventionModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="commitWorklistIntervention()">
+            Log Action &amp; Credit ROI Ledger
           </button>
         </div>
       </div>
-      <iframe id="dashboardIframe" class="flex-1 w-full h-full border-none bg-slate-900"></iframe>
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- JAVASCRIPT APPLICATION CONTROLLER -->
-  <!-- ===================================================================== -->
+  <!-- Non-Blocking Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
   <script>
-    // State management
-    let state = {
-      tenantId: 'default_tenant',
-      activeFile: null,
+    // =========================================================================
+    // GLOBAL APPLICATION STATE
+    // =========================================================================
+    const appState = {
+      selectedFile: null,
       activeRunId: null,
-      previewPayload: null,
-      lastRunResults: null,
-      baselineTotalDrag: 0,
-      currencySymbol: '$'
+      activeOutputDir: null,
+      activeTenant: 'founder_workspace',
+      briefLanguage: 'en',
+      englishSummaryMd: '',
+      hinglishSummaryMd: '',
+      executivePulse: null,
+      worklistRows: [],
+      worklistMeta: { primary_id_column: 'Entity_ID', total_flagged: 0 },
+      worklistQueueFilter: 'all',
+      resolvedEntities: new Set(),
+      modalRowIndex: null
     };
 
-    // Initialize application on load
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchRoiSummary();
-      setupDragDrop();
-    });
+    // =========================================================================
+    // TOAST NOTIFICATION SYSTEM (ZERO RAW ALERTS)
+    // =========================================================================
+    function showToast(message, level = 'success') {
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      el.className = `toast-item ${level}`;
+      el.innerHTML = `
+        <span>${escapeHtml(message)}</span>
+        <button type="button" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;" onclick="this.parentElement.remove()">✕</button>
+      `;
+      container.appendChild(el);
+      setTimeout(() => {
+        if (el.parentElement) el.remove();
+      }, 4500);
+    }
 
-    // -------------------------------------------------------------------------
-    // Setup Drag and Drop
-    // -------------------------------------------------------------------------
-    function setupDragDrop() {
-      const dropZone = document.getElementById('dropZone');
-      dropZone.addEventListener('click', () => document.getElementById('fileInput').click());
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
-      ['dragenter', 'dragover'].forEach(name => {
-        dropZone.addEventListener(name, (e) => {
-          e.preventDefault();
-          dropZone.classList.add('border-sky-400', 'bg-sky-500/10');
+    function formatCurrencyValue(val, sym = '$') {
+      const num = Number(val);
+      if (!Number.isFinite(num)) return `${sym}0`;
+      if (Math.abs(num) >= 1_000_000) {
+        return `${sym}${(num / 1_000_000).toFixed(2)}M`;
+      }
+      if (Math.abs(num) >= 1_000) {
+        return `${sym}${Math.round(num).toLocaleString('en-US')}`;
+      }
+      return `${sym}${num.toFixed(num % 1 === 0 ? 0 : 2)}`;
+    }
+
+    // Simple Markdown to Safe HTML renderer for Executive Briefs & Copilot
+    function renderMarkdownHtml(mdText) {
+      if (!mdText) return '<p>No summary available.</p>';
+      const lines = mdText.split('\n');
+      let html = '';
+      let inList = false;
+
+      for (let rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) {
+          if (inList) { html += '</ul>'; inList = false; }
+          continue;
+        }
+        if (line.startsWith('---')) continue;
+
+        let safe = escapeHtml(line)
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`([^`]+)`/g, '<code class="tabular-nums" style="background:var(--bg-elevated);padding:1px 5px;border-radius:4px;color:#38bdf8;">$1</code>');
+
+        if (safe.startsWith('### ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h3>${safe.slice(4)}</h3>`;
+        } else if (safe.startsWith('## ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h2>${safe.slice(3)}</h2>`;
+        } else if (safe.startsWith('# ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h1>${safe.slice(2)}</h1>`;
+        } else if (safe.startsWith('&gt; ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<blockquote>${safe.slice(5)}</blockquote>`;
+        } else if (safe.startsWith('* ') || safe.startsWith('- ')) {
+          if (!inList) { html += '<ul>'; inList = true; }
+          html += `<li>${safe.slice(2)}</li>`;
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<p>${safe}</p>`;
+        }
+      }
+      if (inList) html += '</ul>';
+      return html;
+    }
+
+    // =========================================================================
+    // 1-CLICK CERTIFIED BENCHMARK LOADER (<50ms)
+    // =========================================================================
+    async function loadCertifiedBenchmark(benchmarkId) {
+      try {
+        document.querySelectorAll('.benchmark-item').forEach(btn => {
+          btn.classList.toggle('active-bench', btn.dataset.bench === benchmarkId);
         });
-      });
+        showToast(`Loading certified benchmark: ${benchmarkId}...`, 'info');
+        const res = await fetch(`/api/v1/benchmarks/${encodeURIComponent(benchmarkId)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const payload = await res.json();
+        hydrateExecutiveConsole(payload);
+        showToast(`Loaded ${payload.benchmark_meta ? payload.benchmark_meta.title : benchmarkId} (100% Verified Truth)`, 'success');
+      } catch (e) {
+        showToast(`Benchmark load failed: ${e.message}`, 'error');
+      }
+    }
 
-      ['dragleave', 'drop'].forEach(name => {
-        dropZone.addEventListener(name, (e) => {
-          e.preventDefault();
-          dropZone.classList.remove('border-sky-400', 'bg-sky-500/10');
-        });
-      });
+    function toggleOnboardingPanel() {
+      const sec = document.getElementById('onboardingSection');
+      sec.classList.toggle('hidden');
+      if (!sec.classList.contains('hidden')) {
+        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
 
-      dropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-          handleFileSelected(files);
+    // =========================================================================
+    // FILE UPLOAD & 1-SECOND PRE-FLIGHT INTENT HANDSHAKE
+    // =========================================================================
+    const dropzoneEl = document.getElementById('dropzone');
+    if (dropzoneEl) {
+      dropzoneEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzoneEl.classList.add('drag-over');
+      });
+      dropzoneEl.addEventListener('dragleave', () => {
+        dropzoneEl.classList.remove('drag-over');
+      });
+      dropzoneEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzoneEl.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          triggerIntentHandshake(e.dataTransfer.files[0]);
         }
       });
     }
 
-    // -------------------------------------------------------------------------
-    // 1-Second Intent Handshake Ingestion
-    // -------------------------------------------------------------------------
-    async function handleFileSelected(files) {
-      if (!files || files.length === 0) return;
-      const file = files[0];
-      state.activeFile = file;
+    function handleFileSelection(event) {
+      const file = event.target.files[0];
+      if (file) {
+        triggerIntentHandshake(file);
+      }
+    }
 
-      // Show intent handshake modal with loading state
-      const modal = document.getElementById('intentModal');
-      modal.classList.remove('hidden');
-      document.getElementById('intentFilename').textContent = `Scanning: ${file.name} (${(file.size / 1024).toFixed(1)} KB)...`;
-      document.getElementById('intentTargetMetric').textContent = 'Analyzing columns...';
-      document.getElementById('intentCostMetric').textContent = 'Detecting financial ledgers...';
+    async function triggerIntentHandshake(file) {
+      appState.selectedFile = file;
+      const region = document.getElementById('regionSelect').value || 'US';
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('region_profile', region);
 
-      // Send to /api/v1/preview-intent
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('region_profile', 'US');
-
+      showToast(`Scanning schema & financial columns in ${file.name}...`, 'info');
       try {
-        const res = await fetch('/api/v1/preview-intent', {
-          method: 'POST',
-          body: formData
-        });
-
+        const res = await fetch('/api/v1/preview-intent', { method: 'POST', body: fd });
         if (!res.ok) {
-          const err = await res.json();
-          alert('Intent Handshake Error: ' + (err.detail || 'Could not parse preview.'));
-          closeIntentModal();
-          return;
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Preview failed (${res.status})`);
         }
-
         const data = await res.json();
-        state.previewPayload = data;
-        populateIntentModal(data);
-      } catch (err) {
-        alert('Network or server error during intent preview: ' + err.message);
-        closeIntentModal();
-      }
-    }
+        const card = document.getElementById('intentHandshakeCard');
+        card.classList.remove('hidden');
 
-    function populateIntentModal(data) {
-      document.getElementById('intentFilename').textContent = `${data.filename} • ${data.sample_rows_count} sample rows • ${data.columns_count} columns`;
-      
-      const goal = data.detected_goal;
-      state.currencySymbol = goal.unit_symbol || '$';
-      document.getElementById('intentTargetMetric').textContent = `${goal.target_col || 'Not detected'} (${goal.target_desc || 'Adverse Status'})`;
-      document.getElementById('intentCostMetric').textContent = `${goal.cost_col || 'None (Operational Count)'} (${goal.unit_symbol} ${goal.currency_code || ''})`;
-      document.getElementById('intentQuestionText').textContent = goal.business_question_en || 'What is driving operational friction?';
+        document.getElementById('intentFileTitle').textContent =
+          `${data.filename} — ${data.columns_count} Columns Detected`;
+        document.getElementById('intentQuestionSubtitle').textContent =
+          data.detected_goal.business_question_en;
 
-      // Populate preview table
-      const thead = document.getElementById('intentPreviewThead');
-      const tbody = document.getElementById('intentPreviewTbody');
-      thead.innerHTML = '';
-      tbody.innerHTML = '';
-
-      if (data.columns && data.preview_rows) {
-        // Headers (first 6 columns)
-        const displayCols = data.columns.slice(0, 6);
-        const trHead = document.createElement('tr');
-        displayCols.forEach(col => {
-          const th = document.createElement('th');
-          th.className = 'py-2 px-3';
-          th.textContent = col;
-          trHead.appendChild(th);
+        // Populate Target Select
+        const tgtSelect = document.getElementById('confirmTargetSelect');
+        tgtSelect.innerHTML = '';
+        const candidates = data.candidate_targets || [];
+        candidates.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.column;
+          opt.textContent = `${c.column} (${c.unique_values_count} unique vals)`;
+          if (c.is_detected_default) opt.selected = true;
+          tgtSelect.appendChild(opt);
         });
-        thead.appendChild(trHead);
-
-        // Rows
-        data.preview_rows.forEach(row => {
-          const tr = document.createElement('tr');
-          displayCols.forEach(col => {
-            const td = document.createElement('td');
-            td.className = 'py-2 px-3 truncate max-w-[120px]';
-            td.textContent = row[col] !== null ? row[col] : '-';
-            tr.appendChild(td);
+        if (tgtSelect.options.length === 0 && data.columns) {
+          data.columns.forEach(col => {
+            const opt = document.createElement('option');
+            opt.value = col;
+            opt.textContent = col;
+            tgtSelect.appendChild(opt);
           });
-          tbody.appendChild(tr);
-        });
-      }
+        }
 
-      // Populate override dropdowns
-      const selTarget = document.getElementById('intentOverrideTarget');
-      const selCost = document.getElementById('intentOverrideCost');
-      selTarget.innerHTML = '<option value="">Use Auto-Detected Target (' + (goal.target_col || 'None') + ')</option>';
-      selCost.innerHTML = '<option value="">Use Auto-Detected Ledger (' + (goal.cost_col || 'None') + ')</option>';
-
-      if (data.candidate_targets) {
-        data.candidate_targets.forEach(ct => {
+        // Populate Cost Select
+        const costSelect = document.getElementById('confirmCostSelect');
+        costSelect.innerHTML = '<option value="">None (Operational Frequency Only)</option>';
+        (data.candidate_costs || []).forEach(c => {
           const opt = document.createElement('option');
-          opt.value = ct.column;
-          opt.textContent = `${ct.column} (${ct.unique_values_count} values: ${ct.sample_values.join(', ')})`;
-          selTarget.appendChild(opt);
+          opt.value = c.column;
+          opt.textContent = `${c.column} (Avg: ${c.unit_symbol}${c.sample_mean})`;
+          if (c.is_detected_default) opt.selected = true;
+          costSelect.appendChild(opt);
         });
-      }
 
-      if (data.candidate_costs) {
-        data.candidate_costs.forEach(cc => {
-          const opt = document.createElement('option');
-          opt.value = cc.column;
-          opt.textContent = `${cc.column} (Mean: ${cc.unit_symbol}${cc.sample_mean})`;
-          selCost.appendChild(opt);
-        });
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('Pre-flight intent handshake ready. Confirm parameters to launch.', 'success');
+      } catch (e) {
+        showToast(`File scan error: ${e.message}`, 'error');
       }
     }
 
-    function closeIntentModal() {
-      document.getElementById('intentModal').classList.add('hidden');
+    function cancelIntentHandshake() {
+      document.getElementById('intentHandshakeCard').classList.add('hidden');
+      appState.selectedFile = null;
     }
 
-    // -------------------------------------------------------------------------
-    // Launch Forensic Pipeline
-    // -------------------------------------------------------------------------
-    async function launchForensicPipelineFromModal() {
-      closeIntentModal();
-      if (!state.activeFile) return;
+    async function executeConfirmedPipeline() {
+      if (!appState.selectedFile) {
+        showToast('Please select a file first.', 'warn');
+        return;
+      }
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      const region = document.getElementById('regionSelect').value || 'US';
 
-      const targetOverride = document.getElementById('intentOverrideTarget').value;
-      const costOverride = document.getElementById('intentOverrideCost').value;
+      document.getElementById('intentHandshakeCard').classList.add('hidden');
+      const progSec = document.getElementById('jobProgressSection');
+      progSec.classList.remove('hidden');
 
-      // Show progress section
-      const progressSec = document.getElementById('progressSection');
-      progressSec.classList.remove('hidden');
-      document.getElementById('resultsViewport').classList.add('hidden');
-
-      // Prepare submission formData
-      const formData = new FormData();
-      formData.append('files', state.activeFile);
-      formData.append('tenant_id', state.tenantId);
-      formData.append('mode', 'ai');
-      formData.append('language', 'english');
-      if (targetOverride) formData.append('target_override', targetOverride);
-      if (costOverride) formData.append('cost_override', costOverride);
+      const fd = new FormData();
+      fd.append('file', appState.selectedFile);
+      fd.append('tenant_id', tenant);
+      fd.append('region_profile', region);
 
       try {
-        // Submit to asynchronous job queue
-        const res = await fetch('/api/v1/jobs/submit', {
-          method: 'POST',
-          body: formData
-        });
+        const submitRes = await fetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
+        if (!submitRes.ok) {
+          throw new Error(`Submission error (${submitRes.status})`);
+        }
+        const jobMeta = await submitRes.json();
+        await pollJobUntilComplete(jobMeta.job_id);
+      } catch (e) {
+        progSec.classList.add('hidden');
+        showToast(`Pipeline execution failed: ${e.message}`, 'error');
+      }
+    }
 
-        if (!res.ok) {
-          const err = await res.json();
-          alert('Submission Failed: ' + (err.detail || 'Could not queue job.'));
-          progressSec.classList.add('hidden');
+    async function pollJobUntilComplete(jobId) {
+      const progSec = document.getElementById('jobProgressSection');
+      const fill = document.getElementById('progressBarFill');
+      const pctLabel = document.getElementById('progressPctLabel');
+      const stageName = document.getElementById('progressStageName');
+
+      while (true) {
+        const res = await fetch(`/api/v1/jobs/${encodeURIComponent(jobId)}/status`);
+        if (!res.ok) throw new Error(`Status check failed (${res.status})`);
+        const statusData = await res.json();
+
+        const pct = statusData.progress_pct || 20;
+        fill.style.width = `${pct}%`;
+        pctLabel.textContent = `${pct}%`;
+        stageName.textContent = statusData.current_stage || 'Processing...';
+
+        if (statusData.status === 'completed' && statusData.result) {
+          progSec.classList.add('hidden');
+          hydrateExecutiveConsole(statusData.result);
+          showToast('7-Stage Diagnostic Audit Completed (100.0% Verified Truth)', 'success');
           return;
         }
-
-        const jobData = await res.json();
-        const jobId = jobData.job_id;
-        state.activeRunId = jobId;
-
-        // Connect to Server-Sent Events (SSE) live progress stream
-        streamJobProgress(jobId);
-      } catch (err) {
-        alert('Job submission error: ' + err.message);
-        progressSec.classList.add('hidden');
+        if (statusData.status === 'failed') {
+          throw new Error(statusData.error || 'Audit gate failed.');
+        }
+        await new Promise(r => setTimeout(r, 900));
       }
     }
 
-    // -------------------------------------------------------------------------
-    // SSE Live Progress Streaming
-    // -------------------------------------------------------------------------
-    function streamJobProgress(jobId) {
-      const evtSource = new EventSource(`/api/v1/jobs/${jobId}/events`);
-      const startTime = Date.now();
+    // =========================================================================
+    // HYDRATE EXECUTIVE COMMAND CENTER
+    // =========================================================================
+    function hydrateExecutiveConsole(result) {
+      appState.activeRunId = result.run_id;
+      appState.activeOutputDir = result.output_dir;
+      appState.activeTenant = result.tenant_id || document.getElementById('tenantInput').value || 'founder_workspace';
+      appState.englishSummaryMd = result.english_summary_markdown || result.plain_summary_markdown || '';
+      appState.hinglishSummaryMd = result.hinglish_summary_markdown || result.plain_summary_markdown || '';
+      appState.executivePulse = result.executive_pulse || {};
+      appState.worklistRows = result.worklist_preview || [];
+      appState.worklistMeta = result.worklist_meta || { primary_id_column: 'Entity_ID', total_flagged: appState.worklistRows.length };
+      appState.resolvedEntities.clear();
 
-      const timerInterval = setInterval(() => {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-        document.getElementById('progressElapsedText').textContent = `Elapsed: ${elapsed}s`;
-      }, 500);
+      document.getElementById('executiveConsole').classList.remove('hidden');
 
-      evtSource.onmessage = async (event) => {
-        try {
-          const payload = JSON.parse(event.data);
-          const pct = payload.progress_pct || 15;
-          const stage = payload.stage || 'Executing pipeline...';
+      const pulse = appState.executivePulse;
+      const sym = pulse.unit_symbol || '$';
 
-          document.getElementById('progressPctText').textContent = `${pct}%`;
-          document.getElementById('progressBarFill').style.width = `${pct}%`;
-          document.getElementById('progressStageTitle').textContent = stage;
+      // Context Ribbon
+      document.getElementById('activeRunBadge').textContent = `DATASET: ${result.run_id}`;
+      document.getElementById('metaTotalRecords').textContent = Number(pulse.total_records || 0).toLocaleString('en-US');
+      document.getElementById('metaAdverseCount').textContent = Number(pulse.total_adverse_events || 0).toLocaleString('en-US');
+      document.getElementById('metaAdverseRate').textContent = `${Number(pulse.overall_adverse_rate_pct || 0).toFixed(2)}%`;
+      document.getElementById('metaCapitalDrag').textContent =
+        pulse.is_financial && pulse.total_capital_drag > 0
+          ? pulse.formatted_capital_drag
+          : `${Number(pulse.total_adverse_events || 0).toLocaleString('en-US')} Events`;
 
-          // Highlight stage badges
-          updateStageBadges(pct);
+      const dashLink = document.getElementById('openFullDashboardLink');
+      dashLink.href = result.dashboard_url || `/api/v1/dashboard/${encodeURIComponent(result.run_id)}`;
 
-          if (payload.status === 'COMPLETED') {
-            evtSource.close();
-            clearInterval(timerInterval);
-            // Fetch final job results
-            const pollRes = await fetch(`/api/v1/jobs/${jobId}`);
-            const fullJob = await pollRes.json();
-            renderRunResults(fullJob.result);
-          } else if (payload.status === 'FAILED') {
-            evtSource.close();
-            clearInterval(timerInterval);
-            alert('Pipeline Error: ' + (payload.error || 'Pipeline execution failed.'));
-            document.getElementById('progressSection').classList.add('hidden');
-          }
-        } catch (e) {
-          console.error('SSE parsing error:', e);
-        }
-      };
-
-      evtSource.onerror = () => {
-        evtSource.close();
-        clearInterval(timerInterval);
-      };
-    }
-
-    function updateStageBadges(pct) {
-      const badges = ['badgeStage1', 'badgeStage2', 'badgeStage3', 'badgeStage4', 'badgeStage5', 'badgeStage6', 'badgeStage7'];
-      const activeIdx = Math.min(Math.floor((pct / 100) * 7), 6);
-      badges.forEach((id, idx) => {
-        const el = document.getElementById(id);
-        if (idx <= activeIdx) {
-          el.className = 'px-2 py-1 rounded bg-sky-500/10 border border-sky-500/30 text-sky-300 text-center font-bold';
-        } else {
-          el.className = 'px-2 py-1 rounded bg-slate-800 border border-slate-700 text-center';
-        }
-      });
-    }
-
-    // -------------------------------------------------------------------------
-    // Render Execution Results
-    // -------------------------------------------------------------------------
-    function renderRunResults(result) {
-      document.getElementById('progressSection').classList.add('hidden');
-      const view = document.getElementById('resultsViewport');
-      view.classList.remove('hidden');
-      state.lastRunResults = result;
-
-      // Extract metrics
-      const kpis = result.kpis || [];
-      const manifest = result.temporal_summary || {};
+      // Historical Drift Radar
       const drift = result.historical_drift || {};
-      const roi = result.roi_summary || {};
+      document.getElementById('driftHeadline').textContent = drift.headline || 'Baseline Snapshot Recorded';
+      document.getElementById('driftNarrative').textContent = drift.narrative_en || '';
+      const rateDelta = Number((drift.deltas && drift.deltas.event_rate_delta_pct) || 0);
+      const expDelta = Number((drift.deltas && drift.deltas.mean_exposure_delta) || 0);
+      const rateEl = document.getElementById('driftRateDelta');
+      rateEl.textContent = `${rateDelta > 0 ? '+' : ''}${rateDelta.toFixed(2)} pp`;
+      rateEl.style.color = rateDelta > 0.5 ? 'var(--accent-crimson)' : (rateDelta < -0.5 ? 'var(--accent-emerald)' : 'var(--text-primary)');
+      document.getElementById('driftExposureDelta').textContent = `${expDelta >= 0 ? '+' : ''}${formatCurrencyValue(expDelta, sym)}`;
 
-      // 1. Morning Pulse Cards
-      const moatsKpi = kpis.find(k => k.name && k.name.toLowerCase().includes('moat')) || {};
-      const bottleneckKpi = kpis.find(k => k.name && (k.name.toLowerCase().includes('drag') || k.name.toLowerCase().includes('rate') || k.name.toLowerCase().includes('loss'))) || {};
+      // 4-Card Morning Business Pulse
+      const moat = pulse.moat || {};
+      document.getElementById('pulseMoatBadge').textContent = moat.value_badge || 'Benchmark Anchor';
+      document.getElementById('pulseMoatHeadline').textContent = moat.headline || 'Resilient Operational Anchor';
+      document.getElementById('pulseMoatDetail').textContent = moat.detail || '';
+      document.getElementById('pulseMoatFooter').textContent = `${Number(pulse.total_records || 0).toLocaleString('en-US')} Rows Audited`;
 
-      document.getElementById('cardMoatsRate').textContent = moatsKpi.formatted_value || '0.0%';
-      document.getElementById('cardMoatsDesc').textContent = moatsKpi.name || 'Competitive High-Margin Moat';
-      document.getElementById('cardMoatsDetail').textContent = moatsKpi.plain_interpretation || 'Segment operating at maximum efficiency with zero adverse drift.';
+      const bottleneck = pulse.bottleneck || {};
+      document.getElementById('pulseBottleneckBadge').textContent = bottleneck.value_badge || 'Primary Risk';
+      document.getElementById('pulseBottleneckHeadline').textContent = bottleneck.headline || 'Primary Operational Bottleneck';
+      document.getElementById('pulseBottleneckDetail').textContent = bottleneck.detail || '';
+      document.getElementById('pulseBottleneckFooter').textContent = `Target: ${pulse.target_column || 'Adverse Event'}`;
 
-      document.getElementById('cardBottleneckRate').textContent = bottleneckKpi.formatted_value || '0.0%';
-      document.getElementById('cardBottleneckDesc').textContent = bottleneckKpi.name || 'Primary Operational Bottleneck';
-      document.getElementById('cardBottleneckDetail').textContent = bottleneckKpi.plain_interpretation || 'Primary driver of operational drag across the dataset.';
+      const redLine = pulse.red_line || {};
+      document.getElementById('pulseRedlineBadge').textContent = redLine.value_badge || 'Critical Cliff';
+      document.getElementById('pulseRedlineHeadline').textContent = redLine.headline || 'Operational Tipping Point';
+      document.getElementById('pulseRedlineDetail').textContent = redLine.detail || '';
+      document.getElementById('pulseRedlineFooter').textContent = 'Enforce Hard Guardrail';
 
-      // Strategy
-      document.getElementById('cardStrategyRecommended').textContent = 'Margin Shield';
-      document.getElementById('cardStrategyDetail').textContent = 'Protect high-yield moats while executing frontline actions on top 10% exposed entities.';
+      const firstPath = (pulse.pathways && pulse.pathways[0]) || {};
+      document.getElementById('pulseRecoveryBadge').textContent = firstPath.roi_range || '15% – 25% Recovery';
+      document.getElementById('pulseRecoveryHeadline').textContent =
+        pulse.is_financial && pulse.total_capital_drag > 0
+          ? `${pulse.formatted_capital_drag} Total Exposure Pool`
+          : `${Number(pulse.total_adverse_events || 0).toLocaleString('en-US')} Adverse Events Pool`;
+      document.getElementById('pulseRecoveryDetail').textContent =
+        firstPath.action
+          ? `Recommended: ${firstPath.title} — ${firstPath.action}`
+          : 'Deploy targeted frontline retention workflow on top flagged cohorts.';
+      document.getElementById('pulseRecoveryFooter').textContent =
+        `${Number(appState.worklistMeta.total_flagged || appState.worklistRows.length).toLocaleString('en-US')} Priority Entities`;
 
-      // 2. Historical Drift Radar (Part 3)
-      if (drift) {
-        const traj = drift.trajectory || 'BASELINE';
-        const badgeEl = document.getElementById('driftTrajectoryBadge');
-        badgeEl.textContent = traj;
-        if (traj === 'IMPROVING') {
-          badgeEl.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-        } else if (traj === 'DETERIORATING') {
-          badgeEl.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30';
-        } else {
-          badgeEl.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30';
-        }
+      // 3-Pathway Strategic Decision Matrix
+      renderStrategicPathways(pulse.pathways || []);
 
-        const deltas = drift.deltas || {};
-        document.getElementById('driftRateDelta').textContent = `${(deltas.event_rate_delta_pct || 0) > 0 ? '+' : ''}${(deltas.event_rate_delta_pct || 0).toFixed(2)}%`;
-        document.getElementById('driftCapitalDelta').textContent = `${(deltas.capital_drag_delta || 0) > 0 ? '+' : ''}$${Math.round(deltas.capital_drag_delta || 0).toLocaleString()}`;
+      // Bilingual Executive Brief
+      switchBriefLanguage(appState.briefLanguage);
+      renderArtifactDownloadLinks(result.artifact_download_urls || {});
 
-        const notes = drift.executive_drift_notes || {};
-        if (notes.english) document.getElementById('driftNoteEn').textContent = notes.english;
-        if (notes.hinglish) document.getElementById('driftNoteHi').textContent = notes.hinglish;
-      }
+      // Simulator & ROI Summary
+      recalculateSimulator();
+      updateRoiSummaryCard(result.roi_summary || {}, sym);
 
-      // 3. Action Ledger & ROI (Part 2)
-      if (roi) {
-        updateRoiDisplays(roi);
-      }
+      // Worklist Table
+      renderWorklistTable();
 
-      // 4. Worklist rows
-      renderWorklistTable(result.worklist_preview || []);
-
-      // 5. Setup profit simulation baseline
-      const dragKpi = kpis.find(k => k.name && k.name.toLowerCase().includes('drag')) || {};
-      const rawVal = dragKpi.raw_value || 100000;
-      state.baselineTotalDrag = rawVal;
-      updateProfitSimulation(25);
-
-      // Scroll smoothly to results
-      view.scrollIntoView({ behavior: 'smooth' });
+      // Reset Copilot Result Box on new dataset
+      document.getElementById('copilotResultContainer').classList.add('hidden');
     }
 
-    // -------------------------------------------------------------------------
-    // Render Priority Worklist with Frontline Actions (Part 2)
-    // -------------------------------------------------------------------------
-    function renderWorklistTable(rows) {
-      const tbody = document.getElementById('worklistTableBody');
-      tbody.innerHTML = '';
-
-      if (!rows || rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">No high-risk rows flagged. Operational stability verified!</td></tr>';
+    function renderStrategicPathways(pathways) {
+      const container = document.getElementById('pathwayStack');
+      container.innerHTML = '';
+      if (!pathways.length) {
+        container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No pathways extracted.</p>';
         return;
       }
 
-      rows.slice(0, 10).forEach(row => {
-        // Find best entity ID
-        const entityId = row.entity_id || row.id || row.customer_id || row.booking_id || row.flight || Object.values(row)[0] || 'REC_001';
-        const segment = row.segment || row.cluster || row.category || row.market_segment || row.carrier || 'Standard Segment';
-        const exposure = row.monetary_exposure || row.exposure || row.adr || row.price || row.cost || 250;
-        const recAction = row.recommended_action || row.action || 'High-Risk Retention Outreach';
+      pathways.forEach((p, idx) => {
+        const card = document.createElement('div');
+        card.className = `pathway-card ${idx === 0 ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div class="pathway-top">
+            <span class="pathway-title">${escapeHtml(p.title || `Pathway ${idx + 1}`)}</span>
+            <span class="pathway-roi">${escapeHtml(p.roi_range || 'Targeted ROI')}</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px;">
+            ${escapeHtml(p.action || '')}
+          </p>
+          <div class="pathway-meta">
+            <div>
+              <span>Operational Target</span>
+              <strong>${escapeHtml(p.target || 'Primary Cohort')}</strong>
+            </div>
+            <div>
+              <span>Investment Profile</span>
+              <strong>${escapeHtml(p.investment || 'Process Re-alignment')}</strong>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          container.querySelectorAll('.pathway-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          // Sync simulator slider based on pathway selection
+          const presetReductions = [25, 18, 12];
+          const presetCosts = [2500, 1000, 0];
+          document.getElementById('simReductionSlider').value = presetReductions[idx] || 20;
+          document.getElementById('simCostSlider').value = presetCosts[idx] !== undefined ? presetCosts[idx] : 1500;
+          recalculateSimulator();
+          showToast(`Calibrated simulator for ${p.title}`, 'info');
+        });
+        container.appendChild(card);
+      });
+    }
+
+    function switchBriefLanguage(lang) {
+      appState.briefLanguage = lang;
+      document.getElementById('btnBriefEn').classList.toggle('active', lang === 'en');
+      document.getElementById('btnBriefHi').classList.toggle('active', lang === 'hi');
+      const md = lang === 'hi' ? appState.hinglishSummaryMd : appState.englishSummaryMd;
+      document.getElementById('briefReaderBox').innerHTML = renderMarkdownHtml(md);
+    }
+
+    function renderArtifactDownloadLinks(urls) {
+      const strip = document.getElementById('artifactDownloadStrip');
+      strip.innerHTML = '';
+      const labels = {
+        'PLAIN_BUSINESS_SUMMARY.md': '📄 English Brief (.md)',
+        'HINGLISH_BUSINESS_SUMMARY.md': '📄 Hinglish Brief (.md)',
+        'DATA_XRAY_EXECUTIVE_DOSSIER.md': '📑 Executive Dossier (.md)',
+        'actionable_priority_worklist.csv': '📊 Priority Worklist (.csv)',
+        'semantic_metrics_manifest.json': '⚙️ Audited Manifest (.json)'
+      };
+      Object.entries(labels).forEach(([fileKey, label]) => {
+        if (urls[fileKey]) {
+          const a = document.createElement('a');
+          a.href = urls[fileKey];
+          a.className = 'btn btn-secondary btn-sm';
+          a.textContent = label;
+          a.setAttribute('download', fileKey);
+          strip.appendChild(a);
+        }
+      });
+    }
+
+    // =========================================================================
+    // REAL-TIME COUNTERFACTUAL PROFIT SIMULATOR
+    // =========================================================================
+    function recalculateSimulator() {
+      const pulse = appState.executivePulse || {};
+      const sym = pulse.unit_symbol || '$';
+      const reductionPct = Number(document.getElementById('simReductionSlider').value || 25);
+      const spendCost = Number(document.getElementById('simCostSlider').value || 2500);
+
+      document.getElementById('simReductionLabel').textContent = `${reductionPct}% Containment`;
+      document.getElementById('simCostLabel').textContent = formatCurrencyValue(spendCost, sym);
+
+      const isFinancial = Boolean(pulse.is_financial && Number(pulse.total_capital_drag) > 0);
+      const baseDrag = isFinancial ? Number(pulse.total_capital_drag) : Number(pulse.total_adverse_events || 0);
+      const baseRate = Number(pulse.overall_adverse_rate_pct || 0);
+
+      const grossRecovered = baseDrag * (reductionPct / 100.0);
+      const netRecovered = isFinancial ? (grossRecovered - spendCost) : grossRecovered;
+      const newRate = Math.max(0, baseRate * (1.0 - (reductionPct * 0.65) / 100.0));
+
+      document.getElementById('simBasisLabel').textContent = isFinancial
+        ? `BASIS: ${formatCurrencyValue(baseDrag, sym)} AUDITED DRAG`
+        : `BASIS: ${baseDrag.toLocaleString('en-US')} ADVERSE EVENTS`;
+
+      document.getElementById('simGrossTitle').textContent = isFinancial
+        ? 'Gross Recovered Capital'
+        : 'Prevented Adverse Events';
+
+      document.getElementById('simGrossValue').textContent = isFinancial
+        ? formatCurrencyValue(grossRecovered, sym)
+        : `${Math.round(grossRecovered).toLocaleString('en-US')} Events`;
+
+      const netEl = document.getElementById('simNetValue');
+      netEl.textContent = isFinancial
+        ? formatCurrencyValue(netRecovered, sym)
+        : `${Math.round(grossRecovered).toLocaleString('en-US')} Net Events`;
+      netEl.style.color = netRecovered >= 0 ? '#38bdf8' : 'var(--accent-crimson)';
+
+      document.getElementById('simNewRateValue').textContent = `${newRate.toFixed(2)}%`;
+    }
+
+    function updateRoiSummaryCard(roi, sym = '$') {
+      const totalSaved = Number(roi.total_estimated_saved_capital || 0);
+      const actionsCount = Number(roi.total_actions_logged || 0);
+      const mult = Number(roi.subscription_roi_multiplier || 0);
+
+      document.getElementById('roiSavedCapitalValue').textContent = formatCurrencyValue(totalSaved, sym);
+      document.getElementById('roiActionsCount').textContent = String(actionsCount);
+      document.getElementById('roiMultiplierBadge').textContent = `${mult.toFixed(1)}x`;
+    }
+
+    // =========================================================================
+    // PRIORITY WORKLIST TABLE & SAFE INTERVENTION DISPATCH
+    // =========================================================================
+    function setWorklistQueueFilter(queueVal, btnEl) {
+      appState.worklistQueueFilter = queueVal;
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderWorklistTable();
+    }
+
+    function renderWorklistTable() {
+      const tbody = document.getElementById('worklistTableBody');
+      const searchQ = (document.getElementById('worklistSearchInput').value || '').trim().toLowerCase();
+      const idCol = (appState.worklistMeta && appState.worklistMeta.primary_id_column) || 'Entity_ID';
+      const sym = (appState.executivePulse && appState.executivePulse.unit_symbol) || '$';
+
+      document.getElementById('thPrimaryId').textContent = idCol;
+      tbody.innerHTML = '';
+
+      const filtered = appState.worklistRows.map((row, idx) => ({ row, idx })).filter(({ row }) => {
+        const qName = String(row.action_queue || '');
+        if (appState.worklistQueueFilter !== 'all' && !qName.toLowerCase().includes(appState.worklistQueueFilter.toLowerCase())) {
+          return false;
+        }
+        if (searchQ) {
+          const entityVal = String(row[idCol] ?? row.entity_id ?? '').toLowerCase();
+          const reasonVal = String(row.primary_risk_reason ?? '').toLowerCase();
+          const stepVal = String(row.recommended_next_step ?? '').toLowerCase();
+          return entityVal.includes(searchQ) || reasonVal.includes(searchQ) || stepVal.includes(searchQ);
+        }
+        return true;
+      });
+
+      document.getElementById('worklistCountBadge').textContent =
+        `Showing ${filtered.length} of ${Number(appState.worklistMeta.total_flagged || appState.worklistRows.length).toLocaleString('en-US')} Flagged Entities`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:28px;">No worklist rows match your current filter.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(({ row, idx }) => {
+        const entityId = String(row[idCol] ?? row.entity_id ?? `ROW-${idx + 1}`);
+        const isResolved = appState.resolvedEntities.has(entityId);
+        const queueRaw = String(row.action_queue || 'Priority Queue');
+        const isPreventive = queueRaw.toLowerCase().includes('preventive');
+        const riskPct = Number(row.empirical_cohort_risk_pct || 0);
+        const exposureNum = row.monetary_exposure !== null && row.monetary_exposure !== undefined
+          ? Number(row.monetary_exposure)
+          : 0;
+        const exposureText = exposureNum > 0
+          ? formatCurrencyValue(exposureNum, sym)
+          : `${sym}0 (Ops Watch)`;
 
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-surface-dark/50 transition-colors';
+        const badgeClass = isResolved ? 'resolved' : (isPreventive ? 'preventive' : 'recovery');
+        const badgeText = isResolved ? '✓ Action Logged' : queueRaw;
+
         tr.innerHTML = `
-          <td class="py-3 px-4 font-mono font-bold text-white">${entityId}</td>
-          <td class="py-3 px-4 text-slate-300">${segment}</td>
-          <td class="py-3 px-4 font-mono font-bold text-emerald-400">${state.currencySymbol}${Number(exposure).toLocaleString()}</td>
-          <td class="py-3 px-4 text-slate-400 text-[11px]">${recAction}</td>
-          <td class="py-3 px-4 text-right space-x-1">
-            <button onclick="logFrontlineIntervention('${entityId}', ${Number(exposure)})" class="px-2.5 py-1 text-[11px] font-semibold bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 rounded-lg transition-colors">
-              <i class="fa-solid fa-check mr-1"></i> Resolve
-            </button>
-            <button onclick="openWhatsAppIntervention('${entityId}', '${segment}')" class="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg transition-colors">
-              <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+          <td class="tabular-nums" style="color:var(--text-muted);">#${escapeHtml(row.priority_rank || (idx + 1))}</td>
+          <td class="tabular-nums" style="font-weight:700;color:var(--text-primary);">${escapeHtml(entityId)}</td>
+          <td><span class="queue-badge ${badgeClass}">${escapeHtml(badgeText)}</span></td>
+          <td class="tabular-nums" style="font-weight:700;color:${riskPct >= 50 ? 'var(--accent-crimson)' : 'var(--accent-amber)'};">${riskPct.toFixed(1)}%</td>
+          <td class="tabular-nums" style="font-weight:600;">${escapeHtml(exposureText)}</td>
+          <td style="max-width:260px;color:var(--text-secondary);">${escapeHtml(row.primary_risk_reason || '--')}</td>
+          <td style="max-width:280px;color:var(--text-secondary);">${escapeHtml(row.recommended_next_step || '--')}</td>
+          <td style="text-align:right;">
+            <button type="button" class="btn ${isResolved ? 'btn-secondary' : 'btn-primary'} btn-sm" data-row-idx="${idx}">
+              ${isResolved ? 'Update Log' : 'Intervene'}
             </button>
           </td>
         `;
+
+        const actionBtn = tr.querySelector('button[data-row-idx]');
+        actionBtn.addEventListener('click', () => openInterventionModal(idx));
         tbody.appendChild(tr);
       });
     }
 
-    // -------------------------------------------------------------------------
-    // Record Frontline Action in Action Ledger (Part 2)
-    // -------------------------------------------------------------------------
-    async function logFrontlineIntervention(entityId, exposure) {
+    function openInterventionModal(rowIndex) {
+      const row = appState.worklistRows[rowIndex];
+      if (!row) return;
+      appState.modalRowIndex = rowIndex;
+
+      const idCol = (appState.worklistMeta && appState.worklistMeta.primary_id_column) || 'Entity_ID';
+      const sym = (appState.executivePulse && appState.executivePulse.unit_symbol) || '$';
+      const entityId = String(row[idCol] ?? row.entity_id ?? `ROW-${rowIndex + 1}`);
+      const reason = String(row.primary_risk_reason || 'High empirical risk cohort');
+      const nextStep = String(row.recommended_next_step || 'Execute preventive check-in');
+      const exposure = Number(row.monetary_exposure || 0);
+
+      document.getElementById('modalEntityTitle').textContent =
+        `Intervene on ${idCol}: ${entityId}`;
+      document.getElementById('modalEntitySubtitle').textContent =
+        `Queue: ${row.action_queue || 'Priority'} · Exposure: ${formatCurrencyValue(exposure, sym)} · Driver: ${reason}`;
+
+      const draftMsg =
+        `[DataX-Ray Priority Alert] Entity ${entityId} flagged in ${row.action_queue || 'Priority Queue'} ` +
+        `(${reason}). Action: ${nextStep}. Exposure at risk: ${formatCurrencyValue(exposure, sym)}.`;
+      document.getElementById('modalOutreachText').value = draftMsg;
+
+      document.getElementById('interventionModal').classList.remove('hidden');
+    }
+
+    function closeInterventionModal() {
+      document.getElementById('interventionModal').classList.add('hidden');
+      appState.modalRowIndex = null;
+    }
+
+    function openWhatsAppDeepLink() {
+      const text = document.getElementById('modalOutreachText').value || '';
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+      showToast('Opened WhatsApp dispatch in new tab.', 'info');
+    }
+
+    async function commitWorklistIntervention() {
+      const idx = appState.modalRowIndex;
+      const row = appState.worklistRows[idx];
+      if (!row) return;
+
+      const idCol = (appState.worklistMeta && appState.worklistMeta.primary_id_column) || 'Entity_ID';
+      const sym = (appState.executivePulse && appState.executivePulse.unit_symbol) || '$';
+      const entityId = String(row[idCol] ?? row.entity_id ?? `ROW-${idx + 1}`);
+      const statusVal = document.getElementById('modalActionStatus').value;
+      const notesVal = document.getElementById('modalOutreachText').value;
+      const exposureVal = Number(row.monetary_exposure || 0);
+
       try {
         const res = await fetch('/api/v1/worklist/action', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            tenant_id: state.tenantId,
-            entity_id: String(entityId),
-            run_id: state.activeRunId || '',
-            action_type: 'RETAINED',
-            notes: 'Frontline intervention completed via DataX-Ray worklist portal.',
-            monetary_exposure: Number(exposure) || 0.0,
-            status: 'RESOLVED'
+            tenant_id: appState.activeTenant,
+            entity_id: entityId,
+            run_id: appState.activeRunId || 'manual_run',
+            action_type: row.action_queue || 'frontline_intervention',
+            notes: notesVal,
+            monetary_exposure: exposureVal,
+            status: statusVal
           })
         });
-
-        if (!res.ok) {
-          alert('Could not record action in ledger.');
-          return;
-        }
-
-        const data = await res.json();
-        updateRoiDisplays(data.roi_summary);
-        alert(`✅ Entity ${entityId} marked as RESOLVED! Provisional savings of ${state.currencySymbol}${Number(exposure).toLocaleString()} recorded in verified ledger.`);
-      } catch (err) {
-        alert('Action error: ' + err.message);
-      }
-    }
-
-    function openWhatsAppIntervention(entityId, segment) {
-      const msg = encodeURIComponent(`Hi, this is your priority customer account manager regarding account ${entityId} in ${segment}. We have applied an exclusive executive retention package to your profile today.`);
-      window.open(`https://wa.me/?text=${msg}`, '_blank');
-    }
-
-    // -------------------------------------------------------------------------
-    // ROI Displays Update
-    // -------------------------------------------------------------------------
-    async function fetchRoiSummary() {
-      try {
-        const res = await fetch(`/api/v1/roi-summary/${state.tenantId}`);
-        if (res.ok) {
-          const data = await res.json();
-          updateRoiDisplays(data);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = await res.json();
+        appState.resolvedEntities.add(entityId);
+        updateRoiSummaryCard(payload.roi_summary || {}, sym);
+        renderWorklistTable();
+        closeInterventionModal();
+        showToast(`Logged intervention for ${entityId}. ROI Ledger updated!`, 'success');
       } catch (e) {
-        console.error('ROI fetch error:', e);
+        showToast(`Failed to record intervention: ${e.message}`, 'error');
       }
     }
 
-    function updateRoiDisplays(roi) {
-      const sym = roi.currency_symbol || state.currencySymbol || '$';
-      const saved = roi.verified_saved_capital || 0;
-      const mult = roi.roi_multiplier || 0;
-      const resolved = roi.total_actions_resolved || 0;
-
-      const formattedSaved = `${sym}${Math.round(saved).toLocaleString()}`;
-      const formattedMult = `${mult.toFixed(1)}x ROI`;
-
-      // Top Header Ribbon
-      const ribbon = document.getElementById('topRoiRibbon');
-      if (saved > 0 || resolved > 0) {
-        ribbon.classList.remove('hidden');
-        document.getElementById('topRoiSavedVal').textContent = formattedSaved;
-        document.getElementById('topRoiMultiplier').textContent = formattedMult;
+    function downloadWorklistCsv() {
+      if (!appState.activeRunId) {
+        showToast('Load a dataset or benchmark first.', 'warn');
+        return;
       }
-
-      // Main Action Ledger Card
-      document.getElementById('ledgerSavedCapital').textContent = formattedSaved;
-      document.getElementById('ledgerRoiMultiplier').textContent = `${mult.toFixed(1)}x`;
-      document.getElementById('ledgerResolvedCount').textContent = resolved;
+      window.location.href = `/api/v1/download/${encodeURIComponent(appState.activeRunId)}/actionable_priority_worklist.csv`;
     }
 
-    // -------------------------------------------------------------------------
-    // "What-If" Counterfactual Profit Simulation
-    // -------------------------------------------------------------------------
-    function updateProfitSimulation(pct) {
-      document.getElementById('simSliderVal').textContent = `${pct}%`;
-      const recovered = (state.baselineTotalDrag * (pct / 100));
-      document.getElementById('simRecoveredCapital').textContent = `${state.currencySymbol}${Math.round(recovered).toLocaleString()}`;
-    }
-
-    // -------------------------------------------------------------------------
-    // Bilingual "Ask DataX-Ray" Copilot
-    // -------------------------------------------------------------------------
-    function askCopilot(question) {
-      document.getElementById('copilotInput').value = question;
+    // =========================================================================
+    // CONVERSATIONAL DUCKDB SQL COPILOT (/api/v1/ask)
+    // =========================================================================
+    function askPresetQuestion(qText) {
+      document.getElementById('copilotQuestionInput').value = qText;
+      if (qText.toLowerCase().includes('sabse') || qText.toLowerCase().includes('kyun')) {
+        document.getElementById('copilotLangSelect').value = 'hi';
+      }
       submitCopilotQuestion();
     }
 
     async function submitCopilotQuestion() {
-      const input = document.getElementById('copilotInput');
-      const q = input.value.trim();
-      if (!q) return;
-
-      if (!state.lastRunResults || !state.lastRunResults.output_dir) {
-        alert('Please run forensic analysis on a dataset first before querying.');
+      const qInput = document.getElementById('copilotQuestionInput');
+      const question = (qInput.value || '').trim();
+      if (!question) {
+        showToast('Enter a business question to query DuckDB.', 'warn');
+        return;
+      }
+      if (!appState.activeOutputDir) {
+        showToast('Please select a benchmark or upload a dataset first.', 'warn');
         return;
       }
 
-      const respArea = document.getElementById('copilotResponseArea');
-      const ansEl = document.getElementById('copilotAnswerText');
-      respArea.classList.remove('hidden');
-      ansEl.textContent = 'Executing DuckDB SQL verification on physical Parquet fact table...';
+      const lang = document.getElementById('copilotLangSelect').value || 'en';
+      const btn = document.getElementById('copilotAskBtn');
+      btn.disabled = true;
+      btn.textContent = 'Querying DuckDB...';
 
       try {
         const res = await fetch('/api/v1/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            output_dir: state.lastRunResults.output_dir,
-            question: q,
-            language: 'auto',
-            use_llm: true
+            output_dir: appState.activeOutputDir,
+            question: question,
+            language: lang,
+            use_llm: false
           })
         });
-
         if (!res.ok) {
-          const err = await res.json();
-          ansEl.textContent = 'Query Error: ' + (err.detail || 'Could not verify question.');
-          return;
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
         }
-
         const data = await res.json();
-        ansEl.textContent = data.plain_summary || data.answer || 'Analysis executed successfully.';
+        const box = document.getElementById('copilotResultContainer');
+        box.classList.remove('hidden');
 
-        if (data.sql_executed) {
-          document.getElementById('copilotSqlContainer').classList.remove('hidden');
-          document.getElementById('copilotSqlText').textContent = data.sql_executed;
+        const mdAnswer = data.answer_markdown || data.plain_summary || data.answer || 'Query executed.';
+        document.getElementById('copilotAnswerMarkdown').innerHTML = renderMarkdownHtml(mdAnswer);
+        document.getElementById('copilotSqlCode').textContent = data.sql_executed || '-- Deterministic SQL executed';
+
+        // Render physical result rows table
+        const tableWrap = document.getElementById('copilotTableWrapper');
+        const cols = data.columns || [];
+        const rows = data.data || [];
+        if (cols.length > 0 && rows.length > 0) {
+          let ths = cols.map(c => `<th>${escapeHtml(c)}</th>`).join('');
+          let trs = rows.slice(0, 15).map(r => {
+            let tds = cols.map(c => `<td class="tabular-nums">${escapeHtml(r[c] ?? '—')}</td>`).join('');
+            return `<tr>${tds}</tr>`;
+          }).join('');
+          tableWrap.innerHTML = `<table class="data-table"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
         } else {
-          document.getElementById('copilotSqlContainer').classList.add('hidden');
+          tableWrap.innerHTML = '';
         }
-      } catch (err) {
-        ansEl.textContent = 'Copilot communication error: ' + err.message;
-      }
-    }
 
-    // -------------------------------------------------------------------------
-    // Sample Demo Datasets Loader
-    // -------------------------------------------------------------------------
-    async function loadSampleDemo(benchmarkName) {
-      // Find sample file from benchmark folder and pass to intent handshake
-      alert(`Loading benchmark demo dataset: ${benchmarkName}...`);
-      // We can trigger an analysis run directly via /api/v1/jobs/submit with preset benchmark
-      const progressSec = document.getElementById('progressSection');
-      progressSec.classList.remove('hidden');
-      document.getElementById('resultsViewport').classList.add('hidden');
-
-      // Check benchmark output directly or trigger pipeline
-      try {
-        // Poll direct benchmark output if it already exists locally
-        const res = await fetch(`/api/v1/dashboard/${benchmarkName}`);
-        if (res.ok) {
-          // Pre-rendered benchmark ready!
-          openBespokeDashboard(benchmarkName);
-          progressSec.classList.add('hidden');
-        } else {
-          alert(`Benchmark ${benchmarkName} is ready in local repository. Upload your own file to test customized datasets!`);
-          progressSec.classList.add('hidden');
-        }
+        showToast('Verified DuckDB SQL query executed.', 'success');
       } catch (e) {
-        progressSec.classList.add('hidden');
+        showToast(`Copilot query error: ${e.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Run SQL Audit';
       }
     }
 
-    // -------------------------------------------------------------------------
-    // Modal & Artifact Utilities
-    // -------------------------------------------------------------------------
-    function downloadArtifact(name) {
-      if (!state.activeRunId) {
-        alert('No active run available for artifact download.');
-        return;
-      }
-      window.open(`/api/v1/download/${state.activeRunId}/${name}`, '_blank');
-    }
-
-    function openBespokeDashboard(overrideId) {
-      const id = overrideId || state.activeRunId;
-      if (!id) {
-        alert('No active run available for dashboard viewing.');
-        return;
-      }
-      const iframe = document.getElementById('dashboardIframe');
-      iframe.src = `/api/v1/dashboard/${id}`;
-      document.getElementById('dashboardModal').classList.remove('hidden');
-    }
-
-    function closeDashboardModal() {
-      document.getElementById('dashboardModal').classList.add('hidden');
-      document.getElementById('dashboardIframe').src = '';
-    }
-
-    function toggleFullscreenDashboard() {
-      const iframe = document.getElementById('dashboardIframe');
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      }
-    }
-
-    async function confirmPurge() {
-      if (!state.activeRunId) {
-        alert('No active workspace data to purge.');
-        return;
-      }
-      if (confirm('GDPR / DPDP Right to Erasure: Are you sure you want to permanently erase all raw uploads and Parquet fact tables from disk?')) {
-        try {
-          const res = await fetch(`/api/v1/workspaces/${state.activeRunId}/purge`, { method: 'DELETE' });
-          if (res.ok) {
-            alert('✅ All workspace data and Parquet tables have been permanently erased from disk.');
-            window.location.reload();
-          }
-        } catch (e) {
-          alert('Purge error: ' + e.message);
-        }
-      }
-    }
+    // Auto-load Hotel Booking Cancellation benchmark on initial page visit so the user
+    // immediately experiences live data alongside the upload workbench
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCertifiedBenchmark('hotel_booking_cancellation');
+    });
   </script>
 </body>
 </html>

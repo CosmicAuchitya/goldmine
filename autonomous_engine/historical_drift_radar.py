@@ -125,6 +125,7 @@ def analyze_historical_drift(
             "deltas": {
                 "records_delta": 0,
                 "adverse_rate_delta_pp": 0.0,
+                "event_rate_delta_pct": 0.0,
                 "capital_drag_delta": 0.0,
                 "adverse_events_delta": 0
             }
@@ -210,6 +211,7 @@ def analyze_historical_drift(
         "deltas": {
             "records_delta": delta_records,
             "adverse_rate_delta_pp": delta_rate_pp,
+            "event_rate_delta_pct": delta_rate_pp,
             "capital_drag_delta": delta_drag,
             "adverse_events_delta": delta_events
         }

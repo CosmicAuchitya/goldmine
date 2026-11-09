@@ -85,6 +85,7 @@ class ActionLedger:
         action_id = f"act_{int(time.time())}_{uuid.uuid4().hex[:6]}"
         entity_key = str(entity_id).strip()
 
+        norm_status = "RESOLVED" if status.upper() in ("RESOLVED", "RETAINED") else status.upper()
         record = {
             "action_id": action_id,
             "run_id": run_id,
@@ -93,7 +94,7 @@ class ActionLedger:
             "risk_pct": float(risk_pct),
             "monetary_exposure": float(monetary_exposure),
             "action_type": action_type,
-            "status": status,
+            "status": norm_status,
             "notes": notes,
             "assigned_to": assigned_to,
             "currency_symbol": currency_symbol,
@@ -105,26 +106,29 @@ class ActionLedger:
 
         # If marked resolved immediately on a preventive queue with positive exposure,
         # record provisional savings pending subsequent dataset reconciliation
-        if status.upper() == "RESOLVED" and queue == "PREVENTIVE_RETENTION_WATCH" and float(monetary_exposure) > 0:
+        if norm_status == "RESOLVED" and queue == "PREVENTIVE_RETENTION_WATCH" and float(monetary_exposure) > 0:
             record["provisional_savings"] = float(monetary_exposure)
 
         ledger["actions"][entity_key] = record
 
         # Recalculate summary totals
         actions = list(ledger["actions"].values())
-        resolved = [a for a in actions if a.get("status") == "RESOLVED"]
+        resolved = [a for a in actions if a.get("status") in ("RESOLVED", "RETAINED")]
         ver_saved = sum(float(a.get("saved_capital", 0.0)) for a in actions)
         prov_saved = sum(float(a.get("provisional_savings", 0.0)) for a in resolved if a.get("saved_capital", 0.0) == 0.0)
-        display_saved = ver_saved + prov_saved
+        display_saved = round(ver_saved + prov_saved, 2)
 
         ledger["roi_summary"]["total_actions_logged"] = len(actions)
         ledger["roi_summary"]["total_actions_resolved"] = len(resolved)
-        ledger["roi_summary"]["verified_saved_capital"] = round(display_saved, 2)
+        ledger["roi_summary"]["verified_saved_capital"] = display_saved
+        ledger["roi_summary"]["total_estimated_saved_capital"] = display_saved
         ledger["roi_summary"]["currency_symbol"] = currency_symbol
 
         sub_cost = float(ledger["roi_summary"].get("estimated_subscription_cost", 99.0))
         if sub_cost > 0:
-            ledger["roi_summary"]["roi_multiplier"] = round(display_saved / sub_cost, 1)
+            mult = round(display_saved / sub_cost, 1)
+            ledger["roi_summary"]["roi_multiplier"] = mult
+            ledger["roi_summary"]["subscription_roi_multiplier"] = mult
 
         self._save_ledger(tenant_id, ledger)
         return record
@@ -184,10 +188,6 @@ class ActionLedger:
         id_series_str = fact_df[id_col_resolved].astype(str)
         fact_id_map = dict(zip(id_series_str, fact_df.index))
 
-        verified_saved_total = 0.0
-        averted_events_count = 0
-        reconciled_count = 0
-
         for entity_key, action_rec in actions.items():
             if action_rec.get("queue") != "PREVENTIVE_RETENTION_WATCH":
                 continue
@@ -197,40 +197,51 @@ class ActionLedger:
                 is_failed = bool(s_bin.loc[row_idx] == 1)
 
                 action_rec["reconciled"] = True
-                reconciled_count += 1
 
                 if not is_failed:
                     # Success! The entity was retained / did not fail!
                     action_rec["reconciled_status"] = "AVERTED_SUCCESS"
                     saved_amt = float(action_rec.get("monetary_exposure", 0.0))
                     action_rec["saved_capital"] = saved_amt
-                    verified_saved_total += saved_amt
-                    averted_events_count += 1
+                    action_rec["provisional_savings"] = 0.0
                 else:
                     action_rec["reconciled_status"] = "REALIZED_FAILURE"
                     action_rec["saved_capital"] = 0.0
                     action_rec["provisional_savings"] = 0.0
 
-        # Update ROI Summary
-        resolved = [a for a in actions.values() if a.get("status") == "RESOLVED"]
-        currency_sym = ledger.get("roi_summary", {}).get("currency_symbol", "$")
+        # Update ROI Summary across all tenant actions
+        all_actions = list(actions.values())
+        resolved = [a for a in all_actions if a.get("status") in ("RESOLVED", "RETAINED")]
+        reconciled_list = [a for a in all_actions if a.get("reconciled")]
+        averted_list = [a for a in reconciled_list if a.get("reconciled_status") == "AVERTED_SUCCESS"]
+
+        reconciled_count = len(reconciled_list)
+        averted_events_count = len(averted_list)
+
+        ver_saved = sum(float(a.get("saved_capital", 0.0)) for a in reconciled_list)
+        prov_saved = sum(float(a.get("provisional_savings", 0.0)) for a in resolved if not a.get("reconciled"))
+        display_saved = round(ver_saved + prov_saved, 2)
+
+        currency_sym = currency_symbol or ledger.get("roi_summary", {}).get("currency_symbol", "$")
         sub_cost = float(ledger.get("roi_summary", {}).get("estimated_subscription_cost", 99.0))
 
         rate = round((averted_events_count / max(reconciled_count, 1)) * 100.0, 1) if reconciled_count > 0 else 0.0
-        roi_mult = round(verified_saved_total / max(sub_cost, 1.0), 1) if sub_cost > 0 else 0.0
+        roi_mult = round(display_saved / max(sub_cost, 1.0), 1) if sub_cost > 0 else 0.0
 
         ledger["roi_summary"] = {
-            "total_actions_logged": len(actions),
+            "total_actions_logged": len(all_actions),
             "total_actions_resolved": len(resolved),
             "total_reconciled": reconciled_count,
             "reconciled_count": reconciled_count,
             "verified_retained_count": averted_events_count,
-            "verified_saved_capital": round(verified_saved_total, 2),
+            "verified_saved_capital": display_saved,
+            "total_estimated_saved_capital": display_saved,
             "verified_averted_events": averted_events_count,
             "retention_success_rate_pct": rate,
             "currency_symbol": currency_sym,
             "estimated_subscription_cost": sub_cost,
-            "roi_multiplier": roi_mult
+            "roi_multiplier": roi_mult,
+            "subscription_roi_multiplier": roi_mult
         }
 
         self._save_ledger(tenant_id, ledger)
@@ -239,12 +250,17 @@ class ActionLedger:
     def get_roi_summary(self, tenant_id: str) -> Dict[str, Any]:
         """Returns the high-level ROI summary card payload."""
         ledger = self._load_ledger(tenant_id)
-        return ledger.get("roi_summary", {
+        summary = ledger.get("roi_summary", {
             "total_actions_logged": 0,
             "total_actions_resolved": 0,
             "verified_saved_capital": 0.0,
+            "total_estimated_saved_capital": 0.0,
             "verified_averted_events": 0,
             "retention_success_rate_pct": 0.0,
             "currency_symbol": "$",
-            "roi_multiplier": 0.0
+            "roi_multiplier": 0.0,
+            "subscription_roi_multiplier": 0.0
         })
+        summary.setdefault("total_estimated_saved_capital", summary.get("verified_saved_capital", 0.0))
+        summary.setdefault("subscription_roi_multiplier", summary.get("roi_multiplier", 0.0))
+        return summary
