@@ -1179,6 +1179,95 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Live Cloud / ERP Connectors & URL Sync */
+    .connector-box {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .connector-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .connector-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .connector-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+    }
+
+    .connector-chip:hover {
+      border-color: var(--accent-sky);
+      background: var(--bg-elevated);
+      transform: translateY(-1px);
+    }
+
+    .connector-chip small {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent-sky);
+      white-space: nowrap;
+    }
+
+    .url-sync-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .url-sync-row input {
+      flex: 1;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    .url-sync-row input:focus {
+      border-color: var(--accent-emerald);
+    }
+
+    /* Cohort Risk Breakdown Visual Bars */
+    .cohort-bar-track {
+      width: 130px;
+      height: 7px;
+      background: var(--bg-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    .cohort-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -1262,6 +1351,39 @@
           <div class="arch-item">
             <strong>03 · Closed-Loop ROI</strong>
             <span>Track frontline outreach &amp; reconcile saved capital across uploads.</span>
+          </div>
+        </div>
+
+        <!-- Zero-Upload 1-Click Cloud / ERP Connectors & Google Sheets URL Sync -->
+        <div class="connector-box">
+          <div class="section-eyebrow" style="margin-bottom: 4px;">
+            <span>ZERO-UPLOAD LIVE ERP &amp; CLOUD CONNECTORS</span>
+            <span style="color: #38bdf8;">1-CLICK SYNC</span>
+          </div>
+          <div class="connector-grid">
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('shopify_orders_live', 'IN')">
+              <span>🛒 Shopify D2C (RTO &amp; COD)</span>
+              <small>₹ INR Sync</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('tally_prime_ledger_in', 'IN')">
+              <span>📒 Tally Prime B2B Ledger</span>
+              <small>₹ INR Sync</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('razorpay_settlements_in', 'IN')">
+              <span>💳 Razorpay Settlements</span>
+              <small>₹ INR Sync</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('stripe_saas_churn', 'US')">
+              <span>⚡ Stripe SaaS Subscriptions</span>
+              <small>$ USD Sync</small>
+            </button>
+          </div>
+
+          <div class="url-sync-row">
+            <input id="remoteSheetUrlInput" type="url" placeholder="Paste Google Sheets share link or direct HTTPS CSV/JSON URL..." />
+            <button id="btnSyncUrl" type="button" class="btn btn-sky btn-sm" onclick="ingestRemoteUrl()">
+              Sync Live URL
+            </button>
           </div>
         </div>
       </div>
@@ -1385,15 +1507,21 @@
           <span id="activeRunBadge" class="run-tag">RUN: hotel_booking_cancellation</span>
           <span class="meta-stat">Total Records: <strong id="metaTotalRecords">119,390</strong></span>
           <span class="meta-stat">Adverse Events: <strong id="metaAdverseCount">44,224</strong> (<strong id="metaAdverseRate">37.04%</strong>)</span>
-          <span class="meta-stat">Audited Capital Drag: <strong id="metaCapitalDrag">$16,727,236</strong></span>
+          <span class="meta-stat">Audited Capital Drag: <strong id="metaCapitalDrag">$4,641,943</strong></span>
         </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleOnboardingPanel()">
-            Switch Dataset / Upload New
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-amber btn-sm" onclick="openMorningDigestModal()">
+            📲 Morning Munim-Ji Digest
           </button>
+          <a id="openPrintableCertLink" href="#" target="_blank" class="btn btn-secondary btn-sm">
+            🖨️ Official Audit PDF ↗
+          </a>
           <a id="openFullDashboardLink" href="#" target="_blank" class="btn btn-sky btn-sm">
             Open Full Multi-Chart HTML Report ↗
           </a>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleOnboardingPanel()">
+            Switch / Upload Dataset
+          </button>
         </div>
       </div>
 
@@ -1596,6 +1724,38 @@
         </div>
       </section>
 
+      <!-- Interactive Segment & Cohort Risk Breakdown Explorer -->
+      <section id="cohortExplorerSection" class="worklist-panel hidden">
+        <div class="worklist-toolbar">
+          <div>
+            <div class="section-eyebrow" style="margin-bottom: 2px;">MULTI-DIMENSIONAL VARIANCE &amp; EXPOSURE DRILL-DOWN</div>
+            <h2 style="font-size: 18px; font-weight: 800;">
+              Interactive Segment &amp; Cohort Risk Breakdown Explorer
+              <span id="cohortDimensionBadge" class="tabular-nums" style="font-size: 12.5px; font-weight: 600; color: #38bdf8; margin-left: 8px;"></span>
+            </h2>
+          </div>
+          <div id="cohortDimensionTabs" class="filter-tabs"></div>
+        </div>
+
+        <div class="table-scroll" style="max-height: 360px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Segment / Cohort</th>
+                <th>Volume</th>
+                <th>Adverse Events</th>
+                <th>Empirical Risk Bar &amp; Rate</th>
+                <th>Share of Failures</th>
+                <th>Audited Liability</th>
+                <th>Operational Status</th>
+                <th style="text-align: right;">SQL Drill-Down</th>
+              </tr>
+            </thead>
+            <tbody id="cohortBreakdownTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Actionable Frontline Priority Worklist Table -->
       <section class="worklist-panel">
         <div class="worklist-toolbar">
@@ -1723,6 +1883,50 @@
     </div>
   </div>
 
+  <!-- Morning Munim-Ji Executive Digest & Webhook Modal -->
+  <div id="morningDigestModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeMorningDigestModal()">
+    <div class="modal-card" style="max-width: 640px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 2px;">AUTOMATED EXECUTIVE ALERTING</div>
+          <h3 style="font-size: 18px; font-weight: 800;">📲 "Morning Munim-Ji" 60-Second Digest</h3>
+        </div>
+        <div class="lang-switch">
+          <button id="btnDigestEn" type="button" class="lang-btn" onclick="switchDigestLang('en')">🇬🇧 English</button>
+          <button id="btnDigestHi" type="button" class="lang-btn active" onclick="switchDigestLang('hi')">🇮🇳 Hinglish</button>
+        </div>
+      </div>
+
+      <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 8px;">
+        Ready-to-forward WhatsApp, Slack Block Kit, or Email summary with your Competitive Moat, #1 Bottleneck, Red-Line Cliff, and Top 3 Priority Entities.
+      </p>
+
+      <textarea id="digestMessagePreview" rows="10" readonly style="font-family: var(--font-mono); font-size: 12px;"></textarea>
+
+      <div class="form-field" style="margin-top: 6px;">
+        <label for="digestWebhookUrlInput">Optional: Slack / Teams / Custom Webhook URL</label>
+        <div style="display: flex; gap: 8px;">
+          <input id="digestWebhookUrlInput" type="url" placeholder="https://hooks.slack.com/services/..." />
+          <button type="button" class="btn btn-sky btn-sm" onclick="dispatchDigestWebhook()">
+            Push Webhook
+          </button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="copyDigestText()">
+            📋 Copy Brief
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="shareDigestOnWhatsApp()">
+            💬 Share on WhatsApp Web ↗
+          </button>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeMorningDigestModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Non-Blocking Toast Container -->
   <div id="toastContainer" class="toast-container"></div>
 
@@ -1743,7 +1947,10 @@
       worklistMeta: { primary_id_column: 'Entity_ID', total_flagged: 0 },
       worklistQueueFilter: 'all',
       resolvedEntities: new Set(),
-      modalRowIndex: null
+      modalRowIndex: null,
+      activeCohortDimIdx: 0,
+      digestPayload: null,
+      digestLang: 'hi'
     };
 
     // =========================================================================
@@ -1859,6 +2066,88 @@
     }
 
     // =========================================================================
+    // ZERO-UPLOAD LIVE ERP CONNECTORS & GOOGLE SHEETS URL INGESTION
+    // =========================================================================
+    async function ingestLiveConnector(connectorId, defaultRegion = 'IN') {
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      document.getElementById('regionSelect').value = defaultRegion;
+      const progSec = document.getElementById('jobProgressSection');
+      progSec.classList.remove('hidden');
+      document.getElementById('progressStageName').textContent = `Syncing Live ERP Stream (${connectorId})...`;
+      document.getElementById('progressBarFill').style.width = '35%';
+      document.getElementById('progressPctLabel').textContent = '35%';
+      showToast(`Syncing live connector '${connectorId}' & running 7-stage audit...`, 'info');
+
+      try {
+        const res = await fetch('/api/v1/connectors/ingest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            connector_id: connectorId,
+            tenant_id: tenant,
+            region_profile: defaultRegion
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Connector sync failed (${res.status})`);
+        }
+        const payload = await res.json();
+        progSec.classList.add('hidden');
+        hydrateExecutiveConsole(payload);
+        document.getElementById('executiveConsole').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast(`Synced ${payload.connector_meta ? payload.connector_meta.connector_title : connectorId} (100% Verified Truth)`, 'success');
+      } catch (e) {
+        progSec.classList.add('hidden');
+        showToast(`Live connector error: ${e.message}`, 'error');
+      }
+    }
+
+    async function ingestRemoteUrl() {
+      const urlInput = document.getElementById('remoteSheetUrlInput');
+      const rawUrl = (urlInput.value || '').trim();
+      if (!rawUrl) {
+        showToast('Paste a Google Sheets share link or direct HTTPS CSV/JSON URL first.', 'warn');
+        return;
+      }
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      const region = document.getElementById('regionSelect').value || 'US';
+      const btn = document.getElementById('btnSyncUrl');
+      btn.disabled = true;
+      btn.textContent = 'Syncing...';
+
+      const progSec = document.getElementById('jobProgressSection');
+      progSec.classList.remove('hidden');
+      document.getElementById('progressStageName').textContent = 'Fetching Remote Sheet & Running DuckDB Audit...';
+
+      try {
+        const res = await fetch('/api/v1/connectors/ingest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data_url: rawUrl,
+            tenant_id: tenant,
+            region_profile: region
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `URL sync failed (${res.status})`);
+        }
+        const payload = await res.json();
+        progSec.classList.add('hidden');
+        hydrateExecutiveConsole(payload);
+        showToast('Remote URL ledger synced and audited!', 'success');
+      } catch (e) {
+        progSec.classList.add('hidden');
+        showToast(`URL sync failed: ${e.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sync Live URL';
+      }
+    }
+
+    // =========================================================================
     // FILE UPLOAD & 1-SECOND PRE-FLIGHT INTENT HANDSHAKE
     // =========================================================================
     const dropzoneEl = document.getElementById('dropzone');
@@ -1931,7 +2220,7 @@
 
         // Populate Cost Select
         const costSelect = document.getElementById('confirmCostSelect');
-        costSelect.innerHTML = '<option value="">None (Operational Frequency Only)</option>';
+        costSelect.innerHTML = '<option value="__NONE__">None (Operational Frequency Only)</option>';
         (data.candidate_costs || []).forEach(c => {
           const opt = document.createElement('option');
           opt.value = c.column;
@@ -1959,6 +2248,11 @@
       }
       const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
       const region = document.getElementById('regionSelect').value || 'US';
+      const targetOverride = document.getElementById('confirmTargetSelect').value || '';
+      const costOverride = document.getElementById('confirmCostSelect').value || '__NONE__';
+      const chosenLang = document.getElementById('confirmLangSelect').value || 'bilingual';
+      if (chosenLang === 'hi') appState.briefLanguage = 'hi';
+      else if (chosenLang === 'en') appState.briefLanguage = 'en';
 
       document.getElementById('intentHandshakeCard').classList.add('hidden');
       const progSec = document.getElementById('jobProgressSection');
@@ -1968,6 +2262,8 @@
       fd.append('file', appState.selectedFile);
       fd.append('tenant_id', tenant);
       fd.append('region_profile', region);
+      if (targetOverride) fd.append('target_override', targetOverride);
+      if (costOverride) fd.append('cost_override', costOverride);
 
       try {
         const submitRes = await fetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
@@ -1998,13 +2294,14 @@
         pctLabel.textContent = `${pct}%`;
         stageName.textContent = statusData.current_stage || 'Processing...';
 
-        if (statusData.status === 'completed' && statusData.result) {
+        const st = String(statusData.status || '').toUpperCase();
+        if (st === 'COMPLETED' && statusData.result) {
           progSec.classList.add('hidden');
           hydrateExecutiveConsole(statusData.result);
           showToast('7-Stage Diagnostic Audit Completed (100.0% Verified Truth)', 'success');
           return;
         }
-        if (statusData.status === 'failed') {
+        if (st === 'FAILED') {
           throw new Error(statusData.error || 'Audit gate failed.');
         }
         await new Promise(r => setTimeout(r, 900));
@@ -2024,6 +2321,7 @@
       appState.worklistRows = result.worklist_preview || [];
       appState.worklistMeta = result.worklist_meta || { primary_id_column: 'Entity_ID', total_flagged: appState.worklistRows.length };
       appState.resolvedEntities.clear();
+      appState.digestPayload = null;
 
       document.getElementById('executiveConsole').classList.remove('hidden');
 
@@ -2042,6 +2340,11 @@
 
       const dashLink = document.getElementById('openFullDashboardLink');
       dashLink.href = result.dashboard_url || `/api/v1/dashboard/${encodeURIComponent(result.run_id)}`;
+
+      const certLink = document.getElementById('openPrintableCertLink');
+      if (certLink) {
+        certLink.href = `/api/v1/report/${encodeURIComponent(result.run_id)}/printable`;
+      }
 
       // Historical Drift Radar
       const drift = result.historical_drift || {};
@@ -2097,11 +2400,179 @@
       recalculateSimulator();
       updateRoiSummaryCard(result.roi_summary || {}, sym);
 
+      // Interactive Segment & Cohort Breakdown Explorer
+      appState.activeCohortDimIdx = 0;
+      renderCohortExplorer(pulse.cohort_breakdowns || []);
+
       // Worklist Table
       renderWorklistTable();
 
       // Reset Copilot Result Box on new dataset
       document.getElementById('copilotResultContainer').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // INTERACTIVE SEGMENT & COHORT RISK BREAKDOWN EXPLORER
+    // =========================================================================
+    function renderCohortExplorer(breakdowns) {
+      const sec = document.getElementById('cohortExplorerSection');
+      const tabsEl = document.getElementById('cohortDimensionTabs');
+      const tbody = document.getElementById('cohortBreakdownTableBody');
+      const dimBadge = document.getElementById('cohortDimensionBadge');
+
+      if (!breakdowns || breakdowns.length === 0) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+      tabsEl.innerHTML = '';
+
+      breakdowns.forEach((b, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `filter-tab ${idx === appState.activeCohortDimIdx ? 'active' : ''}`;
+        btn.textContent = b.dimension_label || `Dimension ${idx + 1}`;
+        btn.onclick = () => {
+          appState.activeCohortDimIdx = idx;
+          renderCohortExplorer(breakdowns);
+        };
+        tabsEl.appendChild(btn);
+      });
+
+      const activeDim = breakdowns[appState.activeCohortDimIdx] || breakdowns[0];
+      dimBadge.textContent = `Dimension: ${activeDim.dimension_label || ''}`;
+      tbody.innerHTML = '';
+
+      const rows = activeDim.rows || [];
+      const maxRate = Math.max(1, ...rows.map(r => Number(r.adverse_rate_pct || 0)));
+
+      rows.forEach((r) => {
+        const rate = Number(r.adverse_rate_pct || 0);
+        const barWidth = Math.min(100, Math.max(4, (rate / maxRate) * 100));
+        const barColor = rate >= 50
+          ? 'var(--accent-crimson)'
+          : (rate >= 25 ? 'var(--accent-amber)' : 'var(--accent-emerald)');
+
+        const statusStr = String(r.status || '');
+        const isHighRisk = statusStr.includes('High-Risk') || statusStr.includes('🔴') || rate >= 40;
+        const isResilient = statusStr.includes('Resilient') || statusStr.includes('🟢');
+        const badgeCls = isHighRisk ? 'recovery' : (isResilient ? 'resolved' : 'preventive');
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:700;color:var(--text-primary);">${escapeHtml(r.segment)}</td>
+          <td class="tabular-nums">${escapeHtml(r.volume)}</td>
+          <td class="tabular-nums">${escapeHtml(r.adverse_events)}</td>
+          <td class="tabular-nums">
+            <div class="cohort-bar-track">
+              <div class="cohort-bar-fill" style="width:${barWidth.toFixed(1)}%;background:${barColor};"></div>
+            </div>
+            <strong style="color:${barColor};">${rate.toFixed(2)}%</strong>
+          </td>
+          <td class="tabular-nums">${Number(r.share_of_failures_pct || 0).toFixed(1)}%</td>
+          <td class="tabular-nums" style="font-weight:600;">${escapeHtml(r.total_liability)}</td>
+          <td><span class="queue-badge ${badgeCls}">${escapeHtml(statusStr)}</span></td>
+          <td style="text-align:right;">
+            <button type="button" class="btn btn-secondary btn-sm" data-seg="${escapeHtml(r.segment)}">
+              Drill Down ↗
+            </button>
+          </td>
+        `;
+        tr.querySelector('button[data-seg]').addEventListener('click', () => {
+          drillDownCohortInCopilot(activeDim.dimension_label, r.segment);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function drillDownCohortInCopilot(dimLabel, segmentName) {
+      const q = `What is driving risk in ${dimLabel} segment ${segmentName} and what is its total exposure?`;
+      document.getElementById('copilotQuestionInput').value = q;
+      document.getElementById('copilotQuestionInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      submitCopilotQuestion();
+    }
+
+    // =========================================================================
+    // MORNING MUNIM-JI DIGEST & WEBHOOK DISPATCHER
+    // =========================================================================
+    async function openMorningDigestModal() {
+      if (!appState.activeRunId) {
+        showToast('Select a benchmark or dataset first.', 'warn');
+        return;
+      }
+      document.getElementById('morningDigestModal').classList.remove('hidden');
+      const box = document.getElementById('digestMessagePreview');
+      box.value = 'Generating deterministic Morning Munim-Ji Digest...';
+
+      try {
+        const res = await fetch(`/api/v1/digest/${encodeURIComponent(appState.activeRunId)}?tenant_id=${encodeURIComponent(appState.activeTenant)}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        appState.digestPayload = await res.json();
+        switchDigestLang(appState.digestLang);
+      } catch (e) {
+        box.value = `Failed to load digest: ${e.message}`;
+      }
+    }
+
+    function closeMorningDigestModal() {
+      document.getElementById('morningDigestModal').classList.add('hidden');
+    }
+
+    function switchDigestLang(lang) {
+      appState.digestLang = lang;
+      document.getElementById('btnDigestEn').classList.toggle('active', lang === 'en');
+      document.getElementById('btnDigestHi').classList.toggle('active', lang === 'hi');
+      if (!appState.digestPayload) return;
+      const text = lang === 'hi'
+        ? appState.digestPayload.whatsapp_hinglish
+        : appState.digestPayload.whatsapp_english;
+      document.getElementById('digestMessagePreview').value = text || '';
+    }
+
+    function copyDigestText() {
+      const text = document.getElementById('digestMessagePreview').value || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      }
+      showToast('Morning Munim-Ji Digest copied to clipboard!', 'success');
+    }
+
+    function shareDigestOnWhatsApp() {
+      const text = document.getElementById('digestMessagePreview').value || '';
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      showToast('Opened WhatsApp Web with Morning Digest.', 'info');
+    }
+
+    async function dispatchDigestWebhook() {
+      const url = (document.getElementById('digestWebhookUrlInput').value || '').trim();
+      if (!url) {
+        showToast('Enter a valid HTTPS Slack / Webhook URL to push.', 'warn');
+        return;
+      }
+      try {
+        const res = await fetch('/api/v1/digest/dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            run_id: appState.activeRunId,
+            tenant_id: appState.activeTenant,
+            language: appState.digestLang,
+            webhook_url: url
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (data.dispatched) {
+          showToast('Morning Digest pushed to Webhook successfully!', 'success');
+        } else {
+          showToast(`Webhook returned status ${data.webhook_status || 'error'}`, 'warn');
+        }
+      } catch (e) {
+        showToast(`Webhook dispatch error: ${e.message}`, 'error');
+      }
     }
 
     function renderStrategicPathways(pathways) {

@@ -126,7 +126,8 @@ def run_master_pipeline(
     cache_dir: str = "cache",
     mode: str = "ai",
     target_override: Optional[str] = None,
-    cost_override: Optional[str] = None
+    cost_override: Optional[str] = None,
+    region_profile: Optional[str] = None
 ) -> bool:
     start_total = time.time()
     data_path = Path(data_dir).resolve()
@@ -147,6 +148,8 @@ def run_master_pipeline(
         print(f"[*] Target Override    : {target_override}")
     if cost_override:
         print(f"[*] Cost Override      : {cost_override}")
+    if region_profile:
+        print(f"[*] Region Profile     : {region_profile}")
     print("=" * 80 + "\n")
 
     if not data_path.exists():
@@ -193,13 +196,15 @@ def run_master_pipeline(
             blueprint_json,
             use_llm=(mode.lower() not in ("dag", "templated", "deterministic"))
         )
-        if target_override or cost_override:
+        if target_override or cost_override or region_profile:
             import json as json_lib
             if target_override:
                 blueprint["target_override"] = target_override
                 blueprint["target_metric"] = target_override
             if cost_override:
                 blueprint["cost_override"] = cost_override
+            if region_profile:
+                blueprint["region_profile"] = region_profile
             with open(blueprint_json, "w", encoding="utf-8") as bf:
                 json_lib.dump(blueprint, bf, indent=2)
 

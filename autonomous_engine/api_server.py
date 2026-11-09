@@ -23,7 +23,7 @@ import threading
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 import io
 import zipfile
 
@@ -43,6 +43,13 @@ try:
     from .action_ledger import ActionLedger
     from .historical_drift_radar import analyze_historical_drift
     from .target_resolver import resolve_canonical_target_and_cost
+    from .live_connectors import (
+        CONNECTOR_CATALOG,
+        stage_connector_or_url_to_directory,
+        build_morning_executive_digest,
+        render_printable_audit_certificate_html,
+        validate_safe_external_url,
+    )
 except ImportError:
     from common_utils import resolve_safe_workspace_path
     from kaggle_harvester import safe_extract_zip
@@ -52,6 +59,13 @@ except ImportError:
     from action_ledger import ActionLedger
     from historical_drift_radar import analyze_historical_drift
     from target_resolver import resolve_canonical_target_and_cost
+    from live_connectors import (
+        CONNECTOR_CATALOG,
+        stage_connector_or_url_to_directory,
+        build_morning_executive_digest,
+        render_printable_audit_certificate_html,
+        validate_safe_external_url,
+    )
 
 WORKSPACE_ROOT = Path.cwd().resolve()
 WEB_CLIENT_PATH = Path(__file__).resolve().parent / "web_client.html"
@@ -92,6 +106,23 @@ class WorklistActionRequest(BaseModel):
     notes: str = Field("", description="Intervention notes or frontline commentary")
     monetary_exposure: float = Field(0.0, description="Amount of revenue or capital at risk")
     status: str = Field("RESOLVED", description="Intervention status: OPEN, IN_PROGRESS, RESOLVED, DISMISSED")
+
+
+class ConnectorIngestRequest(BaseModel):
+    connector_id: Optional[str] = Field(None, description="Preset ERP/Cloud connector ID (e.g. shopify_orders_live, tally_prime_ledger_in)")
+    source_url: Optional[str] = Field(None, description="Google Sheets share URL or direct HTTPS CSV/JSON URL")
+    data_url: Optional[str] = Field(None, description="Alias for source_url")
+    tenant_id: str = Field("founder_workspace", description="Workspace / tenant identifier")
+    region_profile: str = Field("IN", description="Currency & numbering profile: US, IN, EU, GB")
+    target_override: Optional[str] = Field(None, description="Optional target outcome column override")
+    cost_override: Optional[str] = Field(None, description="Optional financial exposure column override")
+
+
+class DigestDispatchRequest(BaseModel):
+    run_id: str = Field(..., description="Run ID or benchmark ID to generate digest for")
+    tenant_id: str = Field("founder_workspace", description="Tenant identifier")
+    language: str = Field("bilingual", description="en, hi, or bilingual")
+    webhook_url: Optional[str] = Field(None, description="Optional Slack or custom HTTPS webhook URL")
 
 
 class JobRecord:
@@ -147,8 +178,9 @@ def _extract_executive_pulse(
 ) -> Dict[str, Any]:
     """
     Extracts 100% physically verified Morning Pulse indicators (Competitive Moats,
-    Bottlenecks, Danger Red-Lines, and 3 Strategic Pathways) directly from
-    semantic_metrics_manifest.json, PLAIN_BUSINESS_SUMMARY.md, and DATA_XRAY_EXECUTIVE_DOSSIER.md.
+    Bottlenecks, Danger Red-Lines, 3 Strategic Pathways, and Segment Cohort Breakdowns)
+    directly from semantic_metrics_manifest.json, PLAIN_BUSINESS_SUMMARY.md, and
+    DATA_XRAY_EXECUTIVE_DOSSIER.md.
     """
     gov = manifest_data.get("governance", {}) or {}
     tout = manifest_data.get("target_outcome", {}) or {}
@@ -175,10 +207,11 @@ def _extract_executive_pulse(
         english_md = plain_summary_text.strip()
         hinglish_md = plain_summary_text.strip()
 
-    # 1. Extract Competitive Moat from DATA_XRAY_EXECUTIVE_DOSSIER.md
+    # 1. Extract Competitive Moat & Cohort Breakdown Tables from DATA_XRAY_EXECUTIVE_DOSSIER.md
     moat_headline = f"{reliability_rate:.2f}%"
     moat_sub = f"Global System Reliability ({total_records - total_events:,} healthy records)"
     moat_detail = f"Baseline operational stability across {total_records:,} audited records."
+    cohort_breakdowns: List[Dict[str, Any]] = []
 
     dossier_f = staging_out / "DATA_XRAY_EXECUTIVE_DOSSIER.md"
     if dossier_f.exists():
@@ -187,7 +220,6 @@ def _extract_executive_pulse(
             m_sec = re.search(r"### 3\. Economic Moats[\s\S]*?(?=\n---|\n### 4\.)", d_txt)
             if m_sec:
                 sec_body = m_sec.group(0)
-                # Find markdown table header & first data row
                 tbl_lines = [ln.strip() for ln in sec_body.splitlines() if ln.strip().startswith("|")]
                 if len(tbl_lines) >= 3:
                     hdr_cells = [c.strip().strip("*") for c in tbl_lines[0].strip("|").split("|")]
@@ -201,6 +233,50 @@ def _extract_executive_pulse(
                         moat_headline = f"{rel_val} Reliable"
                         moat_sub = f"{dim_name} = '{seg_val}' ({vol_val} records)"
                         moat_detail = f"Top stability moat ({status_val}) operating with {rel_val} reliability across {vol_val} audited units."
+
+            # Parse Section 4 & Section 5 Cohort Breakdown Tables for Interactive Segment Explorer
+            for sec_pattern in [
+                r"### 4\. Capital Leaks & Financial Vulnerabilities[\s\S]*?(?=\n---|\n### 5\.)",
+                r"### 5\. Secondary Segment / Node Bottlenecks[\s\S]*?(?=\n---|\n### 6\.|\n### 7\.)"
+            ]:
+                c_sec = re.search(sec_pattern, d_txt)
+                if c_sec:
+                    c_lines = [ln.strip() for ln in c_sec.group(0).splitlines() if ln.strip().startswith("|")]
+                    if len(c_lines) >= 3:
+                        c_hdr = [c.strip().strip("*") for c in c_lines[0].strip("|").split("|")]
+                        dim_col = c_hdr[0] if c_hdr else "Dimension"
+                        rows_list = []
+                        for r_ln in c_lines[2:10]:
+                            cells = [c.strip().strip("*") for c in r_ln.strip("|").split("|")]
+                            if len(cells) >= 4:
+                                seg_label = cells[0]
+                                vol_num = int(re.sub(r"[^0-9]", "", cells[1]) or "0")
+                                adv_num = int(re.sub(r"[^0-9]", "", cells[2]) or "0")
+                                rate_num = float(re.sub(r"[^0-9.]", "", cells[3]) or "0.0")
+                                share_txt = cells[4] if len(cells) >= 5 else "0.0%"
+                                share_num = float(re.sub(r"[^0-9.]", "", share_txt) or "0.0")
+                                exp_txt = cells[5] if len(cells) >= 6 else (cells[4] if len(cells) >= 5 else f"{adv_num:,} events")
+                                status_str = cells[6] if len(cells) >= 7 else ("🔴 High-Risk" if rate_num >= 40 else ("🟢 Resilient" if rate_num <= 15 else "🟡 Watch"))
+                                rows_list.append({
+                                    "segment": seg_label,
+                                    "volume": f"{vol_num:,}",
+                                    "volume_num": vol_num,
+                                    "adverse_events": f"{adv_num:,}",
+                                    "adverse_events_num": adv_num,
+                                    "risk_rate_pct": rate_num,
+                                    "adverse_rate_pct": rate_num,
+                                    "share_of_failures_pct": share_num,
+                                    "exposure_formatted": exp_txt,
+                                    "total_liability": exp_txt,
+                                    "share_of_drag": share_txt,
+                                    "status": status_str
+                                })
+                        if rows_list:
+                            cohort_breakdowns.append({
+                                "dimension": dim_col,
+                                "dimension_label": dim_col,
+                                "rows": rows_list
+                            })
         except Exception:
             pass
 
@@ -336,6 +412,7 @@ def _extract_executive_pulse(
             "detail": redline_detail
         },
         "pathways": pathways,
+        "cohort_breakdowns": cohort_breakdowns,
         "english_summary_markdown": english_md,
         "hinglish_summary_markdown": hinglish_md
     }
@@ -477,7 +554,8 @@ def _build_run_result_payload(
         "worklist_meta": worklist_meta,
         "worklist_preview": worklist_preview,
         "artifact_download_urls": artifact_urls,
-        "dashboard_url": f"/api/v1/dashboard/{run_id}"
+        "dashboard_url": f"/api/v1/dashboard/{run_id}",
+        "printable_report_url": f"/api/v1/report/{run_id}/printable"
     }
 
 
@@ -506,7 +584,8 @@ def _execute_job_in_background(job_id: str) -> None:
             cache_dir=str(staging_cache),
             mode=pipeline_mode,
             target_override=job.target_override,
-            cost_override=job.cost_override
+            cost_override=job.cost_override,
+            region_profile=job.region_profile
         )
         if not success:
             job.status = "FAILED"
@@ -594,7 +673,8 @@ def get_health() -> Dict[str, str]:
 
 @app.post("/api/v1/jobs/submit", status_code=status.HTTP_202_ACCEPTED, tags=["Job Queue"])
 async def submit_job(
-    files: List[UploadFile] = File(...),
+    files: Optional[List[UploadFile]] = File(None),
+    file: Optional[UploadFile] = File(None),
     tenant_id: str = Form("default_tenant"),
     mode: str = Form("ai"),
     region_profile: str = Form("US"),
@@ -607,7 +687,12 @@ async def submit_job(
     Supports optional target_override and cost_override from the 1-Second Intent Handshake.
     Returns HTTP 202 Accepted immediately with polling and live SSE stream links.
     """
-    if not files:
+    upload_list: List[UploadFile] = []
+    if files:
+        upload_list.extend(files)
+    if file:
+        upload_list.append(file)
+    if not upload_list:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files provided for analysis.")
 
     safe_tenant = re.sub(r'[^A-Za-z0-9_-]', '_', str(tenant_id).strip()) or "default_tenant"
@@ -623,7 +708,7 @@ async def submit_job(
 
     total_bytes = 0
     try:
-        for uf in files:
+        for uf in upload_list:
             raw_name = uf.filename or "upload_file"
             safe_name = re.sub(r'[^A-Za-z0-9._-]', '_', Path(raw_name).name)
             ext = Path(safe_name).suffix.lower()
@@ -689,6 +774,7 @@ async def submit_job(
 
 
 @app.get("/api/v1/jobs/{job_id}", tags=["Job Queue"])
+@app.get("/api/v1/jobs/{job_id}/status", tags=["Job Queue"])
 def get_job_status(job_id: str) -> Dict[str, Any]:
     """Retrieves current execution state, stage progress, and results payload for a job."""
     if not re.match(r'^[A-Za-z0-9_-]{3,80}$', job_id):
@@ -776,9 +862,11 @@ def purge_workspace_data(job_id: str) -> Dict[str, Any]:
 
 @app.post("/api/v1/analyze-upload", tags=["Pipeline Execution"])
 async def analyze_upload(
-    files: List[UploadFile] = File(...),
+    files: Optional[List[UploadFile]] = File(None),
+    file: Optional[UploadFile] = File(None),
     tenant_id: str = Form("default_tenant"),
     mode: str = Form("ai"),
+    region_profile: str = Form("US"),
     language: str = Form("hinglish"),
     target_override: Optional[str] = Form(None),
     cost_override: Optional[str] = Form(None)
@@ -788,7 +876,12 @@ async def analyze_upload(
     validates via Anti-Hallucination Guard, and returns audited KPIs, plain-language brief,
     priority worklist preview, historical drift radar, verified ROI, and download links.
     """
-    if not files:
+    upload_list: List[UploadFile] = []
+    if files:
+        upload_list.extend(files)
+    if file:
+        upload_list.append(file)
+    if not upload_list:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files provided for analysis.")
 
     safe_tenant = re.sub(r'[^A-Za-z0-9_-]', '_', str(tenant_id).strip()) or "default_tenant"
@@ -806,7 +899,7 @@ async def analyze_upload(
 
     try:
         # Save and validate uploaded files in chunks to prevent unbounded memory consumption
-        for uf in files:
+        for uf in upload_list:
             raw_name = uf.filename or "upload_file"
             safe_name = re.sub(r'[^A-Za-z0-9._-]', '_', Path(raw_name).name)
             ext = Path(safe_name).suffix.lower()
@@ -850,7 +943,8 @@ async def analyze_upload(
             cache_dir=str(staging_cache),
             mode=pipeline_mode,
             target_override=target_override,
-            cost_override=cost_override
+            cost_override=cost_override,
+            region_profile=region_profile
         )
 
         if not success:
@@ -1270,9 +1364,184 @@ def load_certified_benchmark(benchmark_id: str) -> Dict[str, Any]:
     return payload
 
 
+def _resolve_staging_out_for_run(run_id: str) -> Tuple[Path, str]:
+    """Resolves the output directory and tenant_id for a benchmark, job, or upload run_id."""
+    if not re.match(r'^[A-Za-z0-9_-]{3,80}$', run_id):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid run_id format.")
+
+    cand_upload = WORKSPACE_ROOT / "runs" / "uploads" / run_id / "output"
+    if (cand_upload / "semantic_metrics_manifest.json").exists():
+        return cand_upload, "founder_workspace"
+
+    tenant_matches = list((WORKSPACE_ROOT / "runs" / "tenants").glob(f"*/jobs/{run_id}/output"))
+    if tenant_matches and (tenant_matches[0] / "semantic_metrics_manifest.json").exists():
+        t_name = tenant_matches[0].parents[2].name
+        return tenant_matches[0], t_name
+
+    cand_bench = WORKSPACE_ROOT / "kaggle_benchmarks" / run_id / "output"
+    if (cand_bench / "semantic_metrics_manifest.json").exists():
+        return cand_bench, run_id
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Audited output for '{run_id}' not found.")
+
 
 # =============================================================================
-# PART 4: PRODUCTION SAAS WEB PORTAL
+# PART 4: LIVE DATA CONNECTORS, MORNING DIGEST & PRINTABLE AUDIT REPORT
+# =============================================================================
+@app.get("/api/v1/connectors", tags=["Live Data Connectors"])
+def list_live_connectors() -> Dict[str, Any]:
+    """Lists 1-Click Cloud/ERP Connectors (Shopify, Tally Prime, Razorpay, Stripe) & Google Sheets sync support."""
+    return {
+        "status": "success",
+        "connectors": CONNECTOR_CATALOG,
+        "supports_google_sheets_url": True,
+        "supports_direct_csv_json_url": True
+    }
+
+
+@app.post("/api/v1/connectors/ingest", tags=["Live Data Connectors"])
+def ingest_from_live_connector(req: ConnectorIngestRequest) -> Dict[str, Any]:
+    """
+    Zero-Upload Live Connector Ingestion:
+    Pulls data from a 1-click ERP preset (Shopify, Tally Prime, Razorpay, Stripe) or
+    a Google Sheets / HTTPS CSV URL, executes the deterministic 7-stage pipeline
+    with optional target/cost overrides, and returns the audited Executive Pulse.
+    """
+    t0 = time.time()
+    safe_tenant = re.sub(r'[^A-Za-z0-9_-]', '_', str(req.tenant_id).strip()) or "founder_workspace"
+    label = req.connector_id or "url_sync"
+    run_id = f"conn_{re.sub(r'[^A-Za-z0-9_-]', '', label)[:20]}_{uuid.uuid4().hex[:6]}"
+    run_root = WORKSPACE_ROOT / "runs" / "uploads" / run_id
+    staging_raw = run_root / "raw_data"
+    staging_out = run_root / "output"
+    staging_cache = run_root / "cache"
+
+    staging_raw.mkdir(parents=True, exist_ok=True)
+    staging_out.mkdir(parents=True, exist_ok=True)
+    staging_cache.mkdir(parents=True, exist_ok=True)
+
+    try:
+        eff_url = req.source_url or req.data_url
+        saved_file, default_reg = stage_connector_or_url_to_directory(
+            staging_raw_dir=staging_raw,
+            connector_id=req.connector_id,
+            source_url=eff_url
+        )
+        eff_region = req.region_profile or default_reg
+        success = run_master_pipeline(
+            data_dir=str(staging_raw),
+            output_dir=str(staging_out),
+            cache_dir=str(staging_cache),
+            mode="templated",
+            target_override=req.target_override,
+            cost_override=req.cost_override,
+            region_profile=eff_region
+        )
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Connector pipeline execution failed."
+            )
+
+        bp_path = staging_out / "execution_blueprint.json"
+        audit_res = run_anti_hallucination_audit(str(staging_out), str(bp_path))
+        payload = _build_run_result_payload(
+            run_id=run_id,
+            tenant_id=safe_tenant,
+            staging_out=staging_out,
+            elapsed_sec=round(time.time() - t0, 2),
+            audit_conf=audit_res.get("grounding_confidence", "100.0% VERIFIED TRUTH"),
+            reconcile_ledger=True
+        )
+        conn_obj = next((c for c in CONNECTOR_CATALOG if c["id"] == req.connector_id), None)
+        payload["connector_source"] = req.connector_id or eff_url
+        payload["connector_meta"] = {
+            "connector_id": req.connector_id or "url_sync",
+            "connector_title": conn_obj["name"] if conn_obj else "Live URL Sync",
+            "source": req.connector_id or eff_url
+        }
+        return payload
+    except ValueError as ve:
+        shutil.rmtree(run_root, ignore_errors=True)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+    except HTTPException:
+        raise
+    except Exception as exc:
+        shutil.rmtree(run_root, ignore_errors=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Live connector ingestion error: {exc}"
+        )
+
+
+@app.get("/api/v1/digest/{run_id}", tags=["Morning Munim-Ji Digest"])
+def get_morning_digest(run_id: str) -> Dict[str, Any]:
+    """Generates a 60-second bilingual (Plain English + Simple Hinglish) Morning Executive Digest."""
+    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
+    payload = _build_run_result_payload(
+        run_id=run_id,
+        tenant_id=tenant_id,
+        staging_out=staging_out,
+        elapsed_sec=0.02,
+        reconcile_ledger=False
+    )
+    return build_morning_executive_digest(payload)
+
+
+@app.post("/api/v1/digest/dispatch", tags=["Morning Munim-Ji Digest"])
+def dispatch_morning_digest(req: DigestDispatchRequest) -> Dict[str, Any]:
+    """Generates the Morning Executive Digest and optionally dispatches it to a Slack/Webhook URL."""
+    staging_out, tenant_id = _resolve_staging_out_for_run(req.run_id)
+    payload = _build_run_result_payload(
+        run_id=req.run_id,
+        tenant_id=req.tenant_id or tenant_id,
+        staging_out=staging_out,
+        elapsed_sec=0.02,
+        reconcile_ledger=False
+    )
+    digest = build_morning_executive_digest(payload)
+    digest["webhook_dispatched"] = False
+
+    if req.webhook_url:
+        try:
+            safe_wh = validate_safe_external_url(req.webhook_url)
+            import urllib.request
+            body_bytes = json.dumps({
+                "text": digest["whatsapp_message_hi"] if req.language == "hi" else digest["whatsapp_message_en"],
+                "blocks": digest["slack_blocks"]
+            }).encode("utf-8")
+            wh_req = urllib.request.Request(
+                safe_wh,
+                data=body_bytes,
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(wh_req, timeout=8) as resp:
+                digest["webhook_dispatched"] = (200 <= resp.status < 300)
+        except ValueError as ve:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+        except Exception as e:
+            digest["webhook_error"] = str(e)
+
+    return digest
+
+
+@app.get("/api/v1/report/{run_id}/printable", tags=["Printable Audit Certificate"])
+def get_printable_audit_report(run_id: str) -> HTMLResponse:
+    """Renders a 1-click printable / save-as-PDF Boardroom Audit Certificate & Executive Dossier."""
+    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
+    payload = _build_run_result_payload(
+        run_id=run_id,
+        tenant_id=tenant_id,
+        staging_out=staging_out,
+        elapsed_sec=0.02,
+        reconcile_ledger=False
+    )
+    html_doc = render_printable_audit_certificate_html(payload)
+    return HTMLResponse(content=html_doc, media_type="text/html")
+
+
+# =============================================================================
+# PART 5: PRODUCTION SAAS WEB PORTAL
 # =============================================================================
 @app.get("/", tags=["Frontend"])
 @app.get("/app", tags=["Frontend"])
@@ -1290,3 +1559,5 @@ def serve_web_client() -> HTMLResponse:
         content=WEB_CLIENT_PATH.read_text(encoding="utf-8"),
         media_type="text/html"
     )
+
+

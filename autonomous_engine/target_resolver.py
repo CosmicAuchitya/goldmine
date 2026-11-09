@@ -631,7 +631,9 @@ def resolve_canonical_target_and_cost(
             if (s_c > 0).mean() > 0.85 and s_c.sum() > 0:
                 candidate_cost_cols.append(c)
 
-    if blueprint and blueprint.get("cost_override") in cols:
+    if blueprint and str(blueprint.get("cost_override", "")).upper() in ("__NONE__", "NONE"):
+        cost_col = None
+    elif blueprint and blueprint.get("cost_override") in cols:
         cost_col = blueprint.get("cost_override")
     elif candidate_cost_cols:
         priority_cost = [
@@ -643,8 +645,9 @@ def resolve_canonical_target_and_cost(
         candidate_cost_cols.sort(key=lambda col: next((i for i, pc in enumerate(priority_cost) if pc in col.lower()), 999))
         cost_col = candidate_cost_cols[0]
 
+    eff_region = region_profile or (blueprint.get("region_profile") if isinstance(blueprint, dict) else None)
     is_financial = (cost_col is not None)
-    curr_meta = resolve_currency_metadata(df, cost_col, region_profile)
+    curr_meta = resolve_currency_metadata(df, cost_col, eff_region)
     unit_symbol = curr_meta["unit_symbol"]
 
     return {

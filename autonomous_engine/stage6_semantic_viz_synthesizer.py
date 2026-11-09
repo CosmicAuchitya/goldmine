@@ -475,7 +475,7 @@ def generate_semantic_metrics_manifest(
             "has_monetary_ledger": bool(cost_col),
             "total_adverse_capital_drag": total_adverse_cost,
             "total_portfolio_volume": total_portfolio_cost,
-            "currency_unit": "$" if cost_col else "events"
+            "currency_unit": (canonical.get("unit_symbol") or "$") if cost_col else "events"
         },
         "certified_metrics": [
             {

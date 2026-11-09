@@ -267,3 +267,127 @@ def test_conversational_qa_endpoint_and_nan_safety(client):
     assert isinstance(data["data"], list)
     assert "SELECT" in data["sql_executed"].upper()
 
+
+def test_cohort_breakdowns_extracted_in_executive_pulse(client):
+    """Verifies Section 4 & Section 5 cohort risk breakdowns are parsed into executive_pulse."""
+    res = client.get("/api/v1/benchmarks/hotel_booking_cancellation")
+    assert res.status_code == 200
+    pulse = res.json()["executive_pulse"]
+    breakdowns = pulse.get("cohort_breakdowns", [])
+    assert len(breakdowns) >= 2
+    first_dim = breakdowns[0]
+    assert first_dim["dimension_label"] != ""
+    assert len(first_dim["rows"]) >= 2
+    first_row = first_dim["rows"][0]
+    assert "segment" in first_row
+    assert "adverse_rate_pct" in first_row
+    assert "total_liability" in first_row
+
+
+def test_morning_munim_ji_digest_and_ssrf_guard(client):
+    """Verifies Morning Munim-Ji Executive Digest generation (English + Hinglish + Slack blocks) and SSRF block."""
+    res = client.get("/api/v1/digest/hotel_booking_cancellation?tenant_id=taj_hotels_mumbai")
+    assert res.status_code == 200
+    digest = res.json()
+    assert digest["status"] == "success"
+    assert "DataX-Ray Morning Executive Pulse" in digest["whatsapp_english"]
+    assert "DataX-Ray Morning Munim-Ji Brief" in digest["whatsapp_hinglish"]
+    assert "Sabse Bada Bottleneck" in digest["whatsapp_hinglish"]
+    assert "blocks" in digest["slack_payload"]
+    assert len(digest["top_priority_entities"]) == 3
+
+    # Verify SSRF protection blocks localhost webhook URLs
+    res_ssrf = client.post(
+        "/api/v1/digest/dispatch",
+        json={
+            "run_id": "hotel_booking_cancellation",
+            "tenant_id": "taj_hotels_mumbai",
+            "language": "hi",
+            "webhook_url": "http://127.0.0.1:8080/internal_admin",
+        },
+    )
+    assert res_ssrf.status_code == 400
+
+
+def test_printable_boardroom_audit_certificate(client):
+    """Verifies 1-Click Printable Boardroom Audit Dossier & Cryptographic SHA-256 Certificate."""
+    res = client.get("/api/v1/report/hotel_booking_cancellation/printable")
+    assert res.status_code == 200
+    assert "text/html" in res.headers["content-type"]
+    html = res.text
+    assert "@media print" in html
+    assert "SHA-256:" in html
+    assert "100.0% DETERMINISTIC DUCKDB SQL AUDIT" in html
+    assert "Print / Save as Official PDF" in html
+
+
+def test_custom_target_and_cost_override_wiring():
+    """Verifies cost_override='__NONE__' forces operational frequency mode and region_profile='IN' sets ₹."""
+    df = pd.DataFrame({
+        "order_id": [f"ORD_{i}" for i in range(50)],
+        "is_rto": [1 if i % 4 == 0 else 0 for i in range(50)],
+        "order_amount": [1200.0 + i * 10 for i in range(50)],
+    })
+
+    # 1. With region_profile='IN', currency should be ₹
+    spec_in = resolve_canonical_target_and_cost(
+        df=df,
+        blueprint={"target_override": "is_rto", "cost_override": "order_amount", "region_profile": "IN"},
+    )
+    assert spec_in["target_col"] == "is_rto"
+    assert spec_in["cost_col"] == "order_amount"
+    assert spec_in["is_financial"] is True
+    assert spec_in["unit_symbol"] == "₹"
+
+    # 2. With cost_override='__NONE__', should force operational frequency mode
+    spec_none = resolve_canonical_target_and_cost(
+        df=df,
+        blueprint={"target_override": "is_rto", "cost_override": "__NONE__", "region_profile": "IN"},
+    )
+    assert spec_none["target_col"] == "is_rto"
+    assert spec_none["cost_col"] is None
+    assert spec_none["is_financial"] is False
+
+
+def test_live_erp_connectors_catalog_and_ingest(client):
+    """Verifies GET /api/v1/connectors and POST /api/v1/connectors/ingest end-to-end."""
+    res_cat = client.get("/api/v1/connectors")
+    assert res_cat.status_code == 200
+    cat_data = res_cat.json()
+    assert cat_data["status"] == "success"
+    conn_ids = [c["id"] for c in cat_data["connectors"]]
+    assert "shopify_orders_live" in conn_ids
+    assert "tally_prime_ledger_in" in conn_ids
+
+    # Block SSRF on data_url
+    res_bad_url = client.post(
+        "/api/v1/connectors/ingest",
+        json={"data_url": "http://169.254.169.254/latest/meta-data/", "tenant_id": "test"},
+    )
+    assert res_bad_url.status_code == 400
+
+    # Ingest live connector preset and verify full 7-stage audit with ₹ INR
+    res_ingest = client.post(
+        "/api/v1/connectors/ingest",
+        json={
+            "connector_id": "shopify_orders_live",
+            "tenant_id": "d2c_brand_india",
+            "region_profile": "IN",
+        },
+    )
+    assert res_ingest.status_code == 200
+    payload = res_ingest.json()
+    try:
+        assert payload["status"] == "success"
+        assert payload["connector_meta"]["connector_id"] == "shopify_orders_live"
+        pulse = payload["executive_pulse"]
+        assert pulse["total_records"] == 400
+        assert pulse["unit_symbol"] == "₹"
+        assert pulse["total_capital_drag"] > 0
+        assert len(pulse["cohort_breakdowns"]) >= 1
+    finally:
+        # Clean up temporary connector run directory
+        run_id = payload.get("run_id", "")
+        if run_id.startswith("conn_"):
+            shutil.rmtree(Path("runs/uploads") / run_id, ignore_errors=True)
+
