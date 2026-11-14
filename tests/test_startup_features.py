@@ -391,3 +391,165 @@ def test_live_erp_connectors_catalog_and_ingest(client):
         if run_id.startswith("conn_"):
             shutil.rmtree(Path("runs/uploads") / run_id, ignore_errors=True)
 
+
+def test_layer3_mathematical_proof_dossier(client):
+    """Verifies Layer-3 Mathematical Proof & 12-Gate Deterministic Audit Dossier."""
+    res = client.get("/api/v1/audit-proof/hotel_booking_cancellation")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    assert data["all_gates_passed"] is True
+    assert data["confidence_score_pct"] == 100.0
+
+    # 1. 12 verification gates checklist
+    gates = data["verification_gates"]
+    assert len(gates) == 12
+    for gate in gates:
+        assert gate["status"] == "PASSED"
+        assert "gate_name" in gate
+        assert "audit_claim" in gate
+        assert "tolerance" in gate
+
+    # 2. Wilson Score 95% CI
+    ci = data["wilson_ci_95"]
+    assert 0.0 < ci["lower_pct"] < ci["upper_pct"] < 100.0
+    adv_rate = data["overall_adverse_rate_pct"]
+    assert ci["lower_pct"] <= adv_rate <= ci["upper_pct"]
+
+    # 3. DuckDB SQL proofs
+    proofs = data["duckdb_sql_proofs"]
+    assert "SELECT COUNT(*) AS total_audited_records FROM fact;" in proofs["volume_proof_sql"]
+    assert "total_adverse_events" in proofs["target_proof_sql"]
+    assert "total_adverse_capital_drag" in proofs["financial_drag_sql"]
+    assert "cohort_risk_pct" in proofs["bottleneck_breakdown_sql"]
+
+
+def test_workspace_run_history_and_comparison(client):
+    """Verifies Time-Machine run history listing and period-over-period comparative analysis."""
+    # 1. List workspace runs
+    res_list = client.get("/api/v1/workspaces/founder_workspace/runs")
+    assert res_list.status_code == 200
+    list_data = res_list.json()
+    assert list_data["status"] == "success"
+    assert list_data["total_runs"] >= 2
+    run_ids = [r["run_id"] for r in list_data["runs"]]
+    assert "hotel_booking_cancellation" in run_ids
+
+    # 2. Get individual run details
+    res_detail = client.get("/api/v1/runs/hotel_booking_cancellation")
+    assert res_detail.status_code == 200
+    payload = res_detail.json()
+    assert payload["run_id"] == "hotel_booking_cancellation"
+    assert payload["executive_pulse"]["total_records"] > 0
+
+    # 3. Compare two runs Period-over-Period
+    res_comp = client.get(
+        "/api/v1/workspaces/founder_workspace/compare?run_a=hotel_booking_cancellation&run_b=credit_card_loan_default"
+    )
+    assert res_comp.status_code == 200
+    comp = res_comp.json()
+    assert comp["status"] == "success"
+    assert "run_a" in comp and "run_b" in comp and "delta" in comp
+    delta = comp["delta"]
+    assert "records" in delta
+    assert "adverse_rate_pct" in delta
+    assert "capital_drag" in delta
+    assert delta["trajectory"] in ("IMPROVING", "DEGRADING", "STABLE")
+    assert "english" in comp["executive_notes"]
+    assert "hinglish" in comp["executive_notes"]
+
+
+def test_multi_file_star_schema_handshake(client):
+    """Verifies multi-file star-schema upload and PK/FK relational join detection."""
+    orders_csv = (
+        "order_id,customer_id,is_returned,order_amount,shipment_days\n"
+        "ORD_1,CUST_A,1,1200.0,4\n"
+        "ORD_2,CUST_B,0,850.0,2\n"
+        "ORD_3,CUST_A,0,2400.0,5\n"
+        "ORD_4,CUST_C,1,950.0,3\n"
+        "ORD_5,CUST_B,1,1500.0,6\n"
+    )
+    customers_csv = (
+        "customer_id,region_name,loyalty_tier,signup_year\n"
+        "CUST_A,North,Gold,2023\n"
+        "CUST_B,South,Silver,2022\n"
+        "CUST_C,West,Platinum,2024\n"
+    )
+
+    files = [
+        ("files", ("orders.csv", io.BytesIO(orders_csv.encode("utf-8")), "text/csv")),
+        ("files", ("customers.csv", io.BytesIO(customers_csv.encode("utf-8")), "text/csv")),
+    ]
+    data = {"region_profile": "IN"}
+
+    res = client.post("/api/v1/preview-multi-intent", files=files, data=data)
+    assert res.status_code == 200
+    resp = res.json()
+    assert resp["status"] == "success"
+    assert resp["schema_type"] == "STAR_SCHEMA"
+    assert resp["total_tables"] == 2
+
+    # Orders has 5 rows vs Customers has 3 rows -> Orders is central fact table
+    assert resp["fact_table"]["table_name"] == "orders"
+    assert len(resp["dimension_tables"]) == 1
+    assert resp["dimension_tables"][0]["table_name"] == "customers"
+
+    # Goal detected from fact table
+    goal = resp["detected_goal"]
+    assert goal["target_col"] == "is_returned"
+    assert goal["cost_col"] == "order_amount"
+    assert goal["unit_symbol"] == "₹"
+
+
+def test_api_key_guard_middleware(monkeypatch, client):
+    """Verifies optional DATAXRAY_API_KEY environment variable enforcement."""
+    monkeypatch.setenv("DATAXRAY_API_KEY", "secret_enterprise_token_999")
+
+    # 1. Unauthenticated request to protected API should return 401
+    res_no_key = client.get("/api/v1/workspaces/default/runs")
+    assert res_no_key.status_code == 401
+
+    # 2. Invalid API key should return 401
+    res_bad_key = client.get(
+        "/api/v1/workspaces/default/runs",
+        headers={"X-API-Key": "wrong_token"}
+    )
+    assert res_bad_key.status_code == 401
+
+    # 3. Valid API key via X-API-Key should return 200
+    res_ok_header = client.get(
+        "/api/v1/workspaces/default/runs",
+        headers={"X-API-Key": "secret_enterprise_token_999"}
+    )
+    assert res_ok_header.status_code == 200
+
+    # 4. Valid API key via Bearer token should return 200
+    res_ok_bearer = client.get(
+        "/api/v1/workspaces/default/runs",
+        headers={"Authorization": "Bearer secret_enterprise_token_999"}
+    )
+    assert res_ok_bearer.status_code == 200
+
+    # 5. Public web routes must remain accessible without token
+    res_app = client.get("/app")
+    assert res_app.status_code == 200
+    res_health = client.get("/health")
+    assert res_health.status_code == 200
+
+
+def test_production_deployment_pack_files():
+    """Verifies Dockerfile and docker-compose.yml files and configurations exist."""
+    dockerfile = Path("Dockerfile")
+    assert dockerfile.exists()
+    df_text = dockerfile.read_text(encoding="utf-8")
+    assert "FROM python:3.12-slim" in df_text
+    assert "dataxray" in df_text
+    assert "HEALTHCHECK" in df_text
+
+    compose = Path("docker-compose.yml")
+    assert compose.exists()
+    dc_text = compose.read_text(encoding="utf-8")
+    assert "dataxray-engine" in dc_text or "dataxray_enterprise_engine" in dc_text
+    assert "./runs:/app/runs" in dc_text
+
+

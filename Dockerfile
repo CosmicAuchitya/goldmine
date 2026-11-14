@@ -1,53 +1,43 @@
 # =============================================================================
-# DATAX-RAY ENTERPRISE AUTONOMOUS ENGINE & API DOCKERFILE
+# DATAX-RAY AUTONOMOUS DECISION ENGINE - ENTERPRISE PRODUCTION DOCKERFILE
 # =============================================================================
-FROM python:3.12-slim
+FROM python:3.12-slim AS runtime
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUTF8=1 \
-    PYTHONIOENCODING=utf-8
+# 1. System dependencies and security updates
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Create non-privileged operational service user
+RUN groupadd -g 1001 dataxray && \
+    useradd -u 1001 -g dataxray -s /bin/bash -m dataxray
 
 WORKDIR /app
 
-# Install minimal OS dependencies for healthchecks
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# 3. Install Python dependencies
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Install required Python packages for full engine, FastAPI server & Streamlit portal
-RUN pip install --no-cache-dir \
-    pandas \
-    numpy \
-    scipy \
-    duckdb \
-    pyarrow \
-    openpyxl \
-    tabulate \
-    fastapi \
-    uvicorn \
-    python-multipart \
-    streamlit \
-    google-genai \
-    requests \
-    python-dotenv \
-    pytest
-
-# Copy core engine components and ontologies
+# 4. Copy source code and application assets
 COPY autonomous_engine/ /app/autonomous_engine/
-COPY 02_domain_intelligence/ /app/02_domain_intelligence/
-COPY pikabo/ /app/pikabo/
+COPY kaggle_benchmarks/ /app/kaggle_benchmarks/
 
-# Run as non-root user for enterprise container security
-RUN useradd -m -u 1000 appuser && \
-    mkdir -p /app/runs && \
-    chown -R appuser:appuser /app
+# 5. Initialize writable run state directories
+RUN mkdir -p /app/runs/uploads /app/runs/tenants /app/runs/action_ledgers && \
+    chown -R dataxray:dataxray /app
 
-USER appuser
+USER dataxray
 
-EXPOSE 8000 8501
+EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    UVICORN_PORT=8000
 
-CMD ["uvicorn", "autonomous_engine.api_server:app", "--host", "0.0.0.0", "--port", "8000"]
+# 6. Container healthcheck probing physical DuckDB API status
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+CMD ["uvicorn", "autonomous_engine.api_server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

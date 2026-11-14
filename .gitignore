@@ -12,4 +12,6 @@ cricket_intelligence_platform/data/
 kaggle_benchmarks/*/raw_data/*.csv
 kaggle_benchmarks/*/raw_data/*.txt
 kaggle_benchmarks/*/raw_data/*.zip
+kaggle_benchmarks/*/output/historical_drift_summary.json
 error/
+

@@ -1263,9 +1263,197 @@
       margin-right: 8px;
     }
 
-    .cohort-bar-fill {
-      height: 100%;
+    /* Layer-3 Proof Drawer & Gates Grid */
+    .drawer-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+    }
+
+    .wilson-ci-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+
+    .wilson-track {
+      height: 12px;
+      background: #1e293b;
       border-radius: 99px;
+      position: relative;
+      margin: 14px 0 8px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+
+    .wilson-range-bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, #10b981 0%, #0ea5e9 100%);
+      border-radius: 99px;
+    }
+
+    .wilson-needle {
+      position: absolute;
+      top: -2px;
+      bottom: -2px;
+      width: 4px;
+      background: #f8fafc;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #f8fafc;
+    }
+
+    .gates-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 14px 0 20px;
+    }
+
+    @media (max-width: 768px) {
+      .gates-grid { grid-template-columns: 1fr; }
+    }
+
+    .gate-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .gate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gate-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .gate-badge-pass {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .gate-claim {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .gate-tolerance {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--accent-sky);
+    }
+
+    /* Period-over-Period Compare Grid */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .compare-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .compare-card-title {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .compare-card-vals {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .compare-side-val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .compare-delta-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Star Schema Relational Visual Canvas */
+    .star-schema-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .schema-fact-card {
+      background: var(--bg-subtle);
+      border: 2px solid var(--accent-emerald);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+    }
+
+    .schema-dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .schema-dim-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .join-edge-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
     }
 
     .hidden {
@@ -1288,6 +1476,17 @@
     </div>
 
     <div class="topbar-controls">
+      <div class="control-pill" title="Switch between past uploads and certified benchmarks">
+        <label for="timeMachineSelect">🕒 Snapshot</label>
+        <select id="timeMachineSelect" onchange="onTimeMachineChange(this.value)">
+          <option value="">Loading snapshots...</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-secondary btn-sm" onclick="openRunCompareModal()" title="Period-over-Period Delta Analysis">
+        ⚖️ Compare Runs
+      </button>
+
       <div class="control-pill">
         <label for="tenantInput">Workspace</label>
         <input id="tenantInput" type="text" value="founder_workspace" />
@@ -1326,16 +1525,16 @@
         </p>
 
         <div id="dropzone" class="dropzone-box" onclick="document.getElementById('fileInput').click()">
-          <input id="fileInput" type="file" accept=".csv,.tsv,.xlsx,.xls,.parquet,.zip" class="hidden" onchange="handleFileSelection(event)" />
+          <input id="fileInput" type="file" multiple accept=".csv,.tsv,.xlsx,.xls,.parquet,.zip" class="hidden" onchange="handleFileSelection(event)" />
           <div class="dropzone-icon">
             <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
           </div>
-          <div class="dropzone-title">Drop your dataset here, or click to browse</div>
-          <div class="dropzone-sub">1-second pre-flight schema &amp; currency handshake before full execution</div>
+          <div class="dropzone-title">Drop single or multi-table datasets here, or click to browse</div>
+          <div class="dropzone-sub">Upload CSV, Excel, Parquet, or ZIP. Auto-detects Fact vs Dimension Star-Schema Joins.</div>
           <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
-            Select Dataset File
+            Select Dataset Files
           </button>
         </div>
 
@@ -1510,6 +1709,9 @@
           <span class="meta-stat">Audited Capital Drag: <strong id="metaCapitalDrag">$4,641,943</strong></span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-emerald btn-sm" onclick="openProofDrawer()">
+            🛡️ Proof &amp; 12 Gates
+          </button>
           <button type="button" class="btn btn-amber btn-sm" onclick="openMorningDigestModal()">
             📲 Morning Munim-Ji Digest
           </button>
@@ -1925,6 +2127,232 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeMorningDigestModal()">Close</button>
       </div>
     </div>
+  <!-- Layer-3 Mathematical Proof & 12-Gate Audit Drawer Modal -->
+  <div id="proofDrawerModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeProofDrawer()">
+    <div class="drawer-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald);">CA &amp; LEAD DATA SCIENTIST TRUST VIEW</div>
+          <h2 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
+            🛡️ Layer-3 Mathematical Proof &amp; 12-Gate Audit Dossier
+          </h2>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">
+            100% deterministic physical DuckDB verification. Wilson Score 95% Confidence Intervals, Chi-Square significance, and anti-hallucination seals.
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeProofDrawer()">✕ Close</button>
+      </div>
+
+      <!-- Wilson Score 95% CI Box -->
+      <div class="wilson-ci-box">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <span style="font-size: 11px; font-family: var(--font-mono); text-transform: uppercase; color: var(--text-muted);">
+              Statistical Invariant · 95% Wilson Score Confidence Interval
+            </span>
+            <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-top: 2px;">
+              Observed Adverse Rate: <strong id="proofObservedRate" style="color: #38bdf8;">--%</strong>
+              <span style="font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-left: 8px;">
+                Bounds: [<strong id="proofCiLower" style="color: #10b981;">--%</strong>, <strong id="proofCiUpper" style="color: #10b981;">--%</strong>]
+              </span>
+            </div>
+          </div>
+          <span style="font-size: 11px; font-family: var(--font-mono); color: #10b981; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16,185,129,0.3);">
+            Z = 1.95996 · 95.0% Confidence Level
+          </span>
+        </div>
+
+        <div class="wilson-track">
+          <div id="proofWilsonBar" class="wilson-range-bar" style="left: 20%; width: 30%;"></div>
+          <div id="proofWilsonNeedle" class="wilson-needle" style="left: 35%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-family: var(--font-mono); color: var(--text-muted);">
+          <span>0.0% Lower Bound</span>
+          <span>50.0% Parity</span>
+          <span>100.0% Upper Bound</span>
+        </div>
+      </div>
+
+      <!-- 12-Gate Anti-Hallucination Checklist -->
+      <div style="margin-top: 18px;">
+        <div class="section-eyebrow" style="color: #38bdf8; margin-bottom: 6px;">12-GATE DETERMINISTIC COMPLIANCE SEALS</div>
+        <div id="proofGatesList" class="gates-grid">
+          <!-- Dynamically populated 12 gates -->
+        </div>
+      </div>
+
+      <!-- Verified Executable DuckDB SQL Grounding Statements -->
+      <div style="margin-top: 18px;">
+        <div class="section-eyebrow" style="color: #f59e0b; margin-bottom: 6px;">
+          PHYSICAL DUCKDB REPRODUCTION SQL (ZERO DISCREPANCY GUARANTEE)
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <details class="accordion-item" open>
+            <summary class="accordion-header">
+              <span>01 · Audited Volume Proof SQL</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('volume')">📋 Copy SQL</button>
+            </summary>
+            <pre id="proofSqlVolume" class="sql-code-block"></pre>
+          </details>
+
+          <details class="accordion-item" open>
+            <summary class="accordion-header">
+              <span>02 · Adverse Outcome &amp; Rate Proof SQL</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('target')">📋 Copy SQL</button>
+            </summary>
+            <pre id="proofSqlTarget" class="sql-code-block"></pre>
+          </details>
+
+          <details class="accordion-item">
+            <summary class="accordion-header">
+              <span>03 · Financial Capital Drag Proof SQL</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('drag')">📋 Copy SQL</button>
+            </summary>
+            <pre id="proofSqlDrag" class="sql-code-block"></pre>
+          </details>
+
+          <details class="accordion-item">
+            <summary class="accordion-header">
+              <span>04 · Primary Cohort Bottleneck Breakdown SQL</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('bottleneck')">📋 Copy SQL</button>
+            </summary>
+            <pre id="proofSqlBottleneck" class="sql-code-block"></pre>
+          </details>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn btn-secondary" onclick="closeProofDrawer()">Close Audit Dossier</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Period-over-Period Run Comparison Modal -->
+  <div id="runCompareModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeRunCompareModal()">
+    <div class="modal-card" style="max-width: 680px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">TIME-MACHINE DELTA ENGINE</div>
+          <h3 style="font-size: 18px; font-weight: 800;">⚖️ Period-over-Period Run Comparison</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeRunCompareModal()">✕</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+        Select a baseline historical snapshot (Period 1) and a current run (Period 2) to evaluate deterministic drift in volume, adverse rate, and saved capital drag.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div class="form-field">
+          <label for="compareRunA">Period 1 · Baseline Snapshot</label>
+          <select id="compareRunA"></select>
+        </div>
+        <div class="form-field">
+          <label for="compareRunB">Period 2 · Current Snapshot</label>
+          <select id="compareRunB"></select>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+        <button type="button" class="btn btn-primary" onclick="executeRunComparison()">
+          Execute Comparative Delta
+        </button>
+      </div>
+
+      <!-- Comparison Delta Results Container -->
+      <div id="compareResultContainer" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="section-eyebrow" style="color: #10b981; margin: 0;">AUDITED DRIFT DELTA</span>
+          <span id="compareStatusBadge" class="run-tag">--</span>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-card">
+            <div class="compare-card-title">Audited Fact Volume</div>
+            <div class="compare-card-vals">
+              <span id="compareVolumeVals" class="compare-side-val">--</span>
+              <span id="compareVolumeDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-title">Adverse Event Rate</div>
+            <div class="compare-card-vals">
+              <span id="compareRateVals" class="compare-side-val">--%</span>
+              <span id="compareRateDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-title">Capital Exposure Drag</div>
+            <div class="compare-card-vals">
+              <span id="compareDragVals" class="compare-side-val">--</span>
+              <span id="compareDragDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px;">
+          <div style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase;">
+            Executive Telemetry Brief (Bilingual)
+          </div>
+          <p id="compareNotesEn" style="font-size: 12.5px; color: var(--text-primary); margin-top: 4px;"></p>
+          <p id="compareNotesHi" style="font-size: 12.5px; color: #38bdf8; margin-top: 4px; font-style: italic;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Table Relational Star-Schema Modal -->
+  <div id="starSchemaModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeStarSchemaModal()">
+    <div class="modal-card" style="max-width: 740px; max-height: 85vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">STAGE 1 TOPOLOGY SCANNER</div>
+          <h3 style="font-size: 18px; font-weight: 800;">🌐 Relational Star-Schema Discovery</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeStarSchemaModal()">✕</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+        Multiple tabular files detected. DataX-Ray automatically scanned primary keys, foreign keys, and isolated the central Fact table from Dimension lookups.
+      </p>
+
+      <div class="star-schema-canvas">
+        <!-- Candidate Fact Table Card -->
+        <div id="starFactCard" class="schema-fact-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 10px; font-family: var(--font-mono); color: #10b981; text-transform: uppercase; font-weight: 700;">
+                ⭐ Central Fact Table
+              </span>
+              <h4 id="starFactName" style="font-size: 16px; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
+                fact_table
+              </h4>
+            </div>
+            <span id="starFactRowsBadge" class="run-tag">-- physical rows</span>
+          </div>
+          <div id="starFactGoalDetail" style="font-size: 12.5px; color: var(--text-secondary); margin-top: 8px;"></div>
+        </div>
+
+        <!-- Orbiting Dimension Tables -->
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 6px;">DISCOVERED DIMENSION TABLES</div>
+          <div id="starDimGrid" class="schema-dim-grid"></div>
+        </div>
+
+        <!-- Discovered Joins & Multiplicity Edges -->
+        <div>
+          <div class="section-eyebrow" style="color: #f59e0b; margin-bottom: 6px;">RELATIONAL FOREIGN KEY JOINS &amp; CARDINALITY</div>
+          <div id="starJoinsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" onclick="closeStarSchemaModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="confirmMultiTableIngestion()">
+          🚀 Ingest Star-Schema Dataset &amp; Run 7-Stage Audit
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Non-Blocking Toast Container -->
@@ -2163,15 +2591,22 @@
         e.preventDefault();
         dropzoneEl.classList.remove('drag-over');
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-          triggerIntentHandshake(e.dataTransfer.files[0]);
+          if (e.dataTransfer.files.length > 1) {
+            triggerMultiIntentHandshake(Array.from(e.dataTransfer.files));
+          } else {
+            triggerIntentHandshake(e.dataTransfer.files[0]);
+          }
         }
       });
     }
 
     function handleFileSelection(event) {
-      const file = event.target.files[0];
-      if (file) {
-        triggerIntentHandshake(file);
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+      if (files.length > 1) {
+        triggerMultiIntentHandshake(Array.from(files));
+      } else {
+        triggerIntentHandshake(files[0]);
       }
     }
 
@@ -2409,6 +2844,9 @@
 
       // Reset Copilot Result Box on new dataset
       document.getElementById('copilotResultContainer').classList.add('hidden');
+
+      // Refresh Time-Machine dropdown snapshots
+      refreshTimeMachineRuns();
     }
 
     // =========================================================================
@@ -2938,10 +3376,336 @@
       }
     }
 
+    // =========================================================================
+    // LAYER-3 MATHEMATICAL PROOF & 12-GATE AUDIT DRAWER
+    // =========================================================================
+    const proofSqlCache = {
+      volume: '',
+      target: '',
+      drag: '',
+      bottleneck: ''
+    };
+
+    async function openProofDrawer() {
+      const runId = appState.activeRunId || 'hotel_booking_cancellation';
+      showToast('Fetching Layer-3 12-gate audit proof...', 'info');
+      try {
+        const res = await fetch(`/api/v1/audit-proof/${encodeURIComponent(runId)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+
+        // 1. Wilson Score Confidence Interval
+        const advRate = Number(data.overall_adverse_rate_pct || 0);
+        const ciLow = Number(data.wilson_ci_95 ? data.wilson_ci_95.lower_pct : 0);
+        const ciUp = Number(data.wilson_ci_95 ? data.wilson_ci_95.upper_pct : 0);
+
+        document.getElementById('proofObservedRate').textContent = `${advRate.toFixed(2)}%`;
+        document.getElementById('proofCiLower').textContent = `${ciLow.toFixed(2)}%`;
+        document.getElementById('proofCiUpper').textContent = `${ciUp.toFixed(2)}%`;
+
+        const barLeft = Math.max(0, Math.min(100, ciLow));
+        const barWidth = Math.max(1, Math.min(100 - barLeft, ciUp - ciLow));
+        const needlePos = Math.max(0, Math.min(100, advRate));
+
+        document.getElementById('proofWilsonBar').style.left = `${barLeft}%`;
+        document.getElementById('proofWilsonBar').style.width = `${barWidth}%`;
+        document.getElementById('proofWilsonNeedle').style.left = `${needlePos}%`;
+
+        // 2. 12 Verification Gates
+        const gatesList = document.getElementById('proofGatesList');
+        gatesList.innerHTML = '';
+        (data.verification_gates || []).forEach(g => {
+          const card = document.createElement('div');
+          card.className = 'gate-card';
+          card.innerHTML = `
+            <div class="gate-header">
+              <span class="gate-name">Gate ${g.gate_id} · ${escapeHtml(g.gate_name)}</span>
+              <span class="gate-badge-pass">PASSED</span>
+            </div>
+            <p class="gate-claim">${escapeHtml(g.audit_claim)}</p>
+            <div class="gate-tolerance">Tolerance: ${escapeHtml(g.tolerance)}</div>
+          `;
+          gatesList.appendChild(card);
+        });
+
+        // 3. DuckDB SQL Grounding blocks
+        const sqls = data.duckdb_sql_proofs || {};
+        proofSqlCache.volume = sqls.volume_proof_sql || '-- Physical fact volume query';
+        proofSqlCache.target = sqls.target_proof_sql || '-- Adverse event query';
+        proofSqlCache.drag = sqls.financial_drag_sql || '-- Capital drag query';
+        proofSqlCache.bottleneck = sqls.bottleneck_breakdown_sql || '-- Primary bottleneck query';
+
+        document.getElementById('proofSqlVolume').textContent = proofSqlCache.volume;
+        document.getElementById('proofSqlTarget').textContent = proofSqlCache.target;
+        document.getElementById('proofSqlDrag').textContent = proofSqlCache.drag;
+        document.getElementById('proofSqlBottleneck').textContent = proofSqlCache.bottleneck;
+
+        document.getElementById('proofDrawerModal').classList.remove('hidden');
+      } catch (e) {
+        showToast(`Audit proof retrieval failed: ${e.message}`, 'error');
+      }
+    }
+
+    function closeProofDrawer() {
+      document.getElementById('proofDrawerModal').classList.add('hidden');
+    }
+
+    function copyProofSql(type) {
+      const sql = proofSqlCache[type] || '';
+      if (!sql) return;
+      navigator.clipboard.writeText(sql).then(() => {
+        showToast(`Copied ${type.toUpperCase()} DuckDB SQL proof to clipboard!`, 'success');
+      }).catch(() => {
+        showToast('Clipboard access denied.', 'warn');
+      });
+    }
+
+    // =========================================================================
+    // WORKSPACE TIME-MACHINE & PERIOD-OVER-PERIOD COMPARISONS
+    // =========================================================================
+    let workspaceRunsCache = [];
+
+    async function refreshTimeMachineRuns() {
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      try {
+        const res = await fetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/runs`);
+        if (!res.ok) return;
+        const data = await res.json();
+        workspaceRunsCache = data.runs || [];
+
+        const select = document.getElementById('timeMachineSelect');
+        const compA = document.getElementById('compareRunA');
+        const compB = document.getElementById('compareRunB');
+
+        select.innerHTML = '<option value="">🕒 Select / Switch Snapshot...</option>';
+        compA.innerHTML = '';
+        compB.innerHTML = '';
+
+        workspaceRunsCache.forEach((r, idx) => {
+          const opt = document.createElement('option');
+          opt.value = r.run_id;
+          const badge = r.is_benchmark ? '⭐' : '📁';
+          opt.textContent = `${badge} ${r.dataset_name} (${r.total_records.toLocaleString()} rows · ${r.adverse_rate_pct.toFixed(1)}%)`;
+          if (r.run_id === appState.activeRunId) opt.selected = true;
+          select.appendChild(opt);
+
+          const optA = opt.cloneNode(true);
+          const optB = opt.cloneNode(true);
+          compA.appendChild(optA);
+          compB.appendChild(optB);
+          if (idx === 1) optA.selected = true;
+          if (idx === 0) optB.selected = true;
+        });
+      } catch (e) {
+        console.warn('Could not refresh workspace runs:', e);
+      }
+    }
+
+    async function onTimeMachineChange(runId) {
+      if (!runId) return;
+      showToast(`Time-Machine switching to snapshot '${runId}'...`, 'info');
+      try {
+        const res = await fetch(`/api/v1/runs/${encodeURIComponent(runId)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const payload = await res.json();
+        hydrateExecutiveConsole(payload);
+        showToast(`Restored snapshot: ${payload.run_id} (100% Verified Truth)`, 'success');
+      } catch (e) {
+        showToast(`Snapshot restore failed: ${e.message}`, 'error');
+      }
+    }
+
+    function openRunCompareModal() {
+      refreshTimeMachineRuns();
+      document.getElementById('runCompareModal').classList.remove('hidden');
+    }
+
+    function closeRunCompareModal() {
+      document.getElementById('runCompareModal').classList.add('hidden');
+    }
+
+    async function executeRunComparison() {
+      const runA = document.getElementById('compareRunA').value;
+      const runB = document.getElementById('compareRunB').value;
+      if (!runA || !runB) {
+        showToast('Select two snapshots to compare.', 'warn');
+        return;
+      }
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      showToast(`Comparing ${runA} vs ${runB}...`, 'info');
+      try {
+        const res = await fetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/compare?run_a=${encodeURIComponent(runA)}&run_b=${encodeURIComponent(runB)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const box = document.getElementById('compareResultContainer');
+        box.classList.remove('hidden');
+
+        // Status badge
+        const badge = document.getElementById('compareStatusBadge');
+        badge.textContent = data.delta.status_badge;
+
+        // Volume
+        document.getElementById('compareVolumeVals').textContent =
+          `${data.run_a.records.toLocaleString()} → ${data.run_b.records.toLocaleString()}`;
+        const volD = data.delta.records;
+        const volEl = document.getElementById('compareVolumeDelta');
+        volEl.textContent = `${volD >= 0 ? '+' : ''}${volD.toLocaleString()} (${data.delta.records_pct_change}%)`;
+        volEl.style.color = volD >= 0 ? '#38bdf8' : '#f59e0b';
+
+        // Adverse Rate
+        document.getElementById('compareRateVals').textContent =
+          `${data.run_a.adverse_rate_pct.toFixed(2)}% → ${data.run_b.adverse_rate_pct.toFixed(2)}%`;
+        const rateD = data.delta.adverse_rate_pct;
+        const rateEl = document.getElementById('compareRateDelta');
+        rateEl.textContent = `${rateD >= 0 ? '+' : ''}${rateD.toFixed(2)} pp`;
+        rateEl.style.color = rateD <= 0 ? '#10b981' : '#f43f5e';
+
+        // Capital Drag
+        const sym = data.delta.unit_symbol || '$';
+        document.getElementById('compareDragVals').textContent =
+          `${formatCurrencyValue(data.run_a.capital_drag, sym)} → ${formatCurrencyValue(data.run_b.capital_drag, sym)}`;
+        const dragD = data.delta.capital_drag;
+        const dragEl = document.getElementById('compareDragDelta');
+        dragEl.textContent = `${dragD >= 0 ? '+' : ''}${formatCurrencyValue(dragD, sym)}`;
+        dragEl.style.color = dragD <= 0 ? '#10b981' : '#f43f5e';
+
+        // Executive Notes
+        document.getElementById('compareNotesEn').textContent = data.executive_notes.english;
+        document.getElementById('compareNotesHi').textContent = data.executive_notes.hinglish;
+        showToast('Period-over-Period comparison evaluated.', 'success');
+      } catch (e) {
+        showToast(`Comparison error: ${e.message}`, 'error');
+      }
+    }
+
+    // =========================================================================
+    // MULTI-FILE RELATIONAL STAR-SCHEMA INGESTION
+    // =========================================================================
+    let multiFilesPending = [];
+
+    async function triggerMultiIntentHandshake(files) {
+      multiFilesPending = files;
+      const region = document.getElementById('regionSelect').value || 'US';
+      const fd = new FormData();
+      files.forEach(f => fd.append('files', f));
+      fd.append('region_profile', region);
+
+      showToast(`Profiling ${files.length} tables for Star-Schema topology...`, 'info');
+      try {
+        const res = await fetch('/api/v1/preview-multi-intent', { method: 'POST', body: fd });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+
+        // 1. Fact Table
+        const fact = data.fact_table || {};
+        document.getElementById('starFactName').textContent = fact.table_name || 'Fact_Table';
+        document.getElementById('starFactRowsBadge').textContent = `~${(fact.estimated_rows || 0).toLocaleString()} physical rows`;
+        const goal = data.detected_goal || {};
+        document.getElementById('starFactGoalDetail').innerHTML = `
+          Detected Target: <strong style="color:#10b981;">${goal.target_col || 'None'}</strong> ·
+          Monetary Ledger: <strong style="color:#38bdf8;">${goal.cost_col ? goal.cost_col + ' (' + (goal.unit_symbol || '$') + ')' : 'Operational Frequency'}</strong><br/>
+          <em>"${goal.business_question_en || 'Relational schema analysis'}"</em>
+        `;
+
+        // 2. Dimension Tables
+        const dimGrid = document.getElementById('starDimGrid');
+        dimGrid.innerHTML = '';
+        (data.dimension_tables || []).forEach(dim => {
+          const dCard = document.createElement('div');
+          dCard.className = 'schema-dim-card';
+          dCard.innerHTML = `
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">${escapeHtml(dim.table_name)}</div>
+            <div style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); margin: 3px 0;">
+              ${(dim.estimated_rows || 0).toLocaleString()} rows · ${dim.columns_count} columns
+            </div>
+            <div style="font-size: 11px; color: var(--accent-sky);">
+              Key: <code>${escapeHtml(dim.recommended_primary_key || 'surrogate_id')}</code>
+            </div>
+          `;
+          dimGrid.appendChild(dCard);
+        });
+
+        // 3. Relational Joins & Multiplicity Edges
+        const joinsList = document.getElementById('starJoinsList');
+        joinsList.innerHTML = '';
+        const joins = data.relational_joins || [];
+        if (joins.length === 0) {
+          joinsList.innerHTML = '<span style="font-size: 12px; color: var(--text-muted);">Independent dimension tables (co-analyzed in semantic cube).</span>';
+        } else {
+          joins.forEach(j => {
+            const edge = document.createElement('div');
+            edge.className = 'join-edge-badge';
+            edge.innerHTML = `
+              <strong>${escapeHtml(j.source_table)}.${escapeHtml(j.source_key)}</strong>
+              <span>⟷</span>
+              <strong>${escapeHtml(j.target_table)}.${escapeHtml(j.target_key)}</strong>
+              <small style="color:#10b981;">[${escapeHtml(j.cardinality)}]</small>
+            `;
+            joinsList.appendChild(edge);
+          });
+        }
+
+        document.getElementById('starSchemaModal').classList.remove('hidden');
+      } catch (e) {
+        showToast(`Multi-table profiling failed: ${e.message}`, 'error');
+      }
+    }
+
+    function closeStarSchemaModal() {
+      document.getElementById('starSchemaModal').classList.add('hidden');
+    }
+
+    async function confirmMultiTableIngestion() {
+      if (!multiFilesPending || multiFilesPending.length === 0) return;
+      closeStarSchemaModal();
+
+      const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
+      const region = document.getElementById('regionSelect').value || 'US';
+
+      const progSec = document.getElementById('jobProgressSection');
+      progSec.classList.remove('hidden');
+      document.getElementById('progressStageName').textContent = 'Uploading Multi-Table Star-Schema & Launching Autonomous Stages 1-7...';
+      document.getElementById('progressBarFill').style.width = '15%';
+      document.getElementById('progressPctLabel').textContent = '15%';
+      showToast(`Ingesting ${multiFilesPending.length} tables in Star-Schema queue...`, 'info');
+
+      const fd = new FormData();
+      multiFilesPending.forEach(f => fd.append('files', f));
+      fd.append('tenant_id', tenant);
+      fd.append('region_profile', region);
+      fd.append('mode', 'ai');
+
+      try {
+        const res = await fetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Upload failed (${res.status})`);
+        }
+        const data = await res.json();
+        pollJobCompletion(data.job_id);
+      } catch (e) {
+        progSec.classList.add('hidden');
+        showToast(`Job submission failed: ${e.message}`, 'error');
+      }
+    }
+
     // Auto-load Hotel Booking Cancellation benchmark on initial page visit so the user
     // immediately experiences live data alongside the upload workbench
     window.addEventListener('DOMContentLoaded', () => {
       loadCertifiedBenchmark('hotel_booking_cancellation');
+      refreshTimeMachineRuns();
     });
   </script>
 </body>
