@@ -704,6 +704,7 @@ class AskRequest(BaseModel):
 
 
 @app.get("/health", tags=["System"])
+@app.get("/api/v1/health", tags=["System"])
 def get_health() -> Dict[str, str]:
     """Health check endpoint for container orchestrators and load balancers."""
     return {
@@ -1300,25 +1301,47 @@ async def preview_multi_intent(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files uploaded.")
 
     temp_scan_dir = Path(tempfile.mkdtemp(prefix="multi_scan_"))
+    total_bytes = 0
     try:
         saved_files = []
         for upload in files:
             raw_name = upload.filename or f"table_{uuid.uuid4().hex[:6]}.csv"
-            clean_name = Path(raw_name).name
-            target_file_path = temp_scan_dir / clean_name
-            ext = target_file_path.suffix.lower()
+            safe_name = re.sub(r'[^A-Za-z0-9._-]', '_', Path(raw_name).name)
+            ext = Path(safe_name).suffix.lower()
+            if ext not in ALLOWED_EXTENSIONS:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Unsupported file extension '{ext}' for file '{safe_name}'."
+                )
 
-            content = await upload.read()
-            if not content:
+            target_file_path = temp_scan_dir / safe_name
+            file_bytes = 0
+            with open(target_file_path, "wb") as f_out:
+                while True:
+                    chunk = await upload.read(CHUNK_SIZE)
+                    if not chunk:
+                        break
+                    total_bytes += len(chunk)
+                    file_bytes += len(chunk)
+                    if total_bytes > MAX_UPLOAD_BYTES:
+                        raise HTTPException(
+                            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                            detail=f"Uploaded files exceed maximum size ceiling of {MAX_UPLOAD_BYTES // (1024 * 1024)} MB."
+                        )
+                    f_out.write(chunk)
+
+            if file_bytes == 0:
+                target_file_path.unlink(missing_ok=True)
                 continue
 
             if ext == ".zip":
-                tmp_zip = temp_scan_dir / f"temp_{uuid.uuid4().hex[:6]}.zip"
-                tmp_zip.write_bytes(content)
-                safe_extract_zip(tmp_zip, temp_scan_dir)
-                tmp_zip.unlink(missing_ok=True)
+                try:
+                    safe_extract_zip(target_file_path, temp_scan_dir)
+                except ValueError as ve:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Archive Security Violation: {ve}")
+                finally:
+                    target_file_path.unlink(missing_ok=True)
             else:
-                target_file_path.write_bytes(content)
                 saved_files.append(target_file_path)
 
         # Profile directory using Stage 1 profiler
@@ -1648,7 +1671,7 @@ def ingest_from_live_connector(req: ConnectorIngestRequest) -> Dict[str, Any]:
     safe_tenant = re.sub(r'[^A-Za-z0-9_-]', '_', str(req.tenant_id).strip()) or "founder_workspace"
     label = req.connector_id or "url_sync"
     run_id = f"conn_{re.sub(r'[^A-Za-z0-9_-]', '', label)[:20]}_{uuid.uuid4().hex[:6]}"
-    run_root = WORKSPACE_ROOT / "runs" / "uploads" / run_id
+    run_root = WORKSPACE_ROOT / "runs" / "tenants" / safe_tenant / "jobs" / run_id
     staging_raw = run_root / "raw_data"
     staging_out = run_root / "output"
     staging_cache = run_root / "cache"
@@ -1822,11 +1845,14 @@ def compare_runs(
     and operational risk trajectory.
     """
     try:
-        comparison = compare_workspace_runs(WORKSPACE_ROOT, run_a, run_b)
+        eff_tenant = "" if tenant_id in ("default", "default_tenant") else tenant_id
+        comparison = compare_workspace_runs(WORKSPACE_ROOT, run_a, run_b, tenant_id=eff_tenant)
         comparison["tenant_id"] = tenant_id
         return comparison
     except ValueError as ve:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ve))
+        msg = str(ve)
+        code = status.HTTP_400_BAD_REQUEST if "Invalid Run" in msg else status.HTTP_404_NOT_FOUND
+        raise HTTPException(status_code=code, detail=msg)
 
 
 # =============================================================================

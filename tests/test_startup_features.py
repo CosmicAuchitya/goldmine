@@ -390,6 +390,7 @@ def test_live_erp_connectors_catalog_and_ingest(client):
         run_id = payload.get("run_id", "")
         if run_id.startswith("conn_"):
             shutil.rmtree(Path("runs/uploads") / run_id, ignore_errors=True)
+            shutil.rmtree(Path("runs/tenants/d2c_brand_india/jobs") / run_id, ignore_errors=True)
 
 
 def test_layer3_mathematical_proof_dossier(client):
@@ -537,19 +538,124 @@ def test_api_key_guard_middleware(monkeypatch, client):
     assert res_health.status_code == 200
 
 
-def test_production_deployment_pack_files():
-    """Verifies Dockerfile and docker-compose.yml files and configurations exist."""
+def test_production_deployment_pack_files(client):
+    """Verifies Dockerfile, docker-compose.yml, /api/v1/health alias, and single-worker safety."""
     dockerfile = Path("Dockerfile")
     assert dockerfile.exists()
     df_text = dockerfile.read_text(encoding="utf-8")
     assert "FROM python:3.12-slim" in df_text
     assert "dataxray" in df_text
     assert "HEALTHCHECK" in df_text
+    assert '"--workers", "1"' in df_text
 
     compose = Path("docker-compose.yml")
     assert compose.exists()
     dc_text = compose.read_text(encoding="utf-8")
     assert "dataxray-engine" in dc_text or "dataxray_enterprise_engine" in dc_text
     assert "./runs:/app/runs" in dc_text
+
+    res_v1_health = client.get("/api/v1/health")
+    assert res_v1_health.status_code == 200
+    assert res_v1_health.json()["status"] == "healthy"
+
+
+def test_audit_hardening_regressions(client, tmp_path):
+    """Regression suite for DOM integrity, dynamic proof gates, tenant isolation, currency mismatch, and upload guards."""
+    from autonomous_engine.live_connectors import (
+        build_mathematical_proof_dossier,
+        compare_workspace_runs,
+        list_workspace_runs,
+    )
+
+    # 1. Web UI structural, Air-Gapped CDN, and JS integrity
+    ui_html = Path("autonomous_engine/web_client.html").read_text(encoding="utf-8")
+    assert "fonts.googleapis.com" not in ui_html
+    assert "pollJobCompletion" not in ui_html
+    assert "await pollJobUntilComplete(data.job_id)" in ui_html
+    assert ".cohort-bar-fill" in ui_html
+    assert ".btn-emerald" in ui_html
+    assert 'id="apiKeyModal"' in ui_html
+    # #morningDigestModal must close cleanly before #proofDrawerModal
+    digest_idx = ui_html.index('id="morningDigestModal"')
+    proof_idx = ui_html.index('id="proofDrawerModal"')
+    digest_segment = ui_html[digest_idx:proof_idx]
+    assert digest_segment.count("<div") == digest_segment.count("</div>")
+
+    # 2. Dynamic Proof Gates must NOT return fake PASSED / 100% on broken or empty runs
+    broken_dossier = build_mathematical_proof_dossier({
+        "run_id": "broken_run",
+        "manifest": {"governance": {"audited_fact_records": 0}},
+        "executive_pulse": {"total_records": 0},
+    })
+    assert broken_dossier["all_gates_passed"] is False
+    assert broken_dossier["confidence_score_pct"] < 100.0
+    assert broken_dossier["verification_gates"][1]["status"] == "FAILED"
+    assert broken_dossier["verification_gates"][11]["status"] == "UNSEALED"
+
+    # Circuit-breaker uniform dataset triggers HOLD badges honestly
+    cb_dossier = build_mathematical_proof_dossier({
+        "run_id": "cb_run",
+        "audit_confidence": "100.0% VERIFIED TRUTH",
+        "manifest": {
+            "governance": {
+                "audited_fact_records": 500,
+                "cartesian_multiplicity_drift": 0,
+                "duplicate_primary_keys": 0,
+                "sha256_invariant_hash": "a" * 64,
+                "anti_hallucination_gate": "PASSED",
+            },
+            "target_outcome": {"column_name": "is_churned", "total_adverse_events": 50, "adverse_event_rate_pct": 10.0},
+            "financial_exposure": {"currency_unit": "$", "total_adverse_capital_drag": 1000.0, "monetary_column": "amt"},
+            "dimensions": {"primary_dimension": {"name": "region"}},
+        },
+        "executive_pulse": {
+            "total_records": 500,
+            "total_adverse_events": 50,
+            "overall_adverse_rate_pct": 10.0,
+            "bottleneck": {"headline": "Circuit-Breaker Active (Uniform Risk)", "value_badge": "$0 Spend Advisory"},
+            "red_line": {"headline": "Smooth Gradient", "value_badge": "No Sharp Cliff"},
+        },
+        "worklist_meta": {"total_flagged": 10},
+    })
+    assert cb_dossier["verification_gates"][3]["status"] == "TRIGGERED (HOLD)"
+    assert cb_dossier["verification_gates"][5]["status"] == "TRIGGERED (HOLD)"
+    assert cb_dossier["all_gates_passed"] is True
+
+    # 3. Path traversal rejection & currency mismatch safety in compare
+    res_trav = client.get("/api/v1/workspaces/default/compare?run_a=../../etc&run_b=hotel_booking_cancellation")
+    assert res_trav.status_code == 400
+
+    for r_id, sym, drag in [("run_usd", "$", 50000.0), ("run_inr", "₹", 250000.0)]:
+        c_dir = tmp_path / "runs" / "tenants" / "tenant_currency" / "jobs" / r_id / "output"
+        c_dir.mkdir(parents=True, exist_ok=True)
+        (c_dir / "semantic_metrics_manifest.json").write_text(
+            json.dumps({
+                "governance": {"audited_fact_records": 100},
+                "target_outcome": {"total_adverse_events": 10, "adverse_event_rate_pct": 10.0},
+                "financial_exposure": {"currency_unit": sym, "total_adverse_capital_drag": drag},
+            }),
+            encoding="utf-8",
+        )
+    mix_cmp = compare_workspace_runs(tmp_path, "run_usd", "run_inr", tenant_id="tenant_currency")
+    mix_delta = mix_cmp["delta"]
+    assert mix_cmp["run_a"]["unit_symbol"] == "$"
+    assert mix_cmp["run_b"]["unit_symbol"] == "₹"
+    assert mix_delta["currency_mismatch"] is True
+    assert mix_delta["capital_drag"] == 0.0
+
+    # 4. Tenant run isolation in list_workspace_runs
+    for t_id, r_id in [("tenant_alpha", "run_alpha_1"), ("tenant_beta", "run_beta_1")]:
+        out_d = tmp_path / "runs" / "tenants" / t_id / "jobs" / r_id / "output"
+        out_d.mkdir(parents=True, exist_ok=True)
+        (out_d / "semantic_metrics_manifest.json").write_text('{"governance": {"audited_fact_records": 10}}')
+    alpha_ids = [r["run_id"] for r in list_workspace_runs(tmp_path, tenant_id="tenant_alpha")]
+    assert "run_alpha_1" in alpha_ids
+    assert "run_beta_1" not in alpha_ids
+
+    # 5. Disallowed extension rejection in /api/v1/preview-multi-intent
+    bad_files = [("files", ("payload.exe", io.BytesIO(b"MZ_FAKE_BINARY"), "application/octet-stream"))]
+    res_bad = client.post("/api/v1/preview-multi-intent", files=bad_files)
+    assert res_bad.status_code == 400
+
 
 

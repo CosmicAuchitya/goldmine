@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DataX-Ray — Autonomous Decision Intelligence & Profit Recovery Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-canvas: #090d16;
@@ -245,6 +242,17 @@
 
     .btn-amber:hover {
       background: rgba(245, 158, 11, 0.22);
+    }
+
+    .btn-emerald {
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-emerald:hover {
+      background: rgba(16, 185, 129, 0.22);
+      border-color: var(--accent-emerald);
     }
 
     .btn-sm {
@@ -1263,6 +1271,12 @@
       margin-right: 8px;
     }
 
+    .cohort-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+
     /* Layer-3 Proof Drawer & Gates Grid */
     .drawer-card {
       background: var(--bg-surface);
@@ -1355,6 +1369,47 @@
       border: 1px solid rgba(16, 185, 129, 0.3);
       padding: 2px 6px;
       border-radius: 3px;
+    }
+
+    .gate-badge-warn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .gate-badge-fail {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fb7185;
+      background: rgba(244, 63, 94, 0.14);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .accordion-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      list-style: none;
     }
 
     .gate-claim {
@@ -1501,6 +1556,10 @@
           <option value="GB">UK (£ GBP)</option>
         </select>
       </div>
+
+      <button id="btnApiKeyConfig" type="button" class="btn btn-secondary btn-sm" onclick="openApiKeyModal()" title="Configure Enterprise X-API-Key token when enabled">
+        🔑 API Key
+      </button>
 
       <div class="truth-seal">
         <span class="pulse-dot"></span>
@@ -2127,12 +2186,17 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeMorningDigestModal()">Close</button>
       </div>
     </div>
+  </div>
+
   <!-- Layer-3 Mathematical Proof & 12-Gate Audit Drawer Modal -->
   <div id="proofDrawerModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeProofDrawer()">
     <div class="drawer-card">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 12px;">
         <div>
-          <div class="section-eyebrow" style="color: var(--accent-emerald);">CA &amp; LEAD DATA SCIENTIST TRUST VIEW</div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald);">
+            <span>CA &amp; LEAD DATA SCIENTIST TRUST VIEW</span>
+            <span id="proofConfidenceBadge" style="color: #10b981;">100.0% VERIFIED</span>
+          </div>
           <h2 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
             🛡️ Layer-3 Mathematical Proof &amp; 12-Gate Audit Dossier
           </h2>
@@ -2344,6 +2408,18 @@
           <div class="section-eyebrow" style="color: #f59e0b; margin-bottom: 6px;">RELATIONAL FOREIGN KEY JOINS &amp; CARDINALITY</div>
           <div id="starJoinsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
+
+        <!-- Optional Target / Cost Overrides -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-field">
+            <label for="starTargetSelect">Confirmed Target Outcome Column</label>
+            <select id="starTargetSelect"></select>
+          </div>
+          <div class="form-field">
+            <label for="starCostSelect">Confirmed Monetary / Cost Column</label>
+            <select id="starCostSelect"></select>
+          </div>
+        </div>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 12px; flex-wrap: wrap;">
@@ -2351,6 +2427,33 @@
         <button type="button" class="btn btn-primary" onclick="confirmMultiTableIngestion()">
           🚀 Ingest Star-Schema Dataset &amp; Run 7-Stage Audit
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enterprise API Key Authentication Modal -->
+  <div id="apiKeyModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeApiKeyModal()">
+    <div class="modal-card" style="max-width: 480px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">ZERO-TRUST ACCESS CONTROL</div>
+          <h3 style="font-size: 18px; font-weight: 800;">🔑 Enterprise API Key</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeApiKeyModal()">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+        When <code>DATAXRAY_API_KEY</code> is enabled on this server, enter your token below. It is stored locally in your browser and sent via <code>X-API-Key</code>.
+      </p>
+      <div class="form-field">
+        <label for="apiKeyTokenInput">API Key Token</label>
+        <input id="apiKeyTokenInput" type="password" placeholder="Enter DATAXRAY_API_KEY..." />
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="clearSavedApiKey()">Clear Key</button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="closeApiKeyModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveApiKeyToken()">Save &amp; Connect</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2380,6 +2483,100 @@
       digestPayload: null,
       digestLang: 'hi'
     };
+
+    // =========================================================================
+    // ENTERPRISE API KEY AUTH & HTTP-SAFE CLIPBOARD HELPERS
+    // =========================================================================
+    function getSavedApiKey() {
+      try {
+        return localStorage.getItem('dataxray_api_key') || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function appendApiKeyToUrl(url) {
+      const k = getSavedApiKey();
+      if (!k || !url) return url;
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}api_key=${encodeURIComponent(k)}`;
+    }
+
+    function openApiKeyModal() {
+      const inp = document.getElementById('apiKeyTokenInput');
+      if (inp) inp.value = getSavedApiKey();
+      document.getElementById('apiKeyModal').classList.remove('hidden');
+    }
+
+    function closeApiKeyModal() {
+      document.getElementById('apiKeyModal').classList.add('hidden');
+    }
+
+    function saveApiKeyToken() {
+      const val = (document.getElementById('apiKeyTokenInput').value || '').trim();
+      try {
+        if (val) localStorage.setItem('dataxray_api_key', val);
+        else localStorage.removeItem('dataxray_api_key');
+      } catch (e) {}
+      closeApiKeyModal();
+      showToast(val ? 'API Key saved locally. Re-syncing workspace...' : 'API Key cleared.', 'success');
+      if (val) {
+        loadCertifiedBenchmark(appState.activeRunId || 'hotel_booking_cancellation');
+        refreshTimeMachineRuns();
+      }
+    }
+
+    function clearSavedApiKey() {
+      try {
+        localStorage.removeItem('dataxray_api_key');
+      } catch (e) {}
+      const inp = document.getElementById('apiKeyTokenInput');
+      if (inp) inp.value = '';
+      closeApiKeyModal();
+      showToast('Saved API Key removed.', 'info');
+    }
+
+    async function apiFetch(url, options = {}) {
+      const opts = { ...options };
+      const headers = new Headers(opts.headers || {});
+      const apiKey = getSavedApiKey();
+      if (apiKey && !headers.has('X-API-Key')) {
+        headers.set('X-API-Key', apiKey);
+      }
+      opts.headers = headers;
+      const res = await fetch(url, opts);
+      if (res.status === 401) {
+        openApiKeyModal();
+        showToast('API Key required (401 Unauthorized). Enter DATAXRAY_API_KEY to continue.', 'warn');
+      }
+      return res;
+    }
+
+    async function copyTextSafe(text, successMsg) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          showToast(successMsg, 'success');
+          return true;
+        }
+      } catch (e) {}
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (ok) {
+          showToast(successMsg, 'success');
+          return true;
+        }
+      } catch (e) {}
+      showToast('Clipboard copy blocked by browser.', 'warn');
+      return false;
+    }
 
     // =========================================================================
     // TOAST NOTIFICATION SYSTEM (ZERO RAW ALERTS)
@@ -2472,7 +2669,7 @@
           btn.classList.toggle('active-bench', btn.dataset.bench === benchmarkId);
         });
         showToast(`Loading certified benchmark: ${benchmarkId}...`, 'info');
-        const res = await fetch(`/api/v1/benchmarks/${encodeURIComponent(benchmarkId)}`);
+        const res = await apiFetch(`/api/v1/benchmarks/${encodeURIComponent(benchmarkId)}`);
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
@@ -2507,7 +2704,7 @@
       showToast(`Syncing live connector '${connectorId}' & running 7-stage audit...`, 'info');
 
       try {
-        const res = await fetch('/api/v1/connectors/ingest', {
+        const res = await apiFetch('/api/v1/connectors/ingest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2549,7 +2746,7 @@
       document.getElementById('progressStageName').textContent = 'Fetching Remote Sheet & Running DuckDB Audit...';
 
       try {
-        const res = await fetch('/api/v1/connectors/ingest', {
+        const res = await apiFetch('/api/v1/connectors/ingest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2619,7 +2816,7 @@
 
       showToast(`Scanning schema & financial columns in ${file.name}...`, 'info');
       try {
-        const res = await fetch('/api/v1/preview-intent', { method: 'POST', body: fd });
+        const res = await apiFetch('/api/v1/preview-intent', { method: 'POST', body: fd });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `Preview failed (${res.status})`);
@@ -2640,7 +2837,10 @@
         candidates.forEach(c => {
           const opt = document.createElement('option');
           opt.value = c.column;
-          opt.textContent = `${c.column} (${c.unique_values_count} unique vals)`;
+          const cntText = c.unique_values_count !== undefined
+            ? `${c.unique_values_count} unique vals`
+            : `${c.adverse_rate_sample_pct ?? ''}% rate`;
+          opt.textContent = `${c.column} (${cntText})`;
           if (c.is_detected_default) opt.selected = true;
           tgtSelect.appendChild(opt);
         });
@@ -2701,7 +2901,7 @@
       if (costOverride) fd.append('cost_override', costOverride);
 
       try {
-        const submitRes = await fetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
+        const submitRes = await apiFetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
         if (!submitRes.ok) {
           throw new Error(`Submission error (${submitRes.status})`);
         }
@@ -2720,7 +2920,7 @@
       const stageName = document.getElementById('progressStageName');
 
       while (true) {
-        const res = await fetch(`/api/v1/jobs/${encodeURIComponent(jobId)}/status`);
+        const res = await apiFetch(`/api/v1/jobs/${encodeURIComponent(jobId)}/status`);
         if (!res.ok) throw new Error(`Status check failed (${res.status})`);
         const statusData = await res.json();
 
@@ -2943,7 +3143,7 @@
       box.value = 'Generating deterministic Morning Munim-Ji Digest...';
 
       try {
-        const res = await fetch(`/api/v1/digest/${encodeURIComponent(appState.activeRunId)}?tenant_id=${encodeURIComponent(appState.activeTenant)}`);
+        const res = await apiFetch(`/api/v1/digest/${encodeURIComponent(appState.activeRunId)}?tenant_id=${encodeURIComponent(appState.activeTenant)}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         appState.digestPayload = await res.json();
         switchDigestLang(appState.digestLang);
@@ -2969,10 +3169,7 @@
 
     function copyDigestText() {
       const text = document.getElementById('digestMessagePreview').value || '';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text);
-      }
-      showToast('Morning Munim-Ji Digest copied to clipboard!', 'success');
+      copyTextSafe(text, 'Morning Munim-Ji Digest copied to clipboard!');
     }
 
     function shareDigestOnWhatsApp() {
@@ -2988,7 +3185,7 @@
         return;
       }
       try {
-        const res = await fetch('/api/v1/digest/dispatch', {
+        const res = await apiFetch('/api/v1/digest/dispatch', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3003,10 +3200,10 @@
           throw new Error(err.detail || `HTTP ${res.status}`);
         }
         const data = await res.json();
-        if (data.dispatched) {
+        if (data.webhook_dispatched || data.dispatched) {
           showToast('Morning Digest pushed to Webhook successfully!', 'success');
         } else {
-          showToast(`Webhook returned status ${data.webhook_status || 'error'}`, 'warn');
+          showToast(`Webhook returned error: ${data.webhook_error || data.webhook_status || 'delivery failed'}`, 'warn');
         }
       } catch (e) {
         showToast(`Webhook dispatch error: ${e.message}`, 'error');
@@ -3079,7 +3276,7 @@
       Object.entries(labels).forEach(([fileKey, label]) => {
         if (urls[fileKey]) {
           const a = document.createElement('a');
-          a.href = urls[fileKey];
+          a.href = appendApiKeyToUrl(urls[fileKey]);
           a.className = 'btn btn-secondary btn-sm';
           a.textContent = label;
           a.setAttribute('download', fileKey);
@@ -3268,7 +3465,7 @@
       const exposureVal = Number(row.monetary_exposure || 0);
 
       try {
-        const res = await fetch('/api/v1/worklist/action', {
+        const res = await apiFetch('/api/v1/worklist/action', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3298,7 +3495,7 @@
         showToast('Load a dataset or benchmark first.', 'warn');
         return;
       }
-      window.location.href = `/api/v1/download/${encodeURIComponent(appState.activeRunId)}/actionable_priority_worklist.csv`;
+      window.location.href = appendApiKeyToUrl(`/api/v1/download/${encodeURIComponent(appState.activeRunId)}/actionable_priority_worklist.csv`);
     }
 
     // =========================================================================
@@ -3330,7 +3527,7 @@
       btn.textContent = 'Querying DuckDB...';
 
       try {
-        const res = await fetch('/api/v1/ask', {
+        const res = await apiFetch('/api/v1/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3390,12 +3587,19 @@
       const runId = appState.activeRunId || 'hotel_booking_cancellation';
       showToast('Fetching Layer-3 12-gate audit proof...', 'info');
       try {
-        const res = await fetch(`/api/v1/audit-proof/${encodeURIComponent(runId)}`);
+        const res = await apiFetch(`/api/v1/audit-proof/${encodeURIComponent(runId)}`);
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
         }
         const data = await res.json();
+
+        const confBadge = document.getElementById('proofConfidenceBadge');
+        if (confBadge) {
+          const score = Number(data.confidence_score_pct ?? 100).toFixed(1);
+          confBadge.textContent = data.all_gates_passed ? `${score}% VERIFIED` : `${score}% PARTIAL / REVIEW`;
+          confBadge.style.color = data.all_gates_passed ? '#10b981' : '#f59e0b';
+        }
 
         // 1. Wilson Score Confidence Interval
         const advRate = Number(data.overall_adverse_rate_pct || 0);
@@ -3414,16 +3618,20 @@
         document.getElementById('proofWilsonBar').style.width = `${barWidth}%`;
         document.getElementById('proofWilsonNeedle').style.left = `${needlePos}%`;
 
-        // 2. 12 Verification Gates
+        // 2. 12 Verification Gates (Dynamic Status Badges)
         const gatesList = document.getElementById('proofGatesList');
         gatesList.innerHTML = '';
         (data.verification_gates || []).forEach(g => {
+          const st = String(g.status || 'PASSED').toUpperCase();
+          const badgeCls = st.includes('FAIL') || st.includes('UNSEALED')
+            ? 'gate-badge-fail'
+            : (st.includes('HOLD') || st.includes('PENDING') ? 'gate-badge-warn' : 'gate-badge-pass');
           const card = document.createElement('div');
           card.className = 'gate-card';
           card.innerHTML = `
             <div class="gate-header">
-              <span class="gate-name">Gate ${g.gate_id} · ${escapeHtml(g.gate_name)}</span>
-              <span class="gate-badge-pass">PASSED</span>
+              <span class="gate-name">Gate ${escapeHtml(g.gate_id)} · ${escapeHtml(g.gate_name)}</span>
+              <span class="${badgeCls}">${escapeHtml(st)}</span>
             </div>
             <p class="gate-claim">${escapeHtml(g.audit_claim)}</p>
             <div class="gate-tolerance">Tolerance: ${escapeHtml(g.tolerance)}</div>
@@ -3456,11 +3664,7 @@
     function copyProofSql(type) {
       const sql = proofSqlCache[type] || '';
       if (!sql) return;
-      navigator.clipboard.writeText(sql).then(() => {
-        showToast(`Copied ${type.toUpperCase()} DuckDB SQL proof to clipboard!`, 'success');
-      }).catch(() => {
-        showToast('Clipboard access denied.', 'warn');
-      });
+      copyTextSafe(sql, `Copied ${type.toUpperCase()} DuckDB SQL proof to clipboard!`);
     }
 
     // =========================================================================
@@ -3471,7 +3675,7 @@
     async function refreshTimeMachineRuns() {
       const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
       try {
-        const res = await fetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/runs`);
+        const res = await apiFetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/runs`);
         if (!res.ok) return;
         const data = await res.json();
         workspaceRunsCache = data.runs || [];
@@ -3508,7 +3712,7 @@
       if (!runId) return;
       showToast(`Time-Machine switching to snapshot '${runId}'...`, 'info');
       try {
-        const res = await fetch(`/api/v1/runs/${encodeURIComponent(runId)}`);
+        const res = await apiFetch(`/api/v1/runs/${encodeURIComponent(runId)}`);
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
@@ -3540,7 +3744,7 @@
       const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
       showToast(`Comparing ${runA} vs ${runB}...`, 'info');
       try {
-        const res = await fetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/compare?run_a=${encodeURIComponent(runA)}&run_b=${encodeURIComponent(runB)}`);
+        const res = await apiFetch(`/api/v1/workspaces/${encodeURIComponent(tenant)}/compare?run_a=${encodeURIComponent(runA)}&run_b=${encodeURIComponent(runB)}`);
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
@@ -3569,14 +3773,21 @@
         rateEl.textContent = `${rateD >= 0 ? '+' : ''}${rateD.toFixed(2)} pp`;
         rateEl.style.color = rateD <= 0 ? '#10b981' : '#f43f5e';
 
-        // Capital Drag
-        const sym = data.delta.unit_symbol || '$';
+        // Capital Drag (Currency-aware)
+        const symA = data.run_a.unit_symbol || '$';
+        const symB = data.run_b.unit_symbol || symA;
+        const sym = data.delta.unit_symbol || symB;
         document.getElementById('compareDragVals').textContent =
-          `${formatCurrencyValue(data.run_a.capital_drag, sym)} → ${formatCurrencyValue(data.run_b.capital_drag, sym)}`;
-        const dragD = data.delta.capital_drag;
+          `${formatCurrencyValue(data.run_a.capital_drag, symA)} → ${formatCurrencyValue(data.run_b.capital_drag, symB)}`;
         const dragEl = document.getElementById('compareDragDelta');
-        dragEl.textContent = `${dragD >= 0 ? '+' : ''}${formatCurrencyValue(dragD, sym)}`;
-        dragEl.style.color = dragD <= 0 ? '#10b981' : '#f43f5e';
+        if (data.delta.currency_mismatch) {
+          dragEl.textContent = `N/A (${sym})`;
+          dragEl.style.color = '#fbbf24';
+        } else {
+          const dragD = data.delta.capital_drag;
+          dragEl.textContent = `${dragD >= 0 ? '+' : ''}${formatCurrencyValue(dragD, sym)}`;
+          dragEl.style.color = dragD <= 0 ? '#10b981' : '#f43f5e';
+        }
 
         // Executive Notes
         document.getElementById('compareNotesEn').textContent = data.executive_notes.english;
@@ -3601,23 +3812,57 @@
 
       showToast(`Profiling ${files.length} tables for Star-Schema topology...`, 'info');
       try {
-        const res = await fetch('/api/v1/preview-multi-intent', { method: 'POST', body: fd });
+        const res = await apiFetch('/api/v1/preview-multi-intent', { method: 'POST', body: fd });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `HTTP ${res.status}`);
         }
         const data = await res.json();
 
-        // 1. Fact Table
+        // 1. Fact Table (Strict HTML escaping to prevent XSS from dataset column values)
         const fact = data.fact_table || {};
         document.getElementById('starFactName').textContent = fact.table_name || 'Fact_Table';
         document.getElementById('starFactRowsBadge').textContent = `~${(fact.estimated_rows || 0).toLocaleString()} physical rows`;
         const goal = data.detected_goal || {};
+        const costSummary = goal.cost_col ? `${goal.cost_col} (${goal.unit_symbol || '$'})` : 'Operational Frequency';
         document.getElementById('starFactGoalDetail').innerHTML = `
-          Detected Target: <strong style="color:#10b981;">${goal.target_col || 'None'}</strong> ·
-          Monetary Ledger: <strong style="color:#38bdf8;">${goal.cost_col ? goal.cost_col + ' (' + (goal.unit_symbol || '$') + ')' : 'Operational Frequency'}</strong><br/>
-          <em>"${goal.business_question_en || 'Relational schema analysis'}"</em>
+          Detected Target: <strong style="color:#10b981;">${escapeHtml(goal.target_col || 'None')}</strong> ·
+          Monetary Ledger: <strong style="color:#38bdf8;">${escapeHtml(costSummary)}</strong><br/>
+          <em>"${escapeHtml(goal.business_question_en || 'Relational schema analysis')}"</em>
         `;
+
+        // Populate Star-Schema Target & Cost Selects
+        const starTgt = document.getElementById('starTargetSelect');
+        const starCost = document.getElementById('starCostSelect');
+        if (starTgt) {
+          starTgt.innerHTML = '';
+          (data.candidate_targets || []).forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.column;
+            opt.textContent = `${c.column} (${c.adverse_rate_sample_pct ?? 0}% rate)`;
+            if (c.is_detected_default) opt.selected = true;
+            starTgt.appendChild(opt);
+          });
+          if (starTgt.options.length === 0 && fact.columns) {
+            fact.columns.forEach(col => {
+              const opt = document.createElement('option');
+              opt.value = col;
+              opt.textContent = col;
+              if (col === goal.target_col) opt.selected = true;
+              starTgt.appendChild(opt);
+            });
+          }
+        }
+        if (starCost) {
+          starCost.innerHTML = '<option value="__NONE__">None (Operational Frequency Only)</option>';
+          (data.candidate_costs || []).forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.column;
+            opt.textContent = `${c.column} (Avg: ${c.unit_symbol || '$'}${c.sample_mean})`;
+            if (c.is_detected_default) opt.selected = true;
+            starCost.appendChild(opt);
+          });
+        }
 
         // 2. Dimension Tables
         const dimGrid = document.getElementById('starDimGrid');
@@ -3628,7 +3873,7 @@
           dCard.innerHTML = `
             <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">${escapeHtml(dim.table_name)}</div>
             <div style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); margin: 3px 0;">
-              ${(dim.estimated_rows || 0).toLocaleString()} rows · ${dim.columns_count} columns
+              ${(dim.estimated_rows || 0).toLocaleString()} rows · ${escapeHtml(dim.columns_count)} columns
             </div>
             <div style="font-size: 11px; color: var(--accent-sky);">
               Key: <code>${escapeHtml(dim.recommended_primary_key || 'surrogate_id')}</code>
@@ -3669,6 +3914,10 @@
 
     async function confirmMultiTableIngestion() {
       if (!multiFilesPending || multiFilesPending.length === 0) return;
+      const starTgt = document.getElementById('starTargetSelect');
+      const starCost = document.getElementById('starCostSelect');
+      const targetOverride = starTgt ? (starTgt.value || '') : '';
+      const costOverride = starCost ? (starCost.value || '') : '';
       closeStarSchemaModal();
 
       const tenant = document.getElementById('tenantInput').value.trim() || 'founder_workspace';
@@ -3686,15 +3935,17 @@
       fd.append('tenant_id', tenant);
       fd.append('region_profile', region);
       fd.append('mode', 'ai');
+      if (targetOverride) fd.append('target_override', targetOverride);
+      if (costOverride) fd.append('cost_override', costOverride);
 
       try {
-        const res = await fetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
+        const res = await apiFetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.detail || `Upload failed (${res.status})`);
         }
         const data = await res.json();
-        pollJobCompletion(data.job_id);
+        await pollJobUntilComplete(data.job_id);
       } catch (e) {
         progSec.classList.add('hidden');
         showToast(`Job submission failed: ${e.message}`, 'error');
