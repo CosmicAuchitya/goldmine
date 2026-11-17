@@ -1,0 +1,117 @@
+{
+  "dataset_name": "german_credit",
+  "matched_ontology": {
+    "ontology_key": "fintech_lending",
+    "domain_code": "FINTECH_LEND",
+    "domain_name": "FinTech, Lending & Credit Operations (NBFCs)",
+    "key_metrics_kpis": [
+      "Net Interest Margin (NIM = Lending_Rate - Borrowing_Cost)",
+      "Gross & Net NPA % (Non-Performing Assets - 90+ DPD \u0921\u093f\u092b\u0949\u0932\u094d\u091f)",
+      "Days Past Due (DPD) Bucket Distribution (30 DPD, 60 DPD, 90 DPD)",
+      "Collection Efficiency Ratio (%)"
+    ],
+    "hidden_leakage_risks": [
+      "Willful Defaults (\u0932\u094b\u0928 \u0932\u0947\u0915\u0930 \u092d\u093e\u0917 \u091c\u093e\u0928\u093e)",
+      "Collateral Value Depreciation (\u0917\u093f\u0930\u0935\u0940 \u0930\u0916\u0940 \u0938\u0902\u092a\u0924\u094d\u0924\u093f \u0915\u0940 \u0915\u0940\u092e\u0924 \u0917\u093f\u0930\u0928\u093e)",
+      "Over-leveraged Borrowers taking multiple loans"
+    ]
+  },
+  "archetype": "swiss_institutional_terminal",
+  "archetype_name": "Swiss Institutional Risk Terminal",
+  "executive_persona": "Chief Risk Officer (CRO) & Credit Committee",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "3-column asymmetric risk cockpit with compact tabular command bar",
+    "default_theme": "dark",
+    "font_display": "'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace",
+    "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 1000,
+    "total_columns": 15,
+    "is_temporal": false,
+    "has_monetary_ledger": true,
+    "has_secondary_dim": true,
+    "cliffs_count": 3,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "justification": "Physical currency ledger verified; isolates 80/20 adverse capital concentration.",
+      "priority": 1
+    },
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 2
+    },
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 3 continuous driver(s).",
+      "priority": 3
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 5
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 6
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (Checking account x Saving accounts) exposes sub-node vulnerability hubs.",
+      "priority": 7
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "German Credit Forensic Risk & Economic Exposure Analysis \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "German Credit Forensic Risk & Economic Exposure Analysis \u2014 Karyakari Business Command Cockpit"
+  }
+}

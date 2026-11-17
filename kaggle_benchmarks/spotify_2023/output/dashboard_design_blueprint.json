@@ -1,0 +1,116 @@
+{
+  "dataset_name": "spotify_2023",
+  "matched_ontology": {
+    "ontology_key": "real_estate_proptech",
+    "domain_code": "PROPTECH",
+    "domain_name": "Real Estate, Commercial Leasing & PropTech",
+    "key_metrics_kpis": [
+      "Capitalization Rate (Cap Rate = Net_Operating_Income / Property_Value)",
+      "Physical & Financial Occupancy Rate (%)",
+      "Tenant Retention / Lease Renewal Rate",
+      "Revenue Per Available Square Foot (RevPASF)"
+    ],
+    "hidden_leakage_risks": [
+      "Prolonged Vacancy (\u092e\u0939\u0940\u0928\u094b\u0902 \u0924\u0915 \u0911\u092b\u093f\u0938 \u092f\u093e \u092b\u094d\u0932\u0948\u091f \u0916\u093e\u0932\u0940 \u0930\u0939\u0928\u093e)",
+      "Property Tax and Unpaid Common Area Maintenance (CAM)",
+      "Tenant Default and Costly Eviction Lawsuits"
+    ]
+  },
+  "archetype": "swiss_institutional_terminal",
+  "archetype_name": "Swiss Institutional Risk Terminal",
+  "executive_persona": "Chief Risk Officer (CRO) & Credit Committee",
+  "dfii_score": 19,
+  "dfii_breakdown": {
+    "aesthetic_impact": 5,
+    "context_fit": 5,
+    "implementation_feasibility": 5,
+    "performance_safety": 5,
+    "consistency_risk": 1,
+    "dfii": 19
+  },
+  "design_system": {
+    "layout_concept": "3-column asymmetric risk cockpit with compact tabular command bar",
+    "default_theme": "dark",
+    "font_display": "'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace",
+    "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  },
+  "data_shape_diagnostics": {
+    "total_records": 953,
+    "total_columns": 33,
+    "is_temporal": false,
+    "has_monetary_ledger": false,
+    "has_secondary_dim": true,
+    "cliffs_count": 20,
+    "has_2x2_interaction": true,
+    "has_triage_policies": true,
+    "is_imbalanced_rare_event": false,
+    "circuit_breaker_active": false,
+    "has_worklist": true
+  },
+  "selected_panels": [
+    {
+      "id": "segment_vulnerability_lollipop",
+      "name": "Primary Segment Vulnerability & Wilson 95% CIs",
+      "justification": "Primary operational dimension ranked by adverse rate with exact binomial confidence intervals.",
+      "priority": 2
+    },
+    {
+      "id": "nonlinear_cliff_step_area",
+      "name": "Non-Linear Parameter Threshold Cliff & Danger Zone",
+      "justification": "Isolates discrete physical inflection points across 20 continuous driver(s).",
+      "priority": 3
+    },
+    {
+      "id": "exposure_vs_risk_bubble",
+      "name": "Exposure Volume vs Adverse Risk Bubble Dispersion",
+      "justification": "Separates high-volume systemic friction from low-volume niche outliers.",
+      "priority": 5
+    },
+    {
+      "id": "orthogonal_2x2_quadrant",
+      "name": "2x2 Orthogonal Risk vs Protective Buffer Matrix",
+      "justification": "Tests whether protective factors successfully buffer or succumb to primary risk driver.",
+      "priority": 6
+    },
+    {
+      "id": "secondary_cross_tab_heatmap",
+      "name": "2D Cross-Tabulation Risk Concentration Heatmap",
+      "justification": "Bivariate categorical cross-tab (key x mode) exposes sub-node vulnerability hubs.",
+      "priority": 7
+    },
+    {
+      "id": "triage_efficiency_frontier",
+      "name": "Operational Intake Screening Yield Frontier",
+      "justification": "Quantifies trade-off between intake discard/scrap % and adverse defect containment.",
+      "priority": 8
+    },
+    {
+      "id": "what_if_counterfactual_simulator",
+      "name": "What-If Counterfactual ROI & Excess-Risk Simulator",
+      "justification": "Allows executive leadership to interactively model 0-100% excess-risk compression scenarios.",
+      "priority": 9
+    },
+    {
+      "id": "actionable_worklist_explorer",
+      "name": "Actionable Priority Worklist & Incident Triage Table",
+      "justification": "Equips frontline operations with prioritized record-level retention and recovery queues.",
+      "priority": 10
+    }
+  ],
+  "rejected_panels": [
+    {
+      "id": "temporal_momentum_ribbon",
+      "name": "Temporal Failure Rate & Volume Momentum",
+      "reason": "Dataset is cross-sectional; lacks verified calendar timestamp column."
+    },
+    {
+      "id": "pareto_loss_waterfall",
+      "name": "Pareto Cumulative Financial Loss Waterfall",
+      "reason": "Dataset contains no verified monetary exposure ledger; Pareto financial loss waterfall rejected to prevent fabricated currency."
+    }
+  ],
+  "executive_narrative": {
+    "title_en": "Global Streaming Performance and Cross-Platform Market Penetration Forensic Analysis \u2014 Executive Forensic Command Cockpit",
+    "title_hi": "Global Streaming Performance and Cross-Platform Market Penetration Forensic Analysis \u2014 Karyakari Business Command Cockpit"
+  }
+}

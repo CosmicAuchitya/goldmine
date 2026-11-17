@@ -88,7 +88,7 @@ def load_with_isolated_cache(
         
     df = loader_fn(file_path)
     # Defend against PyArrow mixed-type conversion crashes on caching
-    for col in df.select_dtypes(include=['object']).columns:
+    for col in df.select_dtypes(include=['object', 'string']).columns:
         df[col] = df[col].astype(str).str.strip()
         
     atomic_to_parquet(df, cache_p)

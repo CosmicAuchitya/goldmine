@@ -20,8 +20,9 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# 4. Copy source code and application assets
+# 4. Copy source code, domain ontologies, and benchmark assets
 COPY autonomous_engine/ /app/autonomous_engine/
+COPY 02_domain_intelligence/ /app/02_domain_intelligence/
 COPY kaggle_benchmarks/ /app/kaggle_benchmarks/
 
 # 5. Initialize writable run state directories

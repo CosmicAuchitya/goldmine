@@ -1,0 +1,50 @@
+table bi_dim_audio_features
+	lineageTag: dim-bi_dim_audio_features-lineage
+
+	column fact_surrogate_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-bi_dim_audio_features-fact_surrogate_id
+		formatString: #,0
+
+	column bpm
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: bpm
+		lineageTag: col-bi_dim_audio_features-bpm
+		formatString: #,0
+
+	column danceability_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: danceability_%
+		lineageTag: col-bi_dim_audio_features-danceability_%
+		formatString: #,0
+
+	column energy_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: energy_%
+		lineageTag: col-bi_dim_audio_features-energy_%
+		formatString: #,0
+
+	column key
+		dataType: string
+		summarizeBy: none
+		sourceColumn: key
+		lineageTag: col-bi_dim_audio_features-key
+
+	column mode
+		dataType: string
+		summarizeBy: none
+		sourceColumn: mode
+		lineageTag: col-bi_dim_audio_features-mode
+
+	partition bi_dim_audio_features = m
+		mode: import
+		source = 
+			let
+				Source = Csv.Document(File.Contents("bi_dim_audio_features.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.None])
+			in
+				Source

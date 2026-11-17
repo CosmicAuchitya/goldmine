@@ -1,0 +1,435 @@
+{
+  "dataset_name": "spotify_2023",
+  "engine_version": "V4.5",
+  "specs": {
+    "primary_dimension_risk": {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Risk Exposure & Capital Drag across key",
+      "width": 600,
+      "height": 280,
+      "data": {
+        "values": [
+          {
+            "segment": "A",
+            "volume": 75,
+            "target_events": 23,
+            "adverse_rate_pct": 30.67,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "B",
+            "volume": 81,
+            "target_events": 24,
+            "adverse_rate_pct": 29.63,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "F",
+            "volume": 89,
+            "target_events": 25,
+            "adverse_rate_pct": 28.09,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "F#",
+            "volume": 73,
+            "target_events": 20,
+            "adverse_rate_pct": 27.4,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "C#",
+            "volume": 120,
+            "target_events": 32,
+            "adverse_rate_pct": 26.67,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "A#",
+            "volume": 57,
+            "target_events": 15,
+            "adverse_rate_pct": 26.32,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "G",
+            "volume": 96,
+            "target_events": 24,
+            "adverse_rate_pct": 25.0,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "E",
+            "volume": 62,
+            "target_events": 15,
+            "adverse_rate_pct": 24.19,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "G#",
+            "volume": 91,
+            "target_events": 22,
+            "adverse_rate_pct": 24.18,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "D#",
+            "volume": 33,
+            "target_events": 7,
+            "adverse_rate_pct": 21.21,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "D",
+            "volume": 81,
+            "target_events": 15,
+            "adverse_rate_pct": 18.52,
+            "capital_drag": 0.0
+          },
+          {
+            "segment": "nan",
+            "volume": 95,
+            "target_events": 17,
+            "adverse_rate_pct": 17.89,
+            "capital_drag": 0.0
+          }
+        ]
+      },
+      "mark": {
+        "type": "bar",
+        "cornerRadiusEnd": 4
+      },
+      "encoding": {
+        "y": {
+          "field": "segment",
+          "type": "nominal",
+          "sort": "-x",
+          "title": "key"
+        },
+        "x": {
+          "field": "adverse_rate_pct",
+          "type": "quantitative",
+          "title": "Adverse Failure Rate (%)"
+        },
+        "color": {
+          "field": "adverse_rate_pct",
+          "type": "quantitative",
+          "scale": {
+            "scheme": "redyellowblue",
+            "reverse": true
+          },
+          "legend": {
+            "title": "Risk %"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "segment",
+            "type": "nominal",
+            "title": "Segment"
+          },
+          {
+            "field": "volume",
+            "type": "quantitative",
+            "title": "Volume",
+            "format": ","
+          },
+          {
+            "field": "target_events",
+            "type": "quantitative",
+            "title": "Adverse Events",
+            "format": ","
+          },
+          {
+            "field": "adverse_rate_pct",
+            "type": "quantitative",
+            "title": "Failure Rate (%)",
+            "format": ".2f"
+          },
+          {
+            "field": "capital_drag",
+            "type": "quantitative",
+            "title": "Capital Drag ($)",
+            "format": "$,.2f"
+          }
+        ]
+      }
+    },
+    "threshold_cliff": {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Non-Linear Threshold Cliff Inflection: released_year",
+      "width": 600,
+      "height": 260,
+      "data": {
+        "values": [
+          {
+            "quantile_tier": "Q1: (1929.999, 2020.0]",
+            "tier_index": 1,
+            "volume": 257,
+            "adverse_events": 11,
+            "failure_rate_pct": 4.28
+          },
+          {
+            "quantile_tier": "Q2: (2020.0, 2022.0]",
+            "tier_index": 2,
+            "volume": 521,
+            "adverse_events": 113,
+            "failure_rate_pct": 21.69
+          },
+          {
+            "quantile_tier": "Q3: (2022.0, 2023.0]",
+            "tier_index": 3,
+            "volume": 175,
+            "adverse_events": 115,
+            "failure_rate_pct": 65.71
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "opacity": 0.25,
+            "color": "#e63946"
+          },
+          "encoding": {
+            "x": {
+              "field": "quantile_tier",
+              "type": "nominal",
+              "sort": "tier_index",
+              "title": "Quantile Tier (released_year)"
+            },
+            "y": {
+              "field": "failure_rate_pct",
+              "type": "quantitative",
+              "title": "Failure Rate (%)"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "point": {
+              "size": 80,
+              "filled": true
+            },
+            "color": "#e63946",
+            "strokeWidth": 3
+          },
+          "encoding": {
+            "x": {
+              "field": "quantile_tier",
+              "type": "nominal",
+              "sort": "tier_index"
+            },
+            "y": {
+              "field": "failure_rate_pct",
+              "type": "quantitative"
+            },
+            "tooltip": [
+              {
+                "field": "quantile_tier",
+                "type": "nominal",
+                "title": "Stratum"
+              },
+              {
+                "field": "volume",
+                "type": "quantitative",
+                "title": "Monitored Volume",
+                "format": ","
+              },
+              {
+                "field": "adverse_events",
+                "type": "quantitative",
+                "title": "Adverse Events",
+                "format": ","
+              },
+              {
+                "field": "failure_rate_pct",
+                "type": "quantitative",
+                "title": "Failure Rate %",
+                "format": ".2f"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "orthogonal_interaction_matrix": {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "2x2 Orthogonal Interaction: in_apple_playlists vs released_year",
+      "width": 380,
+      "height": 260,
+      "data": {
+        "values": [
+          {
+            "quadrant": "Q1",
+            "label": "Optimal Zone",
+            "risk_driver_level": "Low Risk Driver",
+            "protective_factor_level": "High Protective Factor",
+            "volume": 416,
+            "events": 13,
+            "failure_rate_pct": 3.12
+          },
+          {
+            "quadrant": "Q2",
+            "label": "Unbuffered Baseline",
+            "risk_driver_level": "Low Risk Driver",
+            "protective_factor_level": "Low Protective Factor",
+            "volume": 362,
+            "events": 111,
+            "failure_rate_pct": 30.66
+          },
+          {
+            "quadrant": "Q3",
+            "label": "Masked Risk",
+            "risk_driver_level": "High Risk Driver",
+            "protective_factor_level": "High Protective Factor",
+            "volume": 56,
+            "events": 26,
+            "failure_rate_pct": 46.43
+          },
+          {
+            "quadrant": "Q4",
+            "label": "Compound Catastrophe",
+            "risk_driver_level": "High Risk Driver",
+            "protective_factor_level": "Low Protective Factor",
+            "volume": 119,
+            "events": 89,
+            "failure_rate_pct": 74.79
+          }
+        ]
+      },
+      "mark": {
+        "type": "rect",
+        "stroke": "#ffffff",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {
+          "field": "risk_driver_level",
+          "type": "nominal",
+          "title": "in_apple_playlists"
+        },
+        "y": {
+          "field": "protective_factor_level",
+          "type": "nominal",
+          "title": "released_year"
+        },
+        "color": {
+          "field": "failure_rate_pct",
+          "type": "quantitative",
+          "scale": {
+            "scheme": "spectral",
+            "reverse": true
+          },
+          "legend": {
+            "title": "Failure %"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "label",
+            "type": "nominal",
+            "title": "Quadrant"
+          },
+          {
+            "field": "volume",
+            "type": "quantitative",
+            "title": "Volume",
+            "format": ","
+          },
+          {
+            "field": "events",
+            "type": "quantitative",
+            "title": "Adverse Events",
+            "format": ","
+          },
+          {
+            "field": "failure_rate_pct",
+            "type": "quantitative",
+            "title": "Failure Rate %",
+            "format": ".2f"
+          }
+        ]
+      }
+    },
+    "operational_triage_yield": {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Operational Triage Filter: Scrap % vs Defect Recall %",
+      "width": 460,
+      "height": 240,
+      "data": {
+        "values": [
+          {
+            "policy": "Policy 1: Conservative",
+            "scrap_pct": 18.36,
+            "recall_pct": 48.12,
+            "retained_defect_rate": 15.94,
+            "false_discards": 60
+          },
+          {
+            "policy": "Policy 2: Surgical",
+            "scrap_pct": 60.55,
+            "recall_pct": 94.56,
+            "retained_defect_rate": 3.46,
+            "false_discards": 351
+          },
+          {
+            "policy": "Policy 3: Compound",
+            "scrap_pct": 55.4,
+            "recall_pct": 92.89,
+            "retained_defect_rate": 4.0,
+            "false_discards": 306
+          }
+        ]
+      },
+      "mark": {
+        "type": "line",
+        "point": {
+          "size": 100,
+          "filled": true
+        },
+        "strokeWidth": 2.5,
+        "color": "#1d3557"
+      },
+      "encoding": {
+        "x": {
+          "field": "scrap_pct",
+          "type": "quantitative",
+          "title": "Flagged / Discard Volume (%)"
+        },
+        "y": {
+          "field": "recall_pct",
+          "type": "quantitative",
+          "title": "Defect Recall (%)"
+        },
+        "tooltip": [
+          {
+            "field": "policy",
+            "type": "nominal",
+            "title": "Triage Policy"
+          },
+          {
+            "field": "scrap_pct",
+            "type": "quantitative",
+            "title": "Flagged / Scrapped %",
+            "format": ".1f"
+          },
+          {
+            "field": "recall_pct",
+            "type": "quantitative",
+            "title": "Defect Recall %",
+            "format": ".1f"
+          },
+          {
+            "field": "retained_defect_rate",
+            "type": "quantitative",
+            "title": "Retained Failure %",
+            "format": ".2f"
+          }
+        ]
+      }
+    }
+  }
+}

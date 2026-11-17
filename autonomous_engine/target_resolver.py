@@ -591,13 +591,14 @@ def resolve_canonical_target_and_cost(
     cost_keywords = [
         'loan_amount', 'loanamount', 'loan', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
-        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income'
+        'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value',
+        'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income'
     ]
     # Synthetic / non-financial terms to explicitly exclude
     excluded_cost_terms = [
         'penalty', 'friction', 'weighted', 'index', 'idx', 'euribor', 'score', 'ratio', 'scaled',
         'rate', 'pct', 'percent', 'rank', 'density', 'satisfaction', 'rating', 'level',
-        'hours', 'work_life', 'worklife', 'distance', 'age', 'duration', 'pdays', 'previous', 'campaign', 'day_of_week'
+        'hours', 'work_life', 'worklife', 'working', 'distance', 'age', 'duration', 'pdays', 'previous', 'campaign', 'day_of_week'
     ]
     time_units = ['year', 'years', 'month', 'months', 'day', 'days', 'date']
 
@@ -606,21 +607,22 @@ def resolve_canonical_target_and_cost(
     for c in cols:
         if (c == target_col and not is_target_valuation) or is_index_artifact(c) or is_synthetic_column(c, blueprint):
             continue
-        c_low = c.lower()
+        c_low = c.lower().strip()
         if any(x in c_low for x in excluded_cost_terms) and c_low not in ['adr', 'daily_rate', 'hourly_rate', 'fare']:
             continue
         # Exclude count metrics (preserving 'discount')
         if bool(re.search(r'(?<!dis)count', c_low)):
             continue
         has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$)', c_low)) or (c_low.startswith('arr_') and not any(k in c_low for k in ['time', 'delay', 'date', 'hour', 'min', 'minute', 'airport', 'city', 'loc', 'flight', 'station']))
+        is_exact_total = c_low in ('total', 'total_num', 'total_clean', 'total_val')
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
-        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare', 'house_value', 'property_value', 'asset_value', 'total', 'gross income', 'gross_income']
-        if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr):
+        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare', 'house_value', 'property_value', 'asset_value', 'total_bill', 'gross income', 'gross_income']
+        if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr or is_exact_total):
             continue
-        # Exclude pure date/time columns that end with time units unless they contain explicit money words
-        if any(c_low == t or c_low.endswith(('_' + t, ' ' + t)) for t in time_units) and not (any(m in c_low for m in money_words) or has_anchored_arr):
+        # Exclude pure date/time/tenure columns that end with time units unless they contain explicit money words
+        if any(c_low == t or c_low.endswith(t) for t in time_units) and not (any(m in c_low for m in money_words) or has_anchored_arr):
             continue
-        if (any(k in c_low for k in cost_keywords) or has_anchored_arr) and pd.api.types.is_numeric_dtype(df[c]):
+        if (any(k in c_low for k in cost_keywords) or has_anchored_arr or is_exact_total) and pd.api.types.is_numeric_dtype(df[c]):
             # If raw_source_cols provided, ensure it was an authentic raw column or a clean numeric parse of one
             if raw_source_cols:
                 raw_low = {r.lower() for r in raw_source_cols}
@@ -638,11 +640,21 @@ def resolve_canonical_target_and_cost(
     elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
-            'revenue', 'mrr', 'arr', 'sales', 'total', 'gross income', 'gross_income', 'billing_amount', 'billing',
+            'revenue', 'mrr', 'arr', 'sales', 'total_bill', 'total_amount', 'total_sales', 'exact_total',
+            'gross income', 'gross_income', 'billing_amount', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',
             'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'
         ]
-        candidate_cost_cols.sort(key=lambda col: next((i for i, pc in enumerate(priority_cost) if pc in col.lower()), 999))
+        def _cost_priority(col: str) -> int:
+            cl = col.lower().strip()
+            for i, pc in enumerate(priority_cost):
+                if pc == 'exact_total':
+                    if cl in ('total', 'total_num', 'total_clean', 'total_val'):
+                        return i
+                elif pc in cl:
+                    return i
+            return 999
+        candidate_cost_cols.sort(key=_cost_priority)
         cost_col = candidate_cost_cols[0]
 
     eff_region = region_profile or (blueprint.get("region_profile") if isinstance(blueprint, dict) else None)

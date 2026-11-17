@@ -539,20 +539,34 @@ def test_api_key_guard_middleware(monkeypatch, client):
 
 
 def test_production_deployment_pack_files(client):
-    """Verifies Dockerfile, docker-compose.yml, /api/v1/health alias, and single-worker safety."""
+    """Verifies Dockerfile, .dockerignore, docker-compose.yml, .env.example, requirements.txt, /api/v1/health, and worker safety."""
     dockerfile = Path("Dockerfile")
     assert dockerfile.exists()
     df_text = dockerfile.read_text(encoding="utf-8")
     assert "FROM python:3.12-slim" in df_text
     assert "dataxray" in df_text
+    assert "02_domain_intelligence/" in df_text
+    assert "kaggle_benchmarks/" in df_text
     assert "HEALTHCHECK" in df_text
     assert '"--workers", "1"' in df_text
+
+    dockerignore = Path(".dockerignore")
+    assert dockerignore.exists()
+    di_lines = [ln.strip() for ln in dockerignore.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    assert "kaggle_benchmarks" not in di_lines
 
     compose = Path("docker-compose.yml")
     assert compose.exists()
     dc_text = compose.read_text(encoding="utf-8")
     assert "dataxray-engine" in dc_text or "dataxray_enterprise_engine" in dc_text
     assert "./runs:/app/runs" in dc_text
+    assert "GEMINI_API_KEY" in dc_text
+
+    reqs = Path("requirements.txt").read_text(encoding="utf-8")
+    assert "google-genai" in reqs
+    assert "streamlit" in reqs
+
+    assert Path(".env.example").exists()
 
     res_v1_health = client.get("/api/v1/health")
     assert res_v1_health.status_code == 200

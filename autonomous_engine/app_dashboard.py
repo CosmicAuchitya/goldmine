@@ -399,9 +399,11 @@ st.markdown('<div class="sub-header">Zero-Code Business Forensics &bull; Natural
 
 # Initialize Session State
 if "active_output_dir" not in st.session_state:
-    default_telecom = WORKSPACE_ROOT / "kaggle_benchmarks" / "telecom_users" / "output"
-    if default_telecom.exists():
-        st.session_state["active_output_dir"] = str(default_telecom)
+    for _cand in ("telco_customer_churn", "hotel_booking_cancellation", "telecom_users"):
+        _cand_out = WORKSPACE_ROOT / "kaggle_benchmarks" / _cand / "output"
+        if _cand_out.exists():
+            st.session_state["active_output_dir"] = str(_cand_out)
+            break
     else:
         st.session_state["active_output_dir"] = "kaggle_complex_test/output"
 

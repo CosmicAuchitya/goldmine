@@ -1,0 +1,30 @@
+table bi_dim_time
+	lineageTag: dim-bi_dim_time-lineage
+
+	column fact_surrogate_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-bi_dim_time-fact_surrogate_id
+		formatString: #,0
+
+	column date_key
+		dataType: string
+		summarizeBy: none
+		sourceColumn: date_key
+		lineageTag: col-bi_dim_time-date_key
+
+	column released_year
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: released_year
+		lineageTag: col-bi_dim_time-released_year
+		formatString: #,0
+
+	partition bi_dim_time = m
+		mode: import
+		source = 
+			let
+				Source = Csv.Document(File.Contents("bi_dim_time.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.None])
+			in
+				Source

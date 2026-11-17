@@ -247,7 +247,7 @@ def execute_templated_pipeline(
             )
             df_fact = pd.merge(df_fact, df_orig, left_on="AirportFrom", right_on=match_col, how="left")
             if match_col in df_fact.columns:
-                df_fact.drop(columns=[match_col], inplace=True)
+                df_fact = df_fact.drop(columns=[match_col])
                 
             # Destination airport merge
             df_dest = df_dim_clean[[match_col] + informative_cols].rename(
@@ -255,7 +255,7 @@ def execute_templated_pipeline(
             )
             df_fact = pd.merge(df_fact, df_dest, left_on="AirportTo", right_on=match_col, how="left")
             if match_col in df_fact.columns:
-                df_fact.drop(columns=[match_col], inplace=True)
+                df_fact = df_fact.drop(columns=[match_col])
 
             print(f"    [+] Successfully role-merged '{tbl_stem}' on Origin & Destination (Fact count: {len(df_fact):,})")
             dim_csv_name = f"bi_dim_{tbl_stem}.csv"
@@ -382,8 +382,8 @@ def execute_templated_pipeline(
         if col.endswith('_id') or 'key' in col.lower() or col == primary_id_col:
             df_fact[col] = df_fact[col].astype(str)
 
-    # Sanitize all object-dtype columns to prevent PyArrow mixed-type conversion crashes
-    for col in df_fact.select_dtypes(include=['object']).columns:
+    # Sanitize all object/string-dtype columns to prevent PyArrow mixed-type conversion crashes
+    for col in df_fact.select_dtypes(include=['object', 'string']).columns:
         df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
 
     # Export Fact Parquet

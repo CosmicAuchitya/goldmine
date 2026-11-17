@@ -1,0 +1,14 @@
+relationship Rel_bi_ready_fact_bi_dim_accounts_Saving accounts
+	fromColumn: bi_ready_fact.Saving accounts
+	toColumn: bi_dim_accounts.Saving accounts
+	crossFilteringBehavior: bothDirections
+
+relationship Rel_bi_ready_fact_bi_dim_demographics_Age
+	fromColumn: bi_ready_fact.Age
+	toColumn: bi_dim_demographics.Age
+	crossFilteringBehavior: bothDirections
+
+relationship Rel_bi_ready_fact_bi_dim_purpose_Purpose
+	fromColumn: bi_ready_fact.Purpose
+	toColumn: bi_dim_purpose.Purpose
+	crossFilteringBehavior: bothDirections

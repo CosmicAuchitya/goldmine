@@ -1,0 +1,14 @@
+relationship Rel_bi_ready_fact_bi_dim_artist_fact_surrogate_id
+	fromColumn: bi_ready_fact.fact_surrogate_id
+	toColumn: bi_dim_artist.fact_surrogate_id
+	crossFilteringBehavior: bothDirections
+
+relationship Rel_bi_ready_fact_bi_dim_audio_features_fact_surrogate_id
+	fromColumn: bi_ready_fact.fact_surrogate_id
+	toColumn: bi_dim_audio_features.fact_surrogate_id
+	crossFilteringBehavior: bothDirections
+
+relationship Rel_bi_ready_fact_bi_dim_time_fact_surrogate_id
+	fromColumn: bi_ready_fact.fact_surrogate_id
+	toColumn: bi_dim_time.fact_surrogate_id
+	crossFilteringBehavior: bothDirections

@@ -276,7 +276,7 @@ def synthesize_deliverables(output_dir: str):
 
     # Save enriched view separately to preserve certified Stage 4 fact table immutability
     try:
-        for col in df_fact.select_dtypes(include=['object']).columns:
+        for col in df_fact.select_dtypes(include=['object', 'string']).columns:
             df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
         enriched_fact_path = out / "bi_enriched_fact.parquet"
         df_fact.to_parquet(enriched_fact_path, index=False)
@@ -315,11 +315,11 @@ def synthesize_deliverables(output_dir: str):
             p_cost = adverse_df.groupby(prim_dim, as_index=False)[cost_col].sum()
             p_agg = p_agg.merge(p_cost, on=prim_dim, how='left')
             p_agg[cost_col] = p_agg[cost_col].fillna(0.0)
-            p_agg.rename(columns={cost_col: "friction_loss"}, inplace=True)
-            p_agg.sort_values("friction_loss", ascending=False, inplace=True)
+            p_agg = p_agg.rename(columns={cost_col: "friction_loss"})
+            p_agg = p_agg.sort_values("friction_loss", ascending=False)
         else:
             p_agg["friction_loss"] = 0.0
-            p_agg.sort_values("target_events", ascending=False, inplace=True)
+            p_agg = p_agg.sort_values("target_events", ascending=False)
         prim_summary = p_agg.to_dict(orient="records")
 
     # Secondary Dimension Aggregations
@@ -337,11 +337,11 @@ def synthesize_deliverables(output_dir: str):
             s_cost = adverse_df.groupby(sec_dim, as_index=False)[cost_col].sum()
             s_agg = s_agg.merge(s_cost, on=sec_dim, how='left')
             s_agg[cost_col] = s_agg[cost_col].fillna(0.0)
-            s_agg.rename(columns={cost_col: "friction_loss"}, inplace=True)
-            s_agg.sort_values("friction_loss", ascending=False, inplace=True)
+            s_agg = s_agg.rename(columns={cost_col: "friction_loss"})
+            s_agg = s_agg.sort_values("friction_loss", ascending=False)
         else:
             s_agg["friction_loss"] = 0.0
-            s_agg.sort_values("target_events", ascending=False, inplace=True)
+            s_agg = s_agg.sort_values("target_events", ascending=False)
         sec_summary = s_agg.head(10).to_dict(orient="records")
 
     # Discover dimension files

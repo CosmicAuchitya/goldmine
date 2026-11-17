@@ -64,10 +64,10 @@ def test_domain_archetype_diversity_across_real_benchmarks():
     archetypes, distinct color palettes, and pass the DFII information score threshold >= 11.
     """
     benchmarks = {
-        "telecom_users": "nordic_saas_command",
-        "loan_default": "swiss_institutional_terminal",
-        "ecommerce_customer_service": "editorial_commerce_studio",
-        "wine_quality": "industrial_scada_telemetry"
+        "telco_customer_churn": "nordic_saas_command",
+        "credit_card_loan_default": "swiss_institutional_terminal",
+        "supermarket_retail_operations": "editorial_commerce_studio",
+        "predictive_maintenance_ai4i": "industrial_scada_telemetry"
     }
 
     archetypes_found = set()
@@ -389,10 +389,10 @@ def test_bilingual_en_hinglish_and_theme_toggle_wiring():
     Validates that the dashboard HTML contains both English and Roman-Hinglish
     narrative blocks, theme token classes, and client-side toggle handlers.
     """
-    bench_dir = Path("kaggle_benchmarks/telecom_users/output")
+    bench_dir = Path("kaggle_benchmarks/telco_customer_churn/output")
     html_path = bench_dir / "bespoke_executive_dashboard.html"
     if not html_path.exists():
-        pytest.skip("Benchmark telecom_users output missing, skipping toggle wiring test.")
+        pytest.skip("Benchmark telco_customer_churn output missing, skipping toggle wiring test.")
 
     html_text = html_path.read_text(encoding="utf-8")
 
@@ -415,9 +415,9 @@ def test_anti_hallucination_guard_check_11_catches_payload_tampering():
     Proves that Anti-Hallucination Guard Check 11 actively catches any manual
     or unauthorized tampering with DASHBOARD_PAYLOAD in the HTML file.
     """
-    bench_dir = Path("kaggle_benchmarks/telecom_users/output")
+    bench_dir = Path("kaggle_benchmarks/telco_customer_churn/output")
     if not (bench_dir / "bespoke_executive_dashboard.html").exists():
-        pytest.skip("Benchmark telecom_users output missing, skipping tampering test.")
+        pytest.skip("Benchmark telco_customer_churn output missing, skipping tampering test.")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -458,9 +458,9 @@ def test_anti_hallucination_guard_check_11_blocks_external_cdn_injection():
     Proves that Anti-Hallucination Guard Check 11 actively catches external
     CDN script and stylesheet injections.
     """
-    bench_dir = Path("kaggle_benchmarks/wine_quality/output")
+    bench_dir = Path("kaggle_benchmarks/predictive_maintenance_ai4i/output")
     if not (bench_dir / "bespoke_executive_dashboard.html").exists():
-        pytest.skip("Benchmark wine_quality output missing, skipping CDN audit test.")
+        pytest.skip("Benchmark predictive_maintenance_ai4i output missing, skipping CDN audit test.")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -493,11 +493,11 @@ def test_fastapi_dashboard_html_endpoint_and_traversal_guard(client):
     and blocks path-traversal attacks with 400 Bad Request or 404.
     """
     # 1. Valid existing benchmark
-    resp = client.get("/api/v1/dashboard/telecom_users")
-    if resp.status_code == 200:
-        assert resp.headers["content-type"].startswith("text/html")
-        assert "DASHBOARD_PAYLOAD" in resp.text
-        assert "Nordic SaaS Command Center" in resp.text
+    resp = client.get("/api/v1/dashboard/telco_customer_churn")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"].startswith("text/html")
+    assert "DASHBOARD_PAYLOAD" in resp.text
+    assert "Nordic SaaS Command Center" in resp.text
 
     # 2. Path-traversal attempts
     resp_bad = client.get("/api/v1/dashboard/invalid@id#")
@@ -714,9 +714,9 @@ def test_check_11_catches_css_import_cdn_and_zeroed_what_if_cost():
     1. External CSS @import url('https://fonts.googleapis.com/...')
     2. Broken What-If avg_cost_per_event == 0.0 on monetary datasets with significant risk.
     """
-    bench_dir = Path("kaggle_benchmarks/telecom_users/output")
+    bench_dir = Path("kaggle_benchmarks/telco_customer_churn/output")
     if not (bench_dir / "bespoke_executive_dashboard.html").exists():
-        pytest.skip("telecom_users output missing")
+        pytest.skip("telco_customer_churn output missing")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)

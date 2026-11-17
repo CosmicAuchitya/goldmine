@@ -1,0 +1,13 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["bi_ready_fact", "bi_dim_artist", "bi_dim_audio_features", "bi_dim_time"]
+annotation PBI_ProTooling = ["DevMode"]
+annotation PBIDesktopVersion = 2.138.0.0
+annotation DataXRayEngine = "Enterprise Autonomous Engine V4.5"
+annotation CertificationStatus = "Pending Human Review"

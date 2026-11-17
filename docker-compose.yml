@@ -12,6 +12,8 @@ services:
     environment:
       # Optional: set an enterprise API key to guard /api/v1 endpoints
       - DATAXRAY_API_KEY=${DATAXRAY_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_API_KEYS=${GEMINI_API_KEYS:-}
       - DEFAULT_REGION_PROFILE=${DEFAULT_REGION_PROFILE:-US}
       - PYTHONUNBUFFERED=1
     volumes:

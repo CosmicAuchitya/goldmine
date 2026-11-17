@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise DataX-Ray | Executive Forensic BI Dashboard</title>
+    <!-- Pinned Vega & Vega-Lite Libraries with Built-In Offline SVG Fallback Renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-red: #f43f5e;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-primary); padding: 24px; }
+        header { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 24px; font-weight: 700; color: #ffffff; }
+        .header-meta { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+        .badge-verified { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .kpi-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; }
+        .kpi-title { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 28px; font-weight: 800; color: #ffffff; }
+        .kpi-subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+        .text-red { color: var(--accent-red) !important; }
+        .text-green { color: var(--accent-green) !important; }
+        .text-blue { color: var(--accent-blue) !important; }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(520px, 1fr)); gap: 20px; }
+        .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; overflow: hidden; }
+        .chart-header { margin-bottom: 14px; }
+        .chart-title { font-size: 16px; font-weight: 600; color: #ffffff; }
+        .chart-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .chart-container { width: 100%; min-height: 280px; display: flex; justify-content: center; align-items: center; }
+        .offline-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .offline-table td, .offline-table th { padding: 6px 8px; border-bottom: 1px solid var(--border-color); text-align: left; }
+        .offline-bar-bg { width: 140px; height: 8px; background: #0f172a; border-radius: 4px; overflow: hidden; }
+        .offline-bar-fill { height: 100%; background: var(--accent-red); }
+        
+        footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-secondary); display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>ENTERPRISE DATAX-RAY // FORENSIC BI DASHBOARD</h1>
+            <div class="header-meta">Autonomous Forensic Intelligence Engine &bull; Physical Parquet Ground-Truth Verified</div>
+        </div>
+        <div>
+            <span class="badge-verified">&check; 100% Zero-Drift Verified (0 Rows Drift)</span>
+        </div>
+    </header>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Audited Fact Records</div>
+            <div class="kpi-value text-blue">953</div>
+            <div class="kpi-subtitle">Zero Cartesian duplication</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Adverse Events (streams)</div>
+            <div class="kpi-value text-red">239</div>
+            <div class="kpi-subtitle">Adverse rate: 25.08%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">System Reliability</div>
+            <div class="kpi-value text-green">74.92%</div>
+            <div class="kpi-subtitle">Unbreached operating profile</div>
+        </div>
+        
+        <div class="kpi-card">
+            <div class="kpi-title">Adverse Event Footprint</div>
+            <div class="kpi-value text-red">239</div>
+            <div class="kpi-subtitle">Physical Defect Units Audited</div>
+        </div>
+    
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Primary Node Vulnerability (key)</div>
+                <div class="chart-desc">Adverse failure rate spread &amp; capital drag across primary business segments.</div>
+            </div>
+            <div id="vis-dim" class="chart-container"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Non-Linear Threshold Cliff Inflection</div>
+                <div class="chart-desc">Quantile discretization exposing exact physical threshold where failure accelerates.</div>
+            </div>
+            <div id="vis-cliff" class="chart-container"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">2x2 Orthogonal Feature Interaction Matrix</div>
+                <div class="chart-desc">Bivariate quadrant testing cross-variable risk override and buffering resilience.</div>
+            </div>
+            <div id="vis-matrix" class="chart-container"></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Operational Triage Screening Yield Curve</div>
+                <div class="chart-desc">Simulated operational discard/scrap % versus adverse defect recall (containment).</div>
+            </div>
+            <div id="vis-triage" class="chart-container"></div>
+        </div>
+        
+    </div>
+
+    <footer>
+        <div>Generated by DataX-Ray Autonomous Stage 6 Engine &bull; Microsoft Power BI TMDL Ready</div>
+        <div>Ground Truth: DuckDB Parquet Audit (sha256 verified)</div>
+    </footer>
+
+    <script>
+        const specs = {"primary_dimension_risk": {"$schema": "https://vega.github.io/schema/vega-lite/v5.json", "title": "Risk Exposure \u0026 Capital Drag across key", "width": 600, "height": 280, "data": {"values": [{"segment": "A", "volume": 75, "target_events": 23, "adverse_rate_pct": 30.67, "capital_drag": 0.0}, {"segment": "B", "volume": 81, "target_events": 24, "adverse_rate_pct": 29.63, "capital_drag": 0.0}, {"segment": "F", "volume": 89, "target_events": 25, "adverse_rate_pct": 28.09, "capital_drag": 0.0}, {"segment": "F#", "volume": 73, "target_events": 20, "adverse_rate_pct": 27.4, "capital_drag": 0.0}, {"segment": "C#", "volume": 120, "target_events": 32, "adverse_rate_pct": 26.67, "capital_drag": 0.0}, {"segment": "A#", "volume": 57, "target_events": 15, "adverse_rate_pct": 26.32, "capital_drag": 0.0}, {"segment": "G", "volume": 96, "target_events": 24, "adverse_rate_pct": 25.0, "capital_drag": 0.0}, {"segment": "E", "volume": 62, "target_events": 15, "adverse_rate_pct": 24.19, "capital_drag": 0.0}, {"segment": "G#", "volume": 91, "target_events": 22, "adverse_rate_pct": 24.18, "capital_drag": 0.0}, {"segment": "D#", "volume": 33, "target_events": 7, "adverse_rate_pct": 21.21, "capital_drag": 0.0}, {"segment": "D", "volume": 81, "target_events": 15, "adverse_rate_pct": 18.52, "capital_drag": 0.0}, {"segment": "nan", "volume": 95, "target_events": 17, "adverse_rate_pct": 17.89, "capital_drag": 0.0}]}, "mark": {"type": "bar", "cornerRadiusEnd": 4}, "encoding": {"y": {"field": "segment", "type": "nominal", "sort": "-x", "title": "key"}, "x": {"field": "adverse_rate_pct", "type": "quantitative", "title": "Adverse Failure Rate (%)"}, "color": {"field": "adverse_rate_pct", "type": "quantitative", "scale": {"scheme": "redyellowblue", "reverse": true}, "legend": {"title": "Risk %"}}, "tooltip": [{"field": "segment", "type": "nominal", "title": "Segment"}, {"field": "volume", "type": "quantitative", "title": "Volume", "format": ","}, {"field": "target_events", "type": "quantitative", "title": "Adverse Events", "format": ","}, {"field": "adverse_rate_pct", "type": "quantitative", "title": "Failure Rate (%)", "format": ".2f"}, {"field": "capital_drag", "type": "quantitative", "title": "Capital Drag ($)", "format": "$,.2f"}]}}, "threshold_cliff": {"$schema": "https://vega.github.io/schema/vega-lite/v5.json", "title": "Non-Linear Threshold Cliff Inflection: released_year", "width": 600, "height": 260, "data": {"values": [{"quantile_tier": "Q1: (1929.999, 2020.0]", "tier_index": 1, "volume": 257, "adverse_events": 11, "failure_rate_pct": 4.28}, {"quantile_tier": "Q2: (2020.0, 2022.0]", "tier_index": 2, "volume": 521, "adverse_events": 113, "failure_rate_pct": 21.69}, {"quantile_tier": "Q3: (2022.0, 2023.0]", "tier_index": 3, "volume": 175, "adverse_events": 115, "failure_rate_pct": 65.71}]}, "layer": [{"mark": {"type": "area", "opacity": 0.25, "color": "#e63946"}, "encoding": {"x": {"field": "quantile_tier", "type": "nominal", "sort": "tier_index", "title": "Quantile Tier (released_year)"}, "y": {"field": "failure_rate_pct", "type": "quantitative", "title": "Failure Rate (%)"}}}, {"mark": {"type": "line", "point": {"size": 80, "filled": true}, "color": "#e63946", "strokeWidth": 3}, "encoding": {"x": {"field": "quantile_tier", "type": "nominal", "sort": "tier_index"}, "y": {"field": "failure_rate_pct", "type": "quantitative"}, "tooltip": [{"field": "quantile_tier", "type": "nominal", "title": "Stratum"}, {"field": "volume", "type": "quantitative", "title": "Monitored Volume", "format": ","}, {"field": "adverse_events", "type": "quantitative", "title": "Adverse Events", "format": ","}, {"field": "failure_rate_pct", "type": "quantitative", "title": "Failure Rate %", "format": ".2f"}]}}]}, "orthogonal_interaction_matrix": {"$schema": "https://vega.github.io/schema/vega-lite/v5.json", "title": "2x2 Orthogonal Interaction: in_apple_playlists vs released_year", "width": 380, "height": 260, "data": {"values": [{"quadrant": "Q1", "label": "Optimal Zone", "risk_driver_level": "Low Risk Driver", "protective_factor_level": "High Protective Factor", "volume": 416, "events": 13, "failure_rate_pct": 3.12}, {"quadrant": "Q2", "label": "Unbuffered Baseline", "risk_driver_level": "Low Risk Driver", "protective_factor_level": "Low Protective Factor", "volume": 362, "events": 111, "failure_rate_pct": 30.66}, {"quadrant": "Q3", "label": "Masked Risk", "risk_driver_level": "High Risk Driver", "protective_factor_level": "High Protective Factor", "volume": 56, "events": 26, "failure_rate_pct": 46.43}, {"quadrant": "Q4", "label": "Compound Catastrophe", "risk_driver_level": "High Risk Driver", "protective_factor_level": "Low Protective Factor", "volume": 119, "events": 89, "failure_rate_pct": 74.79}]}, "mark": {"type": "rect", "stroke": "#ffffff", "strokeWidth": 2}, "encoding": {"x": {"field": "risk_driver_level", "type": "nominal", "title": "in_apple_playlists"}, "y": {"field": "protective_factor_level", "type": "nominal", "title": "released_year"}, "color": {"field": "failure_rate_pct", "type": "quantitative", "scale": {"scheme": "spectral", "reverse": true}, "legend": {"title": "Failure %"}}, "tooltip": [{"field": "label", "type": "nominal", "title": "Quadrant"}, {"field": "volume", "type": "quantitative", "title": "Volume", "format": ","}, {"field": "events", "type": "quantitative", "title": "Adverse Events", "format": ","}, {"field": "failure_rate_pct", "type": "quantitative", "title": "Failure Rate %", "format": ".2f"}]}}, "operational_triage_yield": {"$schema": "https://vega.github.io/schema/vega-lite/v5.json", "title": "Operational Triage Filter: Scrap % vs Defect Recall %", "width": 460, "height": 240, "data": {"values": [{"policy": "Policy 1: Conservative", "scrap_pct": 18.36, "recall_pct": 48.12, "retained_defect_rate": 15.94, "false_discards": 60}, {"policy": "Policy 2: Surgical", "scrap_pct": 60.55, "recall_pct": 94.56, "retained_defect_rate": 3.46, "false_discards": 351}, {"policy": "Policy 3: Compound", "scrap_pct": 55.4, "recall_pct": 92.89, "retained_defect_rate": 4.0, "false_discards": 306}]}, "mark": {"type": "line", "point": {"size": 100, "filled": true}, "strokeWidth": 2.5, "color": "#1d3557"}, "encoding": {"x": {"field": "scrap_pct", "type": "quantitative", "title": "Flagged / Discard Volume (%)"}, "y": {"field": "recall_pct", "type": "quantitative", "title": "Defect Recall (%)"}, "tooltip": [{"field": "policy", "type": "nominal", "title": "Triage Policy"}, {"field": "scrap_pct", "type": "quantitative", "title": "Flagged / Scrapped %", "format": ".1f"}, {"field": "recall_pct", "type": "quantitative", "title": "Defect Recall %", "format": ".1f"}, {"field": "retained_defect_rate", "type": "quantitative", "title": "Retained Failure %", "format": ".2f"}]}}};
+
+        function escHtml(s) {
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function renderOfflineFallback(selector, spec, labelKey, metricKey) {
+            const container = document.querySelector(selector);
+            if (!container || !spec || !spec.data || !Array.isArray(spec.data.values)) return;
+            const rows = spec.data.values;
+            if (!rows.length) {
+                container.textContent = 'No stratified observations available.';
+                return;
+            }
+            const maxVal = Math.max(...rows.map(r => Number(r[metricKey] || 0)), 1);
+            let htmlRows = '<table class="offline-table"><thead><tr><th>Segment / Stratum</th><th>Metric (%)</th><th>Distribution</th></tr></thead><tbody>';
+            for (const r of rows) {
+                const lbl = escHtml(r[labelKey] ?? r.label ?? r.policy ?? '');
+                const val = Number(r[metricKey] || 0);
+                const pctWidth = Math.min(100, Math.max(2, (val / maxVal) * 100));
+                htmlRows += '<tr><td>' + lbl + '</td><td>' + val.toFixed(2) + '%</td><td><div class="offline-bar-bg"><div class="offline-bar-fill" style="width:' + pctWidth + '%"></div></div></td></tr>';
+            }
+            htmlRows += '</tbody></table>';
+            container.innerHTML = htmlRows;
+        }
+
+        const embedOptions = {
+            actions: false,
+            theme: 'dark',
+            renderer: 'svg'
+        };
+
+        if (typeof vegaEmbed === 'function') {
+            if (specs.primary_dimension_risk) vegaEmbed('#vis-dim', specs.primary_dimension_risk, embedOptions);
+            if (specs.threshold_cliff) vegaEmbed('#vis-cliff', specs.threshold_cliff, embedOptions);
+            if (specs.orthogonal_interaction_matrix) vegaEmbed('#vis-matrix', specs.orthogonal_interaction_matrix, embedOptions);
+            if (specs.operational_triage_yield) vegaEmbed('#vis-triage', specs.operational_triage_yield, embedOptions);
+            if (specs.temporal_risk_trend) vegaEmbed('#vis-temporal', specs.temporal_risk_trend, embedOptions);
+        } else {
+            renderOfflineFallback('#vis-dim', specs.primary_dimension_risk, 'segment', 'adverse_rate_pct');
+            renderOfflineFallback('#vis-cliff', specs.threshold_cliff, 'quantile_tier', 'failure_rate_pct');
+            renderOfflineFallback('#vis-matrix', specs.orthogonal_interaction_matrix, 'label', 'failure_rate_pct');
+            renderOfflineFallback('#vis-triage', specs.operational_triage_yield, 'policy', 'recall_pct');
+            if (specs.temporal_risk_trend) renderOfflineFallback('#vis-temporal', specs.temporal_risk_trend, 'period', 'adverse_rate_pct');
+        }
+    </script>
+</body>
+</html>

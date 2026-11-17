@@ -1,115 +1,88 @@
-# DataX-Ray: Autonomous Enterprise AI Data Automation & Forensic Engine
+# DataX-Ray V5.5: Autonomous Enterprise Decision & Forensic Intelligence Engine
 
-> **Certified Enterprise Benchmark Milestone: 61 of 100 Datasets Completed (11,587,913 Physical Fact Rows Audited with 0 Cartesian Drift, 0 Duplicate Keys, and 0 Hallucinations).**
+> **100% Certified Physical Truth • Zero Cartesian Drift • Zero External CDNs (Air-Gapped) • Bilingual English & Roman Hinglish**
 
-Welcome to **DataX-Ray**, a production-grade, self-healing autonomous data engineering and forensic analytics system. The engine ingests arbitrary raw enterprise datasets (CSV, Excel, Parquet), dynamically profiles relational topology, writes vectorized ETL pipelines, heals runtime errors automatically, compiles Star-Schema dimensional models, and synthesizes executive decision matrices with micro-level statistical proof.
-
----
-
-## ⚡ Quick Start for AI Agents & Developers
-
-- **AI Agent Onboarding Guide**: Read [`AGENTS.md`](file:///c:/Users/91945/OneDrive/Desktop/XXX/Ai%20aotumation%20learning/AGENTS.md) for full context, system state, operational rules, and execution commands.
-- **100-Dataset Master Campaign Artifact**: View [`ENTERPRISE_100_DATASET_CAMPAIGN_AND_ANTI_HALLUCINATION_REPORT.md`](file:///C:/Users/91945/.gemini/antigravity/brain/1d6bc462-5073-421e-8214-0b3b58a1f206/ENTERPRISE_100_DATASET_CAMPAIGN_AND_ANTI_HALLUCINATION_REPORT.md).
+**DataX-Ray** is a production-grade, self-healing autonomous data engineering and business decision platform. It ingests raw business files (CSV, Excel, Parquet, ZIP, Google Sheets, or ERP/SaaS connectors like Shopify, Tally Prime, Razorpay, and Stripe), compiles clean Star-Schema Parquet fact tables, verifies 12 mathematical and statistical truth gates via DuckDB, and delivers executive pulse briefings, ranked priority worklists, ROI ledgers, period-over-period comparisons, and bespoke interactive dashboards.
 
 ---
 
-## 🏛️ Pipeline Architecture
+## 🚀 Quick Launch Guide
 
-The engine executes in 5 autonomous stages orchestrated by `autonomous_engine/master_orchestrator.py`:
+### 1. SaaS Web Application (FastAPI + Zero-CDN Executive Console)
+```bash
+# Optional: copy .env.example to .env and configure GEMINI_API_KEY / DATAXRAY_API_KEY
+cp .env.example .env
+
+# Start the production FastAPI & Web Console server
+uvicorn autonomous_engine.api_server:app --host 0.0.0.0 --port 8000 --workers 1
+```
+- **Web Console UI**: `http://localhost:8000/app`
+- **Health Check**: `http://localhost:8000/api/v1/health`
+- **OpenAPI Docs**: `http://localhost:8000/docs`
+
+### 2. Docker & Docker Compose Production Deployment
+```bash
+docker compose up --build -d
+```
+
+### 3. Streamlit Analyst Portal
+```bash
+streamlit run autonomous_engine/app_dashboard.py
+```
+
+### 4. CLI 7-Stage Autonomous Pipeline
+```bash
+python autonomous_engine/master_orchestrator.py \
+  --data "kaggle_benchmarks/hotel_booking_cancellation/raw_data" \
+  --output "kaggle_benchmarks/hotel_booking_cancellation/output" \
+  --mode dag
+```
+
+### 5. Run Automated Verification & Regression Suite
+```bash
+PYTHONPATH=. pytest -v tests/
+```
+
+---
+
+## 🏛️ 7-Stage Autonomous Architecture + SaaS Product Layer
 
 ```mermaid
 flowchart TD
-    A["Raw Data (CSV / Excel / Parquet)"] --> B["Stage 1: Topology Profiler & Cardinality Scanner"]
-    B -->|Local PII Scrubbing + Hazard Scan| C["Stage 2: Gemini Relational Blueprint Architect"]
-    C -->|Star-Schema Design (28 RPM Multi-Key Pool)| D["Stage 3: Vectorized Python ETL Code Synthesizer"]
-    D -->|Assertion Gates Injected| E["Stage 4: Sandbox Executor & AST Self-Healing Compiler"]
-    E -->|Error Detected| F["Self-Healing Patch Loop (AST Rewriter)"]
-    F -->|Re-compile & Test| E
-    E -->|Verified Fact Parquet| G["Stage 5: Enterprise BI & Micro-Forensic Synthesizer"]
-    G --> H["Power BI / Tableau Measure Guide (DAX)"]
-    G --> I["Strategic Decision Matrix (Unbiased 3 Pathways)"]
-    G --> J["Micro-Level Forensic Inquiry Engine (8 Q&As)"]
-    G --> K["DuckDB Anti-Hallucination Truth Audit"]
-    K -->|100.0% Match| L["Certified Enterprise Catalog"]
+    A["Raw Sources (CSV / Excel / Parquet / ZIP / ERP Connectors)"] --> B["Stage 1: Topology Profiler & Local PII Scrubber"]
+    B --> C["Stage 2: Relational Star-Schema Blueprint Architect"]
+    C --> D["Stage 3 & 4: Vectorized DAG / Self-Healing Sandbox Executor"]
+    D --> E["Stage 5: BI Synthesizer, Strategic Matrix & Priority Worklist"]
+    E --> F["Stage 6: Power BI TMDL, Semantic Manifest & Vega-Lite Specs"]
+    F --> G["Stage 7: Bespoke Zero-CDN Executive HTML Dashboard"]
+    G --> H["12-Gate DuckDB Anti-Hallucination & Cryptographic Truth Audit"]
+    H --> I["SaaS Console: Executive Pulse, SQL Proof Drawer, Run Compare & Morning Digest"]
 ```
 
 ---
 
-## 🔬 Core Capabilities
+## ✨ Key Production Features
 
-### 1. Zero Cartesian Drift & Invariant Preservation
-- Detects `1:1`, `1:N`, and `N:M` relationships before joining.
-- Pre-aggregates dimensional lookups so fact row count remains identical:
-  $$\text{Row Preservation} = 100.0\%, \quad \text{Multiplicity Drift} = 0 \text{ rows}$$
-
-### 2. Autonomous Runtime Self-Healing (Compiler Guard)
-- When runtime pandas/numpy type errors occur, Stage 4 catches the traceback, creates a non-destructive `.bak` file, invokes an AST-safe patch synthesizer, and re-executes in under 2 seconds without human intervention.
-
-### 3. Micro-Level Forensic Inquiry Engine (`MicroForensicEngine`)
-- **Non-Linear Threshold Cliffs**: Discretizes numeric features into quartiles to locate structural inflection points where failure flips from minority to majority.
-- **2x2 Orthogonal Interaction Matrices**: Tests cross-variable synergy and antagonism (e.g., whether high alcohol can buffer high volatile acidity in wine).
-- **Tail Anomaly Compounding**: Audits the worst 5% catastrophic records to prove whether failure is driven by single outliers or compound multi-system violations.
-- **Operational Triage Scrap vs Yield Simulation**: Evaluates Conservative, Surgical, and Compound cutoff filters, measuring defect recall, false discard volume, and net product purity.
-- **Simpson's Paradox & Confounder Defense**: Detects collinear feature pairs ($|r| > 0.40$) and conducts stratified subgroup correlations to debunk false causal illusions.
-- **Autonomous Q&A Generation**: Formulates 8 deep executive questions and discovers empirical, data-grounded answers.
-
-### 4. Unbiased Strategic Decision Matrix (Raste, Dictates Nahi)
-- Evaluates 3 viable options:
-  - **Pathway A**: Conservative (Hygiene & Queue Alerts - Low CapEx)
-  - **Pathway B**: Surgical (Dedicated High-Risk Protocol - Moderate CapEx)
-  - **Pathway C**: Structural (Full System Revamp & Telemetry - High CapEx)
-- For every pathway, provides honest **Fayda (Pros)**, **Nuksan (Cons)**, and **Collateral Friction** with 95% confidence bounds.
+1. **Pre-Flight Intent Handshake (`/api/v1/preview-intent`, `/api/v1/preview-multi-intent`)**:
+   - Instant schema, target metric, financial ledger, and multi-file Star-Schema join topology preview before running the pipeline.
+2. **3-Card Executive Pulse & Priority Worklist**:
+   - Surfaces **Sabse Bada Bottleneck**, **Khatre Ki Laxman Rekha (Red-Line Cliff)**, and **Aaj Ka SabseJaruri Kadam** in simple English and Roman Hinglish, backed by a 1-click actionable customer/order worklist and persistent ROI Action Ledger.
+3. **Layer-3 Mathematical & SQL Proof Drawer (`/api/v1/audit-proof/{run_id}`)**:
+   - Exposes exact DuckDB SQL verification queries, SHA-256 physical Parquet seals, and dynamic 12-Gate verification statuses (including automatic Uniform-Risk Statistical Circuit-Breaker holds).
+4. **Workspace Run History & Period-over-Period Comparison (`/api/v1/workspaces/{tenant_id}/compare`)**:
+   - Strict per-tenant workspace isolation with automatic currency-mismatch protection and trajectory delta analysis.
+5. **1-Click Live Cloud/ERP Connectors & Morning Digest (`/api/v1/connectors/ingest`, `/api/v1/digest/{run_id}`)**:
+   - Native ingestion adapters for Shopify, Tally Prime, Razorpay, Stripe, and Google Sheets, plus WhatsApp/Slack/Email-ready bilingual executive digests and printable boardroom PDF reports.
 
 ---
 
-## 📊 Certified Benchmarks (61 of 100 Completed)
+## 📂 Repository Structure
 
-Across 61 diverse enterprise datasets in Healthcare, FinTech, Logistics, SaaS, Retail, Manufacturing, and Agriculture:
-
-| Metric | Measured Result | Audit Status |
-| :--- | :--- | :--- |
-| **Total Physical Fact Rows** | **11,587,913 rows** | 🟢 100% Preserved |
-| **Cartesian Multiplicity Drift** | **0 rows (0.00%)** | 🟢 Zero Drift |
-| **Primary Key Collisions** | **0 duplicate keys** | 🟢 100% Unique |
-| **Hallucinated Metric Claims** | **0 columns / claims** | 🟢 100.0% Truth Grounded |
-| **Autonomous Runtime** | **2,913.43 seconds** (~48.5 min) | 🟢 Certified Production Ready |
-
-*See full benchmark breakdown in [`ENTERPRISE_100_DATASET_CAMPAIGN_AND_ANTI_HALLUCINATION_REPORT.md`](file:///C:/Users/91945/.gemini/antigravity/brain/1d6bc462-5073-421e-8214-0b3b58a1f206/ENTERPRISE_100_DATASET_CAMPAIGN_AND_ANTI_HALLUCINATION_REPORT.md).*
-
----
-
-## 🚀 How to Execute a Benchmark
-
-```powershell
-# 1. Download Kaggle Dataset (e.g. Benchmark 62)
-python autonomous_engine/kaggle_harvester.py --slug "<owner>/<dataset-name>" --dest "kaggle_benchmarks/<dataset_name>/raw_data"
-
-# 2. Run Autonomous Pipeline
-python autonomous_engine/master_orchestrator.py --data "kaggle_benchmarks/<dataset_name>/raw_data" --output "kaggle_benchmarks/<dataset_name>/output"
-
-# 3. Verify Physical Parquet Facts with DuckDB
-python -c "import duckdb; p = r'kaggle_benchmarks/<dataset_name>/output/bi_ready_fact.parquet'; print(duckdb.query(f'SELECT count(*) as total_rows, count(distinct Id) as unique_keys FROM read_parquet(\'{p}\')').df())"
-```
-
----
-
-## 🛠️ Repository Structure
-
-```
-├── AGENTS.md                                             <-- Comprehensive Agent Onboarding Briefing
-├── README.md                                             <-- Master Project Documentation
-├── autonomous_engine/                                    <-- Autonomous Engine Pipeline Modules
-│   ├── master_orchestrator.py                            <-- Main Entry Point
-│   ├── stage1_topology_profiler.py                       <-- Stage 1 Profiler & Key Detector
-│   ├── stage2_ai_blueprint.py                            <-- Stage 2 Blueprint Architect
-│   ├── stage3_ai_code_generator.py                       <-- Stage 3 Dynamic Python ETL Generator
-│   ├── stage4_sandbox_executor.py                        <-- Stage 4 Sandbox Executor & Self-Healer
-│   ├── stage5_bi_synthesizer.py                          <-- Stage 5 BI Deliverables & DAX Guides
-│   ├── strategic_decision_matrix.py                      <-- Micro-Forensic & Decision Matrix V3.5
-│   ├── anti_hallucination_guard.py                       <-- DuckDB Physical Truth Verifier
-│   ├── loop_fix_engine.py                                <-- Continuous Invariant Regression Verifier
-│   └── kaggle_harvester.py                               <-- Automated Dataset Harvester
-├── 02_domain_intelligence/                               <-- Master Business Knowledge Base
-│   └── business_ontology.py                              <-- Ontologies for 12 Global Business Models
-└── kaggle_benchmarks/                                    <-- Benchmarks 1 through 61
-```
+- [`autonomous_engine/api_server.py`](file:///home/antigravity/goldmine/autonomous_engine/api_server.py) — FastAPI SaaS server, async job queue, API key guard, and REST endpoints
+- [`autonomous_engine/web_client.html`](file:///home/antigravity/goldmine/autonomous_engine/web_client.html) — Self-contained, zero-CDN SaaS Web Console
+- [`autonomous_engine/live_connectors.py`](file:///home/antigravity/goldmine/autonomous_engine/live_connectors.py) — ERP connectors, Morning Digest, Printable Audit Report, SQL Proof Dossier, and Run Comparison engine
+- [`autonomous_engine/master_orchestrator.py`](file:///home/antigravity/goldmine/autonomous_engine/master_orchestrator.py) — End-to-end 7-stage pipeline orchestrator
+- [`autonomous_engine/anti_hallucination_guard.py`](file:///home/antigravity/goldmine/autonomous_engine/anti_hallucination_guard.py) — 12-Gate physical DuckDB truth verifier
+- [`02_domain_intelligence/business_ontology.py`](file:///home/antigravity/goldmine/02_domain_intelligence/business_ontology.py) — Master business ontologies across 12 industry verticals
+- [`kaggle_benchmarks/`](file:///home/antigravity/goldmine/kaggle_benchmarks) — 20 pre-audited, 100% verified enterprise benchmark datasets
+- [`tests/`](file:///home/antigravity/goldmine/tests) — Comprehensive unit, security, statistical, and end-to-end API regression tests

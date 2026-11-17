@@ -1,0 +1,252 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 953"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[streams] <= 1.414e+08)
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 239"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	column track_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: track_name
+		lineageTag: col-fact-track_name
+
+	column artist(s)_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: artist(s)_name
+		lineageTag: col-fact-artist(s)_name
+
+	column artist_count
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: artist_count
+		lineageTag: col-fact-artist_count
+		formatString: #,0
+
+	column released_year
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: released_year
+		lineageTag: col-fact-released_year
+		formatString: #,0
+
+	column released_month
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: released_month
+		lineageTag: col-fact-released_month
+		formatString: #,0
+
+	column released_day
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: released_day
+		lineageTag: col-fact-released_day
+		formatString: #,0
+
+	column in_spotify_playlists
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_spotify_playlists
+		lineageTag: col-fact-in_spotify_playlists
+		formatString: #,0
+
+	column in_spotify_charts
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_spotify_charts
+		lineageTag: col-fact-in_spotify_charts
+		formatString: #,0
+
+	column streams
+		dataType: double
+		summarizeBy: average
+		sourceColumn: streams
+		lineageTag: col-fact-streams
+		formatString: 0.00
+
+	column in_apple_playlists
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_apple_playlists
+		lineageTag: col-fact-in_apple_playlists
+		formatString: #,0
+
+	column in_apple_charts
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_apple_charts
+		lineageTag: col-fact-in_apple_charts
+		formatString: #,0
+
+	column in_deezer_playlists
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_deezer_playlists
+		lineageTag: col-fact-in_deezer_playlists
+		formatString: #,0
+
+	column in_deezer_charts
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: in_deezer_charts
+		lineageTag: col-fact-in_deezer_charts
+		formatString: #,0
+
+	column in_shazam_charts
+		dataType: string
+		summarizeBy: none
+		sourceColumn: in_shazam_charts
+		lineageTag: col-fact-in_shazam_charts
+
+	column bpm
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: bpm
+		lineageTag: col-fact-bpm
+		formatString: #,0
+
+	column key
+		dataType: string
+		summarizeBy: none
+		sourceColumn: key
+		lineageTag: col-fact-key
+
+	column mode
+		dataType: string
+		summarizeBy: none
+		sourceColumn: mode
+		lineageTag: col-fact-mode
+
+	column danceability_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: danceability_%
+		lineageTag: col-fact-danceability_%
+		formatString: #,0
+
+	column valence_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: valence_%
+		lineageTag: col-fact-valence_%
+		formatString: #,0
+
+	column energy_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: energy_%
+		lineageTag: col-fact-energy_%
+		formatString: #,0
+
+	column acousticness_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: acousticness_%
+		lineageTag: col-fact-acousticness_%
+		formatString: #,0
+
+	column instrumentalness_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: instrumentalness_%
+		lineageTag: col-fact-instrumentalness_%
+		formatString: #,0
+
+	column liveness_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: liveness_%
+		lineageTag: col-fact-liveness_%
+		formatString: #,0
+
+	column speechiness_%
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: speechiness_%
+		lineageTag: col-fact-speechiness_%
+		formatString: #,0
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	column date_key
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: date_key
+		lineageTag: col-fact-date_key
+		formatString: yyyy-MM-dd
+
+	column artist(s)_name_art
+		dataType: string
+		summarizeBy: none
+		sourceColumn: artist(s)_name_art
+		lineageTag: col-fact-artist(s)_name_art
+
+	column artist_count_art
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: artist_count_art
+		lineageTag: col-fact-artist_count_art
+		formatString: #,0
+
+	column date_key_time
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: date_key_time
+		lineageTag: col-fact-date_key_time
+		formatString: yyyy-MM-dd
+
+	column released_year_time
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: released_year_time
+		lineageTag: col-fact-released_year_time
+		formatString: #,0
+
+	column streams_per_playlist_reach
+		dataType: double
+		summarizeBy: average
+		sourceColumn: streams_per_playlist_reach
+		lineageTag: col-fact-streams_per_playlist_reach
+		formatString: 0.00
+
+	column velocity_index
+		dataType: double
+		summarizeBy: average
+		sourceColumn: velocity_index
+		lineageTag: col-fact-velocity_index
+		formatString: 0.00
+
+	column market_friction_penalty
+		dataType: double
+		summarizeBy: average
+		sourceColumn: market_friction_penalty
+		lineageTag: col-fact-market_friction_penalty
+		formatString: 0.00
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

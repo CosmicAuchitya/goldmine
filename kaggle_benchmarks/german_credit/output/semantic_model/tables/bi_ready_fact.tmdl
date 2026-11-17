@@ -1,0 +1,133 @@
+table bi_ready_fact
+	lineageTag: fact-bi-ready-fact-lineage
+
+	measure 'Total Volume' = COUNTROWS('bi_ready_fact')
+		formatString: #,0
+		lineageTag: m-total-volume
+		annotation CertifiedMetric = "Physical Record Count: 1,000"
+
+	measure 'Target Events' = CALCULATE(COUNTROWS('bi_ready_fact'), 'bi_ready_fact'[Risk] = "bad")
+		formatString: #,0
+		lineageTag: m-target-events
+		annotation CertifiedMetric = "Target Adverse Count: 300"
+
+	measure 'Adverse Event Rate %' = DIVIDE([Target Events], [Total Volume], 0)
+		formatString: 0.00%
+		lineageTag: m-adverse-rate
+
+	measure 'System Reliability %' = 1 - [Adverse Event Rate %]
+		formatString: 0.00%
+		lineageTag: m-reliability-rate
+
+	measure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[Credit amount]), 'bi_ready_fact'[Risk] = "bad")
+		formatString: $#,0.00
+		lineageTag: m-adverse-capital-drag
+		annotation CertifiedMetric = "Audited Drag: $1,181,438.00"
+
+	measure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[Credit amount])
+		formatString: $#,0.00
+		lineageTag: m-total-portfolio-volume
+		annotation CertifiedMetric = "Total Ledger Volume: $3,271,258.00"
+
+	measure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)
+		formatString: $#,0.00
+		lineageTag: m-avg-adverse-friction
+
+	column Age
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Age
+		lineageTag: col-fact-Age
+		formatString: #,0
+
+	column Sex
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Sex
+		lineageTag: col-fact-Sex
+
+	column Job
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Job
+		lineageTag: col-fact-Job
+		formatString: #,0
+
+	column Housing
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Housing
+		lineageTag: col-fact-Housing
+
+	column Saving accounts
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Saving accounts
+		lineageTag: col-fact-Saving accounts
+
+	column Checking account
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Checking account
+		lineageTag: col-fact-Checking account
+
+	column Credit amount
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Credit amount
+		lineageTag: col-fact-Credit amount
+		formatString: #,0
+
+	column Duration
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: Duration
+		lineageTag: col-fact-Duration
+		formatString: #,0
+
+	column Purpose
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Purpose
+		lineageTag: col-fact-Purpose
+
+	column Risk
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Risk
+		lineageTag: col-fact-Risk
+
+	column fact_surrogate_id
+		dataType: string
+		summarizeBy: none
+		sourceColumn: fact_surrogate_id
+		lineageTag: col-fact-fact_surrogate_id
+
+	column credit_utilization_intensity
+		dataType: double
+		summarizeBy: average
+		sourceColumn: credit_utilization_intensity
+		lineageTag: col-fact-credit_utilization_intensity
+		formatString: 0.00
+
+	column risk_weighted_exposure
+		dataType: double
+		summarizeBy: average
+		sourceColumn: risk_weighted_exposure
+		lineageTag: col-fact-risk_weighted_exposure
+		formatString: 0.00
+
+	column capital_friction_liability
+		dataType: double
+		summarizeBy: average
+		sourceColumn: capital_friction_liability
+		lineageTag: col-fact-capital_friction_liability
+		formatString: 0.00
+
+	partition bi_ready_fact = m
+		mode: import
+		source = 
+			let
+				Source = Parquet.Document(File.Contents("bi_ready_fact.parquet"))
+			in
+				Source

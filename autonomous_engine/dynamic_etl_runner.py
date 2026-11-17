@@ -25,9 +25,10 @@ def run_pipeline():
     logger.info("Initializing Enterprise Telecom ETL Pipeline...")
 
     # 1. Operational Directories
-    RAW_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/telecom_users/raw_data')
-    CACHE_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/telecom_users/cache')
-    OUTPUT_DIR = Path('C:/Users/91945/OneDrive/Desktop/XXX/Ai aotumation learning/kaggle_benchmarks/telecom_users/output')
+    _base_dir = Path(__file__).resolve().parent.parent / "kaggle_benchmarks" / "telco_customer_churn"
+    RAW_DIR = _base_dir / "raw_data"
+    CACHE_DIR = _base_dir / "cache"
+    OUTPUT_DIR = _base_dir / "output"
 
     for d in [RAW_DIR, CACHE_DIR, OUTPUT_DIR]:
         d.mkdir(parents=True, exist_ok=True)
