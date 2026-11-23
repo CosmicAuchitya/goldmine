@@ -10,8 +10,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Optional: set an enterprise API key to guard /api/v1 endpoints
+      # Multi-tenant security & JWT signing (set strong random secrets in production .env!)
       - DATAXRAY_API_KEY=${DATAXRAY_API_KEY:-}
+      - DATAXRAY_JWT_SECRET=${DATAXRAY_JWT_SECRET:-}
+      - DATAXRAY_REQUIRE_AUTH=${DATAXRAY_REQUIRE_AUTH:-false}
+      - DATAXRAY_ALLOW_AI_CODEGEN=${DATAXRAY_ALLOW_AI_CODEGEN:-false}
+      - DATAXRAY_CORS_ORIGINS=${DATAXRAY_CORS_ORIGINS:-http://localhost:8000}
+      - DATAXRAY_RATE_LIMIT_RPM=${DATAXRAY_RATE_LIMIT_RPM:-120}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GEMINI_API_KEYS=${GEMINI_API_KEYS:-}
       - DEFAULT_REGION_PROFILE=${DEFAULT_REGION_PROFILE:-US}

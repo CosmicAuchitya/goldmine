@@ -82,8 +82,27 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
     if not tables:
         return {}
     
-    # 1. Identify Fact Table (largest table by estimated rows)
-    sorted_tables = sorted(tables.items(), key=lambda x: x[1].get("estimated_rows", 0), reverse=True)
+    # 1. Identify Fact Table (transactional richness + volume, preventing auxiliary scan logs from usurping order/invoice ledgers)
+    def _fact_candidate_score(item):
+        tname, meta = item
+        rows = int(meta.get("estimated_rows", 0) or 0)
+        tcols = [str(c).lower() for c in (meta.get("columns") or [])]
+        tn_low = str(tname).lower()
+        if tn_low in ("test", "holdout", "submission", "sample_submission"):
+            return (-1e9, 0)
+        # Base row scale (prevents tiny lookup tables from beating real fact tables)
+        import math
+        score = math.log10(max(rows, 1)) * 10.0
+        # Monetary & transactional ledger richness
+        fin_hits = sum(1 for c in tcols if any(k in c for k in ("revenue", "billed", "gross", "margin", "amount", "price", "sales", "invoice", "profit", "total_val", "fare", "freight")))
+        score += min(fin_hits, 5) * 2.5
+        if any(k in tn_low for k in ("order", "transaction", "sales", "invoice", "fact", "booking", "loan", "claim")):
+            score += 4.0
+        if any(k in tn_low for k in ("log", "logs", "ad_spend", "adspend", "lookup", "mapping", "dim_")):
+            score -= 3.5
+        return (score, rows)
+
+    sorted_tables = sorted(tables.items(), key=_fact_candidate_score, reverse=True)
     fact_name, fact_meta = sorted_tables[0]
     
     # 2. Identify Primary Key in Fact
@@ -112,13 +131,15 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
     # Priority 0: Exact canonical response / outcome columns (e.g. 'dep_delay', 'mpg', 'y', 'cut', 'customer stratification rating', 'ocean_proximity', 'payment')
     if has_spatial:
         canonical_response = [
-            'dep_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
+            'dep_delay', 'delay', 'mpg', 'is_canceled', 'is_returned', 'is_rto_cancelled', 'is_rto_or_cancelled',
+            'is_overdue_or_bad', 'is_payment_failed_or_refunded', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
             'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
             'median_house_value', 'payment', 'target', 'response'
         ]
     else:
         canonical_response = [
-            'dep_delay', 'delay', 'mpg', 'y', 'target', 'response', 'is_canceled', 'churn', 'death_event', 'deposit',
+            'dep_delay', 'delay', 'mpg', 'y', 'target', 'response', 'is_canceled', 'is_returned', 'is_rto_cancelled',
+            'is_rto_or_cancelled', 'is_overdue_or_bad', 'is_payment_failed_or_refunded', 'churn', 'death_event', 'deposit',
             'subscribed', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default',
             'fraud', 'customer stratification rating', 'median_house_value', 'payment'
         ]
@@ -132,7 +153,7 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
 
     # Priority 1: High priority adverse / event outcomes
     if not target:
-        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'is_returned', 'rto', 'returned', 'refund', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status', 'claim_status', 'overdue', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
         for kw in adverse_kws:
             for c in clean_cols:
                 if kw in c.lower():

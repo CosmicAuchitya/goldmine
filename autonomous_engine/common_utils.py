@@ -26,6 +26,7 @@ FORBIDDEN_ETL_IMPORTS: Set[str] = {
 
 FORBIDDEN_BUILTIN_CALLS: Set[str] = {
     "eval", "exec", "compile", "__import__", "breakpoint", "input",
+    "getattr", "setattr", "delattr", "globals", "locals", "vars",
 }
 
 FORBIDDEN_OS_METHODS: Set[str] = {
@@ -37,7 +38,7 @@ FORBIDDEN_OS_METHODS: Set[str] = {
 }
 
 FORBIDDEN_DESTRUCTIVE_METHODS: Set[str] = {
-    "rmtree", "unlink", "rmdir",
+    "rmtree", "unlink", "rmdir", "move", "copyfile", "copy2", "copytree",
 }
 
 FORBIDDEN_DUNDER_ATTRS: Set[str] = {

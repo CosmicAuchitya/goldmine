@@ -1,0 +1,56 @@
+services:
+  dataxray-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dataxray-engine:v1.0.0
+    container_name: dataxray-api
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      - DATAXRAY_REQUIRE_AUTH=true
+      - DATAXRAY_ENFORCE_BILLING_QUOTAS=true
+      - DATAXRAY_ALLOW_AI_CODEGEN=false
+      - DATAXRAY_TRUST_PROXY_HEADERS=true
+      - DATAXRAY_RATE_LIMIT_RPM=120
+    volumes:
+      - dataxray_runs:/app/runs
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - dataxray_net
+
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: dataxray-caddy
+    restart: unless-stopped
+    depends_on:
+      dataxray-api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DATAXRAY_DOMAIN=${DATAXRAY_DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - dataxray_net
+
+volumes:
+  dataxray_runs:
+  caddy_data:
+  caddy_config:
+
+networks:
+  dataxray_net:
+    driver: bridge

@@ -1,0 +1,117 @@
+# =============================================================================
+# DATAX-RAY PHASE C — HORIZONTAL CLOUD SCALE DOCKER COMPOSE STACK
+# (Stateless FastAPI Replicas + Redis/RQ Multi-Workers + PostgreSQL 16 + S3/R2)
+# Scale workers anytime:
+#   docker compose -f docker-compose.cloud.yml --env-file .env.production up -d --scale dataxray-worker=4
+# =============================================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dataxray-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-dataxray}
+      - POSTGRES_USER=${POSTGRES_USER:-dataxray}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.production}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dataxray} -d ${POSTGRES_DB:-dataxray}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dataxray_cloud_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: dataxray-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dataxray_cloud_net
+
+  dataxray-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dataxray-engine:v1.1.0-cloud
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      - DATAXRAY_REQUIRE_AUTH=true
+      - DATAXRAY_ENFORCE_BILLING_QUOTAS=true
+      - DATAXRAY_ALLOW_AI_CODEGEN=false
+      - DATAXRAY_TRUST_PROXY_HEADERS=true
+      - DATABASE_URL=${DATABASE_URL:-postgresql://dataxray:${POSTGRES_PASSWORD}@postgres:5432/dataxray}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - dataxray_cloud_net
+
+  dataxray-worker:
+    image: dataxray-engine:v1.1.0-cloud
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    environment:
+      - DATAXRAY_ALLOW_AI_CODEGEN=false
+      - DATABASE_URL=${DATABASE_URL:-postgresql://dataxray:${POSTGRES_PASSWORD}@postgres:5432/dataxray}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+    command: ["python", "-m", "autonomous_engine.worker_entry", "--queues", "high", "default", "bulk"]
+    networks:
+      - dataxray_cloud_net
+
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: dataxray-cloud-caddy
+    restart: unless-stopped
+    depends_on:
+      dataxray-api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DATAXRAY_DOMAIN=${DATAXRAY_DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - dataxray_cloud_net
+
+volumes:
+  pg_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  dataxray_cloud_net:
+    driver: bridge

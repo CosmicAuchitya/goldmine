@@ -82,7 +82,7 @@ def detect_primary_key_column(df: pd.DataFrame, blueprint: Optional[Dict[str, An
         if is_index_artifact(c, df[c]):
             continue
         c_low = c.lower()
-        if c_low.startswith(('id_', 'id', 'pk_')) or c_low.endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code', '_number', ' number')):
+        if c_low.startswith(('id_', 'id', 'pk_')) or c_low.endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code', '_number', ' number', '_no', ' no', '_no.', ' no.', '_num', ' num')):
             id_candidates.append(c)
         elif c_low in ('id', 'key', 'uuid', 'pk', 'code', 'surrogate_key', 'fact_surrogate_id', 'customerid'):
             id_candidates.append(c)
@@ -155,7 +155,11 @@ def generate_actionable_priority_worklist(
             continue
         if is_deterministic_target_leakage(c, df_work[c], df_work["_is_target_event"], target_col):
             continue
-        if 2 <= df_work[c].nunique() <= 40:
+        _is_num_c = pd.api.types.is_numeric_dtype(df_work[c])
+        if _is_num_c and any(tk in c.lower() for tk in ("limit", "amount", "price", "cost", "_inr", "_usd", "_eur", "_gbp", "lease", "rent", "capacity", "tons", "salary", "revenue", "billing", "fee", "budget", "spend")):
+            continue
+        _max_card = 25 if _is_num_c else 80
+        if 2 <= df_work[c].nunique() <= _max_card:
             cat_candidates.append(c)
 
     operational_cats = [c for c in cat_candidates if not is_demographic_attribute(c)]
@@ -218,7 +222,11 @@ def generate_actionable_priority_worklist(
     cliff_op = ">="
     best_diff = -1.0
 
-    for nc in num_candidates[:6]:
+    bookkeeping_cols = {'order_year', 'order_month', 'cogs_inr', 'gross_order_value_inr', 'return_reverse_shipping_inr'}
+    op_num_candidates = [c for c in num_candidates if c.lower() not in bookkeeping_cols]
+    scan_num_cols = op_num_candidates if op_num_candidates else num_candidates
+
+    for nc in scan_num_cols[:20]:
         s_col = pd.to_numeric(df_work[nc], errors='coerce').dropna()
         if len(s_col) < 20:
             continue
@@ -256,22 +264,43 @@ def generate_actionable_priority_worklist(
     if primary_dim:
         cohort_series = df_work[primary_dim].map(cohort_risk_map).fillna(baseline_rate)
         seg_str = df_work[primary_dim].astype(str)
-        cohort_reasons = "Cohort " + primary_dim + "='" + seg_str + "' (" + cohort_series.round(1).astype(str) + "% risk)"
+        p_lbl = str(primary_dim).replace("_", " ").title()
+        cohort_reasons = p_lbl + ": " + seg_str + " (" + cohort_series.round(0).astype(int).astype(str) + "% risk)"
     else:
         cohort_series = pd.Series(baseline_rate, index=df_work.index)
-        cohort_reasons = pd.Series(f"Baseline Portfolio Risk ({baseline_rate:.1f}%)", index=df_work.index)
+        cohort_reasons = pd.Series(f"Overall Business Risk ({baseline_rate:.0f}%)", index=df_work.index)
+
+    # Multi-Factor Enrichment: add secondary & tertiary high-risk categorical drivers per row
+    for extra_dim in usable_cats[1:4]:
+        if extra_dim in df_work.columns and extra_dim != primary_dim:
+            ex_rates = (df_work.groupby(extra_dim)["_is_target_event"].mean() * 100.0).round(1).to_dict()
+            ex_series = df_work[extra_dim].map(ex_rates).fillna(baseline_rate)
+            ex_high_mask = ex_series >= max(12.0, baseline_rate * 1.25)
+            if ex_high_mask.any():
+                ex_lbl = str(extra_dim).replace("_", " ").title()
+                ex_label = ex_lbl + ": " + df_work[extra_dim].astype(str) + " (" + ex_series.round(0).astype(int).astype(str) + "% risk)"
+                cohort_reasons = pd.Series(
+                    np.where(ex_high_mask, cohort_reasons + " • " + ex_label, cohort_reasons),
+                    index=df_work.index,
+                )
+                cohort_series = pd.Series(
+                    np.where(ex_high_mask, np.minimum(100.0, cohort_series + 6.0), cohort_series),
+                    index=df_work.index,
+                )
 
     if cliff_col and cliff_thresh is not None:
         s_num = pd.to_numeric(df_work[cliff_col], errors='coerce')
+        c_lbl = str(cliff_col).replace("_", " ").title()
+        th_str = str(int(cliff_thresh)) if float(cliff_thresh).is_integer() else f"{cliff_thresh:.1f}"
         if cliff_op == ">=":
             cliff_mask = (s_num >= cliff_thresh).fillna(False)
-            cliff_reason = f"{cliff_col} >= {cliff_thresh:.2f} Cliff Breach"
+            cliff_reason = f"{c_lbl} crossed safe limit ({th_str}+)"
         else:
             cliff_mask = (s_num <= cliff_thresh).fillna(False)
-            cliff_reason = f"{cliff_col} <= {cliff_thresh:.2f} Cliff Breach"
+            cliff_reason = f"{c_lbl} below safe limit ({th_str})"
 
         final_risk = np.where(cliff_mask, np.minimum(100.0, cohort_series + 15.0), cohort_series)
-        final_reasons = np.where(cliff_mask, cohort_reasons + "; " + cliff_reason, cohort_reasons)
+        final_reasons = np.where(cliff_mask, cohort_reasons + " • " + cliff_reason, cohort_reasons)
     else:
         final_risk = cohort_series.values
         final_reasons = cohort_reasons.values
@@ -287,25 +316,62 @@ def generate_actionable_priority_worklist(
         df_work["monetary_exposure"] = np.nan
         df_work["exposure_column_source"] = "NONE_PHYSICAL_UNITS"
 
-    # Context columns (pick up to 3 informative non-PII, non-synthetic columns)
+    # Context columns (pick up to 3 informative non-PII, non-synthetic columns + human-readable business order ID if pk_col is surrogate)
     context_cols = []
-    if primary_dim and primary_dim in df_work.columns:
+    if pk_col == "fact_surrogate_id":
+        for c in df_work.columns:
+            c_low = c.lower()
+            if c != pk_col and not is_sensitive_column_name(c) and (
+                c_low.endswith(('_id', ' id', '_no', ' no', '_no.', ' no.', '_number', ' number', '_code', ' code'))
+                or c_low in ('order_id', 'order no.', 'order no', 'invoice_no', 'invoice no.', 'bill_no', 'awb_no')
+            ):
+                context_cols.append(c)
+                break
+    if primary_dim and primary_dim in df_work.columns and primary_dim not in context_cols:
         context_cols.append(primary_dim)
-    for nc in num_candidates[:2]:
-        if nc not in context_cols and nc != cost_col and not is_sensitive_column_name(nc):
+    for ed in usable_cats[1:3]:
+        if ed not in context_cols and ed in df_work.columns and not is_sensitive_column_name(ed):
+            context_cols.append(ed)
+            if len(context_cols) >= 4:
+                break
+    for nc in scan_num_cols[:2]:
+        if len(context_cols) < 4 and nc not in context_cols and nc != cost_col and not is_sensitive_column_name(nc):
             context_cols.append(nc)
 
     # 1. Queue A: PREVENTIVE_RETENTION_WATCH (_is_target_event == 0)
+    # Prioritize in-flight/open records ('In Transit', 'Pending', 'Shipped', 'Dispatched', 'Processing') over already-'Delivered'/'Completed' records!
     df_prev = df_work[df_work["_is_target_event"] == 0].copy()
-    if cost_col:
-        df_prev = df_prev.sort_values(by=["empirical_cohort_risk_pct", "monetary_exposure"], ascending=[False, False])
+    if target_col and target_col in df_prev.columns and not pd.api.types.is_numeric_dtype(df_prev[target_col]):
+        s_t_low = df_prev[target_col].astype(str).str.lower().str.strip()
+        in_flight_mask = s_t_low.str.contains(
+            r'\b(?:in\s*transit|transit|pending|processing|shipped|dispatched|out\s*for\s*delivery|open|unpaid|booked|active)\b',
+            regex=True,
+            na=False,
+        )
+        df_prev["_is_in_flight"] = in_flight_mask.astype(int)
     else:
-        df_prev = df_prev.sort_values(by=["empirical_cohort_risk_pct"], ascending=[False])
+        df_prev["_is_in_flight"] = 0
+
+    recency_col = None
+    for rc_cand in ("order_year", "year", "order_date", "Order Date", "transaction_date"):
+        if rc_cand in df_prev.columns:
+            recency_col = rc_cand
+            break
+    if recency_col and cost_col:
+        df_prev = df_prev.sort_values(
+            by=["_is_in_flight", "empirical_cohort_risk_pct", recency_col, "monetary_exposure"],
+            ascending=[False, False, False, False],
+        )
+    elif cost_col:
+        df_prev = df_prev.sort_values(by=["_is_in_flight", "empirical_cohort_risk_pct", "monetary_exposure"], ascending=[False, False, False])
+    else:
+        df_prev = df_prev.sort_values(by=["_is_in_flight", "empirical_cohort_risk_pct"], ascending=[False, False])
+    df_prev = df_prev.drop(columns=["_is_in_flight"], errors="ignore")
 
     df_prev = df_prev.head(max_rows_per_queue)
     df_prev["priority_rank"] = range(1, len(df_prev) + 1)
     df_prev["action_queue"] = "PREVENTIVE_RETENTION_WATCH"
-    df_prev["recommended_next_step"] = "Preventive Outreach / Retention Offer / Quality Check Before Failure"
+    df_prev["recommended_next_step"] = "Call or WhatsApp customer now to confirm order & prevent return/cancellation"
 
     # 2. Queue B: REALIZED_LOSS_RECOVERY_AUDIT (_is_target_event == 1)
     df_rec = df_work[df_work["_is_target_event"] == 1].copy()
@@ -317,7 +383,7 @@ def generate_actionable_priority_worklist(
     df_rec = df_rec.head(max_rows_per_queue)
     df_rec["priority_rank"] = range(1, len(df_rec) + 1)
     df_rec["action_queue"] = "REALIZED_LOSS_RECOVERY_AUDIT"
-    df_rec["recommended_next_step"] = "Loss Recovery / Root-Cause Defect Audit / Collections Follow-up"
+    df_rec["recommended_next_step"] = "Already failed/returned — call customer or check courier to recover money"
 
     # Combine Queues
     combined_df = pd.concat([df_prev, df_rec], ignore_index=True)
@@ -329,7 +395,27 @@ def generate_actionable_priority_worklist(
     ] + [c for c in context_cols if c not in [pk_col, "_is_target_event"]]
 
     worklist_csv_path = out_dir / "actionable_priority_worklist.csv"
-    combined_df[ordered_cols].to_csv(worklist_csv_path, index=False)
+    # OWASP CWE-1236 Defense: Neutralize CSV Formula Injection (=, +, -, @, \t, \r) on exported string cells
+    # while preserving authentic negative numeric values (e.g. -250.0) in numeric columns.
+    export_df = combined_df[ordered_cols].copy()
+    _formula_prefixes = ("=", "+", "-", "@", "\t", "\r")
+    for _col in export_df.columns:
+        if not pd.api.types.is_numeric_dtype(export_df[_col]):
+            def _guard_csv_cell(v: Any) -> Any:
+                if pd.isna(v):
+                    return v
+                s = str(v)
+                s_l = s.lstrip(" ")
+                if s_l and s_l[0] in _formula_prefixes:
+                    # Allow authentic signed numbers (e.g., '-250.00', '+15.5')
+                    try:
+                        float(s_l.replace(",", ""))
+                        return s
+                    except ValueError:
+                        return "'" + s
+                return s
+            export_df[_col] = export_df[_col].apply(_guard_csv_cell)
+    export_df.to_csv(worklist_csv_path, index=False)
     print(f"[+] Actionable Priority Worklist written to: {worklist_csv_path} ({len(combined_df)} rows)")
     return worklist_csv_path
 
@@ -491,7 +577,8 @@ def generate_plain_business_summary(
     temporal_summary: Optional[Dict[str, Any]] = None,
     worklist_path: Optional[Path | str] = None,
     strat_dossier: Optional[Dict[str, Any]] = None,
-    cliffs: Optional[List[Dict[str, Any]]] = None
+    cliffs: Optional[List[Dict[str, Any]]] = None,
+    omni_report: Optional[Dict[str, Any]] = None,
 ) -> Path:
     """
     Generates `PLAIN_BUSINESS_SUMMARY.md` in both Simple Business English
@@ -529,11 +616,30 @@ def generate_plain_business_summary(
 
     # Financial Exposure vs Defect Event Volume
     has_cost = (cost_col is not None)
+    unit_sym = canonical.get("unit_symbol") or "$"
+    multi_curr_warn_en = ""
+    multi_curr_warn_hi = ""
     if has_cost:
         adverse_cost = float(pd.to_numeric(df_fact.loc[s_bin == 1, cost_col], errors='coerce').fillna(0.0).sum())
         total_portfolio = float(pd.to_numeric(df_fact[cost_col], errors='coerce').fillna(0.0).sum())
-        cost_drag_en = f"**${adverse_cost:,.2f}** in direct financial liability / capital at risk (out of ${total_portfolio:,.2f} total monitored portfolio volume)"
-        cost_drag_hi = f"kul **${adverse_cost:,.2f}** ka seedha financial nuksan / risk (${total_portfolio:,.2f} ke kul portfolio volume mein se)"
+        cost_drag_en = f"**{unit_sym}{adverse_cost:,.2f}** in direct financial liability / capital at risk (out of {unit_sym}{total_portfolio:,.2f} total monitored portfolio volume)"
+        cost_drag_hi = f"kul **{unit_sym}{adverse_cost:,.2f}** ka seedha financial nuksan / risk ({unit_sym}{total_portfolio:,.2f} ke kul portfolio volume mein se)"
+        if canonical.get("is_multi_currency"):
+            cb = canonical.get("currency_breakdown") or {}
+            curr_col = canonical.get("currency_col") or "currency"
+            split_parts = [
+                f"**{code_c}**: {info_c.get('symbol', '')}{float(info_c.get('total_volume', 0.0)):,.2f} ({int(info_c.get('count', 0)):,} rows)"
+                for code_c, info_c in cb.items()
+            ]
+            split_txt = " | ".join(split_parts)
+            multi_curr_warn_en = (
+                f"\n- **⚠️ Multi-Currency FX Notice (`{curr_col}`)**: Your ledger mixes {len(cb)} currencies ({split_txt}). "
+                f"Unconverted raw totals above sum nominal numbers 1:1 — always filter by `{curr_col}` or apply FX rates before consolidated CFO reporting."
+            )
+            multi_curr_warn_hi = (
+                f"\n- **⚠️ Multi-Currency FX Chetavni (`{curr_col}`)**: Is file mein {len(cb)} alag currency mix hain ({split_txt}). "
+                f"Upar diya gaya total bina FX rate ke nominal sum hai — pakke CFO hisaab ke liye `{curr_col}` ke hisaab se alag-alag dekhein ya exchange rate lagayein."
+            )
     else:
         cost_drag_en = f"**{target_count:,} critical quality/failure events** ({target_rate_pct}% defect rate)"
         cost_drag_hi = f"kul **{target_count:,} critical failure/defect events** ({target_rate_pct}% defect rate)"
@@ -721,9 +827,11 @@ def generate_plain_business_summary(
         proj_b = p_b.get("projected_friction_reduction", "60% Excess-Risk Compression")
         proj_c = p_c.get("projected_friction_reduction", "100% Baseline Parity")
 
-        cost_a = p_a.get("implementation_cost", "Low / Internal")
-        cost_b = p_b.get("implementation_cost", "Moderate")
-        cost_c = p_c.get("implementation_cost", "Structural CapEx")
+        # Never display fabricated hardcoded SMB rupee/dollar CapEx figures on enterprise portfolios;
+        # state transparent internal effort scope so Finance/CFO validates actual budget internally.
+        cost_a = "Low / Internal Ops Workflow (Budget TBD by Finance)"
+        cost_b = "Moderate / Targeted Process & SLA Upgrade (Budget TBD by Finance)"
+        cost_c = "Structural Program / CapEx (CFO Budget Sign-Off Required)"
 
         time_a = p_a.get("time_to_impact", "1 - 2 Weeks")
         time_b = p_b.get("time_to_impact", "30 - 45 Days")
@@ -785,12 +893,33 @@ def generate_plain_business_summary(
         )
 
     # =========================================================================
+    # BLOCK 6: 360-Degree Omni-Dimensional A-to-Z Hidden Leakage & Profit Audit
+    # =========================================================================
+    omni_sec_en = ""
+    omni_sec_hi = ""
+    if not is_cb_active:
+        try:
+            try:
+                from .omni_leak_scanner import OmniDimensionalLeakScanner, render_plain_omni_sections
+            except ImportError:
+                from omni_leak_scanner import OmniDimensionalLeakScanner, render_plain_omni_sections
+            if omni_report is None:
+                omni_report = OmniDimensionalLeakScanner(df_fact, blueprint=blueprint).run_full_scan(out_dir)
+            sec_en, sec_hi = render_plain_omni_sections(omni_report)
+            if sec_en:
+                omni_sec_en = "\n\n" + sec_en
+            if sec_hi:
+                omni_sec_hi = "\n\n" + sec_hi
+        except Exception:
+            pass
+
+    # =========================================================================
     # Full Document Assembly
     # =========================================================================
     brief_en = f"""## 🇬🇧 Executive Business Summary (Plain English — Zero Jargon)
 
 ### 1. Business Health Snapshot
-Across **{total_records:,} physical records** audited in your dataset, our system identified **{target_count:,} critical failure events ({target_rate_pct}%)**, generating {cost_drag_en}.{temp_note_en}
+Across **{total_records:,} physical records** audited in your dataset, our system identified **{target_count:,} critical failure events ({target_rate_pct}%)**, generating {cost_drag_en}.{temp_note_en}{multi_curr_warn_en}
 
 ### 2. Where Is the Bottleneck?
 {bottleneck_en}
@@ -803,13 +932,13 @@ Across **{total_records:,} physical records** audited in your dataset, our syste
 
 ### 5. Immediate Team Action Worklist (`actionable_priority_worklist.csv`)
 - **Preventive Retention Watch ({n_prev_watch:,} active accounts)**: High-risk active accounts that have NOT yet failed. Have your customer success or QA team contact these accounts immediately.
-- **Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Already-breached records prioritized by financial impact for root-cause analysis and recovery.
+- **Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Already-breached records prioritized by financial impact for root-cause analysis and recovery.{omni_sec_en}
 """
 
     brief_hi = f"""## 🇮🇳 Business X-Ray Summary (Simple Hinglish — Seedhi Bhasha Mein)
 
 ### 1. Aaj Business Ki Asli Halat (Health Snapshot)
-Aapke audit kiye gaye **{total_records:,} records** mein se, system ne **{target_count:,} failure / churn cases ({target_rate_pct}%)** pakde hain, jisse {cost_drag_hi} ho raha hai.{temp_note_hi}
+Aapke audit kiye gaye **{total_records:,} records** mein se, system ne **{target_count:,} failure / churn cases ({target_rate_pct}%)** pakde hain, jisse {cost_drag_hi} ho raha hai.{temp_note_hi}{multi_curr_warn_hi}
 
 ### 2. Sabse Bada Nuksan Kahan Ho Raha Hai?
 {bottleneck_hi}
@@ -822,7 +951,7 @@ Aapke audit kiye gaye **{total_records:,} records** mein se, system ne **{target
 
 ### 5. Aaj Subah Team Ko Kya Kaam Dein? (`actionable_priority_worklist.csv`)
 - **Bachav Soochi - Preventive Retention Watch ({n_prev_watch:,} active accounts)**: Yeh wo active accounts hain jo abhi tak kharab nahi hue hain, par risk zone mein hain. Team se turant preventive contact karwayein.
-- **Vasooli Aur Jaanch - Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Yeh wo accounts hain jinka nuksan pehle hi ho chuka hai. Inhein recovery aur root-cause audit ke liye use karein.
+- **Vasooli Aur Jaanch - Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Yeh wo accounts hain jinka nuksan pehle hi ho chuka hai. Inhein recovery aur root-cause audit ke liye use karein.{omni_sec_hi}
 """
 
     full_brief_md = brief_en.strip() + "\n\n---\n\n" + brief_hi.strip() + "\n"

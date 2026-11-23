@@ -10,3 +10,21 @@ runs
 venv
 .venv
 tests
+enterprise_showcase_data
+# Trim 2.83 GB of raw Kaggle datasets & non-demo benchmarks from production image (keep only 5 live demo outputs ~14 MB)
+kaggle_benchmarks/*
+!kaggle_benchmarks/hotel_booking_cancellation/
+kaggle_benchmarks/hotel_booking_cancellation/*
+!kaggle_benchmarks/hotel_booking_cancellation/output/
+!kaggle_benchmarks/supermarket_retail_operations/
+kaggle_benchmarks/supermarket_retail_operations/*
+!kaggle_benchmarks/supermarket_retail_operations/output/
+!kaggle_benchmarks/airline_flight_delays_operations/
+kaggle_benchmarks/airline_flight_delays_operations/*
+!kaggle_benchmarks/airline_flight_delays_operations/output/
+!kaggle_benchmarks/credit_card_loan_default/
+kaggle_benchmarks/credit_card_loan_default/*
+!kaggle_benchmarks/credit_card_loan_default/output/
+!kaggle_benchmarks/california_housing_real_estate/
+kaggle_benchmarks/california_housing_real_estate/*
+!kaggle_benchmarks/california_housing_real_estate/output/

@@ -55,8 +55,80 @@ KEY_SEMANTIC_KEYWORDS = [
     'customer', 'cust', 'client', 'user', 'account', 'order', 'prod',
     'sku', 'item', 'flight', 'airline', 'carrier', 'airport', 'hub',
     'store', 'loc', 'city', 'state', 'country', 'region', 'date', 'time',
-    'trans', 'txn'
+    'trans', 'txn', 'channel', 'source', 'utm', 'awb', 'waybill',
+    'invoice', 'bill', 'voucher', 'category', 'vendor', 'supplier',
+    'warehouse', 'courier', 'branch'
 ]
+
+
+def unpack_multisheet_excel_workbooks(folder: Path) -> set:
+    """
+    If an .xlsx / .xls workbook contains 2 or more valid data sheets (e.g., Orders,
+    Shiprocket_RTO, Meta_Ads in a single file), unpacks each sheet into its own CSV
+    `<workbook_stem>__<sheet_name>.csv` (applying per-sheet optimal header detection
+    and summary row stripping) and returns the set of unpacked container .xlsx Paths.
+    """
+    unpacked_containers = set()
+    skip_sheet_words = (
+        'readme', 'cover', 'instruction', 'dictionary', 'metadata', 'notes',
+        'summary_only', 'exec_summary', 'executive_summary', 'pivot', 'dashboard', 'overview', 'kpi', 'totals', 'rollup', 'chart'
+    )
+    for f in list(folder.iterdir()):
+        if f.suffix.lower() not in ('.xlsx', '.xls') or f.name.startswith('~'):
+            continue
+        try:
+            xl = pd.ExcelFile(f)
+            if len(xl.sheet_names) < 2:
+                continue
+            valid_sheets = []
+            for sname in xl.sheet_names:
+                if any(w in sname.lower() for w in skip_sheet_words):
+                    continue
+                h_idx = detect_optimal_header_row(f, sheet_name=sname)
+                df_tab = pd.read_excel(f, sheet_name=sname, header=h_idx)
+                df_tab.columns = [str(c).strip() for c in df_tab.columns]
+                df_tab = strip_accounting_summary_rows(df_tab)
+                # Drop completely empty rows/columns
+                df_tab = df_tab.dropna(how='all').dropna(axis=1, how='all')
+                if len(df_tab) >= 2 and len(df_tab.columns) >= 2:
+                    valid_sheets.append((sname, df_tab))
+            if len(valid_sheets) >= 2:
+                for sname, df_tab in valid_sheets:
+                    clean_s = re.sub(r'[^A-Za-z0-9_]+', '_', sname.strip()).strip('_')
+                    out_csv = folder / f"{f.stem}__{clean_s}.csv"
+                    df_tab.to_csv(out_csv, index=False, encoding='utf-8')
+                unpacked_containers.add(f.resolve())
+                print(f"    [+] Auto-unpacked multi-tab Excel workbook '{f.name}' into {len(valid_sheets)} relational sheets.")
+        except Exception as e:
+            print(f"    [!] Warning inspecting multi-tab Excel '{f.name}': {e}")
+    return unpacked_containers
+
+
+def _has_strong_value_overlap(s1: pd.Series, s2: pd.Series, min_overlap: float = 0.50) -> bool:
+    """
+    Detects physical join-key relationship when column names differ completely
+    (e.g., `order_id` vs `client_ref_no` or `acquisition_channel` vs `utm_source`)
+    by measuring normalized value containment / Jaccard overlap >= 50%.
+    Strictly rejects boolean {0,1,YES,NO} and small-integer measure columns.
+    """
+    if s1 is None or s2 is None:
+        return False
+    bool_tokens = {'0', '1', '0.0', '1.0', 'TRUE', 'FALSE', 'YES', 'NO', 'Y', 'N', 'NAN', 'NONE', 'NULL', ''}
+    vals1 = {str(x).strip().upper() for x in s1.dropna().unique()[:500] if str(x).strip()} - bool_tokens
+    vals2 = {str(x).strip().upper() for x in s2.dropna().unique()[:500] if str(x).strip()} - bool_tokens
+    if len(vals1) < 2 or len(vals2) < 2:
+        return False
+    shared = vals1 & vals2
+    if len(shared) < 2:
+        return False
+    # Reject plain small numbers (< 4 digits) so quantities/days/ratings never false-match
+    all_plain_num = all(bool(re.match(r'^-?\d+(?:\.\d+)?$', v)) for v in shared)
+    if all_plain_num:
+        min_digits = min(len(v.split('.')[0].lstrip('-')) for v in shared)
+        if min_digits < 4 or len(shared) < 10:
+            return False
+    denom = float(min(len(vals1), len(vals2)))
+    return (len(shared) / denom) >= min_overlap
 
 def get_best_excel_sheet(filepath: Path) -> Tuple[str, int]:
     """
@@ -66,15 +138,26 @@ def get_best_excel_sheet(filepath: Path) -> Tuple[str, int]:
     try:
         import openpyxl
         wb = openpyxl.load_workbook(filepath, read_only=True)
+        skip_words = ('readme', 'cover', 'instruction', 'dictionary', 'metadata', 'notes', 'summary_only')
         best_sheet = wb.sheetnames[0]
         max_rows = -1
-        
+        best_score = -1
         for name in wb.sheetnames:
             sheet = wb[name]
-            r_count = sheet.max_row or 0
-            if r_count > max_rows:
+            r_count = int(sheet.max_row or 0)
+            c_count = int(sheet.max_column or 0)
+            is_cover = any(w in name.lower() for w in skip_words)
+            score = (r_count * max(c_count, 1)) if not is_cover else -1
+            if score > best_score:
+                best_score = score
                 max_rows = r_count
                 best_sheet = name
+        if best_score <= 0:
+            for name in wb.sheetnames:
+                r_count = int(wb[name].max_row or 0)
+                if r_count > max_rows:
+                    max_rows = r_count
+                    best_sheet = name
         wb.close()
         return best_sheet, max(max_rows - 1, 0)
     except Exception:
@@ -93,8 +176,11 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
     if ext in ['.xlsx', '.xls']:
         sheet_name, total_rows = get_best_excel_sheet(filepath)
         selected_sheet = sheet_name
-        header_row = detect_optimal_header_row(filepath)
+        header_row = detect_optimal_header_row(filepath, sheet_name=sheet_name)
         df_sample = pd.read_excel(filepath, sheet_name=sheet_name, header=header_row, nrows=SAMPLE_ROWS)
+        total_rows = max(0, total_rows - header_row)
+        if len(df_sample) < SAMPLE_ROWS:
+            total_rows = len(df_sample)
     elif ext in ['.csv', '.tsv', '.txt']:
         header_row = detect_optimal_header_row(filepath)
         df_sample = smart_read_csv(filepath, header=header_row, nrows=SAMPLE_ROWS)
@@ -204,10 +290,12 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
 
 def profile_raw_directory(dir_path: str, output_json: str = None) -> dict:
     folder = Path(dir_path)
+    unpacked_xlsx = unpack_multisheet_excel_workbooks(folder)
     DOC_KEYWORDS = ['dictionary', 'datadictionary', 'codebook', 'metadata', 'data_description', 'field_description', 'description', 'readme', 'sample_submission', 'sample_sub']
     all_files = [
         f for f in folder.iterdir() 
         if f.suffix.lower() in ['.xlsx', '.xls', '.csv', '.parquet', '.tsv', '.txt'] 
+        and f.resolve() not in unpacked_xlsx
         and not f.name.startswith('~')
         and not any(k in f.stem.lower() for k in DOC_KEYWORDS)
     ]
@@ -256,7 +344,8 @@ def profile_raw_directory(dir_path: str, output_json: str = None) -> dict:
                         k1_l.endswith(f"_{k2_l}") or k2_l.endswith(f"_{k1_l}") or
                         (k1_l in k2_l and len(k1_l) >= 4) or (k2_l in k1_l and len(k2_l) >= 4) or
                         (('airport' in k1_l or 'ident' in k1_l or 'iata' in k1_l) and 
-                         ('airport' in k2_l or 'ident' in k2_l or 'iata' in k2_l))
+                         ('airport' in k2_l or 'ident' in k2_l or 'iata' in k2_l)) or
+                        _has_strong_value_overlap(df1[k1], df2[k2], min_overlap=0.50)
                     )
                     
                     if is_candidate_match:

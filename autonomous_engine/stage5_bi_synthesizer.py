@@ -84,8 +84,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     secondary_dim = None
 
     cols = list(df.columns)
-    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type']
-    location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'branch', 'location', 'airport']
+    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type', 'distributor', 'dealer', 'salesman', 'partner', 'fleet', 'channel']
+    location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'zone', 'branch', 'location', 'airport', 'warehouse']
 
     coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff'}
     cat_cols = []
@@ -107,9 +107,12 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
         is_low_card_int = (
             pd.api.types.is_integer_dtype(df[c])
             and 2 <= nunique <= 10
-            and not any(t in c_low for t in ['year', 'month', 'day', 'hour', 'minute', 'age', 'count', 'num', 'sibsp', 'parch', 'previous', 'campaign', 'size'])
+            and not any(t in c_low for t in [
+                'year', 'month', 'day', 'hour', 'minute', 'age', 'count', 'num', 'sibsp', 'parch', 'previous', 'campaign', 'size',
+                'limit', 'amount', 'price', 'cost', '_inr', '_usd', '_eur', '_gbp', 'lease', 'rent', 'capacity', 'tons', 'salary', 'revenue', 'billing', 'fee', 'budget', 'spend'
+            ])
         )
-        if (2 <= nunique <= 50 and is_categorical_or_string_series(df[c])) or is_low_card_int:
+        if (2 <= nunique <= 80 and is_categorical_or_string_series(df[c])) or is_low_card_int:
             cat_cols.append((c, nunique))
 
     # Fallback for purely numeric datasets: find low-cardinality discrete features
@@ -366,20 +369,23 @@ def synthesize_deliverables(output_dir: str):
         dax_target_cond = f"'{parquet_path.stem}'[_is_target_event] = 1"
 
     # 1. Power BI & Tableau DAX Guide
-    cost_measures_dax = f"""// 5. Total Adverse Capital Drag ($) (Direct Financial Drag on Adverse Cohort)
-Total Adverse Capital Drag ($) = 
+    dax_unit_sym = canonical.get("unit_symbol") or "$"
+    if dax_unit_sym in ("", "Events", "Units"):
+        dax_unit_sym = "$"
+    cost_measures_dax = f"""// 5. Total Adverse Capital Drag ({dax_unit_sym}) (Direct Financial Drag on Adverse Cohort)
+Total Adverse Capital Drag ({dax_unit_sym}) = 
 CALCULATE(
     SUM('{parquet_path.stem}'[{cost_col}]),
     {dax_target_cond}
 )
 
-// 5b. Total Baseline Portfolio Volume ($)
-Total Portfolio Volume ($) = 
+// 5b. Total Baseline Portfolio Volume ({dax_unit_sym})
+Total Portfolio Volume ({dax_unit_sym}) = 
 SUM('{parquet_path.stem}'[{cost_col}])
 
 // 6. Average Financial Impact Per Adverse Event
-Avg Friction Impact ($) = 
-DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)""" if cost_col else f"""// 5. Total Adverse Event Footprint (Units)
+Avg Friction Impact ({dax_unit_sym}) = 
+DIVIDE([Total Adverse Capital Drag ({dax_unit_sym})], [Target Events], 0)""" if cost_col else f"""// 5. Total Adverse Event Footprint (Units)
 Total Adverse Units = [Target Events]"""
 
     dax_content = f"""# ENTERPRISE STAR SCHEMA & POWER BI / TABLEAU MEASURE GUIDE
@@ -427,7 +433,7 @@ System Reliability Rate % =
 - **[Total Records]**: `COUNT([{df_fact.columns[0]}])`
 - **[Target Events]**: `SUM([{target_col or df_fact.columns[0]}])`
 - **[Event Rate %]**: `[Target Events] / [Total Records]`
-- **[Total Financial Friction ($)]**: `SUM([{cost_col or '0'}])`
+- **[Total Financial Friction ({dax_unit_sym})]**: `SUM([{cost_col or '0'}])`
 
 ---
 *Generated autonomously by Enterprise DataX-Ray Core*
@@ -448,8 +454,11 @@ System Reliability Rate % =
         top_leaks = sorted(prim_summary, key=lambda x: x.get("friction_loss", 0.0) if cost_col else x.get("target_events", 0), reverse=True)[:5]
 
     has_monetary_cost = bool(cost_col and total_cost > 0)
+    unit_sym = canonical.get("unit_symbol") or "$"
+    if not has_monetary_cost or unit_sym == "Events":
+        unit_sym = "$"
     macro_drag_line = (
-        f"- **Total Friction / Capital Drag**: **${total_cost:,.2f}**"
+        f"- **Total Friction / Capital Drag**: **{unit_sym}{total_cost:,.2f}**"
         if has_monetary_cost
         else f"- **Physical Event Footprint**: **Non-Monetary Operational Telemetry (`{target_count:,}` adverse events)**"
     )
@@ -508,13 +517,13 @@ System Reliability Rate % =
 ### 4. Capital Leaks & Financial Vulnerabilities
 *Concentrated operational drag where operational friction bleeds capital:*
 
-| {prim_dim or 'Segment'} | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ($) | Share of System Drag % |
+| {prim_dim or 'Segment'} | Total Volume | Target Volume | Vulnerability Rate % | Total Liability ({unit_sym}) | Share of System Drag % |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 """
         for l in top_leaks:
             loss_val = l.get("friction_loss", 0.0)
             share = round((loss_val / total_cost * 100.0), 2) if total_cost > 0 else 0.0
-            dossier_content += f"| **{l.get(prim_dim, 'N/A')}** | {l.get('volume', 0):,} | {l.get('target_events', 0):,} | **{l.get('event_rate_pct', 0.0)}%** | **${loss_val:,.2f}** | **{share}%** |\n"
+            dossier_content += f"| **{l.get(prim_dim, 'N/A')}** | {l.get('volume', 0):,} | {l.get('target_events', 0):,} | **{l.get('event_rate_pct', 0.0)}%** | **{unit_sym}{loss_val:,.2f}** | **{share}%** |\n"
     else:
         dossier_content += f"""
 ---
@@ -538,12 +547,12 @@ System Reliability Rate % =
 ### 5. Secondary Segment / Node Bottlenecks ({sec_dim or 'Nodes'})
 *Sub-nodes exhibiting concentrated friction:*
 
-| {sec_dim or 'Node'} | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ($) |
+| {sec_dim or 'Node'} | Total Volume | Target Volume | Vulnerability Rate % | Total Friction ({unit_sym}) |
 | :--- | :--- | :--- | :--- | :--- |
 """
             for s in sec_summary:
                 s_loss = s.get("friction_loss", 0.0)
-                dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s.get('target_events', 0):,} | **{s.get('event_rate_pct', 0.0)}%** | ${s_loss:,.2f} |\n"
+                dossier_content += f"| **{s.get(sec_dim, 'N/A')}** | {s.get('volume', 0):,} | {s.get('target_events', 0):,} | **{s.get('event_rate_pct', 0.0)}%** | {unit_sym}{s_loss:,.2f} |\n"
         else:
             dossier_content += f"""
 ---
@@ -604,16 +613,16 @@ System Reliability Rate % =
         save_20 = total_cost * 0.20
         save_30 = total_cost * 0.30
         what_if_table = f"""{circuit_breaker_note}
-| Metric Scope | Physical Volume | Dollar Exposure ($) | Operational Meaning |
+| Metric Scope | Physical Volume | Monetary Exposure ({unit_sym}) | Operational Meaning |
 | :--- | :--- | :--- | :--- |
-| **Total Portfolio Footprint** | **{total_records:,} physical records** | **${total_portfolio_volume:,.2f}** | Total baseline portfolio volume |
-| **Adverse Capital at Risk (`_is_target_event == 1`)** | **{target_count:,} records ({target_rate_pct}%)** | **${total_cost:,.2f}** | Direct financial exposure on defaulted/adverse events |
+| **Total Portfolio Footprint** | **{total_records:,} physical records** | **{unit_sym}{total_portfolio_volume:,.2f}** | Total baseline portfolio volume |
+| **Adverse Capital at Risk (`_is_target_event == 1`)** | **{target_count:,} records ({target_rate_pct}%)** | **{unit_sym}{total_cost:,.2f}** | Direct financial exposure on defaulted/adverse events |
 
-| Global System Friction Mitigation Scenario | Projected Capital Recovered ($) | Remaining Capital Drag ($) | Operational Feasibility |
+| Global System Friction Mitigation Scenario | Projected Capital Recovered ({unit_sym}) | Remaining Capital Drag ({unit_sym}) | Operational Feasibility |
 | :--- | :--- | :--- | :--- |
-| **Conservative (10% Global Fix)** | **${save_10:,.2f}** | ${total_cost - save_10:,.2f} | Immediate (Process hygiene & queue alerts) |
-| **Targeted (20% Global Fix)** | **${save_20:,.2f}** | ${total_cost - save_20:,.2f} | 30-60 Days (Buffer allocation & SLA caps) |
-| **Aggressive (30% Global Fix)** | **${save_30:,.2f}** | ${total_cost - save_30:,.2f} | 90+ Days (Structural automation & policy revamp) |
+| **Conservative (10% Global Fix)** | **{unit_sym}{save_10:,.2f}** | {unit_sym}{total_cost - save_10:,.2f} | Immediate (Process hygiene & queue alerts) |
+| **Targeted (20% Global Fix)** | **{unit_sym}{save_20:,.2f}** | {unit_sym}{total_cost - save_20:,.2f} | 30-60 Days (Buffer allocation & SLA caps) |
+| **Aggressive (30% Global Fix)** | **{unit_sym}{save_30:,.2f}** | {unit_sym}{total_cost - save_30:,.2f} | 90+ Days (Structural automation & policy revamp) |
 """
     else:
         save_10_cnt = int(round(target_count * 0.10))
@@ -647,9 +656,9 @@ System Reliability Rate % =
     # 9. Dynamic Boardroom Script
     top_leak_loss = top_leaks[0].get('friction_loss', 0.0) if top_leaks else 0.0
     if total_cost > 0:
-        share_str = f"{round((top_leak_loss / max(total_cost, 0.01) * 100.0), 1)}% of total adverse financial liability (${total_cost:,.2f})"
-        drag_str = f"an aggregate adverse financial liability / capital at risk of **${total_cost:,.2f}** (across {target_count:,} defaulted/adverse events out of ${total_portfolio_volume:,.2f} total portfolio volume)"
-        remedy_str = f"autonomously unlock **${save_10:,.2f} in direct capital recovery** within the next fiscal quarter"
+        share_str = f"{round((top_leak_loss / max(total_cost, 0.01) * 100.0), 1)}% of total adverse financial liability ({unit_sym}{total_cost:,.2f})"
+        drag_str = f"an aggregate adverse financial liability / capital at risk of **{unit_sym}{total_cost:,.2f}** (across {target_count:,} defaulted/adverse events out of {unit_sym}{total_portfolio_volume:,.2f} total portfolio volume)"
+        remedy_str = f"autonomously unlock **{unit_sym}{save_10:,.2f} in direct capital recovery** within the next fiscal quarter"
     else:
         top_leak_events = top_leaks[0].get('target_events', 0) if top_leaks else 0
         share_pct = round((top_leak_events / max(target_count, 1) * 100.0), 1)
@@ -685,6 +694,7 @@ System Reliability Rate % =
     # Autonomous Multi-Pathway Strategic Decision Matrix & Devil's Advocate Defense
     strat_dossier = None
     cliffs_data = None
+    omni_report = None
     try:
         if isinstance(blueprint, dict):
             blueprint["_output_dir"] = str(out)
@@ -698,6 +708,43 @@ System Reliability Rate % =
         dossier_content += "\n" + strat_md
     except Exception as e:
         print(f"[-] Strategic Decision Matrix skipped due to: {e}")
+
+    omni_report = {}
+    try:
+        try:
+            from .omni_leak_scanner import OmniDimensionalLeakScanner, render_dossier_omni_section
+        except ImportError:
+            from omni_leak_scanner import OmniDimensionalLeakScanner, render_dossier_omni_section
+        omni_scanner = OmniDimensionalLeakScanner(df_fact, blueprint=blueprint)
+        omni_report = omni_scanner.run_full_scan(out)
+        if is_prim_significant and (not strat_dossier or strat_dossier.get("is_statistically_significant", True)):
+            dossier_content += "\n" + render_dossier_omni_section(omni_report)
+    except Exception as oe:
+        print(f"[-] Omni-Dimensional Leak Scanner warning: {oe}")
+
+    q200_report = {}
+    try:
+        try:
+            from .universal_200_questions_engine import Universal200QuestionsEngine
+        except ImportError:
+            from universal_200_questions_engine import Universal200QuestionsEngine
+        q200_engine = Universal200QuestionsEngine(df_fact, blueprint=blueprint, omni_report=omni_report)
+        q200_report = q200_engine.generate_all_200_questions(out)
+        q200_sum = q200_report.get("summary", {})
+        print(f"[+] Universal 200-Questions Matrix generated: {q200_sum.get('answered_count', 0)}/200 answered ({q200_sum.get('direct_count', 0)} direct, {q200_sum.get('proxy_count', 0)} proxy).")
+    except Exception as qe:
+        print(f"[-] Universal 200-Questions Engine warning: {qe}")
+
+    try:
+        try:
+            from .ranked_leak_synthesizer import synthesize_ranked_leaks
+        except ImportError:
+            from ranked_leak_synthesizer import synthesize_ranked_leaks
+        ranked_res = synthesize_ranked_leaks(df_fact, omni_report=omni_report, q200_report=q200_report, blueprint=blueprint, out_dir=out)
+        rsum = ranked_res.get("summary", {})
+        print(f"[+] Unified Ranked Leak Feed generated: {rsum.get('total_ranked_leaks', 0)} ranked leaks, {rsum.get('do_not_spend_shields_count', 0)} $0 shields, {rsum.get('opportunities_count', 0)} opportunities.")
+    except Exception as re_err:
+        print(f"[-] Ranked Leak Synthesizer warning: {re_err}")
 
     dossier_md_path = out / "DATA_XRAY_EXECUTIVE_DOSSIER.md"
     with open(dossier_md_path, 'w', encoding='utf-8') as f:
@@ -745,7 +792,7 @@ System Reliability Rate % =
         generate_plain_business_summary(
             df_fact, out, blueprint=blueprint,
             prim_dim_info=prim_info, temporal_summary=temp_sum, worklist_path=wl_path,
-            strat_dossier=strat_dossier, cliffs=cliffs_data
+            strat_dossier=strat_dossier, cliffs=cliffs_data, omni_report=omni_report
         )
     except Exception as bpe:
         print(f"[-] Business action exporter warning: {bpe}")

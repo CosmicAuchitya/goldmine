@@ -35,38 +35,66 @@ import pandas as pd
 # =============================================================================
 # 1. SSRF PROTECTION & GOOGLE SHEETS / CLOUD URL NORMALIZATION
 # =============================================================================
-CONNECTOR_CATALOG: List[Dict[str, str]] = [
+CONNECTOR_CATALOG: List[Dict[str, Any]] = [
+    {
+        "id": "shopify_global_orders",
+        "name": "Shopify Global Orders & Returns",
+        "provider": "Shopify Commerce",
+        "region_profile": "US",
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "Global E-Commerce · $ USD · Demo",
+        "description": "Sample retail feed: audits refund rates, carrier transit delays, and checkout payment friction."
+    },
+    {
+        "id": "quickbooks_ar_invoices",
+        "name": "QuickBooks / Xero B2B Receivables",
+        "provider": "QuickBooks & Xero",
+        "region_profile": "EU",
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "Global Accounting · € EUR · Demo",
+        "description": "Sample invoice ledger: spots overdue B2B accounts, payment terms, and regional cashflow drag."
+    },
     {
         "id": "shopify_orders_live",
         "name": "Shopify D2C Orders & RTO Ledger",
         "provider": "Shopify Commerce",
         "region_profile": "IN",
-        "badge": "D2C Retail · ₹ INR",
-        "description": "Syncs fulfillment status, COD vs Prepaid payment modes, courier partners, and RTO return losses."
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "D2C Retail · ₹ INR · Demo",
+        "description": "Sample India D2C feed: audits COD vs Prepaid payment modes, courier partners, and RTO return losses."
     },
     {
         "id": "tally_prime_ledger_in",
         "name": "Tally Prime B2B Invoice & Receivables",
         "provider": "Tally ERP 9 / Prime",
         "region_profile": "IN",
-        "badge": "MSME Accounting · ₹ INR",
-        "description": "Audits overdue party vouchers, credit period breaches, regional distributor zones, and working capital drag."
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "MSME Accounting · ₹ INR · Demo",
+        "description": "Sample Tally ledger: audits overdue party vouchers, credit period breaches, and working capital drag."
     },
     {
         "id": "razorpay_settlements_in",
         "name": "Razorpay Gateway & Payment Failures",
         "provider": "Razorpay FinTech",
         "region_profile": "IN",
-        "badge": "Payments · ₹ INR",
-        "description": "Tracks checkout drop-offs, UPI vs Card failure rates, issuing bank bottlenecks, and unrecovered GMV."
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "Payments · ₹ INR · Demo",
+        "description": "Sample gateway feed: tracks checkout drop-offs, UPI vs Card failure rates, and unrecovered GMV."
     },
     {
         "id": "stripe_saas_churn",
         "name": "Stripe SaaS Subscription & Churn Feed",
         "provider": "Stripe Billing",
         "region_profile": "US",
-        "badge": "B2B SaaS · $ USD",
-        "description": "Monitors MRR contraction, involuntary dunning failures, plan tiers, and customer onboarding cohorts."
+        "is_sample_demo": True,
+        "mode_label": "Interactive Demo",
+        "badge": "B2B SaaS · $ USD · Demo",
+        "description": "Sample SaaS billing feed: monitors MRR contraction, dunning failures, and plan cohorts."
     }
 ]
 
@@ -91,34 +119,104 @@ def normalize_spreadsheet_or_data_url(raw_url: str) -> str:
     return url
 
 
-def validate_safe_external_url(url: str) -> str:
+def _is_forbidden_ip(ip_obj: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]) -> bool:
+    """Returns True if an IPv4 or IPv6 (including IPv4-mapped IPv6) address is non-public/internal."""
+    if isinstance(ip_obj, ipaddress.IPv6Address) and ip_obj.ipv4_mapped is not None:
+        ip_obj = ip_obj.ipv4_mapped
+    return bool(
+        ip_obj.is_private
+        or ip_obj.is_loopback
+        or ip_obj.is_link_local
+        or ip_obj.is_multicast
+        or ip_obj.is_reserved
+        or ip_obj.is_unspecified
+        or not ip_obj.is_global
+    )
+
+
+def validate_safe_external_url(url: str, resolve_dns: bool = True) -> str:
     """
-    SSRF Guard: Verifies that a user-supplied URL uses http/https and does not
-    resolve to loopback, link-local, RFC1918 private, or cloud metadata IPs.
+    Hardened SSRF Guard (P0):
+    1. Enforces http/https only and rejects embedded URL credentials.
+    2. Blocks localhost, link-local, RFC1918 private, IPv6-mapped private, and cloud metadata hosts.
+    3. Resolves DNS via socket.getaddrinfo() and validates EVERY returned IP address to block
+       DNS-based SSRF bypasses (e.g. nip.io, localtest.me, internal A/AAAA records).
     """
-    parsed = urllib.parse.urlparse(url)
+    parsed = urllib.parse.urlparse(str(url or "").strip())
     if parsed.scheme not in ("http", "https"):
         raise ValueError(f"Unsupported URL scheme '{parsed.scheme}'. Only http:// and https:// are permitted.")
 
-    hostname = (parsed.hostname or "").strip().lower()
+    if parsed.username or parsed.password:
+        raise ValueError("SSRF Security Gate: Embedded credentials in URLs are forbidden.")
+
+    hostname = (parsed.hostname or "").strip().lower().rstrip(".")
     if not hostname:
         raise ValueError("URL is missing a valid hostname.")
 
-    blocked_hosts = {"localhost", "127.0.0.1", "0.0.0.0", "::1", "169.254.169.254", "metadata.google.internal"}
-    if hostname in blocked_hosts or hostname.endswith(".local") or hostname.endswith(".internal"):
+    blocked_hosts = {
+        "localhost", "127.0.0.1", "0.0.0.0", "::1",
+        "169.254.169.254", "metadata.google.internal", "metadata.goog",
+        "169.254.170.2", "fd00:ec2::254",
+    }
+    if (
+        hostname in blocked_hosts
+        or hostname.endswith(".local")
+        or hostname.endswith(".internal")
+        or hostname.endswith(".localhost")
+    ):
         raise ValueError(f"SSRF Security Gate: Access to internal/local host '{hostname}' is forbidden.")
 
     # Check literal IP address if provided
+    is_literal_ip = False
     try:
         ip_obj = ipaddress.ip_address(hostname)
-        if ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_link_local or ip_obj.is_multicast or ip_obj.is_reserved:
+        is_literal_ip = True
+        if _is_forbidden_ip(ip_obj):
             raise ValueError(f"SSRF Security Gate: Private or reserved IP '{hostname}' is forbidden.")
     except ValueError as ve:
         if "SSRF Security Gate" in str(ve):
             raise
-        # Hostname is a domain name, not an IP literal
+
+    # Resolve domain names via DNS and verify EVERY resolved IP is globally routable
+    if resolve_dns and not is_literal_ip:
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        try:
+            addr_infos = socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
+        except socket.gaierror as ge:
+            raise ValueError(f"SSRF Security Gate: Unable to safely resolve host '{hostname}' ({ge}).")
+        if not addr_infos:
+            raise ValueError(f"SSRF Security Gate: Host '{hostname}' resolved to no addresses.")
+        for info in addr_infos:
+            raw_ip = info[4][0]
+            try:
+                resolved_ip = ipaddress.ip_address(raw_ip)
+            except ValueError:
+                raise ValueError(f"SSRF Security Gate: Unparseable resolved IP '{raw_ip}' for host '{hostname}'.")
+            if _is_forbidden_ip(resolved_ip):
+                raise ValueError(
+                    f"SSRF Security Gate: Host '{hostname}' resolved to forbidden internal/private IP '{resolved_ip}'."
+                )
 
     return url
+
+
+class _SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Re-validates EVERY HTTP redirect hop against the SSRF guard (max 3 hops)."""
+
+    max_redirections = 3
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        resolved_target = urllib.parse.urljoin(req.full_url, newurl)
+        validate_safe_external_url(resolved_target, resolve_dns=True)
+        return super().redirect_request(req, fp, code, msg, headers, resolved_target)
+
+
+def safe_urlopen(req: Union[str, urllib.request.Request], timeout: int = 15):
+    """Executes an outbound HTTP(S) request with pre-flight DNS SSRF validation and redirect hopping checks."""
+    target_url = req.full_url if isinstance(req, urllib.request.Request) else str(req)
+    validate_safe_external_url(target_url, resolve_dns=True)
+    opener = urllib.request.build_opener(_SafeRedirectHandler())
+    return opener.open(req, timeout=timeout)
 
 
 def generate_erp_connector_dataframe(connector_id: str) -> Tuple[pd.DataFrame, str, str]:
@@ -208,6 +306,50 @@ def generate_erp_connector_dataframe(connector_id: str) -> Tuple[pd.DataFrame, s
     churn_prob = np.where(active_seats <= 3, np.minimum(0.85, churn_prob + 0.18), churn_prob)
     is_churned = (rng.random(size=n) < churn_prob).astype(int)
 
+    if connector_id == "shopify_global_orders":
+        order_ids = [f"GLB-{20001 + i}" for i in range(n)]
+        channels = rng.choice(["Web_Checkout", "Meta_Ads", "Google_Shopping", "Email_VIP"], size=n, p=[0.40, 0.30, 0.20, 0.10])
+        carriers = rng.choice(["UPS_Ground", "FedEx_Express", "DHL_Economy", "USPS_Priority"], size=n, p=[0.35, 0.30, 0.20, 0.15])
+        regions = rng.choice(["US_East", "US_West", "UK_London", "EU_Central"], size=n, p=[0.35, 0.30, 0.20, 0.15])
+        fulfill_hours = rng.integers(4, 96, size=n)
+        order_amt = np.round(rng.uniform(45.0, 480.0, size=n), 2)
+
+        ret_prob = np.where(carriers == "DHL_Economy", 0.32, 0.08)
+        ret_prob = np.where(fulfill_hours > 48, np.minimum(0.85, ret_prob + 0.22), ret_prob)
+        is_returned = (rng.random(size=n) < ret_prob).astype(int)
+
+        df = pd.DataFrame({
+            "order_id": order_ids,
+            "acquisition_channel": channels,
+            "shipping_carrier": carriers,
+            "region": regions,
+            "fulfillment_hours": fulfill_hours,
+            "order_amount": order_amt,
+            "is_canceled": is_returned,
+        })
+        return df, "shopify_global_orders.csv", "US"
+
+    if connector_id == "quickbooks_ar_invoices":
+        inv_ids = [f"INV-EU-{5001 + i}" for i in range(n)]
+        client_tiers = rng.choice(["Enterprise_Account", "Mid_Market_B2B", "SMB_Retailer", "Agency_Partner"], size=n, p=[0.25, 0.35, 0.25, 0.15])
+        countries = rng.choice(["Germany", "France", "Netherlands", "Spain"], size=n, p=[0.35, 0.25, 0.20, 0.20])
+        terms_days = rng.choice([15, 30, 60, 90], size=n, p=[0.20, 0.40, 0.25, 0.15])
+        inv_eur = np.round(rng.uniform(800.0, 18500.0, size=n), 2)
+
+        late_prob = np.where(terms_days >= 60, 0.38, 0.07)
+        late_prob = np.where(client_tiers == "SMB_Retailer", np.minimum(0.80, late_prob + 0.14), late_prob)
+        is_overdue = (rng.random(size=n) < late_prob).astype(int)
+
+        df = pd.DataFrame({
+            "invoice_id": inv_ids,
+            "client_tier": client_tiers,
+            "country": countries,
+            "payment_terms_days": terms_days,
+            "invoice_amount_eur": inv_eur,
+            "payment_default": is_overdue,
+        })
+        return df, "quickbooks_ar_invoices.csv", "EU"
+
     df = pd.DataFrame({
         "subscription_id": sub_ids,
         "plan_tier": plans,
@@ -246,15 +388,19 @@ def stage_connector_or_url_to_directory(
         norm_url,
         headers={"User-Agent": "DataX-Ray-Autonomous-Connector/5.5"}
     )
-    with urllib.request.urlopen(req, timeout=15) as resp:
+    with safe_urlopen(req, timeout=15) as resp:
         raw_bytes = resp.read(25 * 1024 * 1024)  # Cap at 25 MB
 
     if not raw_bytes:
         raise ValueError("Remote URL returned an empty response body.")
 
-    # Verify it parses cleanly as CSV or JSON
+    # Verify it parses cleanly as CSV (including European ; / decimal commas) or JSON
     try:
-        df = pd.read_csv(io.BytesIO(raw_bytes))
+        try:
+            from .robust_csv_sniffer import smart_read_csv_bytes
+        except ImportError:
+            from robust_csv_sniffer import smart_read_csv_bytes
+        df = smart_read_csv_bytes(raw_bytes)
     except Exception:
         df = pd.read_json(io.BytesIO(raw_bytes))
 
@@ -938,13 +1084,11 @@ def _find_run_output_directory(
     ws = Path(workspace_root).resolve()
     candidates: List[Path] = []
 
-    safe_tenant = _sanitize_tenant_id(tenant_id)
-    if safe_tenant:
-        candidates.append(ws / "runs" / "tenants" / safe_tenant / "jobs" / run_id / "output")
-
+    safe_tenant = _sanitize_tenant_id(tenant_id) or "founder_workspace"
+    candidates.append(ws / "runs" / "tenants" / safe_tenant / "jobs" / run_id / "output")
     candidates.append(ws / "kaggle_benchmarks" / run_id / "output")
 
-    if not safe_tenant or safe_tenant in ("founder_workspace", "default", "default_tenant", "default_workspace"):
+    if safe_tenant in ("founder_workspace", "default", "default_tenant", "default_workspace"):
         candidates.append(ws / "runs" / "uploads" / run_id / "output")
 
     for cand in candidates:
@@ -955,17 +1099,6 @@ def _find_run_output_directory(
             continue
         if resolved.exists() and (resolved / "semantic_metrics_manifest.json").exists():
             return resolved
-
-    if not safe_tenant:
-        tenant_matches = list((ws / "runs" / "tenants").glob(f"*/jobs/{run_id}/output"))
-        for cand in tenant_matches:
-            resolved = cand.resolve()
-            try:
-                resolved.relative_to(ws)
-            except ValueError:
-                continue
-            if resolved.exists() and (resolved / "semantic_metrics_manifest.json").exists():
-                return resolved
 
     return None
 
@@ -979,20 +1112,12 @@ def list_workspace_runs(workspace_root: Union[str, Path], tenant_id: str = "") -
     runs_list: List[Dict[str, Any]] = []
     seen_runs = set()
 
-    safe_tenant = _sanitize_tenant_id(tenant_id)
-    search_dirs: List[Tuple[Path, bool, str]] = []
-
-    if safe_tenant:
-        search_dirs.append((ws / "runs" / "tenants" / safe_tenant / "jobs", False, safe_tenant))
-        if safe_tenant in ("founder_workspace", "default", "default_tenant", "default_workspace"):
-            search_dirs.append((ws / "runs" / "uploads", False, safe_tenant))
-    else:
-        search_dirs.append((ws / "runs" / "uploads", False, "default_workspace"))
-        tenants_root = ws / "runs" / "tenants"
-        if tenants_root.exists():
-            for t_dir in tenants_root.iterdir():
-                if t_dir.is_dir() and (t_dir / "jobs").exists():
-                    search_dirs.append((t_dir / "jobs", False, t_dir.name))
+    safe_tenant = _sanitize_tenant_id(tenant_id) or "founder_workspace"
+    search_dirs: List[Tuple[Path, bool, str]] = [
+        (ws / "runs" / "tenants" / safe_tenant / "jobs", False, safe_tenant)
+    ]
+    if safe_tenant in ("founder_workspace", "default", "default_tenant", "default_workspace"):
+        search_dirs.append((ws / "runs" / "uploads", False, safe_tenant))
 
     search_dirs.append((ws / "kaggle_benchmarks", True, "certified_benchmark"))
 
@@ -1179,4 +1304,560 @@ def compare_workspace_runs(
             "hinglish": notes_hi
         }
     }
+
+
+# =============================================================================
+# 4. REAL LIVE READ-ONLY API FETCHERS (SHOPIFY · STRIPE · RAZORPAY)
+# =============================================================================
+def fetch_shopify_live_orders(shop_domain: str, access_token: str, limit: int = 250) -> pd.DataFrame:
+    """
+    Fetches real live orders from Shopify Admin REST API (read-only) with cursor-based Link header pagination
+    supporting up to 50,000 orders across 250-order pages.
+    Credentials are kept strictly in memory and never logged or written to disk.
+    """
+    clean_shop = re.sub(r"^https?://", "", str(shop_domain or "").strip()).strip("/")
+    if not clean_shop or "." not in clean_shop:
+        raise ValueError("Invalid Shopify shop domain (expected e.g. 'my-store.myshopify.com').")
+    if not access_token:
+        raise ValueError("Shopify Admin API access token is required for live sync.")
+
+    target_total = max(1, min(int(limit), 50000))
+    first_page_size = min(target_total, 250)
+    next_url: Optional[str] = f"https://{clean_shop}/admin/api/2024-01/orders.json?status=any&limit={first_page_size}"
+    orders: List[Dict[str, Any]] = []
+
+    while next_url and len(orders) < target_total:
+        req = urllib.request.Request(
+            next_url,
+            headers={
+                "X-Shopify-Access-Token": str(access_token).strip(),
+                "Accept": "application/json",
+                "User-Agent": "DataXRay-LiveSync/1.0",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=15) as resp:
+            raw_body = resp.read().decode("utf-8")
+            hdrs = getattr(resp, "headers", None) or {}
+            link_hdr = hdrs.get("Link") or hdrs.get("link") or ""
+            data = json.loads(raw_body)
+
+        batch = data.get("orders") or []
+        if not batch:
+            break
+        remaining = target_total - len(orders)
+        orders.extend(batch[:remaining])
+        if len(orders) >= target_total or len(batch) < first_page_size:
+            break
+
+        next_match = re.search(r'<([^>]+)>;\s*rel=["\']?next["\']?', str(link_hdr), re.IGNORECASE)
+        next_url = next_match.group(1) if next_match else data.get("next_page_url")
+
+    rows = []
+    for o in orders:
+        fin_status = str(o.get("financial_status") or "unknown").lower()
+        canc = o.get("cancelled_at") is not None
+        is_bad = 1 if (canc or fin_status in ("refunded", "partially_refunded", "voided")) else 0
+        gws = o.get("payment_gateway_names") or []
+        gw_name = str(gws[0]) if gws else "Unknown"
+        ship_addr = o.get("shipping_address") or {}
+        cust = o.get("customer") or {}
+        disc_codes = o.get("discount_codes") or []
+        coupon = str(disc_codes[0].get("code")) if disc_codes and isinstance(disc_codes[0], dict) else "NONE"
+        rows.append({
+            "order_id": str(o.get("name") or o.get("id") or ""),
+            "order_date": str(o.get("created_at") or "")[:10],
+            "customer_id": str(cust.get("id") or o.get("email") or "GUEST"),
+            "customer_state": str(ship_addr.get("province") or ship_addr.get("country") or "Unknown"),
+            "acquisition_channel": str(o.get("source_name") or "web"),
+            "coupon_code": coupon,
+            "gross_order_value": float(o.get("total_line_items_price") or o.get("subtotal_price") or 0.0),
+            "discount_amount": float(o.get("total_discounts") or 0.0),
+            "net_billed_amount": float(o.get("total_price") or 0.0),
+            "payment_gateway": gw_name,
+            "order_status": "Cancelled" if canc else fin_status.title(),
+            "is_rto_or_cancelled": is_bad,
+        })
+    if not rows:
+        raise ValueError("Shopify API returned 0 orders.")
+    return pd.DataFrame(rows)
+
+
+def fetch_stripe_live_charges(api_key: str, limit: int = 100) -> pd.DataFrame:
+    """
+    Fetches real live Stripe charges via https://api.stripe.com/v1/charges (read-only)
+    with starting_after cursor pagination up to 50,000 records.
+    """
+    if not api_key:
+        raise ValueError("Stripe Secret/Restricted API key is required for live sync.")
+    target_total = max(1, min(int(limit), 50000))
+    items: List[Dict[str, Any]] = []
+    starting_after: Optional[str] = None
+
+    while len(items) < target_total:
+        page_size = min(100, target_total - len(items))
+        url = f"https://api.stripe.com/v1/charges?limit={page_size}"
+        if starting_after:
+            url += f"&starting_after={urllib.parse.quote(starting_after)}"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {str(api_key).strip()}",
+                "Accept": "application/json",
+                "User-Agent": "DataXRay-LiveSync/1.0",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        batch = data.get("data") or []
+        if not batch:
+            break
+        remaining = target_total - len(items)
+        items.extend(batch[:remaining])
+        if not data.get("has_more") or len(items) >= target_total or len(batch) < page_size:
+            break
+        last_id = str(batch[-1].get("id") or "").strip()
+        if not last_id or last_id == starting_after:
+            break
+        starting_after = last_id
+
+    rows = []
+    for ch in items:
+        amt = float(ch.get("amount") or 0.0) / 100.0
+        refunded = bool(ch.get("refunded")) or float(ch.get("amount_refunded") or 0.0) > 0
+        disputed = bool(ch.get("disputed"))
+        failed = str(ch.get("status") or "").lower() != "succeeded"
+        pm = (ch.get("payment_method_details") or {}).get("type") or "card"
+        ts = ch.get("created")
+        dt_str = datetime.datetime.fromtimestamp(int(ts), tz=datetime.timezone.utc).strftime("%Y-%m-%d") if ts else ""
+        rows.append({
+            "order_id": str(ch.get("id") or ""),
+            "order_date": dt_str,
+            "customer_id": str(ch.get("customer") or ch.get("receipt_email") or "GUEST"),
+            "payment_gateway": str(pm),
+            "currency": str(ch.get("currency") or "usd").upper(),
+            "net_billed_amount": amt,
+            "order_status": "Disputed" if disputed else ("Refunded" if refunded else str(ch.get("status") or "unknown").title()),
+            "is_payment_failed_or_refunded": 1 if (failed or refunded or disputed) else 0,
+        })
+    if not rows:
+        raise ValueError("Stripe API returned 0 charges.")
+    return pd.DataFrame(rows)
+
+
+def fetch_razorpay_live_payments(key_id: str, key_secret: str, count: int = 100) -> pd.DataFrame:
+    """
+    Fetches real live Razorpay payments via https://api.razorpay.com/v1/payments (read-only)
+    with count + skip offset pagination up to 50,000 records.
+    """
+    if not key_id or not key_secret:
+        raise ValueError("Razorpay key_id and key_secret are required for live sync.")
+    import base64
+    target_total = max(1, min(int(count), 50000))
+    token = base64.b64encode(f"{str(key_id).strip()}:{str(key_secret).strip()}".encode("utf-8")).decode("ascii")
+    items: List[Dict[str, Any]] = []
+
+    while len(items) < target_total:
+        page_size = min(100, target_total - len(items))
+        skip_val = len(items)
+        url = f"https://api.razorpay.com/v1/payments?count={page_size}" + (f"&skip={skip_val}" if skip_val > 0 else "")
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Basic {token}",
+                "Accept": "application/json",
+                "User-Agent": "DataXRay-LiveSync/1.0",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        batch = data.get("items") or []
+        if not batch:
+            break
+        remaining = target_total - len(items)
+        items.extend(batch[:remaining])
+        if len(items) >= target_total or len(batch) < page_size:
+            break
+
+    rows = []
+    for p in items:
+        amt = float(p.get("amount") or 0.0) / 100.0
+        fee = float(p.get("fee") or 0.0) / 100.0
+        st = str(p.get("status") or "unknown").lower()
+        is_bad = 1 if st in ("failed", "refunded") or float(p.get("amount_refunded") or 0.0) > 0 else 0
+        ts = p.get("created_at")
+        dt_str = datetime.datetime.fromtimestamp(int(ts), tz=datetime.timezone.utc).strftime("%Y-%m-%d") if ts else ""
+        rows.append({
+            "order_id": str(p.get("id") or ""),
+            "order_date": dt_str,
+            "customer_id": str(p.get("email") or p.get("contact") or "GUEST"),
+            "payment_gateway": str(p.get("method") or "unknown").upper(),
+            "net_billed_amount_inr": amt,
+            "gateway_fee_inr": fee,
+            "order_status": st.title(),
+            "is_payment_failed_or_refunded": is_bad,
+        })
+    if not rows:
+        raise ValueError("Razorpay API returned 0 payments.")
+    return pd.DataFrame(rows)
+
+
+def parse_tally_prime_xml_vouchers(xml_content: str) -> pd.DataFrame:
+    """
+    Safely parses Tally Prime / Tally.ERP 9 DayBook & Sales Register XML exports
+    (<ENVELOPE> ... <VOUCHER> ... </VOUCHER>) into a clean transactional DataFrame.
+    Defends against XXE by rejecting <!DOCTYPE / <!ENTITY declarations.
+    """
+    raw_xml = str(xml_content or "").strip()
+    if not raw_xml:
+        raise ValueError("Empty Tally XML payload.")
+    if re.search(r"<!\s*(?:DOCTYPE|ENTITY)\b", raw_xml, re.IGNORECASE):
+        raise ValueError("Security Block: XML DOCTYPE / ENTITY declarations are prohibited (XXE defense).")
+
+    import xml.etree.ElementTree as ET
+    # Strip invalid control chars sometimes emitted by Tally ODBC/XML export
+    clean_xml = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", raw_xml)
+    root = ET.fromstring(clean_xml)
+
+    vouchers = root.findall(".//VOUCHER")
+    if not vouchers and root.tag.upper() == "VOUCHER":
+        vouchers = [root]
+
+    rows = []
+    for idx, v in enumerate(vouchers, start=1):
+        def _t(tag_name: str, default: str = "") -> str:
+            el = v.find(tag_name)
+            if el is None:
+                el = v.find(f".//{tag_name}")
+            return (el.text or "").strip() if el is not None and el.text else default
+
+        vtype = _t("VOUCHERTYPENAME", v.attrib.get("VCHTYPE", "Sales"))
+        vnum = _t("VOUCHERNUMBER", f"TALLY-{idx:04d}")
+        raw_dt = _t("DATE", "20240101")
+        if len(raw_dt) == 8 and raw_dt.isdigit():
+            dt_fmt = f"{raw_dt[:4]}-{raw_dt[4:6]}-{raw_dt[6:8]}"
+        else:
+            dt_fmt = raw_dt[:10]
+        party = _t("PARTYLEDGERNAME", _t("BASICBUYERNAME", "Cash_Party"))
+        state = _t("STATENAME", _t("CONSIGNEESTATENAME", _t("PLACEOFSUPPLY", "Unknown")))
+        is_canc = _t("ISCANCELLED", "No").upper() in ("YES", "TRUE", "1")
+
+        # Extract total voucher amount across AMOUNT or ALLLEDGERENTRIES.LIST
+        amt_str = _t("AMOUNT", "")
+        if not amt_str:
+            amts = [
+                (el.text or "").strip()
+                for el in v.findall(".//AMOUNT")
+                if el is not None and el.text and (el.text or "").strip()
+            ]
+            amt_str = amts[0] if amts else "0"
+        amt_clean = re.sub(r"[₹$,\s]", "", amt_str)
+        amt_clean = re.sub(r"(?i)(dr|cr)$", "", amt_clean)
+        try:
+            amt_val = abs(float(amt_clean))
+        except Exception:
+            amt_val = 0.0
+
+        is_return_or_bad = 1 if (
+            is_canc
+            or any(k in vtype.lower() for k in ("credit note", "return", "cancel", "rejection", "debit note"))
+        ) else 0
+
+        rows.append({
+            "order_id": str(vnum),
+            "order_date": dt_fmt,
+            "customer_id": str(party),
+            "customer_state": str(state),
+            "voucher_type": str(vtype),
+            "net_billed_amount_inr": amt_val,
+            "order_status": "Cancelled" if is_canc else vtype,
+            "is_returned": is_return_or_bad,
+        })
+
+    if not rows:
+        raise ValueError("No <VOUCHER> records found in Tally Prime XML.")
+    return pd.DataFrame(rows)
+
+
+def fetch_woocommerce_live_orders(
+    store_url: str,
+    consumer_key: str,
+    consumer_secret: str,
+    limit: int = 100,
+) -> pd.DataFrame:
+    """
+    Fetches real live orders from WooCommerce REST API v3 (`/wp-json/wc/v3/orders`, read-only)
+    with page=1..N pagination up to 50,000 records.
+    """
+    base = str(store_url or "").strip().rstrip("/")
+    if not base.startswith(("http://", "https://")):
+        base = f"https://{base}"
+    if not consumer_key or not consumer_secret:
+        raise ValueError("WooCommerce consumer_key and consumer_secret are required.")
+    import base64
+    target_total = max(1, min(int(limit), 50000))
+    token = base64.b64encode(f"{str(consumer_key).strip()}:{str(consumer_secret).strip()}".encode("utf-8")).decode("ascii")
+    orders: List[Dict[str, Any]] = []
+    page_num = 1
+
+    while len(orders) < target_total:
+        page_size = min(100, target_total - len(orders))
+        url = f"{base}/wp-json/wc/v3/orders?per_page={page_size}" + (f"&page={page_num}" if page_num > 1 else "")
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Basic {token}",
+                "Accept": "application/json",
+                "User-Agent": "DataXRay-LiveSync/1.0",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=15) as resp:
+            batch = json.loads(resp.read().decode("utf-8"))
+        if not isinstance(batch, list) or not batch:
+            break
+        remaining = target_total - len(orders)
+        orders.extend(batch[:remaining])
+        if len(orders) >= target_total or len(batch) < page_size:
+            break
+        page_num += 1
+
+    if not orders:
+        raise ValueError("WooCommerce API returned 0 orders.")
+    rows = []
+    for o in orders:
+        st = str(o.get("status") or "completed").lower()
+        is_bad = 1 if st in ("cancelled", "refunded", "failed", "trash") else 0
+        billing = o.get("billing") or {}
+        rows.append({
+            "order_id": str(o.get("number") or o.get("id") or ""),
+            "order_date": str(o.get("date_created") or "")[:10],
+            "customer_id": str(o.get("customer_id") or billing.get("email") or "GUEST"),
+            "customer_state": str(billing.get("state") or billing.get("country") or "Unknown"),
+            "payment_gateway": str(o.get("payment_method_title") or o.get("payment_method") or "Unknown"),
+            "discount_amount": float(o.get("discount_total") or 0.0),
+            "shipping_cost": float(o.get("shipping_total") or 0.0),
+            "net_billed_amount": float(o.get("total") or 0.0),
+            "order_status": st.title(),
+            "is_rto_or_cancelled": is_bad,
+        })
+    return pd.DataFrame(rows)
+
+
+def fetch_zoho_books_live_invoices(
+    access_token: str,
+    organization_id: str,
+    api_domain: str = "https://www.zohoapis.in",
+    limit: int = 200,
+) -> pd.DataFrame:
+    """
+    Fetches real live invoices from Zoho Books REST API v3 (`/books/v3/invoices`, read-only)
+    with page=1..N pagination up to 50,000 records.
+    """
+    if not access_token or not organization_id:
+        raise ValueError("Zoho Books access_token and organization_id are required.")
+    dom = str(api_domain or "https://www.zohoapis.in").strip().rstrip("/")
+    target_total = max(1, min(int(limit), 50000))
+    org_q = urllib.parse.quote(str(organization_id).strip())
+    invoices: List[Dict[str, Any]] = []
+    page_num = 1
+
+    while len(invoices) < target_total:
+        page_size = min(200, target_total - len(invoices))
+        url = f"{dom}/books/v3/invoices?organization_id={org_q}&per_page={page_size}" + (f"&page={page_num}" if page_num > 1 else "")
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Zoho-oauthtoken {str(access_token).strip()}",
+                "Accept": "application/json",
+                "User-Agent": "DataXRay-LiveSync/1.0",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        batch = data.get("invoices") or []
+        if not batch:
+            break
+        remaining = target_total - len(invoices)
+        invoices.extend(batch[:remaining])
+        page_ctx = data.get("page_context") or {}
+        has_more = page_ctx.get("has_more_page")
+        if has_more is False or len(invoices) >= target_total or len(batch) < page_size:
+            break
+        page_num += 1
+
+    if not invoices:
+        raise ValueError("Zoho Books API returned 0 invoices.")
+    rows = []
+    for inv in invoices:
+        st = str(inv.get("status") or "sent").lower()
+        overdue_days = int(inv.get("overdue_days") or 0)
+        is_bad = 1 if (st in ("overdue", "void", "unpaid") or overdue_days > 0) else 0
+        rows.append({
+            "order_id": str(inv.get("invoice_number") or inv.get("invoice_id") or ""),
+            "order_date": str(inv.get("date") or "")[:10],
+            "due_date": str(inv.get("due_date") or "")[:10],
+            "customer_id": str(inv.get("customer_name") or inv.get("customer_id") or "CLIENT"),
+            "net_billed_amount_inr": float(inv.get("total") or 0.0),
+            "balance_due": float(inv.get("balance") or 0.0),
+            "days_overdue": overdue_days,
+            "invoice_status": st.title(),
+            "is_overdue_or_bad": is_bad,
+        })
+    return pd.DataFrame(rows)
+
+
+def fetch_quickbooks_live_invoices(
+    realm_id: str,
+    access_token: str,
+    sandbox: bool = False,
+    limit: int = 200,
+) -> pd.DataFrame:
+    """
+    Fetches real live invoices from QuickBooks Online Accounting REST API v3
+    (`/v3/company/{realm_id}/query`, read-only) with STARTPOSITION/MAXRESULTS pagination.
+    """
+    clean_realm = re.sub(r"[^A-Za-z0-9_-]", "", str(realm_id or "").strip())
+    if not clean_realm or not access_token:
+        raise ValueError("QuickBooks Online realm_id and access_token are required for live sync.")
+
+    base = "https://sandbox-quickbooks.api.intuit.com" if sandbox else "https://quickbooks.api.intuit.com"
+    target_total = max(1, min(int(limit), 50000))
+    invoices: List[Dict[str, Any]] = []
+    start_pos = 1
+
+    while len(invoices) < target_total:
+        page_size = min(1000, target_total - len(invoices))
+        q = f"select * from Invoice STARTPOSITION {start_pos} MAXRESULTS {page_size}"
+        url = f"{base}/v3/company/{clean_realm}/query?query={urllib.parse.quote(q)}&minorversion=65"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {str(access_token).strip()}",
+                "Accept": "application/json",
+            },
+            method="GET",
+        )
+        with safe_urlopen(req, timeout=20) as resp:
+            payload = json.loads(resp.read().decode("utf-8", errors="ignore"))
+        batch = ((payload.get("QueryResponse") or {}).get("Invoice")) or []
+        if not batch:
+            break
+        invoices.extend(batch)
+        if len(batch) < page_size:
+            break
+        start_pos += len(batch)
+
+    if not invoices:
+        raise ValueError("QuickBooks Online returned 0 invoices for this company realm.")
+
+    today_str = datetime.date.today().isoformat()
+    rows = []
+    for inv in invoices[:target_total]:
+        total_amt = float(inv.get("TotalAmt") or 0.0)
+        bal = float(inv.get("Balance") or 0.0)
+        due_date = str(inv.get("DueDate") or "")
+        if bal <= 0.01:
+            inv_status = "Paid"
+        elif due_date and due_date < today_str:
+            inv_status = "Overdue"
+        else:
+            inv_status = "Open"
+        cust_ref = inv.get("CustomerRef") or {}
+        terms_ref = inv.get("SalesTermRef") or {}
+        curr_ref = inv.get("CurrencyRef") or {}
+        rows.append({
+            "invoice_id": str(inv.get("DocNumber") or inv.get("Id") or ""),
+            "txn_date": str(inv.get("TxnDate") or ""),
+            "due_date": due_date,
+            "customer_name": str(cust_ref.get("name") or cust_ref.get("value") or "Unknown"),
+            "payment_terms": str(terms_ref.get("name") or terms_ref.get("value") or "Standard"),
+            "currency": str(curr_ref.get("value") or "USD"),
+            "invoice_amount": round(total_amt, 2),
+            "balance_due": round(bal, 2),
+            "invoice_status": inv_status,
+        })
+    return pd.DataFrame(rows)
+
+
+def stage_real_live_provider_to_directory(
+    raw_dir: Path,
+    provider: str,
+    credentials: Dict[str, Any],
+    limit: int = 200,
+) -> Dict[str, Any]:
+    """Pulls live read-only records from Shopify/Stripe/Razorpay/WooCommerce/Zoho/Tally and writes CSV into raw_dir."""
+    prov = str(provider or "").strip().lower()
+    if prov == "shopify":
+        df = fetch_shopify_live_orders(
+            shop_domain=str(credentials.get("shop_domain") or ""),
+            access_token=str(credentials.get("access_token") or ""),
+            limit=limit,
+        )
+        fname = "shopify_live_orders.csv"
+    elif prov == "stripe":
+        df = fetch_stripe_live_charges(
+            api_key=str(credentials.get("api_key") or ""),
+            limit=limit,
+        )
+        fname = "stripe_live_charges.csv"
+    elif prov == "razorpay":
+        df = fetch_razorpay_live_payments(
+            key_id=str(credentials.get("key_id") or ""),
+            key_secret=str(credentials.get("key_secret") or ""),
+            count=limit,
+        )
+        fname = "razorpay_live_payments.csv"
+    elif prov == "woocommerce":
+        df = fetch_woocommerce_live_orders(
+            store_url=str(credentials.get("store_url") or ""),
+            consumer_key=str(credentials.get("consumer_key") or ""),
+            consumer_secret=str(credentials.get("consumer_secret") or ""),
+            limit=limit,
+        )
+        fname = "woocommerce_live_orders.csv"
+    elif prov in ("zoho_books", "zoho"):
+        df = fetch_zoho_books_live_invoices(
+            access_token=str(credentials.get("access_token") or ""),
+            organization_id=str(credentials.get("organization_id") or ""),
+            api_domain=str(credentials.get("api_domain") or "https://www.zohoapis.in"),
+            limit=limit,
+        )
+        fname = "zoho_books_live_invoices.csv"
+    elif prov in ("quickbooks", "quickbooks_online", "qbo"):
+        df = fetch_quickbooks_live_invoices(
+            realm_id=str(credentials.get("realm_id") or credentials.get("realmId") or ""),
+            access_token=str(credentials.get("access_token") or ""),
+            sandbox=bool(credentials.get("sandbox", False)),
+            limit=limit,
+        )
+        fname = "quickbooks_live_invoices.csv"
+    elif prov in ("tally_xml", "tally"):
+        xml_payload = str(credentials.get("xml_content") or "")
+        if not xml_payload and credentials.get("tally_url"):
+            t_url = str(credentials.get("tally_url")).strip()
+            req = urllib.request.Request(t_url, method="GET")
+            with safe_urlopen(req, timeout=15) as resp:
+                xml_payload = resp.read().decode("utf-8", errors="ignore")
+        df = parse_tally_prime_xml_vouchers(xml_payload)
+        fname = "tally_prime_vouchers.csv"
+    else:
+        raise ValueError(
+            f"Unsupported live provider '{provider}'. Supported: shopify, stripe, razorpay, woocommerce, zoho_books, tally_xml."
+        )
+
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    out_csv = raw_dir / fname
+    df.to_csv(out_csv, index=False, encoding="utf-8")
+    return {
+        "provider": prov,
+        "filename": fname,
+        "rows_fetched": int(len(df)),
+        "columns": list(df.columns),
+        "is_live_api": True,
+    }
+
 

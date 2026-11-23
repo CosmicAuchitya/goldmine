@@ -17,7 +17,7 @@ from typing import Optional
 MAX_UNCOMPRESSED_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB safety ceiling
 
 
-def safe_extract_zip(zip_path: Path, dest_dir: Path, max_bytes: int = MAX_UNCOMPRESSED_BYTES) -> None:
+def safe_extract_zip(zip_path: Path, dest_dir: Path, max_bytes: int = MAX_UNCOMPRESSED_BYTES, flatten_tabular: bool = False) -> None:
     """
     Extracts a ZIP archive safely into dest_dir while blocking:
     1. Zip-Slip path traversal ('../', absolute paths, drive letters)
@@ -47,12 +47,36 @@ def safe_extract_zip(zip_path: Path, dest_dir: Path, max_bytes: int = MAX_UNCOMP
                     f"Security Violation (Zip-Bomb Blocked): Uncompressed archive size exceeds {max_bytes:,} bytes."
                 )
 
-        # Second pass: extract verified entries via stream copy
+        # Second pass: extract verified entries via stream copy, skipping macOS/Windows junk
+        # and flattening nested tabular files into dest_root so Stage 1 & DAG discover folder-zipped datasets.
+        tabular_exts = {".csv", ".tsv", ".txt", ".xlsx", ".xls", ".parquet"}
         for member in zf.infolist():
-            target_path = (dest_root / member.filename).resolve()
+            norm_parts = [p for p in Path(member.filename).parts if p not in ("", ".")]
+            if not norm_parts:
+                continue
+            fname = norm_parts[-1]
+            # Skip macOS __MACOSX resource forks, AppleDouble ._ files, .DS_Store, Thumbs.db
+            if any(p == "__MACOSX" for p in norm_parts) or fname.startswith("._") or fname in (".DS_Store", "Thumbs.db", "desktop.ini"):
+                continue
+
             if member.is_dir():
+                target_path = (dest_root / member.filename).resolve()
                 target_path.mkdir(parents=True, exist_ok=True)
+                continue
+
+            # Flatten nested tabular files to dest_root when requested (e.g. macOS/Windows folder-zipped uploads)
+            ext_low = Path(fname).suffix.lower()
+            if flatten_tabular and len(norm_parts) > 1 and ext_low in tabular_exts:
+                flat_target = (dest_root / fname).resolve()
+                if flat_target.exists():
+                    parent_tag = "_".join(norm_parts[:-1]).replace(" ", "_")
+                    flat_target = (dest_root / f"{parent_tag}__{fname}").resolve()
+                if not flat_target.is_relative_to(dest_root):
+                    raise ValueError(f"Security Violation (Zip-Slip Blocked): Archive entry '{member.filename}' escapes '{dest_root}'.")
+                with zf.open(member, "r") as src, open(flat_target, "wb") as dst:
+                    shutil.copyfileobj(src, dst)
             else:
+                target_path = (dest_root / member.filename).resolve()
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 with zf.open(member, "r") as src, open(target_path, "wb") as dst:
                     shutil.copyfileobj(src, dst)

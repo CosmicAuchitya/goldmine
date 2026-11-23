@@ -2483,6 +2483,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
         // =====================================================================
         function initWhatIfSimulator(container) {{
             const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
+            const uSymInit = (DASHBOARD_PAYLOAD.global_kpis && DASHBOARD_PAYLOAD.global_kpis.unit_symbol) || '$';
             const pathways = Array.isArray(DASHBOARD_PAYLOAD.pathways) ? DASHBOARD_PAYLOAD.pathways : [];
 
             let pathCardsHtml = '';
@@ -2507,7 +2508,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                     </div>
                     ${{cbActive ? `
                     <div style="background:rgba(245,158,11,0.15);border:1px solid #f59e0b;padding:10px;border-radius:6px;font-size:12px;color:#f59e0b;margin-bottom:12px;">
-                        🛑 <strong>Statistical Circuit-Breaker Active ($0 CapEx Freeze):</strong> Observed difference is within random sampling noise (p &ge; 0.05). Targeted CapEx is frozen to protect capital.
+                        🛑 <strong>Statistical Circuit-Breaker Active (${{escHtml(uSymInit)}}0 CapEx Freeze):</strong> Observed difference is within random sampling noise (p &ge; 0.05). Targeted CapEx is frozen to protect capital.
                     </div>
                     ` : `
                     <div class="sim-buttons">
@@ -2571,25 +2572,26 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
             const cbActive = DASHBOARD_PAYLOAD.circuit_breaker.active;
             const isMonetary = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const uSym = (DASHBOARD_PAYLOAD.global_kpis && DASHBOARD_PAYLOAD.global_kpis.unit_symbol) || '$';
             const wm = DASHBOARD_PAYLOAD.what_if_model || {{}};
             const excessEv = Number(wm.excess_events ?? DASHBOARD_PAYLOAD.bottleneck.excess_events ?? 0);
             const ciLo = Number(wm.excess_ci_low ?? 0);
             const ciHi = Number(wm.excess_ci_high ?? 0);
-            const avgCost = Number(wm.avg_cost_per_event ?? 0);
+            const avgCost = Math.max(0, Number(wm.avg_cost_per_event ?? 0));
             const botRate = Number(wm.bottleneck_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rate_pct ?? 0);
             const restRate = Number(wm.rest_rate_pct ?? DASHBOARD_PAYLOAD.bottleneck.rest_rate_pct ?? 0);
 
             if (cbActive) {{
                 elEv.textContent = '0 events';
                 if (elEvCi) elEvCi.textContent = 'Noise Gate Active (p >= 0.05)';
-                elDrag.textContent = isMonetary ? '$0.00 ($0 Freeze)' : '0 units ($0 Freeze)';
+                elDrag.textContent = isMonetary ? `${{uSym}}0.00 (${{uSym}}0 Freeze)` : '0 units (CapEx Frozen)';
                 if (elDragCi) elDragCi.textContent = 'CapEx Frozen — Random Variation';
                 if (elPost) elPost.textContent = botRate.toFixed(2) + '%';
                 if (elPostSub) elPostSub.textContent = 'No cohort intervention advised';
                 return;
             }}
 
-            const avertedEv = pct === 0 ? 0 : Math.max(1, Math.round(excessEv * (pct / 100)));
+            const avertedEv = (pct === 0 || excessEv <= 0) ? 0 : Math.max(1, Math.round(excessEv * (pct / 100)));
             const evLo = Math.max(0, Math.round(ciLo * (pct / 100)));
             const evHi = Math.max(evLo, Math.round(ciHi * (pct / 100)));
 
@@ -2600,8 +2602,8 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 const avertedDol = avertedEv * avgCost;
                 const dolLo = evLo * avgCost;
                 const dolHi = evHi * avgCost;
-                elDrag.textContent = '$' + avertedDol.toLocaleString(undefined, {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
-                if (elDragCi) elDragCi.textContent = `95% CI: [$${{dolLo.toLocaleString(undefined, {{maximumFractionDigits:0}})}} to $${{dolHi.toLocaleString(undefined, {{maximumFractionDigits:0}})}}]`;
+                elDrag.textContent = uSym + avertedDol.toLocaleString(undefined, {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+                if (elDragCi) elDragCi.textContent = `95% CI: [${{uSym}}${{dolLo.toLocaleString(undefined, {{maximumFractionDigits:0}})}} to ${{uSym}}${{dolHi.toLocaleString(undefined, {{maximumFractionDigits:0}})}}]`;
             }} else {{
                 elDrag.textContent = avertedEv.toLocaleString() + ' physical units';
                 if (elDragCi) elDragCi.textContent = 'Zero fabricated currency (*1000 ban)';

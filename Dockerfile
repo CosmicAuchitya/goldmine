@@ -25,8 +25,8 @@ COPY autonomous_engine/ /app/autonomous_engine/
 COPY 02_domain_intelligence/ /app/02_domain_intelligence/
 COPY kaggle_benchmarks/ /app/kaggle_benchmarks/
 
-# 5. Initialize writable run state directories
-RUN mkdir -p /app/runs/uploads /app/runs/tenants /app/runs/action_ledgers && \
+# 5. Initialize writable run state directories (SQLite WAL state, tenants, ledgers)
+RUN mkdir -p /app/runs/uploads /app/runs/tenants /app/runs/action_ledgers /app/runs/state && \
     chown -R dataxray:dataxray /app
 
 USER dataxray
@@ -35,7 +35,10 @@ EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
-    UVICORN_PORT=8000
+    UVICORN_PORT=8000 \
+    DATAXRAY_REQUIRE_AUTH=true \
+    DATAXRAY_ALLOW_AI_CODEGEN=false \
+    DATAXRAY_RATE_LIMIT_RPM=120
 
 # 6. Container healthcheck probing physical DuckDB API status
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \

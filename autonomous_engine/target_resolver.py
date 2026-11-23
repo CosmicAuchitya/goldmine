@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Dict, Any, Tuple, Set
+from typing import Optional, Dict, Any, Tuple, Set, List
 import numpy as np
 import pandas as pd
 
@@ -135,8 +135,21 @@ def is_deterministic_target_leakage(
     t_low = str(target_col).strip().lower() if target_col else ""
 
     # Explicit post-event status/date columns when target is an event outcome
-    if any(k in c_low for k in ['reservation_status', 'cancellation_date', 'cancellation_status', 'exit_date']):
+    if any(k in c_low for k in ['reservation_status', 'cancellation_date', 'cancellation_status', 'exit_date', 'order_status', 'delivery_status']):
         return True
+
+    # Post-event customer feedback / reverse-logistics / penalty consequences when target is operational failure/RTO/cancel/churn/status
+    if any(k in t_low for k in ['rto', 'cancel', 'churn', 'default', 'fail', 'attrition', 'fraud', 'breach', 'status', 'outcome']):
+        if not any(k in t_low for k in ['csat', 'rating', 'score', 'satisfaction', 'review']):
+            if any(k in c_low for k in ['csat', 'review_score', 'feedback_score', 'satisfaction_rating', 'customer_rating']):
+                return True
+        if not any(k in t_low for k in ['margin', 'profit', 'shipping', 'refund', 'penalty']):
+            if any(k in c_low for k in [
+                'reverse_shipping', 'return_shipping', 'refund_amount', 'net_contribution_margin', 'realized_margin',
+                'sla_penalty', 'penalty_inr', 'penalty_usd', 'penalty_amount', 'late_fee', 'demurrage',
+                'chargeback_amount', 'damage_cost', 'spoilage_cost', 'writeoff_amount', 'write_off', 'claim_payout', 'compensation_amount'
+            ]):
+                return True
 
     # Post-event / backward-causality temporal leakage when target is departure delay
     if any(k in t_low for k in ['dep_delay', 'delay']):
@@ -218,33 +231,111 @@ def resolve_currency_metadata(
     region_profile: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    Detects authentic currency code, unit symbol, and formatting scale across
-    US (USD $), UK (GBP £), EU (EUR €), and India (INR ₹) datasets.
+    Detects authentic currency code, unit symbol, formatting scale, and multi-currency
+    mixing hazards across US (USD $), UK (GBP £), EU (EUR €), and India (INR ₹) datasets.
     """
     if not cost_col or cost_col not in df.columns:
         return {
             "currency_code": None,
             "unit_symbol": "events",
             "numbering_system": "western",
-            "is_financial": False
+            "is_financial": False,
+            "is_multi_currency": False,
+            "currency_col": None,
+            "detected_currencies": [],
+            "currency_breakdown": {},
         }
+
+    # 0. Multi-Currency Column Audit (Defends CFOs against silent 1:1 USD + INR mixing)
+    KNOWN_ISO_CURRENCIES = {"INR", "USD", "EUR", "GBP", "AED", "SGD", "CAD", "AUD", "JPY", "CHF"}
+    SYMBOL_MAP = {
+        "INR": ("₹", "indian"),
+        "USD": ("$", "western"),
+        "EUR": ("€", "western"),
+        "GBP": ("£", "western"),
+        "AED": ("AED ", "western"),
+        "SGD": ("S$", "western"),
+        "CAD": ("C$", "western"),
+        "AUD": ("A$", "western"),
+        "JPY": ("¥", "western"),
+        "CHF": ("CHF ", "western"),
+    }
+    is_multi_currency = False
+    currency_col = None
+    detected_currencies: List[str] = []
+    currency_breakdown: Dict[str, Dict[str, Any]] = {}
+    dominant_col_currency: Optional[str] = None
+
+    for c in df.columns:
+        cl = str(c).strip().lower()
+        if any(tok in cl for tok in ("currency", "curr_code", "billing_curr", "fx_code")) and not pd.api.types.is_numeric_dtype(df[c]):
+            vals = df[c].dropna().astype(str).str.strip().str.upper()
+            vc = vals[vals.isin(KNOWN_ISO_CURRENCIES)].value_counts()
+            if len(vc) >= 1 and int(vc.sum()) >= max(5, int(len(df) * 0.25)):
+                currency_col = c
+                dominant_col_currency = str(vc.index[0])
+                detected_currencies = [str(k) for k in vc.index.tolist()]
+                cost_num = pd.to_numeric(df[cost_col], errors="coerce").fillna(0.0)
+                for code_k, cnt_v in vc.items():
+                    mask_k = (df[c].astype(str).str.strip().str.upper() == code_k)
+                    sym_k = SYMBOL_MAP.get(str(code_k), ("", "western"))[0]
+                    currency_breakdown[str(code_k)] = {
+                        "count": int(cnt_v),
+                        "share_pct": round(100.0 * int(cnt_v) / max(len(df), 1), 2),
+                        "total_volume": round(float(cost_num.loc[mask_k].sum()), 2),
+                        "symbol": sym_k,
+                    }
+                if len(vc) >= 2 and int(vc.iloc[1]) >= max(5, int(len(df) * 0.005)):
+                    is_multi_currency = True
+                break
 
     # Inspect all column headers for explicit currency clues
     all_col_text = " ".join([str(c).lower() for c in df.columns])
     cost_col_low = str(cost_col).lower()
 
+    # Inspect actual cell data for explicit currency symbols and regional entities
+    cell_sample_text = ""
+    for col in [cost_col] + [c for c in df.columns if c != cost_col]:
+        if col in df.columns:
+            non_null_strs = df[col].dropna().astype(str).head(80)
+            cell_sample_text += " " + " ".join(non_null_strs.str.lower())
+            if len(cell_sample_text) > 4000:
+                break
+
     # 1. Check UK indicators
     is_uk = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['gbp', '£', 'pound', 'pence', 'sterling'])
-    # 2. Check India indicators
-    is_in = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['inr', '₹', 'rs', 'rupee', 'rupees', 'lakh', 'crore', 'gst', 'mrp', 'tally'])
+    is_uk = is_uk or any(k in cell_sample_text for k in ['£', ' gbp ', 'pound', 'pence'])
+
+    # 2. Check India indicators (including Devanagari Hindi currency column/value clues)
+    is_in = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['inr', '₹', 'rs', 'rupee', 'rupees', 'lakh', 'crore', 'gst', 'mrp', 'tally', 'रुपये', 'रुपए', 'रकम', 'राशि'])
+    is_in = is_in or any(k in cell_sample_text for k in ['₹', 'â‚¹', 'rs.', ' rs ', 'inr', 'rupee', 'rupees', 'lakh', 'crore', 'रुपये', 'रुपए', 'दिल्ली', 'मुंबई', 'जयपुर'])
+    indian_entities = ['uttar pradesh', ' delhi', 'maharashtra', ' bihar', 'haryana', 'punjab', 'karnataka', 'gujarat', 'tamil nadu', 'delhivery', 'ekart', 'shiprocket', 'xpressbees', ' dtdc', 'bluedart', 'shadowfax', 'cash on delivery']
+    if not is_in and any(k in cell_sample_text for k in indian_entities):
+        if not any(k in cell_sample_text for k in ['$', '€', '£', ' usd ', ' eur ', ' gbp ']):
+            is_in = True
+
     # 3. Check Euro indicators
     is_eu = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['eur', '€', 'euro'])
+    is_eu = is_eu or any(k in cell_sample_text for k in ['€', ' eur ', 'euro'])
+
+    # 3.5 Check Japanese Yen / Global Asian & Regional Currency indicators
+    is_jp = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['jpy', '¥', '￥', 'yen', '円'])
+    is_jp = is_jp or any(k in cell_sample_text for k in ['¥', '￥', ' jpy ', 'yen'])
+    is_kr = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['krw', '₩', 'won']) or ('₩' in cell_sample_text)
+    is_br = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['brl', 'r$']) or ('r$' in cell_sample_text)
+    is_ae = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['aed', 'dirham'])
+    is_ch = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['chf'])
+
     # 4. Check USD indicators
     is_us = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['usd', '$', 'dollar', 'cents'])
+    is_us = is_us or any(k in cell_sample_text for k in ['$', ' usd ', 'dollar'])
 
     reg_norm = str(region_profile).strip().upper() if region_profile else None
 
-    if is_in or reg_norm in ("IN", "INDIA"):
+    if dominant_col_currency and dominant_col_currency in SYMBOL_MAP:
+        currency_code = dominant_col_currency
+        unit_symbol, numbering_system = SYMBOL_MAP[dominant_col_currency]
+    elif is_in or reg_norm in ("IN", "INDIA"):
         currency_code = "INR"
         unit_symbol = "₹"
         numbering_system = "indian"
@@ -256,6 +347,26 @@ def resolve_currency_metadata(
         currency_code = "EUR"
         unit_symbol = "€"
         numbering_system = "western"
+    elif is_jp or reg_norm in ("JP", "JAPAN"):
+        currency_code = "JPY"
+        unit_symbol = "¥"
+        numbering_system = "western"
+    elif is_kr or reg_norm in ("KR", "KOREA"):
+        currency_code = "KRW"
+        unit_symbol = "₩"
+        numbering_system = "western"
+    elif is_br or reg_norm in ("BR", "BRAZIL"):
+        currency_code = "BRL"
+        unit_symbol = "R$"
+        numbering_system = "western"
+    elif is_ae or reg_norm in ("AE", "UAE"):
+        currency_code = "AED"
+        unit_symbol = "AED "
+        numbering_system = "western"
+    elif is_ch or reg_norm in ("CH", "SWITZERLAND"):
+        currency_code = "CHF"
+        unit_symbol = "CHF "
+        numbering_system = "western"
     else:
         # Default financial currency is USD ($)
         currency_code = "USD"
@@ -266,7 +377,11 @@ def resolve_currency_metadata(
         "currency_code": currency_code,
         "unit_symbol": unit_symbol,
         "numbering_system": numbering_system,
-        "is_financial": True
+        "is_financial": True,
+        "is_multi_currency": is_multi_currency,
+        "currency_col": currency_col,
+        "detected_currencies": detected_currencies,
+        "currency_breakdown": currency_breakdown,
     }
 
 
@@ -311,6 +426,26 @@ def format_currency_value(
             return f"{sign}{sym}{abs_val:,.2f}"
 
 
+_CANONICAL_TARGET_CACHE: Dict[Tuple[Any, ...], Dict[str, Any]] = {}
+_SHARED_TELEMETRY_STORE: Dict[Tuple[Any, ...], Dict[str, Any]] = {}
+
+
+def get_shared_telemetry(df: pd.DataFrame) -> Dict[str, Any]:
+    """
+    Returns a shared per-DataFrame telemetry dictionary (storing pre-computed
+    Chi-Square p-values and numeric series across Stage 5 engines) without
+    attaching non-JSON-serializable pd.Series objects to `df.attrs`.
+    """
+    if not isinstance(df, pd.DataFrame) or df.empty:
+        return {"rows": 0, "chi2_map": {}, "num_series": {}}
+    key = (id(df), len(df), tuple(df.columns))
+    if key not in _SHARED_TELEMETRY_STORE:
+        if len(_SHARED_TELEMETRY_STORE) > 8:
+            _SHARED_TELEMETRY_STORE.clear()
+        _SHARED_TELEMETRY_STORE[key] = {"rows": len(df), "chi2_map": {}, "num_series": {}}
+    return _SHARED_TELEMETRY_STORE[key]
+
+
 def resolve_canonical_target_and_cost(
     df: pd.DataFrame,
     blueprint: Optional[Dict[str, Any]] = None,
@@ -321,8 +456,23 @@ def resolve_canonical_target_and_cost(
     Single Canonical Ground-Truth Resolver for Target Outcome and Financial Exposure.
     Guarantees that Stage 5, Decision Matrix, and Micro-Forensic Engine share
     the exact same binary classification target and physical monetary column.
+    Uses unified telemetry caching across Stage 5 engines to eliminate redundant scans.
     """
     cols = list(df.columns)
+    cache_key = (
+        id(df),
+        len(df),
+        tuple(cols),
+        str(blueprint.get("target_override")) if isinstance(blueprint, dict) else None,
+        str(blueprint.get("cost_override")) if isinstance(blueprint, dict) else None,
+        str(blueprint.get("target_variable_candidate")) if isinstance(blueprint, dict) else None,
+        str(region_profile or (blueprint.get("region_profile") if isinstance(blueprint, dict) else None)),
+        tuple(sorted(raw_source_cols)) if raw_source_cols else None,
+    )
+    cached = _CANONICAL_TARGET_CACHE.get(cache_key)
+    if isinstance(cached, dict) and len(cached.get("binary_target", [])) == len(df):
+        return cached
+
     target_col = None
     cost_col = None
     
@@ -333,10 +483,12 @@ def resolve_canonical_target_and_cost(
     target_keywords = [
         'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
         'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
-        'on_time', 'time_y', 'y_n', 'cancel', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
+        'on_time', 'time_y', 'y_n', 'cancel', 'is_returned', 'returned', 'refund', 'chargeback', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
         'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
         'grade', 'rating', 'score', 'test results', 'test_results', 'test result',
-        'admission type', 'admission_type', 'diagnosis', 'abnormal', 'emergency'
+        'admission type', 'admission_type', 'diagnosis', 'abnormal', 'emergency',
+        'estado', 'statut', 'stato', 'ergebnis', '状態', '状态', 'الحالة', '상태',
+        'स्थिति', 'स्टेटस', 'परिणाम', 'नतीजा'
     ]
 
     # 1.0 Explicit User Override Gate (from 1-Second Intent Handshake)
@@ -349,17 +501,21 @@ def resolve_canonical_target_and_cost(
         c_low = bp_cand.lower()
         is_bad_bp = any(b in c_low for b in [
             'link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary',
-            'path', 'href', 'title', 'longitude', 'latitude', 'pickup', 'dropoff', 'datetime', 'timestamp'
-        ]) or c_low in ['lon', 'lat']
+            'path', 'href', 'title', 'longitude', 'latitude', 'pickup', 'dropoff', 'datetime', 'timestamp',
+            'आईडी', 'क्रमांक'
+        ]) or c_low in ['lon', 'lat'] or c_low.endswith(('_id', '_key', '_code')) or (
+            not pd.api.types.is_numeric_dtype(df[bp_cand]) and len(df) >= 10 and (df[bp_cand].nunique() / max(len(df), 1)) >= 0.90
+        )
         is_artifact = is_index_artifact(bp_cand)
         is_spatial = c_low in ('x', 'y', 'z') and 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
         is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income', 'fare', 'value']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
+        is_continuous_delay_driver = any(k in c_low for k in ['delay_days', 'transit_days', 'delivery_days', 'dispatch_delay', 'lead_time_days', 'sla_days']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 10
         is_demographic = is_demographic_attribute(bp_cand)
         has_discrete_targets = any(
             any(k in c.lower() for k in target_keywords) and (df[c].nunique() <= 10) and not c.lower().endswith(('_id', '_key', '_code', '_num')) and not is_index_artifact(c)
             for c in cols
         )
-        if not is_bad_bp and not is_artifact and not is_spatial and not (is_monetary and has_discrete_targets) and not (is_demographic and has_discrete_targets):
+        if not is_bad_bp and not is_artifact and not is_spatial and not (is_monetary and has_discrete_targets) and not (is_continuous_delay_driver and has_discrete_targets) and not (is_demographic and has_discrete_targets):
             target_col = bp_cand
     if not target_col:
         has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
@@ -371,7 +527,7 @@ def resolve_canonical_target_and_cost(
             ]
         else:
             canonical_targets = [
-                'dep_delay', 'arr_delay', 'delay', 'mpg', 'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'churn',
+                'dep_delay', 'arr_delay', 'delay', 'mpg', 'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'is_returned', 'churn',
                 'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
                 'customer stratification rating', 'median_house_value', 'payment'
             ]
@@ -407,7 +563,8 @@ def resolve_canonical_target_and_cost(
         
         priority_targets = [
             'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
-            'readmit', 'satisfaction', 'exited', 'cancel', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'delay',
+            'readmit', 'satisfaction', 'exited', 'cancel', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status',
+            'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'status', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
         target_candidates.sort(key=lambda col: next((i for i, pt in enumerate(priority_targets) if pt in col.lower()), 999))
@@ -455,27 +612,49 @@ def resolve_canonical_target_and_cost(
     is_num = pd.api.types.is_numeric_dtype(s_raw)
     target_desc = f"{target_col} Adverse Breach"
 
-    # Define unambiguous adverse tokens
+    # Define unambiguous global adverse tokens (English, Spanish, Portuguese, French, German, Italian + ERP snake_case)
     unconditional_adverse = (
-        r'\b(?:bad|default|defaulted|charged_off|delinquent|fraud|fraudulent|'
+        r'\b(?:bad|default|defaulted|charged off|delinquent|fraud|fraudulent|'
         r'churn|churned|attrition|attrited|defect|defective|fail|failed|failure|'
         r'cancel|cancelled|canceled|delayed|delay|late|anomaly|substandard|poor|'
-        r'low_quality|malignant|dead|death|deceased|fatal|disease|stroke|diabetic|'
+        r'low quality|malignant|dead|death|deceased|fatal|disease|stroke|diabetic|'
         r'return|returned|rto|undelivered|rejected|lost|disputed|'
-        r'unacceptable|dissatisfied|exited|abnormal|emergency)\b'
+        r'damaged|damage|spoiled|spoilage|corrupt|corrupted|broken|shortage|missing|stolen|'
+        r'breach|breached|excursion|overdue|expired|contaminated|chargeback|writeoff|write off|'
+        r'rework|scrap|scrapped|outage|downtime|unfulfilled|refused|bounced|declined|void|voided|'
+        r'unacceptable|dissatisfied|exited|abnormal|emergency|'
+        r'cancelado|cancelada|devuelto|devuelta|devolvido|devolvida|reembolsado|rechazado|rechazada|'
+        r'fallido|fallida|fallo|impagado|moroso|vencido|retrasado|retraso|dañado|danado|perdido|anulado|fraude|'
+        r'annulé|annule|retourné|retourne|remboursé|rembourse|échoué|echoue|refusé|refuse|retard|retardé|endommagé|impayé|défaut|'
+        r'storniert|retourniert|zurückgegeben|fehlgeschlagen|abgelehnt|verspätet|beschädigt|verloren|überfällig|zahlungsausfall|'
+        r'annullato|cancellato|reso|rimborsato|rifiutato|ritardo|danneggiato|scaduto)\b'
     )
     # Conditional adverse tokens (only adverse if target column denotes risk/failure/default)
-    conditional_adverse = r'\b(?:1|yes|y|true|t|sim|si|ja|oui|high|high_risk|severe|critical|positive|pos)\b'
+    conditional_adverse = r'\b(?:1|yes|y|true|t|sim|si|ja|oui|high|high risk|severe|critical|positive|pos)\b'
     col_denotes_adverse = any(k in target_col.lower() for k in [
         'risk', 'default', 'churn', 'fraud', 'defect', 'fail', 'bad', 'loss', 'delay',
         'late', 'cancel', 'disease', 'stroke', 'death', 'mortality', 'complication',
         'attrition', 'anomaly', 'claim', 'target', 'label', 'class', 'outcome', 'status',
+        'estado', 'statut', 'stato', 'ergebnis', '状態', '状态', 'الحالة',
         'test results', 'test_results', 'admission'
     ])
 
     if not is_num:
         s_str = s_raw.astype(str).str.lower().str.strip()
-        is_adv = s_str.str.contains(unconditional_adverse, regex=True)
+        # Normalize ERP snake_case / kebab-case / slash codes (e.g. Delayed_SLA_Breach -> delayed sla breach)
+        s_str_norm = s_str.str.replace(r'[_\-/]+', ' ', regex=True).str.replace(r'\s+', ' ', regex=True).str.strip()
+        is_adv = s_str_norm.str.contains(unconditional_adverse, regex=True)
+        # Also match non-Latin global adverse status terms (Devanagari Hindi, Japanese, Chinese, Arabic, Korean)
+        non_latin_adverse_tokens = (
+            'वापस', 'वापसी', 'रिटर्न', 'रद्द', 'कैंसल', 'खराब', 'फेल', 'विफल', 'नुकसान', 'देरी', 'डिफ़ॉल्ट', 'टूटा',
+            'キャンセル', '取消', '返品', '返金', '失敗', '遅延', '破損', '未払', '不正',
+            '退货', '退款', '失败', '延迟', '损坏', '违约', '逾期',
+            'ملغي', 'مرتجع', 'مرفوض', 'فشل', 'متأخر', 'تالف', 'متعثر',
+            '취소', '반품', '환불', '실패', '지연', '파손', '연체',
+        )
+        is_adv_nl = s_str_norm.apply(lambda v: any(ht in v for ht in non_latin_adverse_tokens))
+        if is_adv_nl.any():
+            is_adv = is_adv | is_adv_nl
         # Exclude sentinel missing value tokens from being considered genuine adverse or non-adverse categories
         known_missing = {'unknown', 'none', 'null', 'nan', '', 'na', 'n/a'}
         clean_mask = s_raw.notna() & ~s_str.isin(known_missing)
@@ -489,7 +668,7 @@ def resolve_canonical_target_and_cost(
             binary_target = is_adv.astype(int)
             target_desc = f"{target_col} Adverse State"
         elif col_denotes_adverse:
-            is_cond = s_str.str.contains(conditional_adverse, regex=True) & clean_mask
+            is_cond = s_str_norm.str.contains(conditional_adverse, regex=True) & clean_mask
             if is_cond.sum() > 0:
                 binary_target = is_cond.astype(int)
                 adv_name = s_raw[is_cond].iloc[0] if is_cond.sum() > 0 else 'Positive'
@@ -503,7 +682,7 @@ def resolve_canonical_target_and_cost(
                 binary_target = pd.Series(0, index=df.index)
         elif len(clean_unique) == 2:
             # Positive column name (e.g. good/bad): look for 'good', 'success', 'pass', '0', 'no'
-            is_pos = s_str.str.contains(r'\b(?:good|success|pass|approved|performing|normal|clean)\b', regex=True)
+            is_pos = s_str_norm.str.contains(r'\b(?:good|success|pass|approved|performing|normal|clean)\b', regex=True)
             if is_pos.sum() > 0:
                 binary_target = ((~is_pos) & clean_mask).astype(int)
                 target_desc = f"{target_col} Non-Good Event"
@@ -592,7 +771,11 @@ def resolve_canonical_target_and_cost(
         'loan_amount', 'loanamount', 'loan', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
         'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value',
-        'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income'
+        'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income',
+        'order_value', 'contract_value', 'deal_value', 'invoice_value', 'order_bill', 'bill_inr', 'bill_usd',
+        'premium', 'retainer', 'monthly_rent', 'annual_rent', 'rent_inr', 'rent_usd', 'freight', 'tariff', 'principal', 'tuition', 'commission',
+        'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
+        'रकम', 'राशि', 'रुपये', 'रुपए', 'कीमत', 'मूल्य', 'बिल', 'बिक्री', 'खर्च', 'लागत', 'किराया', 'आय', 'वेतन', 'भुगतान'
     ]
     # Synthetic / non-financial terms to explicitly exclude
     excluded_cost_terms = [
@@ -614,15 +797,22 @@ def resolve_canonical_target_and_cost(
         if bool(re.search(r'(?<!dis)count', c_low)):
             continue
         has_anchored_arr = bool(re.search(r'(?:^|_|annual|monthly|account|net|gross|total)arr(?:$)', c_low)) or (c_low.startswith('arr_') and not any(k in c_low for k in ['time', 'delay', 'date', 'hour', 'min', 'minute', 'airport', 'city', 'loc', 'flight', 'station']))
+        has_currency_suffix = bool(re.search(r'(?:_inr|_usd|_eur|_gbp|_aed|_sgd|_jpy|_cny|_cad|_aud|_chf|_sar|_brl|_mxn|_krw|_zar|_hkd)$', c_low))
         is_exact_total = c_low in ('total', 'total_num', 'total_clean', 'total_val')
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
-        money_words = ['amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment', 'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare', 'house_value', 'property_value', 'asset_value', 'total_bill', 'gross income', 'gross_income']
-        if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr or is_exact_total):
+        money_words = [
+            'amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment',
+            'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare',
+            'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
+            'house_value', 'property_value', 'asset_value', 'total_bill', 'gross income', 'gross_income',
+            'order_value', 'contract_value', 'deal_value', 'invoice_value', 'order_bill', 'premium', 'retainer', 'rent', 'freight', 'tariff', 'principal'
+        ]
+        if any(c_low.endswith(('_' + sfx, sfx)) for sfx in ['id', 'key', 'code', 'number']) and not (any(m in c_low for m in money_words) or has_anchored_arr or has_currency_suffix or is_exact_total):
             continue
         # Exclude pure date/time/tenure columns that end with time units unless they contain explicit money words
-        if any(c_low == t or c_low.endswith(t) for t in time_units) and not (any(m in c_low for m in money_words) or has_anchored_arr):
+        if any(c_low == t or c_low.endswith(t) for t in time_units) and not (any(m in c_low for m in money_words) or has_anchored_arr or has_currency_suffix):
             continue
-        if (any(k in c_low for k in cost_keywords) or has_anchored_arr or is_exact_total) and pd.api.types.is_numeric_dtype(df[c]):
+        if (any(k in c_low for k in cost_keywords) or has_anchored_arr or has_currency_suffix or is_exact_total) and pd.api.types.is_numeric_dtype(df[c]):
             # If raw_source_cols provided, ensure it was an authentic raw column or a clean numeric parse of one
             if raw_source_cols:
                 raw_low = {r.lower() for r in raw_source_cols}
@@ -640,10 +830,12 @@ def resolve_canonical_target_and_cost(
     elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
-            'revenue', 'mrr', 'arr', 'sales', 'total_bill', 'total_amount', 'total_sales', 'exact_total',
-            'gross income', 'gross_income', 'billing_amount', 'billing',
+            'invoiced_amount', 'net_billed', 'net_revenue', 'net_sales', 'selling_price', 'net_amount',
+            'revenue', 'mrr', 'arr', 'sales', 'total_bill', 'order_bill', 'total_amount', 'total_sales', 'exact_total',
+            'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',
+            'gross income', 'gross_income', 'billing_amount', 'gross_billing', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',
-            'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'valor', 'gasto', 'fatura'
+            'amount', 'credit', 'price', 'cost', 'expense', 'claim', 'charges', 'balance', 'adr', 'fare', 'daily_rate', 'payment', 'fee', 'freight', 'tariff', 'principal', 'valor', 'gasto', 'fatura'
         ]
         def _cost_priority(col: str) -> int:
             cl = col.lower().strip()
@@ -662,7 +854,7 @@ def resolve_canonical_target_and_cost(
     curr_meta = resolve_currency_metadata(df, cost_col, eff_region)
     unit_symbol = curr_meta["unit_symbol"]
 
-    return {
+    result = {
         "target_col": target_col,
         "binary_target": binary_target,
         "target_desc": target_desc,
@@ -670,5 +862,13 @@ def resolve_canonical_target_and_cost(
         "is_financial": is_financial,
         "unit_symbol": unit_symbol,
         "currency_code": curr_meta["currency_code"],
-        "numbering_system": curr_meta["numbering_system"]
+        "numbering_system": curr_meta["numbering_system"],
+        "is_multi_currency": bool(curr_meta.get("is_multi_currency", False)),
+        "currency_col": curr_meta.get("currency_col"),
+        "detected_currencies": curr_meta.get("detected_currencies", []),
+        "currency_breakdown": curr_meta.get("currency_breakdown", {}),
     }
+    if len(_CANONICAL_TARGET_CACHE) > 16:
+        _CANONICAL_TARGET_CACHE.clear()
+    _CANONICAL_TARGET_CACHE[cache_key] = result
+    return result

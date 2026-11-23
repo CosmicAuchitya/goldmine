@@ -344,9 +344,10 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
             "Index artifact leakage: CSV row index 'Unnamed: 0' appears as a feature, driver, or key in the dossier!"
         )
 
-    # 7.2 Ban silent Chi-Square fallback (p = 1.0000 on high-delta cliff)
-    p_ones = re.findall(r'Chi-Square p\s*(?:=\s*1\.0000|:\s*1\.0000e\+00)[\s\S]*?Max Delta:\s*([0-9.]+) percentage points', dossier_text)
-    for delta_str in p_ones:
+    # 7.2 Ban silent Chi-Square fallback (p = 1.0000 on high-delta cliff on the SAME line/finding)
+    p_ones_a = re.findall(r'Chi-Square p\s*(?:=\s*1\.0000|:\s*1\.0000e\+00)[^\n]{0,140}Max Delta:\s*([0-9.]+) percentage points', dossier_text)
+    p_ones_b = re.findall(r'Max Delta:\s*([0-9.]+) percentage points[^\n]{0,140}Chi-Square p\s*(?:=\s*1\.0000|:\s*1\.0000e\+00)', dossier_text)
+    for delta_str in (p_ones_a + p_ones_b):
         if float(delta_str) > 10.0:
             physics_violations.append(
                 f"Statistical calculation bug: Chi-Square p is reported as 1.0000 despite a {delta_str} percentage point jump! (Contingency table shape truncation bug)."
@@ -452,7 +453,7 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
         path_b_match = re.search(r'\|\s*\*\*Pathway B:[^\n]+\|\s*\*\*([^\n*|]+)\*\*\s*\|', dossier_text)
         if path_b_match:
             pb_proj = path_b_match.group(1).strip()
-            if not (pb_proj.startswith("$0.00") or pb_proj.startswith("0 ")):
+            if not (re.match(r'^(?:NT\$|R\$|[€£$₹¥])?0\.00\b', pb_proj) or pb_proj.startswith("0 ")):
                 physics_violations.append(
                     f"Statistical Circuit-Breaker Violation: Q1 proves bottleneck is random sampling noise (p >= 0.05), but Pathway B still claims non-zero savings ('{pb_proj}') instead of freezing CapEx at $0.00!"
                 )
@@ -735,7 +736,7 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
                             f"Dossier Synthetic Bottleneck Leak: Strategic Decision Matrix selected Stage 3 synthetic column '{cand_col_dos}' instead of raw physical dimensions ({phys_op_cols[:3]})!"
                         )
                 if "Statistical Circuit-Breaker ACTIVE" in dos_text or "CIRCUIT-BREAKER TRIPPED" in dos_text or "CapEx Frozen" in dos_text:
-                    if "$0" not in sum_text:
+                    if not re.search(r'(?:NT\$|R\$|[€£$₹¥])0\b', sum_text):
                         physics_violations.append("Plain Business Summary Circuit-Breaker Contradiction: Dossier tripped Circuit-Breaker but PLAIN_BUSINESS_SUMMARY.md lacks $0 Spend Warning!")
                     for prohibited in ("15% reduction", "35% reduction", "65% failure reduction"):
                         if prohibited in sum_text:

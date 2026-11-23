@@ -57,9 +57,22 @@ def clean_accounting_series(s: pd.Series) -> pd.Series:
         # Check parenthesized negative: (1,234.50)
         is_paren_neg = v_str.startswith('(') and v_str.endswith(')')
 
-        # Remove currency symbols, commas, Dr/Cr, parens
-        cleaned = re.sub(r'[₹\$£€\s,]', '', v_str)
-        cleaned = re.sub(r'(?i)(dr|cr)$', '', cleaned).strip('()')
+        # Detect European decimal-comma format (e.g. '1.250,50', '125,50 €', '€ 980,75')
+        eu_match = re.match(
+            r'^\s*\(?[+-]?\s*(?:€|EUR)?\s*(\d{1,3}(?:\.\d{3})+|\d+),(\d{1,2})\s*(?:€|EUR|dr|cr)?\)?\s*$',
+            v_str,
+            re.IGNORECASE,
+        )
+        if eu_match:
+            int_part = eu_match.group(1).replace('.', '')
+            dec_part = eu_match.group(2)
+            cleaned = f"{int_part}.{dec_part}"
+        else:
+            # Remove global currency symbols (₹, $, £, €, ¥, ￥, ₩, ₽, ₺, ₪, ₫, ฿, R$), ISO codes, commas, Dr/Cr, parens
+            cleaned = re.sub(r'(?i)R\$', '', v_str)
+            cleaned = re.sub(r'[₹\$£€¥￥₩₽₺₪₫฿\s,]', '', cleaned)
+            cleaned = re.sub(r'(?i)^(eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)', '', cleaned)
+            cleaned = re.sub(r'(?i)(dr|cr|eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)$', '', cleaned).strip('()')
 
         try:
             num = float(cleaned)
@@ -74,9 +87,9 @@ def clean_accounting_series(s: pd.Series) -> pd.Series:
     if len(sample) == 0:
         return s
 
-    converted_sample = [isinstance(_convert_val(x), (float, int)) for x in sample]
+    converted_sample = [isinstance(_convert_val(x), (float, int)) and not isinstance(_convert_val(x), bool) for x in sample]
     if sum(converted_sample) / float(len(converted_sample)) >= 0.75:
-        return s.apply(_convert_val)
+        return pd.to_numeric(s.apply(_convert_val), errors="coerce")
     return s
 
 
@@ -99,23 +112,24 @@ def strip_accounting_summary_rows(df: pd.DataFrame) -> pd.DataFrame:
     tail_indices = df.index[-tail_len:]
 
     for idx in tail_indices:
-        row_str_vals = [str(x).strip() for x in df.loc[idx] if pd.notna(x)]
-        if any(summary_pattern.match(v) for v in row_str_vals[:4]):
+        row_str_vals = [str(x).strip() for x in df.loc[idx] if pd.notna(x) and str(x).strip() != "" and str(x).strip().lower() not in ("nan", "none")]
+        if not row_str_vals or any(summary_pattern.match(v) for v in row_str_vals[:4]):
             rows_to_drop.append(idx)
 
     if rows_to_drop:
-        return df.drop(index=rows_to_drop)
+        return df.drop(index=rows_to_drop).reset_index(drop=True)
     return df
 
-def detect_optimal_header_row(file_path: Path, max_scan_rows: int = 15) -> int:
+def detect_optimal_header_row(file_path: Path, max_scan_rows: int = 15, sheet_name: Any = 0) -> int:
     """
     Returns the 0-indexed row number that most likely represents the true table header.
+    Supports per-sheet header detection for multi-tab Excel workbooks.
     """
     ext = file_path.suffix.lower()
     
     try:
         if ext in ['.xlsx', '.xls']:
-            preview_df = pd.read_excel(file_path, header=None, nrows=max_scan_rows)
+            preview_df = pd.read_excel(file_path, sheet_name=sheet_name, header=None, nrows=max_scan_rows)
         elif ext == '.csv':
             preview_df = smart_read_csv(file_path, header=None, nrows=max_scan_rows)
         else:

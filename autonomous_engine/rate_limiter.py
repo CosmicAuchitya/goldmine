@@ -36,6 +36,7 @@ load_dotenv(_WORKSPACE_ROOT / ".env")
 load_dotenv()
 
 _LOGGED_POOL_BANNER = False
+_DEAD_GEMINI_MODELS = set()
 
 
 class PacedGeminiClient:
@@ -169,19 +170,22 @@ class PacedGeminiClient:
         """
         last_error = None
         preferred_idx = self.total_calls_made % self.num_keys
-        candidate_models = list(dict.fromkeys([
-            self.model,
-            "gemini-2.5-flash-lite",
-            "gemini-2.5-flash",
-            "gemini-3.5-flash-lite",
-            "gemini-3.8-flash",
-            "gemini-3.5-flash",
-        ]))
+        candidate_models = [
+            m for m in dict.fromkeys([
+                self.model,
+                "gemini-2.5-flash",
+                "gemini-3.5-flash-lite",
+                "gemini-3.8-flash",
+                "gemini-3.5-flash",
+            ])
+            if m not in _DEAD_GEMINI_MODELS
+        ] or ["gemini-2.5-flash"]
         
         for attempt in range(1, max_retries + 1):
             client_idx = self._wait_for_slot(preferred_key_idx=preferred_idx)
             active_client = self.clients[client_idx]
-            current_model = candidate_models[(attempt - 1) % len(candidate_models)]
+            live_models = [m for m in candidate_models if m not in _DEAD_GEMINI_MODELS] or ["gemini-2.5-flash"]
+            current_model = live_models[(attempt - 1) % len(live_models)]
             
             try:
                 kwargs = {"model": current_model, "contents": contents}
@@ -194,13 +198,19 @@ class PacedGeminiClient:
             except Exception as e:
                 last_error = e
                 err_str = str(e)
+                is_not_found = "404" in err_str or "not_found" in err_str.lower()
                 is_rate_limit = any(k in err_str.lower() for k in ["429", "quota", "resource_exhausted", "rate_limit"])
-                is_server_error = any(k in err_str.lower() for k in ["503", "unavailable", "deadline", "504", "404"])
+                is_server_error = any(k in err_str.lower() for k in ["503", "unavailable", "deadline", "504"])
+                if is_not_found:
+                    _DEAD_GEMINI_MODELS.add(current_model)
+                    preferred_idx = (client_idx + 1) % self.num_keys
+                    continue
                 if is_server_error:
-                    # Transient server blip (503/504) or model issue: switch key, cycle model, and pause briefly
-                    wait_time = 1.5 * attempt
+                    # Transient server blip (503/504): switch key, cycle model, and pause briefly
+                    wait_time = min(1.0 * attempt, 2.5)
                     next_idx = (client_idx + 1) % self.num_keys
-                    next_model = candidate_models[attempt % len(candidate_models)]
+                    next_models = [m for m in candidate_models if m not in _DEAD_GEMINI_MODELS] or ["gemini-2.5-flash"]
+                    next_model = next_models[attempt % len(next_models)]
                     print(f"\n[!] Server/Endpoint notice: {err_str[:60]}... (Attempt {attempt}/{max_retries}). Switching to Key #{next_idx + 1}, Model '{next_model}' and pausing {wait_time:.1f}s...", flush=True)
                     preferred_idx = next_idx
                     time.sleep(wait_time)

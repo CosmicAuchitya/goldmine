@@ -51,13 +51,14 @@ except ImportError:
             return '"' + str(ident or "").replace('"', '""') + '"'
 
 
-def map_pandas_to_tmdl_type(series: pd.Series) -> Tuple[str, str, str]:
+def map_pandas_to_tmdl_type(series: pd.Series, currency_symbol: str = "$") -> Tuple[str, str, str]:
     """
     Maps pandas/numpy dtype to TMDL dataType, summarizeBy, and formatString.
     Returns: (tmdl_datatype, summarize_by, format_string)
     """
     dtype_str = str(series.dtype).lower()
     col_name = str(series.name).lower() if series.name else ""
+    c_sym = str(currency_symbol or "$").strip() or "$"
 
     if pd.api.types.is_bool_dtype(series):
         return "boolean", "none", ""
@@ -68,8 +69,8 @@ def map_pandas_to_tmdl_type(series: pd.Series) -> Tuple[str, str, str]:
     elif pd.api.types.is_float_dtype(series):
         if any(k in col_name for k in ['rate', 'pct', 'percent', 'ratio', 'yield', 'share']):
             return "double", "average", "0.00%"
-        elif any(k in col_name for k in ['amount', 'price', 'cost', 'revenue', 'income', 'salary', 'balance', 'fee', 'charge', 'drag']):
-            return "double", "sum", "$#,0.00"
+        elif any(k in col_name for k in ['amount', 'price', 'cost', 'revenue', 'income', 'salary', 'balance', 'fee', 'charge', 'drag', 'importe', 'monto', 'betrag']):
+            return "double", "sum", f"{c_sym}#,0.00"
         return "double", "average", "0.00"
     elif pd.api.types.is_datetime64_any_dtype(series):
         return "dateTime", "none", "yyyy-MM-dd"
@@ -276,20 +277,22 @@ annotation CertificationStatus = "Pending Human Review"
     ])
 
     # Measure 5 & 6: Financial Ledgers (if real monetary column present)
+    c_sym = str(canonical.get("unit_symbol") or "$").strip() or "$"
+    tmdl_fmt = f"{c_sym}#,0" if c_sym in ("¥", "₩") else f"{c_sym}#,0.00"
     if cost_col:
         fact_tmdl_lines.extend([
-            f"\tmeasure 'Total Adverse Capital Drag ($)' = CALCULATE(SUM('bi_ready_fact'[{cost_col}]), {dax_filter})",
-            f"\t\tformatString: $#,0.00",
+            f"\tmeasure 'Total Adverse Capital Drag ({c_sym})' = CALCULATE(SUM('bi_ready_fact'[{cost_col}]), {dax_filter})",
+            f"\t\tformatString: {tmdl_fmt}",
             f"\t\tlineageTag: m-adverse-capital-drag",
-            f'\t\tannotation CertifiedMetric = "Audited Drag: ${total_adverse_cost:,.2f}"',
+            f'\t\tannotation CertifiedMetric = "Audited Drag: {c_sym}{total_adverse_cost:,.2f}"',
             "",
-            f"\tmeasure 'Total Portfolio Volume ($)' = SUM('bi_ready_fact'[{cost_col}])",
-            f"\t\tformatString: $#,0.00",
+            f"\tmeasure 'Total Portfolio Volume ({c_sym})' = SUM('bi_ready_fact'[{cost_col}])",
+            f"\t\tformatString: {tmdl_fmt}",
             f"\t\tlineageTag: m-total-portfolio-volume",
-            f'\t\tannotation CertifiedMetric = "Total Ledger Volume: ${total_portfolio_cost:,.2f}"',
+            f'\t\tannotation CertifiedMetric = "Total Ledger Volume: {c_sym}{total_portfolio_cost:,.2f}"',
             "",
-            f"\tmeasure 'Avg Adverse Friction Impact ($)' = DIVIDE([Total Adverse Capital Drag ($)], [Target Events], 0)",
-            f"\t\tformatString: $#,0.00",
+            f"\tmeasure 'Avg Adverse Friction Impact ({c_sym})' = DIVIDE([Total Adverse Capital Drag ({c_sym})], [Target Events], 0)",
+            f"\t\tformatString: {tmdl_fmt}",
             f"\t\tlineageTag: m-avg-adverse-friction",
             ""
         ])
@@ -298,7 +301,7 @@ annotation CertificationStatus = "Pending Human Review"
     for col in df_fact.columns:
         if is_index_artifact(col):
             continue
-        dtype_tmdl, summarize_by, fmt = map_pandas_to_tmdl_type(df_fact[col])
+        dtype_tmdl, summarize_by, fmt = map_pandas_to_tmdl_type(df_fact[col], currency_symbol=c_sym)
         fact_tmdl_lines.append(f"\tcolumn {col}")
         fact_tmdl_lines.append(f"\t\tdataType: {dtype_tmdl}")
         fact_tmdl_lines.append(f"\t\tsummarizeBy: {summarize_by}")
@@ -536,24 +539,26 @@ def generate_semantic_metrics_manifest(
     if cost_col:
         q_cost = quote_sql_ident(cost_col)
         cost_num_sql = f"COALESCE(TRY_CAST({q_cost} AS DOUBLE), 0.0)"
+        mf_sym = str(canonical.get("unit_symbol") or "$").strip() or "$"
+        mf_fmt = f"{mf_sym}#,0" if mf_sym in ("¥", "₩") else f"{mf_sym}#,0.00"
         metrics_manifest["certified_metrics"].extend([
             {
                 "id": "m_adverse_capital_drag",
-                "name": "Total Adverse Capital Drag ($)",
+                "name": f"Total Adverse Capital Drag ({mf_sym})",
                 "dax_formula": f"CALCULATE(SUM('bi_ready_fact'[{cost_col}]), {dax_filter})",
                 "sql_formula": f"COALESCE(SUM(CASE WHEN {sql_filter} THEN {cost_num_sql} ELSE 0.0 END), 0.0)",
                 "metric_type": "financial_sum",
-                "format": "$#,0.00",
+                "format": mf_fmt,
                 "direction": "minimize",
                 "audited_value": total_adverse_cost
             },
             {
                 "id": "m_portfolio_volume",
-                "name": "Total Portfolio Volume ($)",
+                "name": f"Total Portfolio Volume ({mf_sym})",
                 "dax_formula": f"SUM('bi_ready_fact'[{cost_col}])",
                 "sql_formula": f"COALESCE(SUM({cost_num_sql}), 0.0)",
                 "metric_type": "financial_baseline",
-                "format": "$#,0.00",
+                "format": mf_fmt,
                 "direction": "context",
                 "audited_value": total_portfolio_cost
             }
@@ -607,6 +612,8 @@ def generate_vega_lite_visual_specs(
         dim_data.sort(key=lambda x: x["adverse_rate_pct"], reverse=True)
 
     # 1. Vega-Lite Spec: Primary Dimension Risk & Drag
+    vl_sym = str(canonical.get("unit_symbol") or "$").strip() or "$"
+    vl_num_fmt = ",.0f" if vl_sym in ("¥", "₩") else ",.2f"
     spec_dim = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "title": f"Risk Exposure & Capital Drag across {prim_dim or 'Segment'}",
@@ -628,7 +635,7 @@ def generate_vega_lite_visual_specs(
                 {"field": "volume", "type": "quantitative", "title": "Volume", "format": ","},
                 {"field": "target_events", "type": "quantitative", "title": "Adverse Events", "format": ","},
                 {"field": "adverse_rate_pct", "type": "quantitative", "title": "Failure Rate (%)", "format": ".2f"},
-                {"field": "capital_drag", "type": "quantitative", "title": "Capital Drag ($)", "format": "$,.2f"}
+                {"field": "capital_drag", "type": "quantitative", "title": f"Capital Drag ({vl_sym})", "format": vl_num_fmt}
             ]
         }
     }
@@ -793,7 +800,7 @@ def generate_vega_lite_visual_specs(
                                     {"field": "total_records", "type": "quantitative", "title": "Volume", "format": ","},
                                     {"field": "adverse_events", "type": "quantitative", "title": "Adverse Events", "format": ","},
                                     {"field": "adverse_rate_pct", "type": "quantitative", "title": "Failure Rate %", "format": ".2f"},
-                                    {"field": "adverse_capital_drag", "type": "quantitative", "title": "Capital Drag ($)", "format": "$,.2f"}
+                                    {"field": "adverse_capital_drag", "type": "quantitative", "title": f"Capital Drag ({vl_sym})", "format": vl_num_fmt}
                                 ]
                             }
                         }
@@ -855,11 +862,12 @@ def generate_interactive_html_dashboard(
         </div>
     """ if has_temporal else ""
 
+    html_sym = html.escape(str(canonical.get("unit_symbol") or "$").strip() or "$")
     cost_card_html = f"""
         <div class="kpi-card">
             <div class="kpi-title">Adverse Capital Drag</div>
-            <div class="kpi-value text-red">${total_adverse_cost:,.2f}</div>
-            <div class="kpi-subtitle">Across {target_count:,} adverse events (${total_portfolio_cost:,.2f} portfolio)</div>
+            <div class="kpi-value text-red">{html_sym}{total_adverse_cost:,.2f}</div>
+            <div class="kpi-subtitle">Across {target_count:,} adverse events ({html_sym}{total_portfolio_cost:,.2f} portfolio)</div>
         </div>
     """ if cost_col else f"""
         <div class="kpi-card">
@@ -1083,9 +1091,11 @@ def generate_human_certification_checklist(
             pass
 
     if cost_col:
+        chk_sym_raw = str(canonical.get("unit_symbol") or "$").strip() or "$"
+        chk_sym = "\\$" if chk_sym_raw == "$" else chk_sym_raw
         accounting_precheck = (
             f"**Adverse Capital Accounting**: Total financial drag calculated strictly where `_is_target_event == 1` "
-            f"(\\${total_adverse_cost:,.2f} across `{target_count:,}` adverse events; {target_rate_pct}%), preserving non-adverse baseline volume."
+            f"({chk_sym}{total_adverse_cost:,.2f} across `{target_count:,}` adverse events; {target_rate_pct}%), preserving non-adverse baseline volume."
         )
         ledger_review_line = (
             f"**Financial Ledger Scope**: Confirmed that `{cost_col}` accurately represents direct financial exposure / revenue-at-risk "

@@ -110,11 +110,16 @@ def calculate_excess_risk_metrics(k1: int, n1: int, k0: int, n0: int, confidence
     p1 = float(k1) / float(n1)
     p0 = float(k0) / float(n0)
     z_stat, p_val = calculate_two_proportion_z_test(k1, n1, k0, n0)
-    z_crit = 1.95996 if abs(confidence - 0.95) < 0.01 else float(norm.ppf(1.0 - (1.0 - confidence) / 2.0))
-    se_diff = float(np.sqrt((p1 * (1.0 - p1) / max(n1, 1)) + (p0 * (1.0 - p0) / max(n0, 1))))
-    excess_rate = max(0.0, p1 - p0)
-    excess_low = max(0.0, excess_rate - z_crit * se_diff)
-    excess_high = min(1.0, excess_rate + z_crit * se_diff)
+    # Exact Newcombe (1998) Method-10 Hybrid Wilson Score CI on Risk Difference (p1 - p0):
+    # Defeats zero-variance Wald collapse when p1 == 1.0 or p0 == 0.0!
+    l1, u1 = calculate_wilson_ci(k1, n1, confidence=confidence)
+    l0, u0 = calculate_wilson_ci(k0, n0, confidence=confidence)
+    diff = p1 - p0
+    delta_low = diff - float(np.sqrt((p1 - l1) ** 2 + (u0 - p0) ** 2))
+    delta_high = diff + float(np.sqrt((u1 - p1) ** 2 + (p0 - l0) ** 2))
+    excess_rate = max(0.0, diff)
+    excess_low = max(0.0, delta_low)
+    excess_high = min(1.0, max(excess_low, delta_high))
     return {
         "p1": p1,
         "p0": p0,
@@ -195,10 +200,12 @@ class MicroLevelForensicInquiryEngine:
 
         # Canonical Ground-Truth Target & Cost Resolution
         canonical = resolve_canonical_target_and_cost(self.df, self.blueprint, raw_source_cols if raw_source_cols else None)
+        self.canonical = canonical
         self.target_col = canonical["target_col"]
         self.target_series = canonical["binary_target"]
         self.cost_col = canonical["cost_col"]
         self.target_desc = canonical["target_desc"]
+        self.unit_symbol = canonical.get("unit_symbol") or "$"
         
         self.raw_source_cols = raw_source_cols
         synthetic_from_bp = set()
@@ -215,6 +222,7 @@ class MicroLevelForensicInquiryEngine:
             return is_synthetic_column(c, self.blueprint)
 
         coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone'}
+        bookkeeping_cols = {'order_year', 'order_month', 'cogs_inr', 'gross_order_value_inr', 'return_reverse_shipping_inr'}
         num_candidates = [
             c for c in self.df.select_dtypes(include=[np.number]).columns
             if c not in [self.target_col, self.cost_col, 'Id', 'id']
@@ -225,6 +233,9 @@ class MicroLevelForensicInquiryEngine:
             and not is_pseudo_numeric_identifier(c, self.df[c])
             and not is_deterministic_target_leakage(c, self.df[c], self.target_series, self.target_col)
         ]
+        non_bookkeeping = [c for c in num_candidates if c.lower() not in bookkeeping_cols]
+        if len(non_bookkeeping) >= 2:
+            num_candidates = non_bookkeeping
 
         if raw_source_cols:
             valid_feats = [c for c in num_candidates if c in raw_source_cols and not is_synthetic(c)]
@@ -561,14 +572,16 @@ class MicroLevelForensicInquiryEngine:
                     p1_mask = and_mask
                     p1_name = f"Policy 1: Conservative ({verb} {pos_driver} {op2} {v2:.2f} AND {neg_driver} < {med_neg:.2f})"
                 else:
-                    p1_mask = p2_mask
-                    p1_name = f"Policy 1: Conservative ({verb} {pos_driver} {op2} {v2:.2f})"
+                    # Cannot form 2 distinct non-degenerate continuous triage policies on a binary/low-cardinality driver
+                    return []
             else:
-                p1_name = f"Policy 1: Conservative ({verb} {pos_driver} > {q75_pos:.2f})"
-                p2_name = f"Policy 2: Surgical ({verb} {pos_driver} > {med_pos:.2f})"
+                return []
         else:
             p1_name = f"Policy 1: Conservative ({verb} {pos_driver} > {q75_pos:.2f})"
             p2_name = f"Policy 2: Surgical ({verb} {pos_driver} > {med_pos:.2f})"
+
+        if int(p1_mask.sum()) == int(p2_mask.sum()) or int(p1_mask.sum()) <= 0 or int(p2_mask.sum()) <= 0:
+            return []
 
         p3_name = f"Policy 3: Compound ({verb} {pos_driver} > {med_pos:.2f} OR {neg_driver} < {med_neg:.2f})"
         p3_mask = ((self.df[pos_driver] > med_pos) | (self.df[neg_driver] < med_neg)).fillna(False)
@@ -1033,6 +1046,10 @@ class StrategicDecisionEngine:
         if not self.cost_col:
             self.domain_profile["is_financial"] = False
             self.domain_profile["unit_symbol"] = "Events"
+        else:
+            canon_sym = getattr(self.micro_engine, "unit_symbol", None)
+            if canon_sym and canon_sym not in ("Events", ""):
+                self.domain_profile["unit_symbol"] = canon_sym
         self.target_events = int(self.micro_engine.target_series.sum())
         self.target_rate = round((self.target_events / max(self.total_records, 1)) * 100.0, 2)
         self.dossier: Optional[Dict[str, Any]] = None
@@ -1389,17 +1406,28 @@ class StrategicDecisionEngine:
                 return True
             return False
 
+        _monetary_num_block = ("limit", "amount", "price", "cost", "_inr", "_usd", "_eur", "_gbp", "lease", "rent", "capacity", "tons", "salary", "revenue", "billing", "fee", "budget", "spend")
+
+        def _is_valid_discrete_dim(col_name: str) -> bool:
+            if is_invalid_feature(col_name):
+                return False
+            s_c = self.df[col_name]
+            nq = s_c.nunique(dropna=True)
+            if pd.api.types.is_numeric_dtype(s_c):
+                if any(tk in col_name.lower() for tk in _monetary_num_block):
+                    return False
+                return 2 <= nq <= 25
+            return 2 <= nq <= 80
+
         has_raw_discrete = any(
-            not is_invalid_feature(col)
-            and 2 <= self.df[col].nunique(dropna=True) <= 25
+            _is_valid_discrete_dim(col)
             and col in raw_src
             for col in self.columns
         ) if raw_src else False
 
         has_non_demo_discrete = any(
-            not is_invalid_feature(col)
+            _is_valid_discrete_dim(col)
             and not is_demographic_attribute(col)
-            and 2 <= self.df[col].nunique(dropna=True) <= 25
             and (not has_raw_discrete or col in raw_src)
             for col in self.columns
         )
@@ -1407,7 +1435,7 @@ class StrategicDecisionEngine:
         candidates = []
         min_cohort_size = max(5, int(self.total_records * 0.03))
         for col in self.columns:
-            if is_invalid_feature(col):
+            if not _is_valid_discrete_dim(col):
                 continue
             if has_raw_discrete and col not in raw_src:
                 continue
@@ -1415,7 +1443,7 @@ class StrategicDecisionEngine:
             if has_non_demo_discrete and is_demo:
                 continue
             nunq = self.df[col].nunique(dropna=True)
-            if 2 <= nunq <= 25:
+            if True:
                 col_omnibus_p = 1.0
                 if nunq >= 2:
                     try:
@@ -1523,27 +1551,45 @@ class StrategicDecisionEngine:
         # Physical Two-Proportion z-Test & Excess-Risk (Attributable Risk) Calculation
         n1 = high_risk_volume
         k1 = high_risk_events
-        n0 = max(1, self.total_records - n1)
-        k0 = max(0, self.target_events - k1)
-        rest_rate = round((k0 / n0) * 100.0, 2)
+        raw_n0 = self.total_records - n1
+        if (not candidates) or raw_n0 <= 0 or self.target_events in (0, self.total_records):
+            # Degenerate zero-variance population (0% or 100% adverse across all records): no cohort separation exists
+            n0 = max(1, raw_n0)
+            k0 = 0
+            rest_rate = high_risk_rate
+            relative_risk_multiplier = 1.0
+            z_stat = 0.0
+            p_val = 1.0
+            excess_events = 0.0
+            excess_ci_low = 0.0
+            excess_ci_high = 0.0
+            excess_rate_pct = 0.0
+            cand_is_sig = False
+            is_statistically_significant = False
+        else:
+            n0 = raw_n0
+            k0 = max(0, self.target_events - k1)
+            rest_rate = round((k0 / n0) * 100.0, 2)
 
-        denom_rate = rest_rate if rest_rate > 0 else max(self.target_rate, 0.01)
-        relative_risk_multiplier = round(round(high_risk_rate, 2) / denom_rate, 2) if high_risk_rate > 0 else 1.0
-        excess_metrics = calculate_excess_risk_metrics(k1, n1, k0, n0, confidence=0.95)
-        z_stat = excess_metrics["z_stat"]
-        p_val = excess_metrics["p_value"]
-        excess_events = excess_metrics["excess_events"]
-        excess_ci_low = excess_metrics["excess_events_ci_low"]
-        excess_ci_high = excess_metrics["excess_events_ci_high"]
-        excess_rate_pct = round(excess_metrics["excess_rate"] * 100.0, 2)
+            denom_rate = rest_rate if rest_rate > 0 else max(self.target_rate, 0.01)
+            relative_risk_multiplier = round(round(high_risk_rate, 2) / denom_rate, 2) if high_risk_rate > 0 else 1.0
+            excess_metrics = calculate_excess_risk_metrics(k1, n1, k0, n0, confidence=0.95)
+            z_stat = excess_metrics["z_stat"]
+            p_val = excess_metrics["p_value"]
+            excess_events = excess_metrics["excess_events"]
+            excess_ci_low = excess_metrics["excess_events_ci_low"]
+            excess_ci_high = excess_metrics["excess_events_ci_high"]
+            excess_rate_pct = round(excess_metrics["excess_rate"] * 100.0, 2)
 
-        # Statistical Circuit-Breaker Gate: Requires p < 0.05 AND >= 1.10x lift AND >= 3 excess events AND candidate significance
-        cand_is_sig = best_c.get("is_sig", True) if candidates else True
-        if not cand_is_sig:
-            p_val = max(p_val, best_c.get("omnibus_p", 0.06))
-        is_statistically_significant = bool(
-            cand_is_sig and p_val < 0.05 and relative_risk_multiplier >= 1.10 and excess_events >= 3.0
-        )
+            # Statistical Circuit-Breaker Gate: Requires p < 0.05 AND >= 1.10x lift AND >= 3 excess events AND candidate significance
+            cand_is_sig = best_c.get("is_sig", True) if candidates else False
+            if not cand_is_sig:
+                p_val = max(p_val, best_c.get("omnibus_p", 0.06))
+            is_statistically_significant = bool(
+                cand_is_sig and p_val < 0.05 and relative_risk_multiplier >= 1.10 and excess_events >= 3.0
+            )
+            if not is_statistically_significant and p_val < 0.05 and excess_events < 3.0:
+                p_val = max(p_val, 0.06)
 
         is_fin = bool(self.cost_metric and self.cost_metric in self.df.columns)
         unit = self.domain_profile.get("unit_symbol", "$") if is_fin else "events"
@@ -1552,7 +1598,7 @@ class StrategicDecisionEngine:
         if is_fin:
             cohort_adverse_mask = high_risk_mask & (target_series == 1)
             cohort_adverse_dollars = float(pd.to_numeric(self.df.loc[cohort_adverse_mask, self.cost_metric], errors='coerce').fillna(0.0).sum())
-            avg_cost_per_event = (cohort_adverse_dollars / high_risk_events) if high_risk_events > 0 else 0.0
+            avg_cost_per_event = max(0.0, cohort_adverse_dollars / high_risk_events) if high_risk_events > 0 else 0.0
 
         if is_statistically_significant:
             # Epidemiological Excess-Risk (Attributable Risk) Compression:
@@ -1570,6 +1616,9 @@ class StrategicDecisionEngine:
             ci_c_high = max(ci_c_low, int(round(excess_ci_high * 1.00)))
 
             if is_fin:
+                fin_sym = self.domain_profile.get("unit_symbol", "$")
+                if not fin_sym or fin_sym == "Events":
+                    fin_sym = "$"
                 path_a_dollars = path_a_reduction * avg_cost_per_event
                 path_b_dollars = path_b_reduction * avg_cost_per_event
                 path_c_dollars = path_c_reduction * avg_cost_per_event
@@ -1581,14 +1630,15 @@ class StrategicDecisionEngine:
                 ci_c_low_d = ci_c_low * avg_cost_per_event
                 ci_c_high_d = ci_c_high * avg_cost_per_event
 
-                ci_a_str = f"[${ci_a_low_d:,.2f} to ${ci_a_high_d:,.2f}] ({ci_a_low:,} to {ci_a_high:,} excess events) (95% Attributable Risk CI)"
-                ci_b_str = f"[${ci_b_low_d:,.2f} to ${ci_b_high_d:,.2f}] ({ci_b_low:,} to {ci_b_high:,} excess events) (95% Attributable Risk CI)"
-                ci_c_str = f"[${ci_c_low_d:,.2f} to ${ci_c_high_d:,.2f}] ({ci_c_low:,} to {ci_c_high:,} excess events) (95% Attributable Risk CI)"
+                ci_a_str = f"[{fin_sym}{ci_a_low_d:,.2f} to {fin_sym}{ci_a_high_d:,.2f}] ({ci_a_low:,} to {ci_a_high:,} excess events) (95% Attributable Risk CI)"
+                ci_b_str = f"[{fin_sym}{ci_b_low_d:,.2f} to {fin_sym}{ci_b_high_d:,.2f}] ({ci_b_low:,} to {ci_b_high:,} excess events) (95% Attributable Risk CI)"
+                ci_c_str = f"[{fin_sym}{ci_c_low_d:,.2f} to {fin_sym}{ci_c_high_d:,.2f}] ({ci_c_low:,} to {ci_c_high:,} excess events) (95% Attributable Risk CI)"
 
-                proj_a = f"${path_a_dollars:,.2f} risk averted ({path_a_reduction:,} excess adverse events — 25% Excess-Risk Compression)"
-                proj_b = f"${path_b_dollars:,.2f} risk averted ({path_b_reduction:,} excess adverse events — 60% Excess-Risk Compression)"
-                proj_c = f"${path_c_dollars:,.2f} risk averted ({path_c_reduction:,} excess adverse events — 100% Baseline Parity)"
+                proj_a = f"{fin_sym}{path_a_dollars:,.2f} risk averted ({path_a_reduction:,} excess adverse events — 25% Excess-Risk Compression)"
+                proj_b = f"{fin_sym}{path_b_dollars:,.2f} risk averted ({path_b_reduction:,} excess adverse events — 60% Excess-Risk Compression)"
+                proj_c = f"{fin_sym}{path_c_dollars:,.2f} risk averted ({path_c_reduction:,} excess adverse events — 100% Baseline Parity)"
             else:
+                fin_sym = "$"
                 ci_a_str = f"[{ci_a_low:,} to {ci_a_high:,} {unit}] (95% Attributable Risk CI)"
                 ci_b_str = f"[{ci_b_low:,} to {ci_b_high:,} {unit}] (95% Attributable Risk CI)"
                 ci_c_str = f"[{ci_c_low:,} to {ci_c_high:,} {unit}] (95% Attributable Risk CI)"
@@ -1601,7 +1651,7 @@ class StrategicDecisionEngine:
                 {
                     "path_name": "Pathway A: Conservative (25% Excess-Risk Compression via Early Warning Triage)",
                     "strategy_type": "Low CapEx / Immediate Operational Triage",
-                    "implementation_cost": "$5,000 - $15,000" if is_fin else "Internal Staff Hours (No CapEx)",
+                    "implementation_cost": f"{fin_sym}5,000 - {fin_sym}15,000" if is_fin else "Internal Staff Hours (No CapEx)",
                     "time_to_impact": "1 - 2 Weeks",
                     "projected_friction_reduction": proj_a,
                     "statistical_confidence_interval": ci_a_str,
@@ -1612,7 +1662,7 @@ class StrategicDecisionEngine:
                 {
                     "path_name": "Pathway B: Surgical (60% Excess-Risk Compression in Bottleneck Cohort)",
                     "strategy_type": "Moderate CapEx / Targeted Clinical or Operational Protocol",
-                    "implementation_cost": "$25,000 - $50,000" if is_fin else "Dedicated Protocol Buffer & Daily Monitoring",
+                    "implementation_cost": f"{fin_sym}25,000 - {fin_sym}50,000" if is_fin else "Dedicated Protocol Buffer & Daily Monitoring",
                     "time_to_impact": "30 - 45 Days",
                     "projected_friction_reduction": proj_b,
                     "statistical_confidence_interval": ci_b_str,
@@ -1623,7 +1673,7 @@ class StrategicDecisionEngine:
                 {
                     "path_name": "Pathway C: Structural (100% Excess-Risk Elimination — Full Cohort Parity with Baseline)",
                     "strategy_type": "High CapEx / Infrastructure & Automated Remediation",
-                    "implementation_cost": "$100,000 - $250,000" if is_fin else "Dedicated Telemetry / Automated Infrastructure Revamp",
+                    "implementation_cost": f"{fin_sym}100,000 - {fin_sym}250,000" if is_fin else "Dedicated Telemetry / Automated Infrastructure Revamp",
                     "time_to_impact": "90 - 180 Days",
                     "projected_friction_reduction": proj_c,
                     "statistical_confidence_interval": ci_c_str,
@@ -1634,13 +1684,16 @@ class StrategicDecisionEngine:
             ]
         else:
             # STATISTICAL CIRCUIT-BREAKER TRIPPED: Noise Distribution Detected (p >= 0.05 or lift < 1.10x)
+            fin_sym = self.domain_profile.get("unit_symbol", "$")
+            if not fin_sym or fin_sym == "Events":
+                fin_sym = "$"
             path_a_reduction = 0
             path_b_reduction = 0
             path_c_reduction = 0
             if is_fin:
-                proj_a = f"$0.00 risk averted (Circuit-Breaker: Noise p = {p_val:.4f} — CapEx Frozen)"
-                proj_b = f"$0.00 risk averted (Circuit-Breaker: Noise p = {p_val:.4f} — CapEx Frozen)"
-                proj_c = f"$0.00 cohort excess risk (Requires Global System Redesign)"
+                proj_a = f"{fin_sym}0.00 risk averted (Circuit-Breaker: Noise p = {p_val:.4f} — CapEx Frozen)"
+                proj_b = f"{fin_sym}0.00 risk averted (Circuit-Breaker: Noise p = {p_val:.4f} — CapEx Frozen)"
+                proj_c = f"{fin_sym}0.00 cohort excess risk (Requires Global System Redesign)"
             else:
                 proj_a = f"0 {unit} saved (Circuit-Breaker: Noise p = {p_val:.4f} — Intervention Halted)"
                 proj_b = f"0 {unit} saved (Circuit-Breaker: Noise p = {p_val:.4f} — Intervention Halted)"
@@ -1649,9 +1702,9 @@ class StrategicDecisionEngine:
             ci_null_str = f"[0 to 0 excess events] (Null Hypothesis Retained: z = {z_stat:.2f}, p = {p_val:.4f} >= 0.05)"
             pathways = [
                 {
-                    "path_name": "Pathway A: Capital Preservation & Freeze ($0 CapEx — Statistical Circuit-Breaker Active)",
+                    "path_name": f"Pathway A: Capital Preservation & Freeze ({fin_sym}0 CapEx — Statistical Circuit-Breaker Active)",
                     "strategy_type": "Mandatory CapEx Freeze / Zero Targeted Spend",
-                    "implementation_cost": "$0 (CapEx Frozen)",
+                    "implementation_cost": f"{fin_sym}0 (CapEx Frozen)",
                     "time_to_impact": "Immediate",
                     "projected_friction_reduction": proj_a,
                     "statistical_confidence_interval": ci_null_str,
@@ -1762,9 +1815,12 @@ class StrategicDecisionEngine:
                 f"**{dossier['excess_events']:,.1f} Attributable Excess Events (+{dossier['excess_rate_pct']}% above {dossier['rest_rate']}% rest-of-system baseline)**"
             )
         else:
+            fin_sym = dom.get("unit_symbol", "$")
+            if not fin_sym or fin_sym in ("Events", "Batches", "Patients / Lives", "Flights", "Vehicles", "Streams"):
+                fin_sym = "$"
             circuit_banner = (
                 f"- **Statistical Significance Gate**: **⚠️ CIRCUIT-BREAKER TRIPPED (`z = {dossier['z_stat']:.2f}, p = {dossier['p_val']:.4f} >= 0.05`)** — "
-                f"**Uniform Noise Distribution Detected ($0 Cohort CapEx Recommended)**"
+                f"**Uniform Noise Distribution Detected ({fin_sym}0 Cohort CapEx Recommended)**"
             )
 
         md = f"""
