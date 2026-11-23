@@ -82,6 +82,116 @@
       --shadow-modal: 0 28px 64px rgba(0, 0, 0, 0.78);
     }
 
+    /* World-Class Global Light-First Studio Palettes */
+    [data-theme="stripe_alabaster"] {
+      --bg-canvas: #f6f9fc;
+      --bg-surface: #ffffff;
+      --bg-elevated: #eef2f7;
+      --bg-subtle: #f8fafc;
+      --bg-panel: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.90);
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --accent-emerald: #4f46e5;
+      --accent-emerald-bg: #eef2ff;
+      --accent-emerald-border: #c7d2fe;
+      --accent-emerald-soft: rgba(79, 70, 229, 0.09);
+      --accent-sky: #0284c7;
+      --accent-sky-bg: #f0f9ff;
+      --accent-sky-border: #bae6fd;
+    }
+
+    [data-theme="nordic_frost"] {
+      --bg-canvas: #f0f6fa;
+      --bg-surface: #ffffff;
+      --bg-elevated: #e2eef5;
+      --bg-subtle: #f5fafe;
+      --bg-panel: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.90);
+      --border-subtle: #cbdceb;
+      --border-strong: #a7c5de;
+      --text-primary: #0c2340;
+      --text-secondary: #334e68;
+      --text-muted: #526b84;
+      --accent-emerald: #0284c7;
+      --accent-emerald-bg: #e0f2fe;
+      --accent-emerald-border: #7dd3fc;
+      --accent-emerald-soft: rgba(2, 132, 199, 0.09);
+      --accent-sky: #2563eb;
+      --accent-sky-bg: #eff6ff;
+      --accent-sky-border: #bfdbfe;
+    }
+
+    [data-theme="sunset_coral"] {
+      --bg-canvas: #fffbf7;
+      --bg-surface: #ffffff;
+      --bg-elevated: #fdf1e7;
+      --bg-subtle: #fffdf9;
+      --bg-panel: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.90);
+      --border-subtle: #f3dfce;
+      --border-strong: #e7c5aa;
+      --text-primary: #1f1612;
+      --text-secondary: #4e3b31;
+      --text-muted: #7c6358;
+      --accent-emerald: #ea580c;
+      --accent-emerald-bg: #fff7ed;
+      --accent-emerald-border: #fed7aa;
+      --accent-emerald-soft: rgba(234, 88, 12, 0.09);
+      --accent-sky: #7c3aed;
+      --accent-sky-bg: #f5f3ff;
+      --accent-sky-border: #ddd6fe;
+    }
+
+    [data-theme="royal_gold"] {
+      --bg-canvas: #faf7f2;
+      --bg-surface: #ffffff;
+      --bg-elevated: #f3ede2;
+      --bg-subtle: #fcfaf6;
+      --bg-panel: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.90);
+      --border-subtle: #e7e0d4;
+      --border-strong: #d4c8b5;
+      --text-primary: #1c1917;
+      --text-secondary: #44403c;
+      --text-muted: #78716c;
+      --accent-emerald: #b45309;
+      --accent-emerald-bg: #fffbeb;
+      --accent-emerald-border: #fde68a;
+      --accent-emerald-soft: rgba(180, 83, 9, 0.10);
+      --accent-sky: #047857;
+      --accent-sky-bg: #ecfdf5;
+      --accent-sky-border: #a7f3d0;
+    }
+
+    .sidebar-theme-palette {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+    }
+    .app-swatch-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid var(--bg-surface);
+      box-shadow: 0 0 0 1px var(--border-strong);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .app-swatch-dot:hover { transform: scale(1.15); }
+    .app-swatch-dot.active {
+      box-shadow: 0 0 0 2.5px var(--accent-emerald);
+      transform: scale(1.12);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -2015,9 +2125,18 @@
           <button id="btnGlobalHi" type="button" class="lang-btn" style="flex: 1;" onclick="setGlobalLanguage('hi')">🇮🇳 Hinglish</button>
         </div>
 
+        <div class="sidebar-theme-palette" title="Choose Global Studio Theme">
+          <button type="button" class="app-swatch-dot active" data-app-theme="light" style="background:#047857;" title="Royal Emerald (Light)" onclick="setAppStudioTheme('light')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:#4f46e5;" title="Stripe Daylight (Indigo)" onclick="setAppStudioTheme('stripe_alabaster')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:#0284c7;" title="Nordic Frost (Ocean Blue)" onclick="setAppStudioTheme('nordic_frost')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:#b45309;" title="Warm Ivory &amp; Gold" onclick="setAppStudioTheme('royal_gold')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:#ea580c;" title="Growth Coral Studio" onclick="setAppStudioTheme('sunset_coral')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="dark" style="background:#0f172a;" title="Midnight Slate (Dark)" onclick="setAppStudioTheme('dark')"></button>
+        </div>
+
         <div class="sidebar-footer-row">
           <button id="btnThemeToggle" type="button" class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Switch Light / Dark Mode">
-            🌙 Dark
+            🎨 Theme
           </button>
           <button id="btnSettingsModal" type="button" class="btn btn-secondary btn-sm" onclick="openSettingsModal()" title="Settings">
             ⚙️ <span data-i18n="btnSettings">Settings</span>
@@ -6390,14 +6509,27 @@
       }
     }
 
+    function setAppStudioTheme(themeId) {
+      const valid = ['light', 'stripe_alabaster', 'nordic_frost', 'royal_gold', 'sunset_coral', 'dark'];
+      const t = valid.includes(themeId) ? themeId : 'light';
+      appState.theme = t;
+      document.documentElement.setAttribute('data-theme', t);
+      document.querySelectorAll('.app-swatch-dot').forEach(el => {
+        el.classList.toggle('active', el.getAttribute('data-app-theme') === t);
+      });
+      const btn = document.getElementById('btnThemeToggle');
+      if (btn) btn.textContent = (t === 'dark') ? '☀️ Daylight' : '🎨 Studio';
+      try { localStorage.setItem('dataxray_theme', t); } catch (e) {}
+    }
+
     // Initialize clean theme, saved auth/region, & load default example
     window.addEventListener('DOMContentLoaded', () => {
       try {
         const savedTheme = localStorage.getItem('dataxray_theme');
-        if (savedTheme === 'dark') {
-          appState.theme = 'dark';
-          document.documentElement.setAttribute('data-theme', 'dark');
-          document.getElementById('btnThemeToggle').textContent = '☀️ Light';
+        if (savedTheme) {
+          setAppStudioTheme(savedTheme);
+        } else {
+          setAppStudioTheme('stripe_alabaster');
         }
         const savedRegion = localStorage.getItem('dataxray_region');
         if (savedRegion) {

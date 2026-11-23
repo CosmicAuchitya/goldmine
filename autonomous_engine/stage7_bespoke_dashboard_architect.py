@@ -99,16 +99,115 @@ def load_master_ontology() -> Dict[str, Any]:
 
 
 # -----------------------------------------------------------------------------
-# 2. DESIGN ARCHETYPES SPECIFICATION
+# 2. DESIGN ARCHETYPES & 6 WORLD-CLASS STUDIO THEME PALETTES (LIGHT-FIRST)
 # -----------------------------------------------------------------------------
+GLOBAL_STUDIO_THEMES = {
+    "stripe_alabaster": {
+        "id": "stripe_alabaster",
+        "label": "Stripe Daylight",
+        "swatch": "#4F46E5",
+        "canvas": "#F6F9FC",
+        "surface_alt": "#EEF2F7",
+        "card": "#FFFFFF",
+        "border": "#E2E8F0",
+        "accent": "#4F46E5",
+        "accent_alt": "#059669",
+        "danger": "#E11D48",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "shadow": "0 1px 3px rgba(15,23,42,0.05), 0 8px 24px -6px rgba(15,23,42,0.06)",
+        "is_dark": False,
+    },
+    "warm_editorial": {
+        "id": "warm_editorial",
+        "label": "Warm Ivory",
+        "swatch": "#D97706",
+        "canvas": "#FAF7F2",
+        "surface_alt": "#F3EDE2",
+        "card": "#FFFFFF",
+        "border": "#E7E0D4",
+        "accent": "#C26D1F",
+        "accent_alt": "#047857",
+        "danger": "#DC2626",
+        "text": "#1C1917",
+        "muted": "#78716C",
+        "shadow": "0 1px 3px rgba(28,25,23,0.05), 0 8px 24px -6px rgba(120,90,50,0.07)",
+        "is_dark": False,
+    },
+    "nordic_frost": {
+        "id": "nordic_frost",
+        "label": "Nordic Frost",
+        "swatch": "#0284C7",
+        "canvas": "#F0F6FA",
+        "surface_alt": "#E2EEF5",
+        "card": "#FFFFFF",
+        "border": "#CBDCEB",
+        "accent": "#0284C7",
+        "accent_alt": "#2563EB",
+        "danger": "#E11D48",
+        "text": "#0C2340",
+        "muted": "#526B84",
+        "shadow": "0 1px 3px rgba(12,35,64,0.05), 0 8px 24px -6px rgba(2,132,199,0.08)",
+        "is_dark": False,
+    },
+    "royal_emerald": {
+        "id": "royal_emerald",
+        "label": "Royal Emerald",
+        "swatch": "#047857",
+        "canvas": "#F3F7F4",
+        "surface_alt": "#E6EFEA",
+        "card": "#FFFFFF",
+        "border": "#D1E0D7",
+        "accent": "#047857",
+        "accent_alt": "#B45309",
+        "danger": "#DC2626",
+        "text": "#0F291E",
+        "muted": "#526B5F",
+        "shadow": "0 1px 3px rgba(15,41,30,0.05), 0 8px 24px -6px rgba(4,120,87,0.07)",
+        "is_dark": False,
+    },
+    "sunset_coral": {
+        "id": "sunset_coral",
+        "label": "Growth Coral",
+        "swatch": "#EA580C",
+        "canvas": "#FFFBF7",
+        "surface_alt": "#FDF1E7",
+        "card": "#FFFFFF",
+        "border": "#F3DFCE",
+        "accent": "#EA580C",
+        "accent_alt": "#7C3AED",
+        "danger": "#E11D48",
+        "text": "#1F1612",
+        "muted": "#7C6358",
+        "shadow": "0 1px 3px rgba(31,22,18,0.05), 0 8px 24px -6px rgba(234,88,12,0.08)",
+        "is_dark": False,
+    },
+    "midnight_slate": {
+        "id": "midnight_slate",
+        "label": "Midnight Slate",
+        "swatch": "#0F172A",
+        "canvas": "#0B1120",
+        "surface_alt": "#131D33",
+        "card": "#151F32",
+        "border": "#24324A",
+        "accent": "#38BDF8",
+        "accent_alt": "#F59E0B",
+        "danger": "#FB7185",
+        "text": "#F8FAFC",
+        "muted": "#94A3B8",
+        "shadow": "0 4px 20px rgba(0,0,0,0.35)",
+        "is_dark": True,
+    },
+}
+
 ARCHETYPE_SPECS = {
     "swiss_institutional_terminal": {
         "id": "swiss_institutional_terminal",
         "name": "Swiss Institutional Risk Terminal",
         "default_persona": "Chief Risk Officer (CRO) & Credit Committee",
         "layout_concept": "3-column asymmetric risk cockpit with compact tabular command bar",
-        "default_theme": "dark",
-        "font_display": "'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace",
+        "default_theme": "royal_emerald",
+        "font_display": "'Segoe UI Variable Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         "dark": {
             "canvas": "#090D16",
@@ -122,15 +221,15 @@ ARCHETYPE_SPECS = {
             "badge_text": "#D4AF37"
         },
         "light": {
-            "canvas": "#F3F4F6",
+            "canvas": "#F3F7F4",
             "card": "#FFFFFF",
-            "border": "#E5E7EB",
-            "accent": "#B45309",
-            "accent_alt": "#E11D48",
-            "text": "#111827",
-            "muted": "#6B7280",
-            "badge_border": "#B45309",
-            "badge_text": "#B45309"
+            "border": "#D1E0D7",
+            "accent": "#047857",
+            "accent_alt": "#B45309",
+            "text": "#0F291E",
+            "muted": "#526B5F",
+            "badge_border": "#047857",
+            "badge_text": "#047857"
         }
     },
     "nordic_saas_command": {
@@ -138,9 +237,9 @@ ARCHETYPE_SPECS = {
         "name": "Nordic SaaS Command Center",
         "default_persona": "Chief Revenue Officer (CRO) & VP Customer Success",
         "layout_concept": "8-col / 4-col executive bento layout with prominent MRR leakage focus",
-        "default_theme": "dark",
-        "font_display": "'Trebuchet MS', 'Segoe UI Variable Display', system-ui, sans-serif",
-        "font_body": "'Trebuchet MS', 'Segoe UI', -apple-system, sans-serif",
+        "default_theme": "stripe_alabaster",
+        "font_display": "'Segoe UI Variable Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         "dark": {
             "canvas": "#0B1120",
             "card": "#151F32",
@@ -153,15 +252,15 @@ ARCHETYPE_SPECS = {
             "badge_text": "#06B6D4"
         },
         "light": {
-            "canvas": "#F8FAFC",
+            "canvas": "#F6F9FC",
             "card": "#FFFFFF",
             "border": "#E2E8F0",
-            "accent": "#0891B2",
-            "accent_alt": "#4F46E5",
+            "accent": "#4F46E5",
+            "accent_alt": "#059669",
             "text": "#0F172A",
             "muted": "#64748B",
-            "badge_border": "#0891B2",
-            "badge_text": "#0891B2"
+            "badge_border": "#4F46E5",
+            "badge_text": "#4F46E5"
         }
     },
     "editorial_commerce_studio": {
@@ -169,7 +268,7 @@ ARCHETYPE_SPECS = {
         "name": "Editorial Commerce & CX Studio",
         "default_persona": "Chief Operating Officer (COO) & VP Growth / CX",
         "layout_concept": "Magazine-style asymmetric story header with CX and margin friction layout",
-        "default_theme": "light",
+        "default_theme": "warm_editorial",
         "font_display": "'Georgia', 'Cambria', 'Palatino Linotype', serif",
         "font_body": "-apple-system, 'Segoe UI', Roboto, sans-serif",
         "dark": {
@@ -186,13 +285,13 @@ ARCHETYPE_SPECS = {
         "light": {
             "canvas": "#FAF7F2",
             "card": "#FFFFFF",
-            "border": "#E7E5E4",
-            "accent": "#D97706",
-            "accent_alt": "#059669",
+            "border": "#E7E0D4",
+            "accent": "#C26D1F",
+            "accent_alt": "#047857",
             "text": "#1C1917",
             "muted": "#78716C",
-            "badge_border": "#D97706",
-            "badge_text": "#D97706"
+            "badge_border": "#C26D1F",
+            "badge_text": "#C26D1F"
         }
     },
     "industrial_scada_telemetry": {
@@ -200,8 +299,8 @@ ARCHETYPE_SPECS = {
         "name": "Industrial SCADA Process Telemetry",
         "default_persona": "VP Operations, Plant Director & Head of QA",
         "layout_concept": "Process control layout leading with parameter cliffs & tolerance frontier",
-        "default_theme": "dark",
-        "font_display": "'Consolas', 'Courier New', monospace",
+        "default_theme": "nordic_frost",
+        "font_display": "'Segoe UI Variable Display', -apple-system, 'Segoe UI', sans-serif",
         "font_body": "-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
         "dark": {
             "canvas": "#101418",
@@ -215,15 +314,15 @@ ARCHETYPE_SPECS = {
             "badge_text": "#F59E0B"
         },
         "light": {
-            "canvas": "#EBF1F5",
+            "canvas": "#F0F6FA",
             "card": "#FFFFFF",
-            "border": "#CED9E0",
-            "accent": "#D97706",
-            "accent_alt": "#0D9488",
-            "text": "#182026",
-            "muted": "#5C7080",
-            "badge_border": "#D97706",
-            "badge_text": "#D97706"
+            "border": "#CBDCEB",
+            "accent": "#0284C7",
+            "accent_alt": "#2563EB",
+            "text": "#0C2340",
+            "muted": "#526B84",
+            "badge_border": "#0284C7",
+            "badge_text": "#0284C7"
         }
     },
     "clinical_diagnostic_clarity": {
@@ -231,7 +330,7 @@ ARCHETYPE_SPECS = {
         "name": "Clinical Diagnostic & Operations Clarity",
         "default_persona": "Chief Medical Officer / Clinical Ops Director / CHRO",
         "layout_concept": "Clinical cohort stratification & early-intervention layout",
-        "default_theme": "light",
+        "default_theme": "nordic_frost",
         "font_display": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         "font_body": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         "dark": {
@@ -246,7 +345,7 @@ ARCHETYPE_SPECS = {
             "badge_text": "#3B82F6"
         },
         "light": {
-            "canvas": "#F4F7FB",
+            "canvas": "#F0F6FA",
             "card": "#FFFFFF",
             "border": "#E2E8F0",
             "accent": "#2563EB",
@@ -1129,6 +1228,52 @@ def build_dashboard_payload(
             f"(baaki business mein {rest_rate:.2f}%, {rr_mult:.2f}x zyada jokhim, {excess_ev:.1f} roke ja sakne wale excess events)."
         )
 
+    # Temporal slices by (period, prim_val, sec_val) for TRUE Power BI cross-filtered Time-Series!
+    temporal_slices: List[Dict[str, Any]] = []
+    if is_temporal and temp_date_col in df_fact.columns:
+        try:
+            dt_ser = pd.to_datetime(df_fact[temp_date_col], errors="coerce")
+            valid_dt = dt_ser.notna()
+            if valid_dt.sum() >= 10:
+                gran = "M"
+                sample_p = str(temporal_periods[0].get("period", "")) if temporal_periods else ""
+                if len(sample_p) == 4 and sample_p.isdigit():
+                    gran = "Y"
+                elif "Q" in sample_p:
+                    gran = "Q"
+                p_ser = dt_ser.dt.to_period(gran).astype(str)
+                tmp_t = pd.DataFrame({
+                    "period": p_ser,
+                    "prim_val": df_fact[prim_dim].fillna("Missing").astype(str) if (prim_dim and prim_dim in df_fact.columns) else "All",
+                    "sec_val": df_fact[sec_dim].fillna("Missing").astype(str) if (sec_dim and sec_dim in df_fact.columns) else "All",
+                    "ev": s_bin.astype(int),
+                })[valid_dt]
+                # Keep top primary & secondary segments matching micro-cube
+                if prim_segments:
+                    p_set = set(prim_segments)
+                    tmp_t["prim_val"] = tmp_t["prim_val"].where(tmp_t["prim_val"].isin(p_set), "Other")
+                if sec_segments:
+                    s_set = set(sec_segments)
+                    tmp_t["sec_val"] = tmp_t["sec_val"].where(tmp_t["sec_val"].isin(s_set), "Other")
+                t_grp = tmp_t.groupby(["period", "prim_val", "sec_val"], as_index=False).agg(
+                    volume=("ev", "count"),
+                    adverse_events=("ev", "sum"),
+                )
+                for r in t_grp.itertuples(index=False):
+                    temporal_slices.append({
+                        "period": str(r.period),
+                        "prim_val": str(r.prim_val),
+                        "sec_val": str(r.sec_val),
+                        "volume": int(r.volume),
+                        "adverse_events": int(r.adverse_events),
+                    })
+        except Exception:
+            temporal_slices = []
+
+    unit_sym_resolved = str(canonical.get("unit_symbol") or "$").strip() or "$"
+    if not cost_col:
+        unit_sym_resolved = "events"
+
     payload = {
         "meta": {
             "dataset_name": out_dir.parent.name,
@@ -1152,7 +1297,8 @@ def build_dashboard_payload(
             "adverse_rate_pct": target_rate_pct,
             "system_reliability_pct": round(100.0 - target_rate_pct, 2),
             "has_monetary_ledger": bool(cost_col),
-            "currency_unit": "$" if cost_col else "events",
+            "currency_unit": unit_sym_resolved,
+            "unit_symbol": unit_sym_resolved,
             "cost_column": cost_col or "None (Unit Counts)",
             "adverse_capital_drag": round(total_adverse_cost, 2),
             "total_portfolio_volume": round(total_portfolio_cost, 2)
@@ -1196,7 +1342,8 @@ def build_dashboard_payload(
                 "date_column": temp_date_col,
                 "pop_delta_pp": temp_pop_delta,
                 "trend_direction": temp_trend_dir,
-                "periods": temporal_periods
+                "periods": temporal_periods,
+                "slices": temporal_slices
             },
             "pareto": pareto_data,
             "lollipop": lollipop_data,
@@ -1229,7 +1376,9 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
     """
     archetype_key = design_bp["archetype"]
     arch_spec = ARCHETYPE_SPECS.get(archetype_key, ARCHETYPE_SPECS["swiss_institutional_terminal"])
-    def_theme = arch_spec.get("default_theme", "dark")
+    def_theme = arch_spec.get("default_theme", "stripe_alabaster")
+    if def_theme not in GLOBAL_STUDIO_THEMES:
+        def_theme = "stripe_alabaster"
 
     # Safe JSON stringification neutralizing script escapes
     raw_payload_json = (
@@ -1241,8 +1390,38 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
         .replace("\u2029", "\\u2029")
     )
 
-    t_dark = arch_spec["dark"]
-    t_light = arch_spec["light"]
+    t_def = GLOBAL_STUDIO_THEMES[def_theme]
+    t_dark = GLOBAL_STUDIO_THEMES["midnight_slate"]
+    t_light = GLOBAL_STUDIO_THEMES["stripe_alabaster"]
+    u_sym_py = str((payload.get("global_kpis") or {}).get("unit_symbol") or "$")
+
+    # Build CSS blocks for all 6 world-class light-first Studio Themes
+    studio_theme_css_blocks = []
+    for tid, td in GLOBAL_STUDIO_THEMES.items():
+        studio_theme_css_blocks.append(f"""
+        [data-theme="{tid}"] {{
+            --canvas-bg: {td["canvas"]};
+            --surface-alt: {td["surface_alt"]};
+            --card-bg: {td["card"]};
+            --border-color: {td["border"]};
+            --accent-primary: {td["accent"]};
+            --accent-secondary: {td["accent_alt"]};
+            --danger-color: {td["danger"]};
+            --text-main: {td["text"]};
+            --text-muted: {td["muted"]};
+            --shadow-elevation: {td["shadow"]};
+        }}""")
+    studio_theme_css = "\n".join(studio_theme_css_blocks)
+
+    theme_swatches_html = "".join(
+        f'<button type="button" class="theme-swatch-btn{" active" if tid == def_theme else ""}" '
+        f'data-theme-id="{tid}" title="{html.escape(td["label"])}" '
+        f'onclick="setStudioTheme(\'{tid}\')">'
+        f'<span class="swatch-dot" style="background:{td["swatch"]};"></span>'
+        f'<span class="swatch-lbl">{html.escape(td["label"])}</span>'
+        f'</button>'
+        for tid, td in GLOBAL_STUDIO_THEMES.items()
+    )
 
     html_template = f"""<!DOCTYPE html>
 <html lang="en" data-theme="{def_theme}">
@@ -1253,32 +1432,51 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
     <style>
         /* =====================================================================
            BESPOKE DESIGN SYSTEM: {arch_spec["name"].upper()}
+           6 World-Class Studio Theme Palettes · Power BI Connected Architecture
            Zero External CDNs & Dynamic CSS Variable Palettes
            ===================================================================== */
         :root {{
-            --canvas-bg: {t_dark["canvas"]};
-            --card-bg: {t_dark["card"]};
-            --border-color: {t_dark["border"]};
-            --accent-primary: {t_dark["accent"]};
-            --accent-secondary: {t_dark["accent_alt"]};
-            --text-main: {t_dark["text"]};
-            --text-muted: {t_dark["muted"]};
+            --canvas-bg: {t_def["canvas"]};
+            --surface-alt: {t_def["surface_alt"]};
+            --card-bg: {t_def["card"]};
+            --border-color: {t_def["border"]};
+            --accent-primary: {t_def["accent"]};
+            --accent-secondary: {t_def["accent_alt"]};
+            --danger-color: {t_def["danger"]};
+            --text-main: {t_def["text"]};
+            --text-muted: {t_def["muted"]};
             --font-display: {arch_spec["font_display"]};
             --font-body: {arch_spec["font_body"]};
-            --card-radius: 8px;
-            --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.25);
+            --card-radius: 14px;
+            --shadow-elevation: {t_def["shadow"]};
         }}
 
         [data-theme="light"] {{
             --canvas-bg: {t_light["canvas"]};
+            --surface-alt: {t_light["surface_alt"]};
             --card-bg: {t_light["card"]};
             --border-color: {t_light["border"]};
             --accent-primary: {t_light["accent"]};
             --accent-secondary: {t_light["accent_alt"]};
+            --danger-color: {t_light["danger"]};
             --text-main: {t_light["text"]};
             --text-muted: {t_light["muted"]};
-            --shadow-elevation: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-elevation: {t_light["shadow"]};
         }}
+
+        [data-theme="dark"] {{
+            --canvas-bg: {t_dark["canvas"]};
+            --surface-alt: {t_dark["surface_alt"]};
+            --card-bg: {t_dark["card"]};
+            --border-color: {t_dark["border"]};
+            --accent-primary: {t_dark["accent"]};
+            --accent-secondary: {t_dark["accent_alt"]};
+            --danger-color: {t_dark["danger"]};
+            --text-main: {t_dark["text"]};
+            --text-muted: {t_dark["muted"]};
+            --shadow-elevation: {t_dark["shadow"]};
+        }}
+        {studio_theme_css}
 
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
         body {{
@@ -1286,8 +1484,158 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             color: var(--text-main);
             font-family: var(--font-body);
             line-height: 1.5;
-            padding: 24px;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            padding: 24px 28px;
+            max-width: 1520px;
+            margin: 0 auto;
+            font-variant-numeric: tabular-nums;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }}
+
+        /* Premium Studio Theme Picker Bar */
+        .theme-studio-bar {{
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 4px 6px;
+            box-shadow: var(--shadow-elevation);
+            flex-wrap: wrap;
+        }}
+        .theme-swatch-btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.16s ease;
+        }}
+        .theme-swatch-btn:hover {{
+            color: var(--text-main);
+            background: var(--surface-alt);
+        }}
+        .theme-swatch-btn.active {{
+            background: var(--surface-alt);
+            color: var(--text-main);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 1px var(--accent-primary);
+        }}
+        .swatch-dot {{
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255,255,255,0.85);
+            box-shadow: 0 0 0 1px rgba(15,23,42,0.18);
+            flex-shrink: 0;
+        }}
+
+        /* Power BI Active Cross-Filter Breadcrumb Ribbon */
+        .active-filter-bar {{
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--accent-primary);
+            box-shadow: 0 6px 20px -8px rgba(79, 70, 229, 0.25);
+            animation: filterSlideIn 0.2s ease;
+        }}
+        .active-filter-bar.visible {{ display: flex; }}
+        @keyframes filterSlideIn {{
+            from {{ opacity: 0; transform: translateY(-4px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        .filter-pill-tag {{
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-primary);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }}
+        .filter-pill-tag button {{
+            background: rgba(255,255,255,0.22);
+            border: none;
+            color: #ffffff;
+            width: 16px;
+            height: 16px;
+            border-radius: 999px;
+            font-size: 10px;
+            cursor: pointer;
+            line-height: 16px;
+        }}
+
+        /* Connected Secondary Cross-Filter Strip */
+        .sec-cross-strip {{
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-radius);
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-elevation);
+        }}
+        .sec-cross-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }}
+        .sec-mini-card {{
+            border: 1px solid var(--border-color);
+            background: var(--surface-alt);
+            border-radius: 10px;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.16s ease;
+            text-align: left;
+        }}
+        .sec-mini-card:hover {{
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }}
+        .sec-mini-card.active {{
+            border-color: var(--accent-primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 2px var(--accent-primary);
+        }}
+        .sec-mini-card.dimmed {{ opacity: 0.42; }}
+        .sec-mini-bar-track {{
+            height: 5px;
+            border-radius: 999px;
+            background: var(--border-color);
+            margin-top: 6px;
+            overflow: hidden;
+        }}
+        .sec-mini-bar-fill {{
+            height: 100%;
+            border-radius: 999px;
+            background: var(--accent-primary);
+            transition: width 0.25s ease;
+        }}
+
+        @keyframes kpiPulse {{
+            0% {{ transform: scale(1); }}
+            40% {{ transform: scale(1.018); border-color: var(--accent-primary); }}
+            100% {{ transform: scale(1); }}
+        }}
+        .kpi-card.kpi-flash {{ animation: kpiPulse 0.32s ease; }}
+        .kpi-card:hover, .panel-card:hover {{
+            border-color: var(--accent-primary);
+            transition: border-color 0.2s ease, transform 0.2s ease;
         }}
 
         /* Command Bar */
@@ -1820,9 +2168,11 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 {f'<span class="badge badge-circuit-breaker">🛑 Circuit-Breaker Active</span>' if payload["circuit_breaker"]["active"] else ''}
             </div>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="flex-wrap: wrap;">
+            <div class="theme-studio-bar" id="theme-studio-bar" aria-label="Dashboard Theme Studio">
+                {theme_swatches_html}
+            </div>
             <button class="btn-ctrl" id="lang-btn" onclick="toggleLanguage()">🇮🇳 Hinglish Switch</button>
-            <button class="btn-ctrl" id="theme-btn" onclick="toggleTheme()">☀️ Light / 🌙 Dark</button>
             <button class="btn-ctrl" onclick="window.print()">🖨️ Print / PDF</button>
         </div>
     </header>
@@ -1830,7 +2180,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
     <!-- Domain Ontology Intelligence Strip -->
     <div class="ont-strip">
         <span class="ont-pill"><strong>Ontology:</strong> {html.escape(design_bp["matched_ontology"]["domain_name"])} ({html.escape(design_bp["matched_ontology"]["domain_code"])})</span>
-        <span class="ont-pill"><strong>Layout:</strong> {html.escape(design_bp["design_system"]["layout_concept"])}</span>
+        <span class="ont-pill"><strong>Interactive Mode:</strong> ⚡ Power BI Connected Cross-Filter (Click Any Bar, Dot, Bubble or Cell)</span>
         <span class="ont-pill"><strong>DFII Score:</strong> {design_bp["dfii_score"]} / 19 ({len(design_bp["selected_panels"])} Adaptive Panels)</span>
     </div>
 
@@ -1850,8 +2200,30 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             <option value="All">All {html.escape(payload['sec_dim_name'])}</option>
         </select>
         ''' if payload['sec_dim_name'] and payload['sec_dim_name'] != 'Subsegment' and len(payload.get('sec_segments', [])) >= 2 else ''}
-        <button class="btn-ctrl" style="padding: 4px 10px; font-size: 11px;" onclick="resetFilters()">Reset</button>
+        <button class="btn-ctrl" style="padding: 4px 10px; font-size: 11px;" onclick="resetFilters()">Reset All</button>
     </div>
+
+    <!-- Power BI Live Active Cross-Filter Breadcrumb Ribbon -->
+    <div class="active-filter-bar" id="active-filter-bar">
+        <div id="active-filter-pills" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span id="active-filter-share" style="font-size:12px;font-weight:700;color:var(--text-muted);"></span>
+            <button class="btn-ctrl" style="padding:4px 10px;font-size:11px;" onclick="resetFilters()">✕ Clear Filters (ESC)</button>
+        </div>
+    </div>
+
+    <!-- Connected Secondary Dimension Interactive Mini-Bars (Power BI Slicer Visual) -->
+    {f'''
+    <div class="sec-cross-strip" id="sec-cross-strip">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="slicer-label" data-en="Connected Cross-Filter by {html.escape(payload['sec_dim_name'], quote=True)} (Click Any Card to Slice Entire Dashboard)" data-hi="{html.escape(payload['sec_dim_name'], quote=True)} Se Poora Dashboard Filter Karein (Kisi Bhi Card Par Click Karein)">
+                Connected Cross-Filter by {html.escape(payload['sec_dim_name'])} (Click Any Card to Slice Entire Dashboard)
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);">Live DuckDB Micro-Cube · 0% Drift</span>
+        </div>
+        <div class="sec-cross-grid" id="sec-cross-bars"></div>
+    </div>
+    ''' if payload['sec_dim_name'] and payload['sec_dim_name'] != 'Subsegment' and len(payload.get('sec_segments', [])) >= 2 else ''}
 
     <!-- Executive Insight Strip -->
     <div class="exec-banner { 'cb-alert' if payload['circuit_breaker']['active'] else '' }" id="exec-banner">
@@ -1862,7 +2234,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             <span id="exec-banner-text">{html.escape(payload["bottleneck"]["narrative_en"])}</span>
         </div>
         <div style="font-size: 12px; font-weight: 700; white-space: nowrap;">
-            Status: { '🛑 $0 CapEx Freeze' if payload['circuit_breaker']['active'] else '🟢 Statistically Validated' }
+            Status: { f'🛑 {html.escape(u_sym_py)}0 CapEx Freeze' if payload['circuit_breaker']['active'] else '🟢 Statistically Validated' }
         </div>
     </div>
 
@@ -1871,7 +2243,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
         <div class="kpi-card accent-gold">
             <div class="kpi-title" data-en="Audited Records" data-hi="Kul Records">Audited Records</div>
             <div class="kpi-val" id="kpi-records">{payload['global_kpis']['total_records']:,}</div>
-            <div class="kpi-sub" data-en="Zero Cartesian Drift" data-hi="100% Asli Records">Zero Cartesian Drift</div>
+            <div class="kpi-sub" id="kpi-records-sub" data-en="Zero Cartesian Drift" data-hi="100% Asli Records">Zero Cartesian Drift</div>
         </div>
         <div class="kpi-card accent-red">
             <div class="kpi-title" data-en="Adverse Events" data-hi="Failure / Nuksan Events">Adverse Events</div>
@@ -1888,10 +2260,10 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 { 'Adverse Capital Drag' if payload['global_kpis']['has_monetary_ledger'] else 'Adverse Failure Share' }
             </div>
             <div class="kpi-val" id="kpi-drag">
-                { f"${payload['global_kpis']['adverse_capital_drag']:,.2f}" if payload['global_kpis']['has_monetary_ledger'] else f"{payload['global_kpis']['adverse_events']:,} units" }
+                { f"{html.escape(u_sym_py)}{payload['global_kpis']['adverse_capital_drag']:,.2f}" if payload['global_kpis']['has_monetary_ledger'] else f"{payload['global_kpis']['adverse_events']:,} units" }
             </div>
             <div class="kpi-sub" id="kpi-drag-sub">
-                { f"Out of ${payload['global_kpis']['total_portfolio_volume']:,.2f} total" if payload['global_kpis']['has_monetary_ledger'] else "Physical Adverse Units" }
+                { f"Out of {html.escape(u_sym_py)}{payload['global_kpis']['total_portfolio_volume']:,.2f} total" if payload['global_kpis']['has_monetary_ledger'] else "Physical Adverse Units" }
             </div>
         </div>
     </div>
@@ -1950,11 +2322,33 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             return [Math.max(0, (center - half) * 100), Math.min(100, (center + half) * 100)];
         }}
 
-        // Theme Toggle
-        function toggleTheme() {{
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        function getCurrencySymbol() {{
+            const s = (DASHBOARD_PAYLOAD.global_kpis && (DASHBOARD_PAYLOAD.global_kpis.unit_symbol || DASHBOARD_PAYLOAD.global_kpis.currency_unit)) || '$';
+            return s === 'events' ? '' : s;
+        }}
+
+        function fmtMoney(val) {{
+            const sym = getCurrencySymbol();
+            const num = Number(val || 0);
+            const digits = (sym === '¥' || sym === '₩') ? 0 : 2;
+            return sym + num.toLocaleString(undefined, {{minimumFractionDigits: digits, maximumFractionDigits: digits}});
+        }}
+
+        // 6-Palette World-Class Studio Theme Switcher (Persisted in localStorage)
+        function setStudioTheme(themeId) {{
+            currentTheme = themeId || 'stripe_alabaster';
             document.documentElement.setAttribute('data-theme', currentTheme);
+            document.querySelectorAll('#theme-studio-bar .theme-swatch-btn').forEach(btn => {{
+                btn.classList.toggle('active', btn.getAttribute('data-theme-id') === currentTheme);
+            }});
+            try {{ localStorage.setItem('dxr_studio_theme', currentTheme); }} catch (e) {{}}
             renderAllCharts();
+            renderSecondaryCrossBars();
+        }}
+
+        function toggleTheme() {{
+            const next = currentTheme === 'midnight_slate' ? 'stripe_alabaster' : 'midnight_slate';
+            setStudioTheme(next);
         }}
 
         // Bilingual Toggle
@@ -1969,6 +2363,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             }});
 
             renderAllCharts();
+            renderSecondaryCrossBars();
             renderGovernanceDrawer();
         }}
 
@@ -2006,19 +2401,101 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 if (!el) return;
                 const pSeg = el.getAttribute('data-prim-seg');
                 const sSeg = el.getAttribute('data-sec-seg');
-                if (pSeg) {{
-                    activePrim = (activePrim === pSeg && !sSeg) ? 'All' : pSeg;
-                    document.querySelectorAll('#prim-chips .chip').forEach(c => {{
-                        c.classList.toggle('active', c.dataset.segVal === activePrim);
-                    }});
+                // Toggle exact cell off if clicking already-active cell (Power BI behavior!)
+                if (pSeg && sSeg && activePrim === pSeg && activeSec === sSeg) {{
+                    activePrim = 'All';
+                    activeSec = 'All';
+                }} else {{
+                    if (pSeg) {{
+                        activePrim = (activePrim === pSeg && !sSeg) ? 'All' : pSeg;
+                    }}
+                    if (sSeg) {{
+                        activeSec = (activeSec === sSeg && !pSeg) ? 'All' : sSeg;
+                    }}
                 }}
-                if (sSeg) {{
-                    activeSec = sSeg;
-                    const secSel = document.getElementById('sec-select');
-                    if (secSel) secSel.value = sSeg;
-                }}
+                syncSlicerControls();
                 recalcMicroCube();
             }});
+        }}
+
+        function syncSlicerControls() {{
+            document.querySelectorAll('#prim-chips .chip').forEach(c => {{
+                c.classList.toggle('active', c.dataset.segVal === activePrim);
+            }});
+            const secSel = document.getElementById('sec-select');
+            if (secSel) secSel.value = activeSec;
+        }}
+
+        function renderSecondaryCrossBars() {{
+            const host = document.getElementById('sec-cross-bars');
+            if (!host) return;
+            const bySec = {{}};
+            DASHBOARD_PAYLOAD.cube_slices.forEach(s => {{
+                if (activePrim !== 'All' && s.prim_val !== activePrim) return;
+                if (!bySec[s.sec_val]) bySec[s.sec_val] = {{ sec: s.sec_val, vol: 0, ev: 0, drag: 0 }};
+                bySec[s.sec_val].vol += s.volume;
+                bySec[s.sec_val].ev += s.adverse_events;
+                bySec[s.sec_val].drag += s.adverse_cost;
+            }});
+            const rows = Object.values(bySec)
+                .map(d => ({{ ...d, rate: d.vol > 0 ? (d.ev / d.vol) * 100.0 : 0 }}))
+                .sort((a, b) => b.rate - a.rate)
+                .slice(0, 12);
+            const maxRate = Math.max(...rows.map(r => r.rate), 5);
+            const isMon = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger;
+            const baseR = DASHBOARD_PAYLOAD.global_kpis.adverse_rate_pct;
+
+            host.innerHTML = rows.map(r => {{
+                const isActive = activeSec === r.sec;
+                const isDim = activeSec !== 'All' && !isActive;
+                const barPct = Math.min(100, (r.rate / maxRate) * 100);
+                const barColor = r.rate >= baseR ? 'var(--danger-color, #e11d48)' : 'var(--accent-primary)';
+                return `
+                    <button type="button" class="sec-mini-card ${{isActive ? 'active' : ''}} ${{isDim ? 'dimmed' : ''}}"
+                            onclick="setSecondaryFilter(activeSec === '${{escHtml(r.sec).replace(/'/g, "\\\\'")}}' ? 'All' : '${{escHtml(r.sec).replace(/'/g, "\\\\'")}}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                            <span style="font-size:11.5px;font-weight:700;color:var(--text-main);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${{escHtml(r.sec)}}</span>
+                            <span style="font-size:11px;font-weight:800;color:${{barColor}};">${{r.rate.toFixed(1)}}%</span>
+                        </div>
+                        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">
+                            ${{r.vol.toLocaleString()}} rec · ${{isMon ? fmtMoney(r.drag) : (r.ev.toLocaleString() + ' ev')}}
+                        </div>
+                        <div class="sec-mini-bar-track">
+                            <div class="sec-mini-bar-fill" style="width:${{barPct.toFixed(1)}}%;background:${{barColor}};"></div>
+                        </div>
+                    </button>
+                `;
+            }}).join('');
+        }}
+
+        function updateActiveFilterRibbon(totRec, totEv, totAdvCost) {{
+            const bar = document.getElementById('active-filter-bar');
+            const pillsBox = document.getElementById('active-filter-pills');
+            const shareEl = document.getElementById('active-filter-share');
+            if (!bar || !pillsBox) return;
+
+            const isFiltered = (activePrim !== 'All' || activeSec !== 'All');
+            bar.classList.toggle('visible', isFiltered);
+            if (!isFiltered) return;
+
+            let htmlPills = '<span style="font-size:12px;font-weight:700;color:var(--accent-primary);">⚡ Connected Cross-Filter:</span>';
+            if (activePrim !== 'All') {{
+                htmlPills += `<span class="filter-pill-tag">${{escHtml(DASHBOARD_PAYLOAD.prim_dim_name)}}: ${{escHtml(activePrim)}} <button type="button" onclick="setPrimaryFilter('All')">✕</button></span>`;
+            }}
+            if (activeSec !== 'All') {{
+                htmlPills += `<span class="filter-pill-tag" style="background:var(--accent-secondary);">${{escHtml(DASHBOARD_PAYLOAD.sec_dim_name)}}: ${{escHtml(activeSec)}} <button type="button" onclick="setSecondaryFilter('All')">✕</button></span>`;
+            }}
+            pillsBox.innerHTML = htmlPills;
+
+            const gRec = Math.max(1, DASHBOARD_PAYLOAD.global_kpis.total_records);
+            const gDrag = Math.max(0.01, DASHBOARD_PAYLOAD.global_kpis.adverse_capital_drag);
+            const recShare = (totRec / gRec * 100).toFixed(1);
+            const lossShare = DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger
+                ? ` · ${{(totAdvCost / gDrag * 100).toFixed(1)}}% of total ${{getCurrencySymbol()}} loss`
+                : ` · ${{(totEv / Math.max(1, DASHBOARD_PAYLOAD.global_kpis.adverse_events) * 100).toFixed(1)}}% of total failures`;
+            if (shareEl) {{
+                shareEl.textContent = `Showing ${{totRec.toLocaleString()}} of ${{gRec.toLocaleString()}} (${{recShare}}%${{lossShare}})`;
+            }}
         }}
 
         // Slicer Filtering & Micro-Cube Recalculation
@@ -2063,17 +2540,14 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
         function setSecondaryFilter(val) {{
             activeSec = val;
+            syncSlicerControls();
             recalcMicroCube();
         }}
 
         function resetFilters() {{
             activePrim = 'All';
             activeSec = 'All';
-            const secSel = document.getElementById('sec-select');
-            if (secSel) secSel.value = 'All';
-            document.querySelectorAll('#prim-chips .chip').forEach(c => {{
-                c.classList.toggle('active', c.dataset.segVal === 'All');
-            }});
+            syncSlicerControls();
             recalcMicroCube();
         }}
 
@@ -2112,19 +2586,36 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
             const rPct = totRec > 0 ? (totEv / totRec) * 100.0 : 0.0;
             const relPct = 100.0 - rPct;
+            const globalRec = Math.max(1, DASHBOARD_PAYLOAD.global_kpis.total_records);
+            const sharePct = (totRec / globalRec * 100.0).toFixed(1);
 
             document.getElementById('kpi-records').textContent = totRec.toLocaleString();
+            const recSub = document.getElementById('kpi-records-sub');
+            if (recSub) {{
+                recSub.textContent = (activePrim === 'All' && activeSec === 'All')
+                    ? (currentLang === 'en' ? 'Zero Cartesian Drift' : '100% Asli Records')
+                    : `${{sharePct}}% of ${{globalRec.toLocaleString()}} total`;
+            }}
             document.getElementById('kpi-events').textContent = totEv.toLocaleString();
             document.getElementById('kpi-rate-sub').textContent = 'Failure Rate: ' + rPct.toFixed(2) + '%';
             document.getElementById('kpi-reliability').textContent = relPct.toFixed(2) + '%';
 
             if (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger) {{
-                document.getElementById('kpi-drag').textContent = '$' + totAdvCost.toLocaleString(undefined, {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
-                document.getElementById('kpi-drag-sub').textContent = 'Out of $' + totCost.toLocaleString(undefined, {{minimumFractionDigits: 2, maximumFractionDigits: 2}}) + ' total';
+                document.getElementById('kpi-drag').textContent = fmtMoney(totAdvCost);
+                document.getElementById('kpi-drag-sub').textContent = 'Out of ' + fmtMoney(totCost) + ' slice volume';
             }} else {{
                 document.getElementById('kpi-drag').textContent = totEv.toLocaleString() + ' units';
             }}
 
+            // Smooth Power BI KPI pulse feedback
+            document.querySelectorAll('.kpi-card').forEach(card => {{
+                card.classList.remove('kpi-flash');
+                void card.offsetWidth;
+                card.classList.add('kpi-flash');
+            }});
+
+            updateActiveFilterRibbon(totRec, totEv, totAdvCost);
+            renderSecondaryCrossBars();
             renderAllCharts();
         }}
 
@@ -2164,7 +2655,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
                 const tipId = regTip(
                     `<strong>${{escHtml(d.segment)}}</strong><br>Failure Rate: ${{d.rate_pct.toFixed(2)}}%<br>Wilson 95% CI: [${{d.ci_low.toFixed(1)}}% to ${{d.ci_high.toFixed(1)}}%]<br>Volume: ${{d.volume.toLocaleString()}}<br>Adverse Events: ${{d.events.toLocaleString()}}` +
-                    (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger ? `<br>Capital Drag: $${{d.adverse_cost.toLocaleString(undefined, {{minimumFractionDigits:2, maximumFractionDigits:2}})}}` : '')
+                    (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger ? `<br>Capital Drag: ${{fmtMoney(d.adverse_cost)}}` : '')
                 );
                 svg += `<circle cx="${{cx}}" cy="${{y}}" r="6.5" fill="var(--accent-primary)" stroke="var(--canvas-bg)" stroke-width="2" opacity="${{opacity}}" style="cursor:pointer;" data-tip-id="${{tipId}}" data-prim-seg="${{escHtml(d.segment)}}" />`;
                 svg += `<text x="${{xHigh + 7}}" y="${{y + 4}}" fill="var(--accent-primary)" font-size="11" font-weight="700" opacity="${{opacity}}">${{d.rate_pct.toFixed(1)}}%</text>`;
@@ -2206,7 +2697,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 const barH = (d.adverse_cost / maxDrag) * chartH;
                 const y = padT + chartH - barH;
                 const isHi = (activePrim === 'All' || activePrim === d.segment);
-                const tipId = regTip(`<strong>${{escHtml(d.segment)}}</strong><br>Adverse Drag: $${{d.adverse_cost.toLocaleString(undefined, {{minimumFractionDigits:2, maximumFractionDigits:2}})}}<br>Cumulative Share: ${{d.cumulative_pct.toFixed(1)}}%`);
+                const tipId = regTip(`<strong>${{escHtml(d.segment)}}</strong><br>Adverse Drag: ${{fmtMoney(d.adverse_cost)}}<br>Cumulative Share: ${{d.cumulative_pct.toFixed(1)}}%`);
 
                 svg += `<rect x="${{x}}" y="${{y}}" width="${{barW}}" height="${{barH}}" fill="var(--accent-primary)" opacity="${{isHi ? '0.88' : '0.28'}}" rx="3" style="cursor:pointer;" data-tip-id="${{tipId}}" data-prim-seg="${{escHtml(d.segment)}}" />`;
                 svg += `<text x="${{x + barW/2}}" y="${{h - padB + 14}}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${{escHtml(d.segment.substring(0, 9))}}</text>`;
@@ -2231,13 +2722,35 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
         function renderTemporalChart(container) {{
             const tempObj = DASHBOARD_PAYLOAD.widgets_data.temporal || {{}};
-            const periods = tempObj.periods || [];
-            if (!periods.length) return;
+            const basePeriods = tempObj.periods || [];
+            if (!basePeriods.length) return;
+
+            // Power BI Cross-Filtered Temporal Trend (with Global Baseline Ghost Comparison Line!)
+            const isFiltered = (activePrim !== 'All' || activeSec !== 'All');
+            const tSlices = tempObj.slices || [];
+            let periods = basePeriods;
+            if (isFiltered && tSlices.length) {{
+                const byPer = {{}};
+                basePeriods.forEach(bp => {{ byPer[bp.period] = {{ period: bp.period, total_records: 0, adverse_events: 0, adverse_rate_pct: 0 }}; }});
+                tSlices.forEach(s => {{
+                    if (activePrim !== 'All' && s.prim_val !== activePrim) return;
+                    if (activeSec !== 'All' && s.sec_val !== activeSec) return;
+                    if (!byPer[s.period]) byPer[s.period] = {{ period: s.period, total_records: 0, adverse_events: 0, adverse_rate_pct: 0 }};
+                    byPer[s.period].total_records += s.volume;
+                    byPer[s.period].adverse_events += s.adverse_events;
+                }});
+                periods = basePeriods.map(bp => {{
+                    const cur = byPer[bp.period];
+                    const r = cur.total_records > 0 ? (cur.adverse_events / cur.total_records) * 100.0 : 0.0;
+                    return {{ ...cur, adverse_rate_pct: r }};
+                }});
+            }}
 
             const w = 520, h = 260;
             const padL = 48, padR = 36, padT = 28, padB = 42;
             const chartW = w - padL - padR, chartH = h - padT - padB;
-            const maxRate = Math.max(...periods.map(p => Number(p.adverse_rate_pct || 0)), 5);
+            const allRates = periods.map(p => Number(p.adverse_rate_pct || 0)).concat(basePeriods.map(p => Number(p.adverse_rate_pct || 0)));
+            const maxRate = Math.max(...allRates, 5) * 1.1;
             const maxVol = Math.max(...periods.map(p => Number(p.total_records ?? p.total_volume ?? 1)), 1);
             const n = periods.length;
             const barW = Math.max(6, Math.min(28, (chartW / n) * 0.55));
@@ -2245,32 +2758,46 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
             let svg = `<svg viewBox="0 0 ${{w}} ${{h}}" width="100%" height="100%" preserveAspectRatio="xMinYMin meet">`;
             let pts = [];
+            let ghostPts = [];
 
             periods.forEach((p, i) => {{
                 const vol = Number(p.total_records ?? p.total_volume ?? 0);
                 const rate = Number(p.adverse_rate_pct || 0);
+                const bRate = Number((basePeriods[i] || {{}}).adverse_rate_pct || 0);
                 const x = padL + (i / Math.max(n - 1, 1)) * chartW;
                 const y = padT + (1 - (rate / maxRate)) * chartH;
+                const gy = padT + (1 - (bRate / maxRate)) * chartH;
                 const vH = (vol / maxVol) * (chartH * 0.65);
                 pts.push(`${{x}},${{y}}`);
+                ghostPts.push(`${{x}},${{gy}}`);
 
-                svg += `<rect x="${{x - barW/2}}" y="${{padT + chartH - vH}}" width="${{barW}}" height="${{vH}}" fill="var(--accent-primary)" opacity="0.18" rx="2" />`;
+                svg += `<rect x="${{x - barW/2}}" y="${{padT + chartH - vH}}" width="${{barW}}" height="${{vH}}" fill="var(--accent-primary)" opacity="0.18" rx="3" />`;
                 if (i % stepLabel === 0 || i === n - 1) {{
                     svg += `<text x="${{x}}" y="${{h - padB + 15}}" fill="var(--text-muted)" font-size="9.5" text-anchor="middle">${{escHtml(p.period)}}</text>`;
                 }}
             }});
 
+            if (isFiltered && ghostPts.length > 1) {{
+                svg += `<polyline points="${{ghostPts.join(' ')}}" fill="none" stroke="var(--text-muted)" stroke-dasharray="4,4" stroke-width="1.8" opacity="0.7" />`;
+                svg += `<text x="${{w - padR}}" y="${{padT - 8}}" fill="var(--text-muted)" font-size="9.5" text-anchor="end">--- Global Baseline vs Active Slice</text>`;
+            }}
+
             if (pts.length > 1) {{
                 const areaPts = `${{padL}},${{padT + chartH}} ` + pts.join(' ') + ` ${{padL + chartW}},${{padT + chartH}}`;
-                svg += `<polygon points="${{areaPts}}" fill="rgba(99, 102, 241, 0.12)" />`;
-                svg += `<polyline points="${{pts.join(' ')}}" fill="none" stroke="var(--accent-secondary)" stroke-width="3" />`;
+                svg += `<polygon points="${{areaPts}}" fill="var(--accent-primary)" opacity="0.10" />`;
+                svg += `<polyline points="${{pts.join(' ')}}" fill="none" stroke="${{isFiltered ? 'var(--danger-color, #e11d48)' : 'var(--accent-secondary)'}}" stroke-width="3" />`;
                 periods.forEach((p, i) => {{
                     const [px, py] = pts[i].split(',');
                     const vol = Number(p.total_records ?? p.total_volume ?? 0);
                     const ev = Number(p.adverse_events || 0);
                     const rate = Number(p.adverse_rate_pct || 0);
-                    const tipId = regTip(`<strong>Period: ${{escHtml(p.period)}}</strong><br>Failure Rate: ${{rate.toFixed(2)}}%<br>Volume: ${{vol.toLocaleString()}}<br>Adverse Events: ${{ev.toLocaleString()}}`);
-                    svg += `<circle cx="${{px}}" cy="${{py}}" r="4.5" fill="var(--accent-secondary)" stroke="var(--canvas-bg)" stroke-width="2" data-tip-id="${{tipId}}" />`;
+                    const bRate = Number((basePeriods[i] || {{}}).adverse_rate_pct || 0);
+                    const tipId = regTip(
+                        `<strong>Period: ${{escHtml(p.period)}}</strong>` +
+                        (isFiltered ? `<br>Active Slice Rate: <strong>${{rate.toFixed(2)}}%</strong> (Global: ${{bRate.toFixed(2)}}%)` : `<br>Failure Rate: ${{rate.toFixed(2)}}%`) +
+                        `<br>Volume: ${{vol.toLocaleString()}}<br>Adverse Events: ${{ev.toLocaleString()}}`
+                    );
+                    svg += `<circle cx="${{px}}" cy="${{py}}" r="4.8" fill="${{isFiltered ? 'var(--danger-color, #e11d48)' : 'var(--accent-secondary)'}}" stroke="var(--card-bg)" stroke-width="2" data-tip-id="${{tipId}}" />`;
                 }});
             }}
             svg += `</svg>`;
@@ -2315,13 +2842,16 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                     const ev = c ? c.events : 0;
                     const alpha = vol > 0 ? Math.min(0.90, 0.14 + (rate / maxRate) * 0.76) : 0.04;
                     const fillCol = vol > 0 ? `rgba(244, 63, 94, ${{alpha.toFixed(2)}})` : 'var(--canvas-bg)';
+                    const isCellHi = (activePrim === 'All' || activePrim === rowVal) && (activeSec === 'All' || activeSec === colVal);
+                    const isExactSelected = (activePrim === rowVal && activeSec === colVal);
+                    const cellOpacity = isCellHi ? '1' : '0.24';
                     const tipId = regTip(
                         `<strong>${{escHtml(rowVal)}} &times; ${{escHtml(colVal)}}</strong><br>Failure Rate: ${{rate.toFixed(2)}}%<br>Volume: ${{vol.toLocaleString()}}<br>Adverse Events: ${{ev.toLocaleString()}}` +
-                        (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger && c ? `<br>Drag: $${{c.adverse_cost.toLocaleString(undefined, {{minimumFractionDigits:2, maximumFractionDigits:2}})}}` : '')
+                        (DASHBOARD_PAYLOAD.global_kpis.has_monetary_ledger && c ? `<br>Drag: ${{fmtMoney(c.adverse_cost)}}` : '')
                     );
-                    svg += `<rect x="${{rx + 1.5}}" y="${{ry + 1.5}}" width="${{Math.max(4, cellW - 3)}}" height="${{Math.max(4, cellH - 3)}}" fill="${{fillCol}}" stroke="var(--border-color)" rx="3" style="cursor:pointer;" data-tip-id="${{tipId}}" data-prim-seg="${{escHtml(rowVal)}}" data-sec-seg="${{escHtml(colVal)}}" />`;
+                    svg += `<rect x="${{rx + 1.5}}" y="${{ry + 1.5}}" width="${{Math.max(4, cellW - 3)}}" height="${{Math.max(4, cellH - 3)}}" fill="${{fillCol}}" opacity="${{cellOpacity}}" stroke="${{isExactSelected ? 'var(--accent-primary)' : 'var(--border-color)'}}" stroke-width="${{isExactSelected ? '2.5' : '1'}}" rx="4" style="cursor:pointer;" data-tip-id="${{tipId}}" data-prim-seg="${{escHtml(rowVal)}}" data-sec-seg="${{escHtml(colVal)}}" />`;
                     if (vol > 0 && cellW >= 38) {{
-                        svg += `<text x="${{rx + cellW / 2}}" y="${{ry + cellH / 2 + 4}}" fill="var(--text-main)" font-size="9.5" font-weight="700" text-anchor="middle" pointer-events="none">${{rate.toFixed(1)}}%</text>`;
+                        svg += `<text x="${{rx + cellW / 2}}" y="${{ry + cellH / 2 + 4}}" fill="var(--text-main)" opacity="${{cellOpacity}}" font-size="9.5" font-weight="700" text-anchor="middle" pointer-events="none">${{rate.toFixed(1)}}%</text>`;
                     }}
                 }});
             }});
@@ -2359,7 +2889,7 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
                 const fill = d.rate_pct >= baseRate ? '#f43f5e' : 'var(--accent-primary)';
                 const tipId = regTip(
                     `<strong>${{escHtml(d.segment)}}</strong><br>Volume: ${{d.volume.toLocaleString()}}<br>Failure Rate: ${{d.rate_pct.toFixed(2)}}%<br>Events: ${{d.events.toLocaleString()}}` +
-                    (isMon ? `<br>Capital Drag: $${{d.adverse_cost.toLocaleString(undefined, {{minimumFractionDigits:2, maximumFractionDigits:2}})}}` : '')
+                    (isMon ? `<br>Capital Drag: ${{fmtMoney(d.adverse_cost)}}` : '')
                 );
                 svg += `<circle cx="${{cx}}" cy="${{cy}}" r="${{r.toFixed(1)}}" fill="${{fill}}" fill-opacity="${{isHi ? '0.68' : '0.20'}}" stroke="${{fill}}" stroke-width="2" style="cursor:pointer;" data-tip-id="${{tipId}}" data-prim-seg="${{escHtml(d.segment)}}" />`;
                 svg += `<text x="${{cx}}" y="${{cy - r - 4}}" fill="var(--text-main)" font-size="9.5" font-weight="600" text-anchor="middle" opacity="${{isHi ? '1' : '0.35'}}" pointer-events="none">${{escHtml(d.segment.substring(0, 12))}}</text>`;
@@ -2656,13 +3186,16 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
             renderWorklistTable();
         }}
 
-        function getFilteredWorklistRows() {{
+        function getFilteredWorklistRows(queueOverride) {{
             const rows = DASHBOARD_PAYLOAD.widgets_data.worklist_rows || [];
             const pCol = DASHBOARD_PAYLOAD.prim_dim_name;
+            const sCol = DASHBOARD_PAYLOAD.sec_dim_name;
+            const qTarget = queueOverride || currentWlQueue;
             const query = currentWlSearch.toLowerCase();
             return rows.filter(r => {{
-                if (r.action_queue !== currentWlQueue) return false;
+                if (r.action_queue !== qTarget) return false;
                 if (activePrim !== 'All' && pCol && Object.prototype.hasOwnProperty.call(r, pCol) && String(r[pCol]) !== activePrim) return false;
+                if (activeSec !== 'All' && sCol && Object.prototype.hasOwnProperty.call(r, sCol) && String(r[sCol]) !== activeSec) return false;
                 if (!query) return true;
                 return Object.values(r).some(v => String(v ?? '').toLowerCase().includes(query));
             }});
@@ -2671,7 +3204,13 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
         function renderWorklistTable() {{
             const searchEl = document.getElementById('wl-search');
             if (searchEl) currentWlSearch = searchEl.value || '';
-            const filtered = getFilteredWorklistRows();
+            const prevFiltered = getFilteredWorklistRows('PREVENTIVE_RETENTION_WATCH');
+            const recFiltered = getFilteredWorklistRows('REALIZED_LOSS_RECOVERY_AUDIT');
+            const tabPrev = document.getElementById('tab-prev');
+            const tabRec = document.getElementById('tab-rec');
+            if (tabPrev) tabPrev.textContent = `Preventive Retention Watch (${{prevFiltered.length}})`;
+            if (tabRec) tabRec.textContent = `Realized Loss Recovery (${{recFiltered.length}})`;
+            const filtered = currentWlQueue === 'PREVENTIVE_RETENTION_WATCH' ? prevFiltered : recFiltered;
 
             const thead = document.getElementById('wl-thead');
             const tbody = document.getElementById('wl-tbody');
@@ -2946,10 +3485,26 @@ def build_bespoke_html(payload: Dict[str, Any], design_bp: Dict[str, Any]) -> st
 
         // Window onload
         window.addEventListener('DOMContentLoaded', () => {{
+            try {{
+                const savedT = localStorage.getItem('dxr_studio_theme');
+                if (savedT && document.querySelector('#theme-studio-bar [data-theme-id="' + savedT + '"]')) {{
+                    currentTheme = savedT;
+                    document.documentElement.setAttribute('data-theme', currentTheme);
+                    document.querySelectorAll('#theme-studio-bar .theme-swatch-btn').forEach(btn => {{
+                        btn.classList.toggle('active', btn.getAttribute('data-theme-id') === currentTheme);
+                    }});
+                }}
+            }} catch (e) {{}}
             bindDelegatedPanelEvents();
             initSlicers();
+            renderSecondaryCrossBars();
             renderAllCharts();
             renderGovernanceDrawer();
+            document.addEventListener('keydown', (e) => {{
+                if (e.key === 'Escape' && (activePrim !== 'All' || activeSec !== 'All')) {{
+                    resetFilters();
+                }}
+            }});
         }});
     </script>
 </body>

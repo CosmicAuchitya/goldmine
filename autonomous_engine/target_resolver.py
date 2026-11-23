@@ -801,7 +801,8 @@ def resolve_canonical_target_and_cost(
         is_exact_total = c_low in ('total', 'total_num', 'total_clean', 'total_val')
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
         money_words = [
-            'amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment',
+            'amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'net_sale', 'gross_sale', 'total_sale',
+            'sale_amount', 'sale_value', 'bill_amount', 'mrp', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment',
             'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare',
             'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
             'house_value', 'property_value', 'asset_value', 'total_bill', 'gross income', 'gross_income',
@@ -830,8 +831,8 @@ def resolve_canonical_target_and_cost(
     elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
-            'invoiced_amount', 'net_billed', 'net_revenue', 'net_sales', 'selling_price', 'net_amount',
-            'revenue', 'mrr', 'arr', 'sales', 'total_bill', 'order_bill', 'total_amount', 'total_sales', 'exact_total',
+            'invoiced_amount', 'net_billed', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount',
+            'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'total_amount', 'total_sales', 'exact_total',
             'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',
             'gross income', 'gross_income', 'billing_amount', 'gross_billing', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',

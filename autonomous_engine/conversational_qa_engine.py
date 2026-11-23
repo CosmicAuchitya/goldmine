@@ -437,7 +437,8 @@ class ConversationalBusinessQAEngine:
                             entries.append((two_tok, c, val, "eq"))
                             seen_phrases.add(two_tok)
                     first_tok = toks[0]
-                    if len(first_tok) >= 5 and first_tok not in stop_words and first_tok not in seen_phrases:
+                    col_name_tokens = {t for cn in self.df_fact.columns for t in re.findall(r"[a-z]+", str(cn).lower()) if len(t) >= 4}
+                    if len(first_tok) >= 5 and first_tok not in stop_words and first_tok not in col_name_tokens and first_tok not in seen_phrases:
                         matches_in_col = [ov for ov in vals if first_tok in ov.lower()]
                         if len(matches_in_col) == 1:
                             entries.append((first_tok, c, val, "eq"))
