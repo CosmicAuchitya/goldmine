@@ -1,0 +1,38 @@
+name: DataX-Ray 360 Release Gate CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  release-gate-360:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Set up Node.js (for web_client.html JS syntax gate)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install verified dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run 360-Degree Release Gate & Database Fortress Suite
+        run: |
+          python -m pytest tests/test_release_gate_360.py tests/test_db_fortress_and_p0_hardening.py -v
+
+      - name: Run Core Regression Suites (Stages 7-9, Security, Auth, i18n)
+        run: |
+          python -m pytest tests/test_stage9_boardroom_judge.py tests/test_stage8_decision_prediction.py tests/test_global_i18n_43_languages.py tests/test_security_and_hardening.py tests/test_target_resolver.py tests/test_round5_global_hardening.py -q

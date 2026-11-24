@@ -1,0 +1,20 @@
+# Exact-pinned lockfile verified against DataX-Ray 25-suite regression & 360 Release Gate
+fastapi==0.123.5
+uvicorn[standard]==0.38.0
+pydantic==2.13.4
+duckdb==1.5.1
+pandas==2.3.3
+numpy==2.3.5
+pyarrow==23.0.1
+scipy==1.16.3
+scikit-learn==1.7.2
+cryptography==50.0.0
+python-multipart==0.0.20
+httpx==0.28.1
+jinja2==3.1.6
+requests==2.31.0
+python-dotenv==1.2.1
+openpyxl==3.1.5
+google-genai==2.20.0
+streamlit==1.55.0
+pytest==9.0.2

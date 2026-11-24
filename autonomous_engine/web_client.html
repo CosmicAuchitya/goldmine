@@ -6202,7 +6202,7 @@
         if (packs.length) {
           const lbl = lang === 'hi' ? '🔓 अतिरिक्त शीट जोड़कर और लीक अनलॉक करें:' : '🔓 Optional sheets to unlock even deeper audits:';
           unlockEl.innerHTML = `<strong style="color:var(--text-primary);">${lbl}</strong> ` + packs.map(p =>
-            `<span style="padding:2px 8px;border-radius:999px;background:var(--bg-elevated);border:1px solid var(--border-subtle);">+ ${escapeHtml(lang === 'hi' ? p.name_hi : p.name_en)} (${p.unlocks_question_count} checks)</span>`
+            `<span style="padding:2px 8px;border-radius:999px;background:var(--bg-elevated);border:1px solid var(--border-subtle);">+ ${escapeHtml(lang === 'hi' ? p.name_hi : p.name_en)} (${Number(p.unlocks_question_count || 0)} checks)</span>`
           ).join(' ');
         } else {
           unlockEl.innerHTML = '';

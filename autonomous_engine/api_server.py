@@ -3822,384 +3822,55 @@ def _get_cached_decision_engine(staging_out: Path) -> Any:
     return eng
 
 
-class DecisionSimulateRequest(BaseModel):
-    decision_text: Optional[str] = Field(None, max_length=600, description="Plain English or Hinglish business decision (supports single or 'A AND B' combos)")
-    decision: Optional[Dict[str, Any]] = Field(None, description="Optional single structured decision spec")
-    decisions: Optional[List[Dict[str, Any]]] = Field(None, description="Optional list of 2-4 simultaneous levers for zero-double-counting combo simulation")
-    implementation_cost: Optional[float] = Field(0.0, ge=0.0, description="Optional one-time or rollout budget subtracted from net gain across all Monte Carlo draws")
-
-
-class DecisionCommitRequest(BaseModel):
-    baseline_run_id: str = Field(..., min_length=3, max_length=80)
-    simulation: Dict[str, Any] = Field(..., description="Completed simulation response payload from /api/v1/predict/simulate/{run_id}")
-    tenant_id: Optional[str] = Field(None, max_length=64)
-
-
-class DecisionVerifyRequest(BaseModel):
-    actual_run_id: str = Field(..., min_length=3, max_length=80, description="Audited next-period run_id to verify actual physical outcome against")
-    tenant_id: Optional[str] = Field(None, max_length=64)
-
-
-@app.get("/api/v1/predict/overview/{run_id}", tags=["Stage 8 Predictive Decision Lab"])
-def get_decision_predictor_overview(run_id: str, request: Request) -> Dict[str, Any]:
-    """
-    Trains/loads the leak-proof calibrated ML model for `run_id`, returning honest
-    out-of-sample ROC-AUC, top predictive drivers, custom lever options, and 4 friendly 1-click scenarios.
-    """
-    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
-    _enforce_tenant_access(request, tenant_id, run_id=run_id, allow_public_benchmark=True)
-    try:
-        eng = _get_cached_decision_engine(staging_out)
-        data = eng.get_model_overview_and_presets()
-        data["run_id"] = run_id
-        return data
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Predictive model error: {exc}")
-
-
-@app.post("/api/v1/predict/simulate/{run_id}", tags=["Stage 8 Predictive Decision Lab"])
-def simulate_client_decision(run_id: str, req: DecisionSimulateRequest, request: Request) -> Dict[str, Any]:
-    """
-    Simulates a founder's single or multi-lever combo business decision via 3-fold cross-fitted ML
-    + 500-iteration Bootstrap/Epistemic/Elasticity Monte Carlo with zero double-counting.
-    """
-    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
-    _enforce_tenant_access(request, tenant_id, run_id=run_id, allow_public_benchmark=True)
-    if not req.decision and not (req.decisions and len(req.decisions) > 0) and not (req.decision_text and req.decision_text.strip()):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provide 'decision_text', 'decision', or 'decisions' list.")
-    try:
-        eng = _get_cached_decision_engine(staging_out)
-        res = eng.simulate_decision(
-            decision=req.decision,
-            decision_text=req.decision_text,
-            decisions=req.decisions,
-            implementation_cost=float(req.implementation_cost or 0.0),
-        )
-        res["run_id"] = run_id
-        return res
-    except ValueError as ve:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Decision simulation error: {exc}")
-
-
-@app.post("/api/v1/predict/commitments", status_code=status.HTTP_201_CREATED, tags=["Stage 8 Predictive Decision Lab"])
-def commit_predicted_decision(req: DecisionCommitRequest, request: Request) -> Dict[str, Any]:
-    """Commits a simulated decision to the tenant's Predicted-vs-Actual accountability ledger."""
-    _require_role(request, "analyst")
-    staging_out, run_tenant = _resolve_staging_out_for_run(req.baseline_run_id)
-    _enforce_tenant_access(request, run_tenant, run_id=req.baseline_run_id, allow_public_benchmark=True)
-    auth_tenant = getattr(request.state, "auth_tenant_id", None)
-    eff_tid = sanitize_tenant_id(auth_tenant or req.tenant_id or "founder_workspace")
-    try:
-        return decision_outcome_tracker.commit_decision(
-            tenant_id=eff_tid,
-            baseline_run_id=req.baseline_run_id,
-            simulation_payload=req.simulation,
-        )
-    except ValueError as ve:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
-
-
-@app.get("/api/v1/predict/commitments", tags=["Stage 8 Predictive Decision Lab"])
-def list_predicted_commitments(request: Request, tenant_id: Optional[str] = Query(None)) -> Dict[str, Any]:
-    """Lists committed & verified Predicted-vs-Actual decisions strictly scoped to the caller's workspace."""
-    auth_tenant = getattr(request.state, "auth_tenant_id", None)
-    eff_tid = sanitize_tenant_id(auth_tenant or tenant_id or "founder_workspace")
-    if auth_tenant and tenant_id and sanitize_tenant_id(tenant_id) != sanitize_tenant_id(auth_tenant) and not getattr(request.state, "is_admin", False):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden: Cross-tenant commitments access denied.")
-    return decision_outcome_tracker.list_commitments(eff_tid)
-
-
-@app.post("/api/v1/predict/commitments/{commitment_id}/verify", tags=["Stage 8 Predictive Decision Lab"])
-def verify_committed_decision(commitment_id: str, req: DecisionVerifyRequest, request: Request) -> Dict[str, Any]:
-    """Reconciles a committed prediction physically against a subsequent period's audited Parquet fact table."""
-    _require_role(request, "analyst")
-    auth_tenant = getattr(request.state, "auth_tenant_id", None)
-    eff_tid = sanitize_tenant_id(auth_tenant or req.tenant_id or "founder_workspace")
-
-    comm = decision_outcome_tracker.get_commitment(eff_tid, commitment_id)
-    if not comm:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Commitment '{commitment_id}' not found in your workspace.")
-
-    base_out, base_tenant = _resolve_staging_out_for_run(comm["baseline_run_id"])
-    _enforce_tenant_access(request, base_tenant, run_id=comm["baseline_run_id"], allow_public_benchmark=True)
-
-    act_out, act_tenant = _resolve_staging_out_for_run(req.actual_run_id)
-    _enforce_tenant_access(request, act_tenant, run_id=req.actual_run_id, allow_public_benchmark=True)
-
-    try:
-        return decision_outcome_tracker.verify_commitment_against_actual(
-            tenant_id=eff_tid,
-            commitment_id=commitment_id,
-            actual_run_id=req.actual_run_id,
-            actual_output_dir=act_out,
-            baseline_output_dir=base_out,
-        )
-    except KeyError as ke:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ke))
-    except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Outcome verification error: {exc}")
-
-
-@app.delete("/api/v1/predict/commitments/{commitment_id}", tags=["Stage 8 Predictive Decision Lab"])
-def delete_committed_decision(commitment_id: str, request: Request, tenant_id: Optional[str] = Query(None)) -> Dict[str, Any]:
-    """Deletes a committed decision strictly inside the caller's workspace."""
-    _require_role(request, "analyst")
-    auth_tenant = getattr(request.state, "auth_tenant_id", None)
-    eff_tid = sanitize_tenant_id(auth_tenant or tenant_id or "founder_workspace")
-    deleted = decision_outcome_tracker.delete_commitment(eff_tid, commitment_id)
-    if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Commitment not found in your workspace.")
-    return {"status": "deleted", "commitment_id": commitment_id}
-
-
 # =============================================================================
-# PART 4.9: WORLDWIDE MULTILINGUAL TRANSLATION ENGINE (43 WORLD LANGUAGES + RTL)
+# PART 4C–4.95: MODULAR FASTAPI ROUTERS (STAGE 8 PREDICT, 43-LANG i18n, STAGE 9 BOARDROOM, DB FORTRESS)
 # =============================================================================
-class TranslateUiRequest(BaseModel):
-    target_lang: str = Field(..., min_length=2, max_length=12)
-    ui_dict: Dict[str, str] = Field(default_factory=dict)
-
-
-class TranslateRunRequest(BaseModel):
-    target_lang: str = Field(..., min_length=2, max_length=12)
-    ui_dict: Dict[str, str] = Field(default_factory=dict)
-
-
-class TranslateTextsRequest(BaseModel):
-    target_lang: str = Field(..., min_length=2, max_length=12)
-    texts: Dict[str, str] = Field(default_factory=dict)
-
-
-@app.get("/api/v1/i18n/languages", tags=["Worldwide Multilingual i18n"])
-def list_world_languages() -> Dict[str, Any]:
-    """Lists all 43 supported global & regional languages with script names, regions, and RTL flags."""
-    try:
-        from .global_i18n_engine import WORLD_LANGUAGES
-    except ImportError:
-        from global_i18n_engine import WORLD_LANGUAGES
-    return {
-        "status": "success",
-        "count": len(WORLD_LANGUAGES),
-        "languages": WORLD_LANGUAGES,
-    }
-
-
-@app.post("/api/v1/i18n/translate-ui", tags=["Worldwide Multilingual i18n"])
-def translate_portal_ui(req: TranslateUiRequest) -> Dict[str, Any]:
-    """Translates and caches portal UI chrome labels into any of the 43 world languages."""
-    try:
-        from .global_i18n_engine import get_language_meta, normalize_lang_code, translate_ui_dictionary
-    except ImportError:
-        from global_i18n_engine import get_language_meta, normalize_lang_code, translate_ui_dictionary
-    code = normalize_lang_code(req.target_lang)
-    ui_tr, engine = translate_ui_dictionary(req.ui_dict, code, WORKSPACE_ROOT)
-    return {
-        "status": "success",
-        "lang": get_language_meta(code),
-        "engine": engine,
-        "ui_dict": ui_tr,
-    }
-
-
-@app.post("/api/v1/i18n/translate-run/{run_id}", tags=["Worldwide Multilingual i18n"])
-def translate_audited_run(run_id: str, req: TranslateRunRequest, request: Request) -> Dict[str, Any]:
-    """
-    Translates an entire audited run (Top 4 Health Cards, 3 Plans, Business Health Check
-    Problem Cards, Full Executive Story & UI chrome) into any of the 43 world languages
-    with 100% numeric-lock protection and instant disk caching.
-    """
-    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
-    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
-    try:
-        from .global_i18n_engine import normalize_lang_code, translate_full_run_bundle
-    except ImportError:
-        from global_i18n_engine import normalize_lang_code, translate_full_run_bundle
-
-    code = normalize_lang_code(req.target_lang)
-    manifest_data: Dict[str, Any] = {}
-    m_path = staging_out / "semantic_metrics_manifest.json"
-    if m_path.exists():
-        try:
-            manifest_data = json.loads(m_path.read_text(encoding="utf-8"))
-        except Exception:
-            manifest_data = {}
-    plain_summary_text = ""
-    s_path = staging_out / "PLAIN_BUSINESS_SUMMARY.md"
-    if s_path.exists():
-        try:
-            plain_summary_text = s_path.read_text(encoding="utf-8")
-        except Exception:
-            plain_summary_text = ""
-    pulse = _extract_executive_pulse(staging_out, manifest_data, plain_summary_text)
-    owner_en = (pulse.get("owner_friendly") or {}).get("en") or {}
-    eng_md = pulse.get("english_summary_markdown") or plain_summary_text or ""
-
-    rk_data = None
-    rk_path = staging_out / "ranked_leaks_report.json"
-    if rk_path.exists():
-        try:
-            rk_data = json.loads(rk_path.read_text(encoding="utf-8"))
-        except Exception:
-            rk_data = None
-
-    return translate_full_run_bundle(
-        staging_out=staging_out,
-        target_lang=code,
-        owner_friendly_en=owner_en,
-        ranked_leaks_data=rk_data,
-        english_summary_md=eng_md,
-        ui_dict_en=req.ui_dict,
-        workspace_root=WORKSPACE_ROOT,
+try:
+    from .routers import (
+        build_predict_router,
+        build_i18n_router,
+        build_boardroom_router,
+        build_system_router,
+    )
+except ImportError:
+    from routers import (
+        build_predict_router,
+        build_i18n_router,
+        build_boardroom_router,
+        build_system_router,
     )
 
-
-@app.post("/api/v1/i18n/translate-texts", tags=["Worldwide Multilingual i18n"])
-def translate_dynamic_texts(req: TranslateTextsRequest) -> Dict[str, Any]:
-    """On-demand number-locked translator for live Ask AI answers and Stage 8 Decision Predictor outputs."""
-    try:
-        from .global_i18n_engine import get_language_meta, normalize_lang_code, translate_string_map
-    except ImportError:
-        from global_i18n_engine import get_language_meta, normalize_lang_code, translate_string_map
-    code = normalize_lang_code(req.target_lang)
-    # Guard payload size against abuse
-    safe_map = {str(k)[:80]: str(v)[:2000] for k, v in list((req.texts or {}).items())[:40]}
-    tr_map, engine = translate_string_map(safe_map, code, max_workers=6)
-    return {
-        "status": "success",
-        "lang": get_language_meta(code),
-        "engine": engine,
-        "texts": tr_map,
-    }
-
-
-# =============================================================================
-# PART 4.95: STAGE 9 — AI BOARDROOM DECISION JUDGE (MULTI-TURN CA + DATA SCIENTIST)
-# =============================================================================
-class BoardroomDiscussRequest(BaseModel):
-    message: str = Field(..., min_length=2, max_length=1500, description="Founder's open-ended business question, team debate, CapEx pitch, or follow-up")
-    history: List[Dict[str, Any]] = Field(default_factory=list, description="Prior conversation turns for multi-turn context carry-over")
-    target_lang: str = Field("en", max_length=12, description="Optional target language code (supports all 43 world languages)")
-
-
-@app.get("/api/v1/boardroom/starters/{run_id}", tags=["Stage 9 AI Boardroom"])
-def get_boardroom_starters(run_id: str, request: Request, lang: str = Query("en")) -> Dict[str, Any]:
-    """Returns 4 dataset-tailored real-world team debate / CapEx audit starters for the AI Boardroom."""
-    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
-    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
-    try:
-        try:
-            from .boardroom_decision_judge import BoardroomDecisionJudge
-        except ImportError:
-            from boardroom_decision_judge import BoardroomDecisionJudge
-        eng = _get_cached_decision_engine(staging_out)
-        judge = BoardroomDecisionJudge(str(staging_out), engine=eng)
-        starters = judge.get_discussion_starters()
-
-        # Seamless 43-language translation for starters when user selects a global language
-        code = str(lang or "en").strip()
-        if code not in ("en", "hi") and starters:
-            try:
-                try:
-                    from .global_i18n_engine import normalize_lang_code, translate_string_map
-                except ImportError:
-                    from global_i18n_engine import normalize_lang_code, translate_string_map
-                norm_c = normalize_lang_code(code)
-                if norm_c not in ("en", "hi"):
-                    s_map = {}
-                    for i, st in enumerate(starters):
-                        s_map[f"t{i}"] = st["tag_en"]
-                        s_map[f"p{i}"] = st["prompt_en"]
-                    tr_map, _ = translate_string_map(s_map, norm_c, max_workers=4)
-                    for i, st in enumerate(starters):
-                        st["tag_en"] = tr_map.get(f"t{i}", st["tag_en"])
-                        st["prompt_en"] = tr_map.get(f"p{i}", st["prompt_en"])
-            except Exception:
-                pass
-
-        return {
-            "status": "success",
-            "run_id": run_id,
-            "model_roc_auc": eng.model_metrics.get("roc_auc"),
-            "rows_audited": int(len(eng.df_full)),
-            "starters": starters,
-        }
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Boardroom starters error: {exc}")
-
-
-@app.post("/api/v1/boardroom/discuss/{run_id}", tags=["Stage 9 AI Boardroom"])
-def discuss_in_boardroom(run_id: str, req: BoardroomDiscussRequest, request: Request) -> Dict[str, Any]:
-    """
-    Evaluates a founder's free-form business thought, team debate, or CapEx proposal
-    against physical Parquet data + Stage 8.3 Causal ML, returning a 4-part Boardroom Judgment
-    (Verdict, Proven True, Wrong/Risky, Honest Blind Spots, 14-Day Plan) in any of 43 world languages.
-    """
-    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
-    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
-    try:
-        try:
-            from .boardroom_decision_judge import BoardroomDecisionJudge
-        except ImportError:
-            from boardroom_decision_judge import BoardroomDecisionJudge
-        eng = _get_cached_decision_engine(staging_out)
-        judge = BoardroomDecisionJudge(str(staging_out), engine=eng)
-        result = judge.discuss(message=req.message, history=req.history)
-        result["run_id"] = run_id
-
-        # Auto-translate judgment cleanly into any of the 41 additional world languages (number-locked!)
-        code = str(req.target_lang or "en").strip()
-        if code not in ("en", "hi"):
-            try:
-                try:
-                    from .global_i18n_engine import normalize_lang_code, translate_string_map
-                except ImportError:
-                    from global_i18n_engine import normalize_lang_code, translate_string_map
-                norm_c = normalize_lang_code(code)
-                if norm_c not in ("en", "hi"):
-                    flat: Dict[str, str] = {
-                        "v_badge": result["verdict"]["badge_en"],
-                        "v_hl": result["verdict"]["headline_en"],
-                    }
-                    for i, s in enumerate(result["evidence"]["proven_true_en"]):
-                        flat[f"pt_{i}"] = s
-                    for i, s in enumerate(result["evidence"]["wrong_or_risky_en"]):
-                        flat[f"wr_{i}"] = s
-                    for i, s in enumerate(result["evidence"]["blind_spots_en"]):
-                        flat[f"bs_{i}"] = s
-                    for i, s in enumerate(result["action_plan_en"]):
-                        flat[f"ap_{i}"] = s
-                    for i, s in enumerate(result["follow_up_prompts_en"]):
-                        flat[f"fu_{i}"] = s
-                    for i, r in enumerate(result["comparison_scorecard"]):
-                        flat[f"sc_{i}"] = r["option_en"]
-                    tr_map, _ = translate_string_map(flat, norm_c, max_workers=6)
-                    result["verdict"]["badge_en"] = tr_map.get("v_badge", result["verdict"]["badge_en"])
-                    result["verdict"]["headline_en"] = tr_map.get("v_hl", result["verdict"]["headline_en"])
-                    result["evidence"]["proven_true_en"] = [tr_map.get(f"pt_{i}", s) for i, s in enumerate(result["evidence"]["proven_true_en"])]
-                    result["evidence"]["wrong_or_risky_en"] = [tr_map.get(f"wr_{i}", s) for i, s in enumerate(result["evidence"]["wrong_or_risky_en"])]
-                    result["evidence"]["blind_spots_en"] = [tr_map.get(f"bs_{i}", s) for i, s in enumerate(result["evidence"]["blind_spots_en"])]
-                    result["action_plan_en"] = [tr_map.get(f"ap_{i}", s) for i, s in enumerate(result["action_plan_en"])]
-                    result["follow_up_prompts_en"] = [tr_map.get(f"fu_{i}", s) for i, s in enumerate(result["follow_up_prompts_en"])]
-                    for i, r in enumerate(result["comparison_scorecard"]):
-                        r["option_en"] = tr_map.get(f"sc_{i}", r["option_en"])
-            except Exception:
-                pass
-
-        return result
-    except ValueError as ve:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Boardroom judge error: {exc}")
+app.include_router(
+    build_predict_router(
+        resolve_staging_out=_resolve_staging_out_for_run,
+        enforce_tenant_access=_enforce_tenant_access,
+        require_role=_require_role,
+        sanitize_tenant_id=sanitize_tenant_id,
+        get_cached_decision_engine=_get_cached_decision_engine,
+        decision_outcome_tracker=decision_outcome_tracker,
+    )
+)
+app.include_router(
+    build_i18n_router(
+        workspace_root=WORKSPACE_ROOT,
+        resolve_staging_out=_resolve_staging_out_for_run,
+        enforce_tenant_access=_enforce_tenant_access,
+        extract_executive_pulse=_extract_executive_pulse,
+    )
+)
+app.include_router(
+    build_boardroom_router(
+        resolve_staging_out=_resolve_staging_out_for_run,
+        enforce_tenant_access=_enforce_tenant_access,
+        get_cached_decision_engine=_get_cached_decision_engine,
+    )
+)
+app.include_router(
+    build_system_router(
+        workspace_root=WORKSPACE_ROOT,
+        require_role=_require_role,
+    )
+)
 
 
 # =============================================================================
