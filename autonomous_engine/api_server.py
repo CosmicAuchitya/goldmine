@@ -23,7 +23,7 @@ import sqlite3
 import shutil
 import threading
 import asyncio
-from collections import defaultdict, deque
+from collections import defaultdict, deque, OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
@@ -46,6 +46,7 @@ try:
     from .anti_hallucination_guard import run_anti_hallucination_audit
     from .conversational_qa_engine import ConversationalBusinessQAEngine
     from .action_ledger import ActionLedger
+    from .decision_outcome_tracker import DecisionOutcomeTracker
     from .historical_drift_radar import analyze_historical_drift
     from .target_resolver import resolve_canonical_target_and_cost
     from .stage1_topology_profiler import profile_raw_directory
@@ -74,6 +75,7 @@ except ImportError:
     from anti_hallucination_guard import run_anti_hallucination_audit
     from conversational_qa_engine import ConversationalBusinessQAEngine
     from action_ledger import ActionLedger
+    from decision_outcome_tracker import DecisionOutcomeTracker
     from historical_drift_radar import analyze_historical_drift
     from target_resolver import resolve_canonical_target_and_cost
     from stage1_topology_profiler import profile_raw_directory
@@ -130,6 +132,7 @@ ALLOWED_ARTIFACTS = {
 }
 
 action_ledger = ActionLedger()
+decision_outcome_tracker = DecisionOutcomeTracker()
 auth_manager = TenantAuthManager()
 
 # Sliding-window IP rate limiter (thread-safe)
@@ -337,6 +340,9 @@ async def api_key_auth_middleware(request: Request, call_next):
             "/api/v1/billing/plans",
             "/api/v1/billing/webhooks/stripe",
             "/api/v1/billing/webhooks/razorpay",
+            "/api/v1/i18n/languages",
+            "/api/v1/i18n/translate-ui",
+            "/api/v1/i18n/translate-texts",
         }
         is_oauth_callback = (
             request.method == "GET"
@@ -353,6 +359,7 @@ async def api_key_auth_middleware(request: Request, call_next):
                 "/api/v1/digest/",
                 "/api/v1/questions-200/",
                 "/api/v1/ranked-leaks/",
+                "/api/v1/predict/overview/",
             ):
                 if path.startswith(prefix):
                     rid = path[len(prefix):].strip("/").split("/")[0]
@@ -365,6 +372,12 @@ async def api_key_auth_middleware(request: Request, call_next):
                 parts = path[len("/api/v1/download/"):].strip("/").split("/")
                 if parts and parts[0] in PUBLIC_BENCHMARK_IDS:
                     is_public_demo_route = True
+        elif not is_public_demo_route and request.method == "POST" and path.startswith("/api/v1/predict/simulate/"):
+            rid = path[len("/api/v1/predict/simulate/"):].strip("/").split("/")[0]
+            is_public_demo_route = rid in PUBLIC_BENCHMARK_IDS
+        elif not is_public_demo_route and request.method == "POST" and path.startswith("/api/v1/i18n/translate-run/"):
+            rid = path[len("/api/v1/i18n/translate-run/"):].strip("/").split("/")[0]
+            is_public_demo_route = rid in PUBLIC_BENCHMARK_IDS
 
         is_exempt = (path in exempt_exact) or is_public_demo_route
         if not is_exempt:
@@ -851,167 +864,251 @@ def _extract_executive_pulse(
                     })
 
     is_fin = bool(total_drag > 0 and monetary_col and monetary_col != "None")
-    fmt_drag = _format_local_money(total_drag, currency_unit) if is_fin else f"{total_events:,} Cases"
 
     # 5. Build Human Business Analyst Narratives (EN + HI) for Zero-Jargon Clarity
-    moat_dim_h = _humanize_col_name(moat_dim)
-    bn_col_h = _humanize_col_name(bn_col)
-    rl_col_h = _humanize_col_name(rl_col) if rl_col else ""
+    try:
+        try:
+            from .human_analyst_narrator import (
+                clean_column_label,
+                humanize_segment,
+                infer_domain_vocab,
+                rate_out_of_ten_phrase,
+            )
+        except ImportError:
+            from human_analyst_narrator import (
+                clean_column_label,
+                humanize_segment,
+                infer_domain_vocab,
+                rate_out_of_ten_phrase,
+            )
+        _schema_cols: List[str] = []
+        _rk_path = staging_out / "ranked_leaks_report.json"
+        _vocab_loaded = None
+        if _rk_path.exists():
+            try:
+                _rk_j = json.loads(_rk_path.read_text(encoding="utf-8"))
+                if isinstance(_rk_j.get("domain_vocab"), dict):
+                    _vocab_loaded = _rk_j["domain_vocab"]
+            except Exception:
+                pass
+        if not _vocab_loaded:
+            _topo_p = staging_out / "schema_topology.json"
+            if _topo_p.exists():
+                try:
+                    _tj = json.loads(_topo_p.read_text(encoding="utf-8"))
+                    for _tinfo in (_tj.get("tables") or {}).values():
+                        _schema_cols.extend(list((_tinfo.get("columns") or {}).keys()))
+                except Exception:
+                    pass
+            _vocab_loaded = infer_domain_vocab(_schema_cols or [target_col, bn_col, moat_dim, rl_col], target_col=target_col, is_financial=is_fin)
+        _v = _vocab_loaded
+        moat_dim_h = clean_column_label(moat_dim, "en")
+        bn_col_h = clean_column_label(bn_col, "en")
+        bn_col_hi = clean_column_label(bn_col, "hi")
+        rl_col_h = clean_column_label(rl_col, "en") if rl_col else ""
+        rl_col_hi = clean_column_label(rl_col, "hi") if rl_col else ""
+        moat_seg_en = humanize_segment(moat_dim, moat_seg, "en", _v)
+        moat_seg_hi = humanize_segment(moat_dim, moat_seg, "hi", _v)
+        bn_seg_en = humanize_segment(bn_col, bn_seg, "en", _v)
+        bn_seg_hi = humanize_segment(bn_col, bn_seg, "hi", _v)
+        _bn_rate_num = float(re.sub(r"[^0-9.]", "", str(bn_rate or "0")) or "0")
+        _bn_rest_num = float(re.sub(r"[^0-9.]", "", str(bn_rest_rate or "0")) or "0")
+        _bn_10_en = rate_out_of_ten_phrase(_bn_rate_num, "en")
+        _bn_rest_10_en = rate_out_of_ten_phrase(_bn_rest_num, "en")
+        _bn_10_hi = rate_out_of_ten_phrase(_bn_rate_num, "hi")
+        _bn_rest_10_hi = rate_out_of_ten_phrase(_bn_rest_num, "hi")
+    except Exception:
+        _v = {
+            "domain": "general", "entity_en": "cases", "entity_hi": "केस",
+            "fail_en": "run into problems", "fail_hi": "समस्या में आ रहे हैं",
+            "safe_en": "work smoothly", "safe_hi": "सही चल रहे हैं",
+            "leak_label_en": "money leak" if is_fin else "problem area",
+            "leak_label_hi": "नुकसान का कारण" if is_fin else "मुख्य समस्या",
+        }
+        moat_dim_h = _humanize_col_name(moat_dim)
+        bn_col_h = _humanize_col_name(bn_col)
+        bn_col_hi = bn_col_h
+        rl_col_h = _humanize_col_name(rl_col) if rl_col else ""
+        rl_col_hi = rl_col_h
+        moat_seg_en = moat_seg_hi = str(moat_seg)
+        bn_seg_en = bn_seg_hi = str(bn_seg)
+        _bn_10_en = _bn_10_hi = str(bn_rate)
+        _bn_rest_10_en = _bn_rest_10_hi = f"{bn_rest_rate}%"
+
+    ent_en = _v.get("entity_en", "cases")
+    ent_hi = _v.get("entity_hi", "केस")
+    fail_en = _v.get("fail_en", "run into problems")
+    fail_hi = _v.get("fail_hi", "समस्या में आ रहे हैं")
+    safe_en = _v.get("safe_en", "work smoothly")
+    safe_hi = _v.get("safe_hi", "सही चल रहे हैं")
+    leak_lbl_en = _v.get("leak_label_en", "money leak" if is_fin else "problem area")
+    leak_lbl_hi = _v.get("leak_label_hi", "नुकसान का कारण" if is_fin else "मुख्य समस्या")
+    fmt_drag = _format_local_money(total_drag, currency_unit) if is_fin else f"{total_events:,} {ent_en.title()}"
     first_pw_roi = pathways[0]["roi_range"] if pathways else fmt_drag
 
-    # Clean Pathway cards for Business Owners (EN & HI)
+    # Clean Pathway cards for Business Owners (EN & HI — domain-tailored, zero generic "confirmation call on '248' orders")
     owner_pathways_en = []
     owner_pathways_hi = []
+    _is_ops_call = _v.get("domain") in ("ecommerce", "hotel", "banking", "telecom")
     for idx, pw in enumerate(pathways):
         p_code = pw.get("code", "")
         impact_short = pw.get("impact", "")
-        # Extract monetary savings or event reduction cleanly
         m_save = re.match(r"([^ ]+\s*(?:L|Cr|M)?)\s*(?:risk averted|saved)", impact_short, re.IGNORECASE)
         short_save = m_save.group(1).strip() if m_save else impact_short.split("(")[0].strip()
 
         if p_code == "HOLD":
             owner_pathways_en.append({
-                "title": "Plan A: Keep Budget Safe (No Special Campaign Needed)",
-                "badge": f"{currency_unit}0 Extra Spend",
-                "story": "Since every group has almost the same risk level, don't spend extra money targeting one specific team. Focus on general service quality.",
-                "target": "All Business Groups",
+                "title": "Plan A: Keep Budget Safe (No Special Spend Needed)",
+                "badge": f"{currency_unit}0 Extra Spend" if is_fin else "No Extra Spend",
+                "story": f"Every group shows almost the same risk level, so don't spend extra money targeting one category. Focus on steady quality across all {ent_en}.",
+                "target": f"All {ent_en.title()}",
                 "effort": "Zero Extra Cost"
             })
             owner_pathways_hi.append({
-                "title": "Plan A: Paisa Bachayein (Alag Kharch Ki Zarurat Nahi)",
-                "badge": f"{currency_unit}0 Extra Kharch",
-                "story": "Kyunki har group mein risk lagbhag barabar hai, kisi ek department par alag se paisa mat kharch karein. General quality par dhyan dein.",
-                "target": "Poora Business",
-                "effort": "Zero Extra Kharch"
+                "title": "Plan A: पैसा बचाएँ (किसी एक ग्रुप पर अलग खर्च की ज़रूरत नहीं)",
+                "badge": f"{currency_unit}0 एक्स्ट्रा खर्च" if is_fin else "कोई अतिरिक्त खर्च नहीं",
+                "story": f"हर ग्रुप में रिस्क लगभग बराबर है, इसलिए किसी एक हिस्से पर अलग से पैसा न खर्च करें। सभी {ent_hi} की सामान्य क्वालिटी सुधारने पर ध्यान दें।",
+                "target": f"सभी {ent_hi}",
+                "effort": "शून्य अतिरिक्त खर्च"
             })
         elif idx == 0:
+            _step_a_en = (
+                f"Add a quick confirmation call or WhatsApp check on {bn_seg_en}"
+                if _is_ops_call else
+                f"Add a quick pre-check alert on {bn_seg_en} using Today's Action List"
+            )
+            _step_a_hi = (
+                f"{bn_seg_hi} पर एक छोटा कॉल या व्हाट्सएप कन्फर्मेशन लगाएँ"
+                if _is_ops_call else
+                f"Today's Action List से {bn_seg_hi} की रोज़ाना त्वरित जाँच शुरू करें"
+            )
             owner_pathways_en.append({
-                "title": "Plan A: Small Quick Trial (Lowest Risk)",
+                "title": "Plan A: Quick 2-Week Trial (Lowest Risk)",
                 "badge": f"Save ~{short_save}",
-                "story": f"Start in 1-2 weeks without changing your daily workflow. Add a simple check or confirmation call on '{bn_seg}' orders to stop the easiest 25% of losses.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "1-2 Weeks · Very Easy"
+                "story": f"Start in 1–2 weeks without disrupting daily work. {_step_a_en} to stop the easiest 25% of avoidable bad {ent_en}.",
+                "target": bn_seg_en,
+                "effort": "1–2 Weeks · Very Easy"
             })
             owner_pathways_hi.append({
-                "title": "Plan A: Chhota Shuruati Trial (Sabse Surakshit)",
-                "badge": f"Bachat ~{short_save}",
-                "story": f"Daily kaam ko bina roke 1-2 hafte mein shuru karein. '{bn_seg}' par ek simple call ya WhatsApp confirmation lagakar shuruati 25% nuksaan turant rokein.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "1-2 Hafte · Bahut Aasan"
+                "title": "Plan A: छोटा शुरुआती ट्रायल (सबसे सुरक्षित)",
+                "badge": f"बचत ~{short_save}",
+                "story": f"रोज़ के काम को बिना रोके 1–2 हफ़्ते में शुरू करें। {_step_a_hi} — इससे शुरुआती 25% खराब {ent_hi} तुरंत रुक जाएंगे।",
+                "target": bn_seg_hi,
+                "effort": "1–2 हफ़्ते · बहुत आसान"
             })
         elif idx == 1:
             owner_pathways_en.append({
                 "title": "Plan B: Focused Team Fix (Best Balance)",
                 "badge": f"Save ~{short_save}",
-                "story": f"Best return on team effort. Train your staff on a clear follow-up process specifically for '{bn_seg}' to recover 60% of avoidable losses within 30-45 days.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "30-45 Days · High Return"
+                "story": f"Best return on team effort. Train your {_v.get('action_owner_en', 'team')} on a clear daily checklist for {bn_seg_en} to cut 60% of avoidable failures within 30–45 days.",
+                "target": bn_seg_en,
+                "effort": "30–45 Days · Best Return"
             })
             owner_pathways_hi.append({
-                "title": "Plan B: Focused Team Sudhar (Best Return)",
-                "badge": f"Bachat ~{short_save}",
-                "story": f"Mehnat aur fayde ka sabse behtar balance. Apni team ko '{bn_seg}' ke cases handle karne ki training dein — 30-45 din mein 60% extra nuksaan ruk jayega.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "30-45 Din · Best ROI"
+                "title": "Plan B: फोकस्ड टीम सुधार (सबसे बेहतर नतीजा)",
+                "badge": f"बचत ~{short_save}",
+                "story": f"मेहनत और फ़ायदे का सबसे सही संतुलन। अपनी {_v.get('action_owner_hi', 'टीम')} को {bn_seg_hi} के लिए स्पष्ट चेकलिस्ट दें — 30–45 दिन में 60% अतिरिक्त खराबी रुक जाएगी।",
+                "target": bn_seg_hi,
+                "effort": "30–45 दिन · बेस्ट ROI"
             })
         else:
             owner_pathways_en.append({
-                "title": "Plan C: Full Process Upgrade (Maximum Savings)",
+                "title": "Plan C: Full Process Upgrade (Maximum Impact)",
                 "badge": f"Save ~{short_save}",
-                "story": f"Fix '{bn_seg}' completely so its problem rate drops from {bn_rate} down to the normal {bn_rest_rate}% seen in the rest of your company.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "3-6 Months · Full Fix"
+                "story": f"Fix the root process behind {bn_seg_en} so its problem rate drops from {_bn_10_en} down to the normal {_bn_rest_10_en} seen in the rest of your business.",
+                "target": bn_seg_en,
+                "effort": "3–6 Months · Complete Fix"
             })
             owner_pathways_hi.append({
-                "title": "Plan C: Poora System Sudhar (Sabse Badi Bachat)",
-                "badge": f"Bachat ~{short_save}",
-                "story": f"'{bn_seg}' ke process ko poori tarah upgrade karein taaki iska nuksaan {bn_rate} se ghatkar baaki company ke normal {bn_rest_rate}% level par aa jaye.",
-                "target": f"{bn_col_h} → {bn_seg}",
-                "effort": "3-6 Mahine · Complete Fix"
+                "title": "Plan C: पूरा सिस्टम सुधार (सबसे बड़ी बचत)",
+                "badge": f"बचत ~{short_save}",
+                "story": f"{bn_seg_hi} के पूरे प्रोसेस को सुधारें ताकि समस्या {_bn_10_hi} से घटकर बाकी बिज़नेस के सामान्य {_bn_rest_10_hi} स्तर पर आ जाए।",
+                "target": bn_seg_hi,
+                "effort": "3–6 महीने · पूरा सुधार"
             })
 
     owner_friendly = {
         "en": {
             "moat": {
-                "title": f"'{moat_seg}' is working smoothly",
+                "title": f"{moat_seg_en} is working smoothly",
                 "badge": f"{moat_rel} Safe",
-                "story": f"Almost all orders under {moat_dim_h} → '{moat_seg}' ({moat_vol} orders) finish cleanly without trouble. Do not change this workflow.",
-                "footer": f"Checked {total_records:,} orders"
+                "story": f"Almost all {ent_en} in {moat_seg_en} ({moat_vol} {ent_en}) {safe_en}. Keep this workflow unchanged.",
+                "footer": f"Checked {total_records:,} {ent_en}"
             },
             "bottleneck": {
-                "title": "No single group is to blame" if bn_is_cb else f"'{bn_seg}' is your #1 money leak",
-                "badge": f"{currency_unit}0 Extra Spend" if bn_is_cb else f"{bn_rate} Fail",
+                "title": "No single group is to blame" if bn_is_cb else f"{bn_seg_en} is your #1 {leak_lbl_en}",
+                "badge": (f"{currency_unit}0 Extra Spend" if is_fin else "Balanced") if bn_is_cb else f"{bn_rate} Problem",
                 "story": (
-                    "Problem rates are nearly identical across every category. Focus on steady daily quality instead of spending on one group."
+                    f"Problem rates are nearly identical across every category. Focus on steady daily quality across all {ent_en} instead of spending on one group."
                     if bn_is_cb else
-                    f"In {bn_col_h}, '{bn_seg}' has a {bn_rate} failure rate — way higher than the {bn_rest_rate}% rate in the rest of your business. Fix this first."
+                    f"In {bn_seg_en}, {_bn_10_en} {ent_en} {fail_en} — far higher than {_bn_rest_10_en} in the rest of your business. Fix this first."
                 ),
                 "footer": "Save budget" if bn_is_cb else f"Focus on {bn_col_h}"
             },
             "red_line": {
                 "title": (
-                    f"Losses jump when {rl_col_h} hits {_humanize_interval_str(rl_bad_range, 'en')}"
+                    f"Problems spike when {rl_col_h} hits {_humanize_interval_str(rl_bad_range, 'en')}"
                     if rl_has_cliff else "No sudden tipping-point limit"
                 ),
                 "badge": f"Jumps to {rl_bad_rate}" if rl_has_cliff else "Gradual Trend",
                 "story": (
-                    f"Once {rl_col_h} reaches {_humanize_interval_str(rl_bad_range, 'en')}, failures spike to {rl_bad_rate} (vs just {rl_good_rate or 'low'} when kept at {_humanize_interval_str(rl_good_range, 'en') or 'lower values'}). Act before crossing this line."
+                    f"Once {rl_col_h} reaches {_humanize_interval_str(rl_bad_range, 'en')}, failures jump to {rl_bad_rate} (vs only {rl_good_rate or 'low'} when kept at {_humanize_interval_str(rl_good_range, 'en') or 'safe values'}). Catch {ent_en} before crossing this line."
                     if rl_has_cliff else
                     "Problems rise slowly and steadily rather than breaking at one specific number. Keep steady daily tracking."
                 ),
                 "footer": "Watch this limit" if rl_has_cliff else "Steady operations"
             },
             "recovery": {
-                "title": f"Up to {fmt_drag} can be saved" if is_fin else f"{total_events:,} fixable cases",
-                "badge": owner_pathways_en[0]["badge"] if owner_pathways_en else "Ready to Save",
+                "title": f"Up to {fmt_drag} can be saved" if is_fin else f"Up to {total_events:,} {ent_en} can be improved",
+                "badge": owner_pathways_en[0]["badge"] if owner_pathways_en else "Ready to Fix",
                 "story": (
-                    f"You don't need a big overhaul on Day 1. Start with Plan A (1-2 week quick trial on '{bn_seg}') to start recovering money right away."
+                    f"You don't need a big overhaul on Day 1. Start with Plan A (a quick 1–2 week check on {bn_seg_en}) to start seeing results right away."
                     if not bn_is_cb else
-                    "Keep existing processes steady and watch the daily Action List for high-value orders."
+                    f"Keep existing processes steady and monitor Today's Action List for high-risk {ent_en}."
                 ),
-                "footer": f"{total_events:,} total problem cases"
+                "footer": f"{total_events:,} total problem {ent_en}"
             },
             "pathways": owner_pathways_en
         },
         "hi": {
             "moat": {
-                "title": f"'{moat_seg}' bilkul smooth chal raha hai",
-                "badge": f"{moat_rel} Safe",
-                "story": f"{moat_dim_h} mein '{moat_seg}' ke {moat_vol} orders mein se {moat_rel} bina kisi return ya dikkat ke poore ho rahe hain. Isko bilkul mat badlein.",
-                "footer": f"Kul {total_records:,} orders check kiye"
+                "title": f"{moat_seg_hi} बिल्कुल सही चल रहा है",
+                "badge": f"{moat_rel} सुरक्षित",
+                "story": f"{moat_seg_hi} के {moat_vol} {ent_hi} में से {moat_rel} {safe_hi}। इस तरीके को बिल्कुल न बदलें।",
+                "footer": f"कुल {total_records:,} {ent_hi} जाँचे गए"
             },
             "bottleneck": {
-                "title": "Kisi ek group ki galti nahi hai" if bn_is_cb else f"Sabse bada nuksaan '{bn_seg}' mein hai",
-                "badge": f"{currency_unit}0 Extra Kharch" if bn_is_cb else f"{bn_rate} Nuksaan",
+                "title": "किसी एक ग्रुप की गलती नहीं है" if bn_is_cb else f"{bn_seg_hi} आपकी सबसे बड़ी {leak_lbl_hi} है",
+                "badge": (f"{currency_unit}0 एक्स्ट्रा खर्च" if is_fin else "संतुलित") if bn_is_cb else f"{bn_rate} समस्या",
                 "story": (
-                    "Har group mein problem rate lagbhag ek jaisa hai. Kisi ek category par faltu paisa kharch na karein, overall service par dhyan dein."
+                    f"हर ग्रुप में समस्या लगभग बराबर है। किसी एक कैटेगरी पर फालतू खर्च न करें, पूरे काम की सामान्य क्वालिटी पर ध्यान दें।"
                     if bn_is_cb else
-                    f"{bn_col_h} mein '{bn_seg}' wale {bn_rate} orders fail ya return ho rahe hain — jabki baaki business mein yeh sirf {bn_rest_rate}% hai. Sabse pehle ise theek karein."
+                    f"{bn_seg_hi} में {_bn_10_hi} {ent_hi} {fail_hi} — जबकि बाकी बिज़नेस में यह सिर्फ़ {_bn_rest_10_hi} है। सबसे पहले इसे सुधारें।"
                 ),
-                "footer": "Budget bachayein" if bn_is_cb else f"{bn_col_h} par dhyan dein"
+                "footer": "बजट बचाएँ" if bn_is_cb else f"{bn_col_hi} पर ध्यान दें"
             },
             "red_line": {
                 "title": (
-                    f"{rl_col_h} jab {_humanize_interval_str(rl_bad_range, 'hi')} hota hai, tab khatra badhta hai"
-                    if rl_has_cliff else "Koi achanak khatre wala number nahi"
+                    f"जब {rl_col_hi} {_humanize_interval_str(rl_bad_range, 'hi')} पहुँचता है, समस्या अचानक बढ़ जाती है"
+                    if rl_has_cliff else "कोई अचानक ख़तरे वाली सीमा नहीं"
                 ),
-                "badge": f"{rl_bad_rate} Tak Jump" if rl_has_cliff else "Dheere Badlav",
+                "badge": f"{rl_bad_rate} तक उछाल" if rl_has_cliff else "धीमा बदलाव",
                 "story": (
-                    f"Jaise hi {rl_col_h} {_humanize_interval_str(rl_bad_range, 'hi')} pahunchta hai, nuksaan achanak badhkar {rl_bad_rate} ho jata hai (jabki {_humanize_interval_str(rl_good_range, 'hi') or 'kam range'} mein yeh sirf {rl_good_rate or 'kam'} rehta hai). Is limit se pehle action lein."
+                    f"जैसे ही {rl_col_hi} {_humanize_interval_str(rl_bad_range, 'hi')} जाता है, खराबी अचानक {rl_bad_rate} तक पहुँच जाती है (जबकि {_humanize_interval_str(rl_good_range, 'hi') or 'सुरक्षित स्तर'} में यह सिर्फ़ {rl_good_rate or 'बहुत कम'} रहती है)। इस सीमा से पहले अलर्ट रखें।"
                     if rl_has_cliff else
-                    "Kisi ek number ke baad achanak nuksaan nahi badhta — halat dheere chalti hai. Rozana nigrani rakhein."
+                    "किसी एक नंबर पर अचानक नुकसान नहीं बढ़ता — स्थिति धीरे बदलती है। रोज़ाना निगरानी रखें।"
                 ),
-                "footer": "Is limit se bachein" if rl_has_cliff else "Normal nigrani"
+                "footer": "इस सीमा से बचें" if rl_has_cliff else "सामान्य निगरानी"
             },
             "recovery": {
-                "title": f"Aap {fmt_drag} tak bacha sakte hain" if is_fin else f"{total_events:,} cases sudhar sakte hain",
-                "badge": owner_pathways_hi[0]["badge"] if owner_pathways_hi else "Bachat Ready",
+                "title": f"आप {fmt_drag} तक बचा सकते हैं" if is_fin else f"{total_events:,} {ent_hi} बचाए जा सकते हैं",
+                "badge": owner_pathways_hi[0]["badge"] if owner_pathways_hi else "सुधार के लिए तैयार",
                 "story": (
-                    f"Ek saath bada badlav karne ki zarurat nahi. Plan A se shuru karein — 1-2 hafte mein '{bn_seg}' par check lagakar turant bachat shuru karein."
+                    f"एक साथ बड़ा बदलाव करने की ज़रूरत नहीं। Plan A से शुरू करें — 1–2 हफ़्ते में {bn_seg_hi} पर ध्यान देकर तुरंत सुधार दिखना शुरू हो जाएगा।"
                     if not bn_is_cb else
-                    "Kaam ko steady rakhein aur Aaj Ka Kaam list mein bade orders par nazar rakhein."
+                    f"अपना मौजूदा प्रोसेस स्थिर रखें और Today's Action List में हाई-रिस्क {ent_hi} पर नज़र रखें।"
                 ),
-                "footer": f"Kul {total_events:,} problem cases"
+                "footer": f"कुल {total_events:,} समस्या वाले {ent_hi}"
             },
             "pathways": owner_pathways_hi
         }
@@ -2763,6 +2860,8 @@ def _resolve_staging_out_for_run(run_id: str) -> Tuple[Path, str]:
         return cand_upload, "founder_workspace"
 
     tenant_matches = list((WORKSPACE_ROOT / "runs" / "tenants").glob(f"*/jobs/{run_id}/output"))
+    if not tenant_matches:
+        tenant_matches = list((WORKSPACE_ROOT / "runs" / "tenants").glob(f"*/runs/{run_id}/output"))
     if tenant_matches and (tenant_matches[0] / "semantic_metrics_manifest.json").exists():
         t_name = tenant_matches[0].parents[2].name
         return tenant_matches[0], t_name
@@ -2770,6 +2869,10 @@ def _resolve_staging_out_for_run(run_id: str) -> Tuple[Path, str]:
     cand_bench = WORKSPACE_ROOT / "kaggle_benchmarks" / run_id / "output"
     if (cand_bench / "semantic_metrics_manifest.json").exists():
         return cand_bench, run_id
+
+    cand_showcase = WORKSPACE_ROOT / "enterprise_showcase_data" / run_id / "output"
+    if (cand_showcase / "semantic_metrics_manifest.json").exists():
+        return cand_showcase, run_id
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Audited output for '{run_id}' not found.")
 
@@ -3656,6 +3759,285 @@ def remove_team_member(user_id: str, request: Request) -> Dict[str, Any]:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ke))
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+
+
+# =============================================================================
+# PART 4C: STAGE 8 — PREDICTIVE DECISION INTELLIGENCE & ML SIMULATOR
+# =============================================================================
+_PREDICT_CACHE_LOCK = threading.Lock()
+_PREDICT_ENGINE_CACHE: "OrderedDict[Tuple[str, float], Any]" = OrderedDict()
+_PREDICT_CACHE_MAX = 12
+
+
+def _get_cached_decision_engine(staging_out: Path) -> Any:
+    fact_p = staging_out / "bi_ready_fact.parquet"
+    if not fact_p.exists():
+        pqs = list(staging_out.glob("*.parquet"))
+        if not pqs:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Parquet fact table found for prediction.")
+        fact_p = pqs[0]
+    mtime = float(fact_p.stat().st_mtime)
+    ckey = (str(staging_out.resolve()), mtime)
+    with _PREDICT_CACHE_LOCK:
+        cached = _PREDICT_ENGINE_CACHE.get(ckey)
+        if cached is not None:
+            _PREDICT_ENGINE_CACHE.move_to_end(ckey)
+            return cached
+
+    try:
+        from .decision_prediction_engine import PredictiveDecisionEngine
+    except ImportError:
+        from decision_prediction_engine import PredictiveDecisionEngine
+
+    eng = PredictiveDecisionEngine(str(staging_out))
+    with _PREDICT_CACHE_LOCK:
+        _PREDICT_ENGINE_CACHE[ckey] = eng
+        _PREDICT_ENGINE_CACHE.move_to_end(ckey)
+        while len(_PREDICT_ENGINE_CACHE) > _PREDICT_CACHE_MAX:
+            _PREDICT_ENGINE_CACHE.popitem(last=False)
+    return eng
+
+
+class DecisionSimulateRequest(BaseModel):
+    decision_text: Optional[str] = Field(None, max_length=600, description="Plain English or Hinglish business decision (supports single or 'A AND B' combos)")
+    decision: Optional[Dict[str, Any]] = Field(None, description="Optional single structured decision spec")
+    decisions: Optional[List[Dict[str, Any]]] = Field(None, description="Optional list of 2-4 simultaneous levers for zero-double-counting combo simulation")
+    implementation_cost: Optional[float] = Field(0.0, ge=0.0, description="Optional one-time or rollout budget subtracted from net gain across all Monte Carlo draws")
+
+
+class DecisionCommitRequest(BaseModel):
+    baseline_run_id: str = Field(..., min_length=3, max_length=80)
+    simulation: Dict[str, Any] = Field(..., description="Completed simulation response payload from /api/v1/predict/simulate/{run_id}")
+    tenant_id: Optional[str] = Field(None, max_length=64)
+
+
+class DecisionVerifyRequest(BaseModel):
+    actual_run_id: str = Field(..., min_length=3, max_length=80, description="Audited next-period run_id to verify actual physical outcome against")
+    tenant_id: Optional[str] = Field(None, max_length=64)
+
+
+@app.get("/api/v1/predict/overview/{run_id}", tags=["Stage 8 Predictive Decision Lab"])
+def get_decision_predictor_overview(run_id: str, request: Request) -> Dict[str, Any]:
+    """
+    Trains/loads the leak-proof calibrated ML model for `run_id`, returning honest
+    out-of-sample ROC-AUC, top predictive drivers, custom lever options, and 4 friendly 1-click scenarios.
+    """
+    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
+    _enforce_tenant_access(request, tenant_id, run_id=run_id, allow_public_benchmark=True)
+    try:
+        eng = _get_cached_decision_engine(staging_out)
+        data = eng.get_model_overview_and_presets()
+        data["run_id"] = run_id
+        return data
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Predictive model error: {exc}")
+
+
+@app.post("/api/v1/predict/simulate/{run_id}", tags=["Stage 8 Predictive Decision Lab"])
+def simulate_client_decision(run_id: str, req: DecisionSimulateRequest, request: Request) -> Dict[str, Any]:
+    """
+    Simulates a founder's single or multi-lever combo business decision via 3-fold cross-fitted ML
+    + 500-iteration Bootstrap/Epistemic/Elasticity Monte Carlo with zero double-counting.
+    """
+    staging_out, tenant_id = _resolve_staging_out_for_run(run_id)
+    _enforce_tenant_access(request, tenant_id, run_id=run_id, allow_public_benchmark=True)
+    if not req.decision and not (req.decisions and len(req.decisions) > 0) and not (req.decision_text and req.decision_text.strip()):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provide 'decision_text', 'decision', or 'decisions' list.")
+    try:
+        eng = _get_cached_decision_engine(staging_out)
+        res = eng.simulate_decision(
+            decision=req.decision,
+            decision_text=req.decision_text,
+            decisions=req.decisions,
+            implementation_cost=float(req.implementation_cost or 0.0),
+        )
+        res["run_id"] = run_id
+        return res
+    except ValueError as ve:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Decision simulation error: {exc}")
+
+
+@app.post("/api/v1/predict/commitments", status_code=status.HTTP_201_CREATED, tags=["Stage 8 Predictive Decision Lab"])
+def commit_predicted_decision(req: DecisionCommitRequest, request: Request) -> Dict[str, Any]:
+    """Commits a simulated decision to the tenant's Predicted-vs-Actual accountability ledger."""
+    _require_role(request, "analyst")
+    staging_out, run_tenant = _resolve_staging_out_for_run(req.baseline_run_id)
+    _enforce_tenant_access(request, run_tenant, run_id=req.baseline_run_id, allow_public_benchmark=True)
+    auth_tenant = getattr(request.state, "auth_tenant_id", None)
+    eff_tid = sanitize_tenant_id(auth_tenant or req.tenant_id or "founder_workspace")
+    try:
+        return decision_outcome_tracker.commit_decision(
+            tenant_id=eff_tid,
+            baseline_run_id=req.baseline_run_id,
+            simulation_payload=req.simulation,
+        )
+    except ValueError as ve:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+
+
+@app.get("/api/v1/predict/commitments", tags=["Stage 8 Predictive Decision Lab"])
+def list_predicted_commitments(request: Request, tenant_id: Optional[str] = Query(None)) -> Dict[str, Any]:
+    """Lists committed & verified Predicted-vs-Actual decisions strictly scoped to the caller's workspace."""
+    auth_tenant = getattr(request.state, "auth_tenant_id", None)
+    eff_tid = sanitize_tenant_id(auth_tenant or tenant_id or "founder_workspace")
+    if auth_tenant and tenant_id and sanitize_tenant_id(tenant_id) != sanitize_tenant_id(auth_tenant) and not getattr(request.state, "is_admin", False):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden: Cross-tenant commitments access denied.")
+    return decision_outcome_tracker.list_commitments(eff_tid)
+
+
+@app.post("/api/v1/predict/commitments/{commitment_id}/verify", tags=["Stage 8 Predictive Decision Lab"])
+def verify_committed_decision(commitment_id: str, req: DecisionVerifyRequest, request: Request) -> Dict[str, Any]:
+    """Reconciles a committed prediction physically against a subsequent period's audited Parquet fact table."""
+    _require_role(request, "analyst")
+    auth_tenant = getattr(request.state, "auth_tenant_id", None)
+    eff_tid = sanitize_tenant_id(auth_tenant or req.tenant_id or "founder_workspace")
+
+    comm = decision_outcome_tracker.get_commitment(eff_tid, commitment_id)
+    if not comm:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Commitment '{commitment_id}' not found in your workspace.")
+
+    base_out, base_tenant = _resolve_staging_out_for_run(comm["baseline_run_id"])
+    _enforce_tenant_access(request, base_tenant, run_id=comm["baseline_run_id"], allow_public_benchmark=True)
+
+    act_out, act_tenant = _resolve_staging_out_for_run(req.actual_run_id)
+    _enforce_tenant_access(request, act_tenant, run_id=req.actual_run_id, allow_public_benchmark=True)
+
+    try:
+        return decision_outcome_tracker.verify_commitment_against_actual(
+            tenant_id=eff_tid,
+            commitment_id=commitment_id,
+            actual_run_id=req.actual_run_id,
+            actual_output_dir=act_out,
+            baseline_output_dir=base_out,
+        )
+    except KeyError as ke:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ke))
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Outcome verification error: {exc}")
+
+
+@app.delete("/api/v1/predict/commitments/{commitment_id}", tags=["Stage 8 Predictive Decision Lab"])
+def delete_committed_decision(commitment_id: str, request: Request, tenant_id: Optional[str] = Query(None)) -> Dict[str, Any]:
+    """Deletes a committed decision strictly inside the caller's workspace."""
+    _require_role(request, "analyst")
+    auth_tenant = getattr(request.state, "auth_tenant_id", None)
+    eff_tid = sanitize_tenant_id(auth_tenant or tenant_id or "founder_workspace")
+    deleted = decision_outcome_tracker.delete_commitment(eff_tid, commitment_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Commitment not found in your workspace.")
+    return {"status": "deleted", "commitment_id": commitment_id}
+
+
+# =============================================================================
+# PART 4.9: WORLDWIDE MULTILINGUAL TRANSLATION ENGINE (43 WORLD LANGUAGES + RTL)
+# =============================================================================
+class TranslateUiRequest(BaseModel):
+    target_lang: str = Field(..., min_length=2, max_length=12)
+    ui_dict: Dict[str, str] = Field(default_factory=dict)
+
+
+class TranslateRunRequest(BaseModel):
+    target_lang: str = Field(..., min_length=2, max_length=12)
+    ui_dict: Dict[str, str] = Field(default_factory=dict)
+
+
+class TranslateTextsRequest(BaseModel):
+    target_lang: str = Field(..., min_length=2, max_length=12)
+    texts: Dict[str, str] = Field(default_factory=dict)
+
+
+@app.get("/api/v1/i18n/languages", tags=["Worldwide Multilingual i18n"])
+def list_world_languages() -> Dict[str, Any]:
+    """Lists all 43 supported global & regional languages with script names, regions, and RTL flags."""
+    try:
+        from .global_i18n_engine import WORLD_LANGUAGES
+    except ImportError:
+        from global_i18n_engine import WORLD_LANGUAGES
+    return {
+        "status": "success",
+        "count": len(WORLD_LANGUAGES),
+        "languages": WORLD_LANGUAGES,
+    }
+
+
+@app.post("/api/v1/i18n/translate-ui", tags=["Worldwide Multilingual i18n"])
+def translate_portal_ui(req: TranslateUiRequest) -> Dict[str, Any]:
+    """Translates and caches portal UI chrome labels into any of the 43 world languages."""
+    try:
+        from .global_i18n_engine import get_language_meta, normalize_lang_code, translate_ui_dictionary
+    except ImportError:
+        from global_i18n_engine import get_language_meta, normalize_lang_code, translate_ui_dictionary
+    code = normalize_lang_code(req.target_lang)
+    ui_tr, engine = translate_ui_dictionary(req.ui_dict, code, WORKSPACE_ROOT)
+    return {
+        "status": "success",
+        "lang": get_language_meta(code),
+        "engine": engine,
+        "ui_dict": ui_tr,
+    }
+
+
+@app.post("/api/v1/i18n/translate-run/{run_id}", tags=["Worldwide Multilingual i18n"])
+def translate_audited_run(run_id: str, req: TranslateRunRequest, request: Request) -> Dict[str, Any]:
+    """
+    Translates an entire audited run (Top 4 Health Cards, 3 Plans, Business Health Check
+    Problem Cards, Full Executive Story & UI chrome) into any of the 43 world languages
+    with 100% numeric-lock protection and instant disk caching.
+    """
+    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
+    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
+    try:
+        from .global_i18n_engine import normalize_lang_code, translate_full_run_bundle
+    except ImportError:
+        from global_i18n_engine import normalize_lang_code, translate_full_run_bundle
+
+    code = normalize_lang_code(req.target_lang)
+    pulse = _extract_executive_pulse_cards(staging_out)
+    owner_en = (pulse.get("owner_friendly") or {}).get("en") or {}
+    eng_md = pulse.get("english_summary_markdown") or ""
+
+    rk_data = None
+    rk_path = staging_out / "ranked_leaks_report.json"
+    if rk_path.exists():
+        try:
+            rk_data = json.loads(rk_path.read_text(encoding="utf-8"))
+        except Exception:
+            rk_data = None
+
+    return translate_full_run_bundle(
+        staging_out=staging_out,
+        target_lang=code,
+        owner_friendly_en=owner_en,
+        ranked_leaks_data=rk_data,
+        english_summary_md=eng_md,
+        ui_dict_en=req.ui_dict,
+        workspace_root=WORKSPACE_ROOT,
+    )
+
+
+@app.post("/api/v1/i18n/translate-texts", tags=["Worldwide Multilingual i18n"])
+def translate_dynamic_texts(req: TranslateTextsRequest) -> Dict[str, Any]:
+    """On-demand number-locked translator for live Ask AI answers and Stage 8 Decision Predictor outputs."""
+    try:
+        from .global_i18n_engine import get_language_meta, normalize_lang_code, translate_string_map
+    except ImportError:
+        from global_i18n_engine import get_language_meta, normalize_lang_code, translate_string_map
+    code = normalize_lang_code(req.target_lang)
+    # Guard payload size against abuse
+    safe_map = {str(k)[:80]: str(v)[:2000] for k, v in list((req.texts or {}).items())[:40]}
+    tr_map, engine = translate_string_map(safe_map, code, max_workers=6)
+    return {
+        "status": "success",
+        "lang": get_language_meta(code),
+        "engine": engine,
+        "texts": tr_map,
+    }
 
 
 # =============================================================================

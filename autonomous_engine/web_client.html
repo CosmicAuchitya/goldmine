@@ -1550,6 +1550,55 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
+    .global-lang-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .global-lang-select {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .global-lang-select:focus {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.15);
+    }
+
+    .global-lang-status {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+
+    /* Automatic Right-to-Left (RTL) support for Arabic, Urdu, Hebrew, Persian */
+    html[dir="rtl"] .sidebar {
+      border-right: none;
+      border-left: 1px solid var(--border-subtle);
+    }
+    html[dir="rtl"] .exc-subpanel {
+      border-left: none !important;
+      border-right: 3px solid var(--accent-emerald);
+    }
+    html[dir="rtl"] ul, html[dir="rtl"] ol {
+      margin-left: 0 !important;
+      margin-right: 18px !important;
+    }
+
     /* Brief Reader */
     .brief-reader {
       background: var(--bg-subtle);
@@ -2044,6 +2093,405 @@
     .toast-item.error { border-left-color: var(--accent-crimson); }
     .toast-item.info { border-left-color: var(--accent-sky); }
 
+    /* Stage 8 — Ultra-Simple Visual Decision Predictor ("Decision Lab") */
+    .predict-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .predict-honesty-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--accent-emerald-bg);
+      color: var(--accent-emerald);
+      border: 1px solid var(--accent-emerald-border);
+      white-space: nowrap;
+    }
+    .predict-honesty-pill.warn {
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber-border);
+    }
+    .predict-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 780px) {
+      .predict-presets-grid { grid-template-columns: 1fr; }
+    }
+    .predict-preset-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-subtle);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: all var(--transition-fast);
+    }
+    .predict-preset-card:hover,
+    .predict-preset-card.active-preset {
+      border-color: var(--accent-emerald);
+      background: var(--accent-emerald-bg);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+    .predict-preset-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .predict-preset-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+    .predict-preset-sub {
+      font-size: 12.2px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .predict-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+    .predict-input-row input {
+      flex: 1;
+      min-width: 240px;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+    .predict-input-row input:focus {
+      border-color: var(--accent-emerald);
+    }
+    .predict-custom-builder {
+      margin-top: 14px;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      padding: 12px 16px;
+    }
+    .predict-custom-builder summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-sky);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .predict-custom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      align-items: end;
+    }
+    .predict-verdict-hero {
+      display: grid;
+      grid-template-columns: 175px 1fr;
+      gap: 22px;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-top: 18px;
+      box-shadow: var(--shadow-card);
+    }
+    @media (max-width: 720px) {
+      .predict-verdict-hero { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+    }
+    .predict-verdict-hero.verdict-STRONG_GO { border-color: var(--accent-emerald-border); border-left: 5px solid var(--accent-emerald); }
+    .predict-verdict-hero.verdict-PILOT_FIRST { border-color: var(--accent-amber-border); border-left: 5px solid var(--accent-amber); }
+    .predict-verdict-hero.verdict-NEUTRAL { border-color: var(--accent-sky-border); border-left: 5px solid var(--accent-sky); }
+    .predict-verdict-hero.verdict-LIKELY_LOSS { border-color: var(--accent-crimson-border); border-left: 5px solid var(--accent-crimson); }
+    .predict-gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .predict-verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+    .predict-verdict-badge.STRONG_GO { background: var(--accent-emerald-bg); color: var(--accent-emerald); border: 1px solid var(--accent-emerald-border); }
+    .predict-verdict-badge.PILOT_FIRST { background: var(--accent-amber-bg); color: var(--accent-amber); border: 1px solid var(--accent-amber-border); }
+    .predict-verdict-badge.NEUTRAL { background: var(--accent-sky-bg); color: var(--accent-sky); border: 1px solid var(--accent-sky-border); }
+    .predict-verdict-badge.LIKELY_LOSS { background: var(--accent-crimson-bg); color: var(--accent-crimson); border: 1px solid var(--accent-crimson-border); }
+    .predict-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (max-width: 720px) {
+      .predict-kpi-row { grid-template-columns: 1fr; }
+    }
+    .predict-kpi-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      text-align: left;
+    }
+    .predict-kpi-box span {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .predict-kpi-box strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+    .predict-kpi-box small {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .predict-explain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+    @media (max-width: 960px) {
+      .predict-explain-grid { grid-template-columns: 1fr; }
+    }
+    .predict-explain-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .predict-explain-card.helps { border-top: 3px solid var(--accent-emerald); }
+    .predict-explain-card.nohelp { border-top: 3px solid var(--accent-amber); }
+    .predict-explain-card.risks { border-top: 3px solid var(--accent-crimson); }
+    .predict-seg-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+    .predict-seg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .predict-seg-bar-track {
+      height: 6px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .predict-seg-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent-emerald);
+    }
+    .predict-drivers-strip {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .predict-driver-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .predict-cost-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .predict-cost-chip input {
+      width: 96px;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      padding: 10px 2px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      outline: none;
+    }
+    .predict-conf-box {
+      margin-top: 12px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+    .predict-conf-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .predict-conf-track {
+      height: 7px;
+      background: var(--bg-elevated);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 7px 0;
+    }
+    .predict-conf-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 550ms cubic-bezier(0.22, 1, 0.36, 1), background-color 250ms ease;
+    }
+    .predict-conf-pillars {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .predict-conf-pillar-tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+    }
+    .predict-compare-card {
+      margin-top: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+    }
+    .predict-combo-bar {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-sky-bg);
+      border: 1px solid var(--accent-sky-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .predict-combo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .predict-action-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .predict-commit-item {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -2104,6 +2552,10 @@
             <span>💬</span>
             <span data-i18n="tabAsk">Ask Any Question</span>
           </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="predict" onclick="switchWorkspaceTab('predict', this)">
+            <span>🔮</span>
+            <span data-i18n="tabPredict">Decision Predictor</span>
+          </button>
         </nav>
 
         <!-- Always-Visible Report Switcher -->
@@ -2120,9 +2572,29 @@
           <span data-i18n="sealVerified">100% Real Data Verified</span>
         </div>
 
-        <div class="lang-switch" style="width: 100%; justify-content: space-between;" title="Switch interface language">
-          <button id="btnGlobalEn" type="button" class="lang-btn active" style="flex: 1;" onclick="setGlobalLanguage('en')">🇬🇧 English</button>
-          <button id="btnGlobalHi" type="button" class="lang-btn" style="flex: 1;" onclick="setGlobalLanguage('hi')">🇮🇳 Hinglish</button>
+        <div class="global-lang-wrap" title="Switch language (43 World Languages + RTL)">
+          <div class="lang-switch" style="width: 100%; justify-content: space-between;">
+            <button id="btnGlobalEn" type="button" class="lang-btn active" style="flex: 1;" onclick="setGlobalLanguage('en')">🇬🇧 EN</button>
+            <button id="btnGlobalHi" type="button" class="lang-btn" style="flex: 1;" onclick="setGlobalLanguage('hi')">🇮🇳 HI</button>
+          </div>
+          <select id="globalLanguageSelect" class="global-lang-select" aria-label="Choose World Language" onchange="setGlobalLanguage(this.value)">
+            <option value="en">🌐 🇬🇧 English (Global)</option>
+            <option value="hi">🇮🇳 हिन्दी / Hinglish</option>
+            <option value="es">🇪🇸 Español (Spanish)</option>
+            <option value="fr">🇫🇷 Français (French)</option>
+            <option value="de">🇩🇪 Deutsch (German)</option>
+            <option value="ar">🇸🇦 العربية (Arabic · RTL)</option>
+            <option value="zh-CN">🇨🇳 中文 (简体)</option>
+            <option value="ja">🇯🇵 日本語 (Japanese)</option>
+            <option value="pt">🇧🇷 Português (Portuguese)</option>
+            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+            <option value="mr">🇮🇳 मराठी (Marathi)</option>
+          </select>
+          <div id="globalLangStatus" class="global-lang-status">
+            <span>🌐 43 World Languages</span>
+            <span id="globalLangBadge">EN</span>
+          </div>
         </div>
 
         <div class="sidebar-theme-palette" title="Choose Global Studio Theme">
@@ -2537,9 +3009,14 @@
                 <div class="section-eyebrow" style="margin-bottom: 2px;" data-i18n="eyebrowStory">FULL BUSINESS SUMMARY</div>
                 <h2 style="font-size: 18px; font-weight: 800;" data-i18n="storyTitle">Simple Story of Your Numbers</h2>
               </div>
-              <div class="lang-switch">
-                <button id="btnBriefEn" type="button" class="lang-btn active" onclick="switchBriefLanguage('en')">🇬🇧 English</button>
-                <button id="btnBriefHi" type="button" class="lang-btn" onclick="switchBriefLanguage('hi')">🇮🇳 Hinglish</button>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div class="lang-switch">
+                  <button id="btnBriefEn" type="button" class="lang-btn active" onclick="setGlobalLanguage('en')">🇬🇧 English</button>
+                  <button id="btnBriefHi" type="button" class="lang-btn" onclick="setGlobalLanguage('hi')">🇮🇳 Hinglish</button>
+                </div>
+                <select id="briefLanguageSelect" class="global-lang-select" style="width:auto;min-width:165px;padding:5px 10px;" aria-label="Translate Report Language" onchange="setGlobalLanguage(this.value)">
+                  <option value="en">🌐 More Languages (43)...</option>
+                </select>
               </div>
             </div>
 
@@ -2791,6 +3268,257 @@
               </summary>
               <pre id="copilotSqlCode" class="sql-code-block"></pre>
             </details>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 5: STAGE 8 — AI DECISION PREDICTOR & SIMULATOR ("DECISION LAB") -->
+      <div id="tabPanel-predict" class="tab-panel hidden">
+        <section class="panel-card">
+          <div class="predict-header-row">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 3px;" data-i18n="eyebrowPredict">
+                STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)
+              </div>
+              <h2 style="font-size: 21px; font-weight: 800; margin-bottom: 4px;" data-i18n="predictTitle">
+                Test Your Business Decision Before You Take Action
+              </h2>
+              <p style="font-size: 13.5px; color: var(--text-secondary); max-width: 680px;" data-i18n="predictLead">
+                Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won't help, and why loss could happen.
+              </p>
+            </div>
+            <div id="predictModelHonestyPill" class="predict-honesty-pill">
+              🧠 Training calibrated ML model...
+            </div>
+          </div>
+
+          <!-- Step 1A: 4 Friendly 1-Click Business Decision Presets -->
+          <div id="predictPresetsGrid" class="predict-presets-grid">
+            <div style="grid-column: 1 / -1; padding: 18px; text-align: center; color: var(--text-muted); font-size: 13px;">
+              Loading smart decision scenarios from your data...
+            </div>
+          </div>
+
+          <!-- Step 1B: Plain English / Hinglish Decision Box + Optional Rollout Budget -->
+          <div class="predict-input-row">
+            <input
+              id="predictDecisionInput"
+              type="text"
+              placeholder="Example: What if we replace Vendor A with Vendor B? OR Cap discount at 15% in Kanpur..."
+              onkeydown="if(event.key==='Enter') runPredictFromText()"
+            />
+            <label class="predict-cost-chip" title="Optional: Subtract one-time rollout or setup cost to see true net ROI">
+              <span data-i18n="lblRolloutCost">💰 Rollout Cost:</span>
+              <input id="predictRolloutCostInput" type="number" min="0" step="any" placeholder="0" />
+            </label>
+            <button id="btnPredictRun" type="button" class="btn btn-primary" onclick="runPredictFromText()">
+              <span>🔮</span>
+              <span data-i18n="btnPredictNow">Predict Outcome</span>
+            </button>
+          </div>
+
+          <!-- Step 1C: Clean Collapsible Custom Visual Decision Builder -->
+          <details class="predict-custom-builder">
+            <summary>
+              <span data-i18n="predictCustomToggle">🎛️ Or Build a Custom Decision (Choose Any Column &amp; Action)</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Expand ▾</span>
+            </summary>
+            <div class="predict-custom-grid">
+              <div class="form-field">
+                <label for="predictColSelect" data-i18n="lblPredictCol">1. What do you want to change?</label>
+                <select id="predictColSelect" onchange="onPredictBuilderColChange()"></select>
+              </div>
+              <div class="form-field">
+                <label for="predictActionSelect" data-i18n="lblPredictAct">2. Type of change</label>
+                <select id="predictActionSelect" onchange="onPredictBuilderActionChange()"></select>
+              </div>
+              <div id="predictFromWrap" class="form-field">
+                <label for="predictFromSelect" data-i18n="lblPredictFrom">3. Current value</label>
+                <select id="predictFromSelect"></select>
+              </div>
+              <div id="predictToWrap" class="form-field">
+                <label for="predictToSelect" data-i18n="lblPredictTo">4. Change to</label>
+                <select id="predictToSelect"></select>
+              </div>
+              <div id="predictNumWrap" class="form-field hidden">
+                <label for="predictNumInput" id="predictNumLabel">3. Target limit / %</label>
+                <input id="predictNumInput" type="number" step="any" placeholder="e.g. 15" />
+              </div>
+              <div class="form-field">
+                <label for="predictScopeSelect" data-i18n="lblPredictScope">Optional: Only in specific store/group</label>
+                <select id="predictScopeSelect">
+                  <option value="">Entire Business (All Rows)</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-primary" style="flex: 1;" onclick="runPredictFromBuilder()">
+                  ▶ <span data-i18n="btnTestCustom">Test Change</span>
+                </button>
+                <button id="btnAddToCombo" type="button" class="btn btn-sky" title="Queue 2–4 levers to simulate together with zero double-counting" onclick="addCurrentBuilderToCombo()">
+                  ➕ <span data-i18n="btnAddCombo">Combo</span>
+                </button>
+              </div>
+            </div>
+            <!-- Multi-Lever Combo Queue Bar (Hidden until >= 1 lever queued) -->
+            <div id="predictComboQueueBox" class="predict-combo-bar hidden">
+              <div id="predictComboChips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;"></div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button id="btnRunPredictCombo" type="button" class="btn btn-primary btn-sm" onclick="runPredictCombo()">
+                  ⚡ <span data-i18n="btnRunCombo">Simulate Combo</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearComboQueue()">✕</button>
+              </div>
+            </div>
+          </details>
+
+          <!-- Loading Indicator while simulating -->
+          <div id="predictLoadingBox" class="hidden" style="margin-top: 16px; padding: 18px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-subtle); text-align: center; font-size: 13.5px; color: var(--text-secondary);">
+            ⏳ Running calibrated ML model &amp; 500 Monte Carlo risk simulations...
+          </div>
+
+          <!-- Step 2 & 3: Visual Verdict Ring + 3 Plain-Language Explanation Cards -->
+          <div id="predictResultStage" class="hidden">
+            <div id="predictVerdictHero" class="predict-verdict-hero">
+              <div class="predict-gauge-wrap">
+                <svg width="138" height="138" viewBox="0 0 138 138" aria-label="Probability of Benefit Gauge">
+                  <circle cx="69" cy="69" r="56" fill="none" stroke="var(--bg-elevated)" stroke-width="12"></circle>
+                  <circle
+                    id="predictGaugeCircle"
+                    cx="69" cy="69" r="56" fill="none"
+                    stroke="var(--accent-emerald)" stroke-width="12"
+                    stroke-linecap="round"
+                    stroke-dasharray="351.86"
+                    stroke-dashoffset="351.86"
+                    transform="rotate(-90 69 69)"
+                    style="transition: stroke-dashoffset 650ms cubic-bezier(0.22, 1, 0.36, 1), stroke 300ms ease;"
+                  ></circle>
+                  <text id="predictGaugePctText" x="69" y="65" text-anchor="middle" fill="var(--text-primary)" font-size="27" font-weight="800" font-family="var(--font-mono)">--%</text>
+                  <text id="predictGaugeSubText" x="69" y="85" text-anchor="middle" fill="var(--text-muted)" font-size="10.5" font-weight="700">BENEFIT CHANCE</text>
+                </svg>
+                <span id="predictLossRiskPill" style="font-size: 11.5px; font-weight: 700; color: var(--text-secondary); background: var(--bg-subtle); border: 1px solid var(--border-subtle); padding: 3px 10px; border-radius: 999px;">
+                  Loss Risk: --%
+                </span>
+              </div>
+
+              <div>
+                <span id="predictVerdictBadge" class="predict-verdict-badge STRONG_GO">STRONG GO</span>
+                <h3 id="predictVerdictHeadline" style="font-size: 19px; font-weight: 800; line-height: 1.3; color: var(--text-primary);">--</h3>
+                <p id="predictDecisionAppliedLine" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"></p>
+
+                <!-- 4-Pillar Visual Simulation Confidence Score Meter (0-100) -->
+                <div id="predictConfidenceMeterBox" class="predict-conf-box">
+                  <div class="predict-conf-top">
+                    <span id="predictConfTitle" style="color: var(--text-primary);">🛡️ Simulation Confidence Score</span>
+                    <span id="predictConfScorePill" style="font-family: var(--font-mono); color: var(--accent-emerald);">-- / 100</span>
+                  </div>
+                  <div class="predict-conf-track">
+                    <div id="predictConfBarFill" class="predict-conf-fill" style="width: 0%; background: var(--accent-emerald);"></div>
+                  </div>
+                  <div id="predictConfPillars" class="predict-conf-pillars"></div>
+                </div>
+
+                <div class="predict-kpi-row">
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiNetLabel">Expected Net Impact</span>
+                    <strong id="predictKpiNetVal">--</strong>
+                    <small id="predictKpiCiVal">95% Range: --</small>
+                  </div>
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiRateLabel">Risk Rate (Before → After)</span>
+                    <strong id="predictKpiRateVal">--</strong>
+                    <small id="predictKpiEventsVal">--</small>
+                  </div>
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiCompLabel">Profit vs Trade-Off Split</span>
+                    <strong id="predictKpiCompVal">--</strong>
+                    <small id="predictKpiCompNote">--</small>
+                  </div>
+                </div>
+
+                <!-- 1-Click Boardroom Actions: Commit & Track · WhatsApp Memo · Print Board PDF -->
+                <div id="predictActionStrip" class="predict-action-strip">
+                  <button id="btnCommitDecision" type="button" class="btn btn-emerald btn-sm" onclick="commitCurrentDecision()">
+                    📌 <span data-i18n="btnCommitTrack">Commit &amp; Track Reality</span>
+                  </button>
+                  <button id="btnDecisionWhatsAppMemo" type="button" class="btn btn-amber btn-sm" onclick="shareDecisionWhatsAppMemo()">
+                    📲 <span data-i18n="btnWaMemo">WhatsApp Memo</span>
+                  </button>
+                  <button id="btnDecisionPrintMemo" type="button" class="btn btn-secondary btn-sm" onclick="printExecutiveBoardMemo()">
+                    🖨️ <span data-i18n="btnPrintMemo">Print Board PDF</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Crystal-Clear Explanation Cards -->
+            <div class="predict-explain-grid">
+              <div class="predict-explain-card helps">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="predHelpsEye">WHERE IT HELPS MOST</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predHelpsTitle">✅ Where You Win</h4>
+                </div>
+                <div id="predictHelpsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+
+              <div class="predict-explain-card nohelp">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 2px;" data-i18n="predNoHelpEye">WHERE IT WON'T HELP MUCH</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predNoHelpTitle">⚠️ Low / Zero-Benefit Zones</h4>
+                </div>
+                <div id="predictNoHelpList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+
+              <div class="predict-explain-card risks">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-crimson); margin-bottom: 2px;" data-i18n="predRisksEye">HONEST DOWNSIDE CHECK</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predRisksTitle">🔍 Why Loss Could Happen</h4>
+                </div>
+                <ul id="predictRisksList" style="margin: 0 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12.8px; color: var(--text-secondary); line-height: 1.5;"></ul>
+              </div>
+            </div>
+
+            <!-- Auto Side-by-Side Decision Comparison Table (Boardroom Scorecard) -->
+            <div id="predictCompareCard" class="predict-compare-card hidden">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;" data-i18n="predCmpEye">SIDE-BY-SIDE DECISION SCORECARD</div>
+                  <h4 style="font-size: 15.5px; font-weight: 800;" data-i18n="predCmpTitle">⚖️ Compare Your Tested Decisions</h4>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearPredictComparison()">🧹 Clear</button>
+              </div>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="cmpColDec">Decision Tested</th>
+                      <th data-i18n="cmpColVer">Verdict</th>
+                      <th data-i18n="cmpColProb">Benefit %</th>
+                      <th data-i18n="cmpColConf">Trust Score</th>
+                      <th data-i18n="cmpColNet">Net Impact</th>
+                      <th data-i18n="cmpColCi">95% Honest Range</th>
+                    </tr>
+                  </thead>
+                  <tbody id="predictCompareTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Predicted vs Actual Decision Accountability Tracker (Auto-shown when commitments exist) -->
+          <div id="predictCommitmentsCard" class="predict-compare-card hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+              <div>
+                <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="predTrackEye">PREDICTED VS ACTUAL ACCOUNTABILITY LOG</div>
+                <h4 style="font-size: 15.5px; font-weight: 800;" data-i18n="predTrackTitle">🎯 Did Our Predictions Come True?</h4>
+              </div>
+              <span id="predictTrackSummaryPill" class="predict-honesty-pill" style="font-size: 11.5px;">0 Tracked</span>
+            </div>
+            <div id="predictCommitmentsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+          </div>
+
+          <!-- Model Drivers & Leakage Guard Transparency Strip -->
+          <div id="predictDriversStrip" class="predict-drivers-strip">
+            <span>🔍 Top AI risk drivers will appear here once the model finishes calibrating.</span>
           </div>
         </section>
       </div>
@@ -3371,7 +4099,18 @@
       questions200Data: null,
       questions200Pillar: 'ALL',
       rankedLeaks: null,
-      copilotHistory: []
+      rankedLeaksRaw: null,
+      worldLanguages: [],
+      translatedSummaries: {},
+      translatedRankedLeaks: {},
+      langRequestSeq: 0,
+      copilotHistory: [],
+      predictOverview: null,
+      predictOverviewRunId: null,
+      predictLastResult: null,
+      predictCompareList: [],
+      predictComboQueue: [],
+      predictCommitmentsData: null
     };
 
     const i18nDict = {
@@ -3410,6 +4149,40 @@
         tabActions: 'Today\'s Call List',
         tabCalculator: 'Savings Calculator',
         tabAsk: 'Ask Any Question',
+        tabPredict: 'Decision Predictor',
+        eyebrowPredict: 'STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)',
+        predictTitle: 'Test Your Business Decision Before You Take Action',
+        predictLead: 'Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won\'t help, and why loss could happen.',
+        btnPredictNow: 'Predict Outcome',
+        predictCustomToggle: '🎛️ Or Build a Custom Decision (Choose Any Column & Action)',
+        lblPredictCol: '1. What do you want to change?',
+        lblPredictAct: '2. Type of change',
+        lblPredictFrom: '3. Current value',
+        lblPredictTo: '4. Change to',
+        lblPredictScope: 'Optional: Only in specific store/group',
+        btnTestCustom: 'Test This Change',
+        predHelpsEye: 'WHERE IT HELPS MOST',
+        predHelpsTitle: '✅ Where You Win',
+        predNoHelpEye: 'WHERE IT WON\'T HELP MUCH',
+        predNoHelpTitle: '⚠️ Low / Zero-Benefit Zones',
+        predRisksEye: 'HONEST DOWNSIDE CHECK',
+        predRisksTitle: '🔍 Why Loss Could Happen',
+        lblRolloutCost: '💰 Rollout Cost:',
+        predCmpEye: 'SIDE-BY-SIDE DECISION SCORECARD',
+        predCmpTitle: '⚖️ Compare Your Tested Decisions',
+        cmpColDec: 'Decision Tested',
+        cmpColVer: 'Verdict',
+        cmpColProb: 'Benefit %',
+        cmpColConf: 'Trust Score',
+        cmpColNet: 'Net Impact',
+        cmpColCi: '95% Honest Range',
+        btnAddCombo: 'Combo',
+        btnRunCombo: 'Simulate Combo',
+        btnCommitTrack: 'Commit & Track Reality',
+        btnWaMemo: 'WhatsApp Memo',
+        btnPrintMemo: 'Print Board PDF',
+        predTrackEye: 'PREDICTED VS ACTUAL ACCOUNTABILITY LOG',
+        predTrackTitle: '🎯 Did Our Predictions Come True?',
         eyebrowTrend: 'TREND COMPARED TO PREVIOUS REPORT',
         lblRateChange: 'Problem Rate Change',
         lblMoneyChange: 'Avg Order Change',
@@ -3500,6 +4273,40 @@
         tabActions: 'Aaj Ki Call List',
         tabCalculator: 'Bachat Calculator',
         tabAsk: 'Koi Bhi Sawal Poochein',
+        tabPredict: 'Faisla Jaanchein (AI)',
+        eyebrowPredict: 'STAGE 8 · AI FAISLA SIMULATOR (ML + MONTE CARLO)',
+        predictTitle: 'Koi Bhi Faisla Lene Se Pehle Uska Asar Check Karein',
+        predictLead: 'Neeche 1-click idea chunein ya seedhi Hindi/English mein apna badlav likhein — jaanein munafe ka kitna % chance hai, kahan fayda hoga, kahan nahi hoga aur nuksaan kyun ho sakta hai.',
+        btnPredictNow: 'Asar Jaanchein',
+        predictCustomToggle: '🎛️ Ya Khud Apna Custom Badlav Banayein (Koi Bhi Column Chunein)',
+        lblPredictCol: '1. Kya badalna chahte hain?',
+        lblPredictAct: '2. Badlav ka tareeqa',
+        lblPredictFrom: '3. Abhi ki value',
+        lblPredictTo: '4. Kisme badalna hai',
+        lblPredictScope: 'Optional: Sirf kisi khas store/group par',
+        btnTestCustom: 'Is Badlav Ko Test Karein',
+        predHelpsEye: 'KAHAN SABSE ZYADA FAYDA HOGA',
+        predHelpsTitle: '✅ Yahan Jeet Hogi',
+        predNoHelpEye: 'KAHAN ZYADA ASAR NAHI HOGA',
+        predNoHelpTitle: '⚠️ Kam / Zero Fayde Wale Hisse',
+        predRisksEye: 'IMAANDAR RISK CHECK',
+        predRisksTitle: '🔍 Nuksaan Hua Toh Kyun Hoga?',
+        lblRolloutCost: '💰 Kharch (Optional):',
+        predCmpEye: 'AAJ TEST KIYE GAYE FAISLON KI TULNA',
+        predCmpTitle: '⚖️ Sabhi Faislon Ka Side-by-Side Scorecard',
+        cmpColDec: 'Test Kiya Faisla',
+        cmpColVer: 'Verdict',
+        cmpColProb: 'Fayda %',
+        cmpColConf: 'Trust Score',
+        cmpColNet: 'Shuddh Asar',
+        cmpColCi: '95% Imaandar Range',
+        btnAddCombo: 'Combo Jodein',
+        btnRunCombo: 'Combo Test Karein',
+        btnCommitTrack: 'Commit & Track Karein',
+        btnWaMemo: 'WhatsApp Memo',
+        btnPrintMemo: 'Board PDF Print',
+        predTrackEye: 'ANUMAAN BANAAM ASLI RESULT TRACKER',
+        predTrackTitle: '🎯 Kya Hamara Anumaan Asal Zindagi Mein Sach Nikla?',
         eyebrowTrend: 'PICHLI REPORT KE MUQABLE BADLAV',
         lblRateChange: 'Problem Rate Badlav',
         lblMoneyChange: 'Avg Order Badlav',
@@ -3557,26 +4364,201 @@
       }
     };
 
-    function setGlobalLanguage(lang) {
-      appState.briefLanguage = lang === 'hi' ? 'hi' : 'en';
-      document.getElementById('btnGlobalEn').classList.toggle('active', appState.briefLanguage === 'en');
-      document.getElementById('btnGlobalHi').classList.toggle('active', appState.briefLanguage === 'hi');
+    function tUi(key, fallback = '') {
+      const lang = appState.briefLanguage || 'en';
+      const dict = i18nDict[lang] || i18nDict.en || {};
+      if (dict[key]) return dict[key];
+      if (lang === 'hi' && i18nDict.hi && i18nDict.hi[key]) return i18nDict.hi[key];
+      if (i18nDict.en && i18nDict.en[key]) return i18nDict.en[key];
+      return fallback || key;
+    }
 
-      const dict = i18nDict[appState.briefLanguage] || i18nDict.en;
+    const RTL_LANG_CODES = new Set(['ar', 'ur', 'he', 'fa']);
+
+    function _syncLanguageSelectors(lang, statusMsg) {
+      const btnEn = document.getElementById('btnGlobalEn');
+      const btnHi = document.getElementById('btnGlobalHi');
+      const bEn = document.getElementById('btnBriefEn');
+      const bHi = document.getElementById('btnBriefHi');
+      if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+      if (btnHi) btnHi.classList.toggle('active', lang === 'hi');
+      if (bEn) bEn.classList.toggle('active', lang === 'en');
+      if (bHi) bHi.classList.toggle('active', lang === 'hi');
+
+      const gSel = document.getElementById('globalLanguageSelect');
+      const bSel = document.getElementById('briefLanguageSelect');
+      if (gSel && gSel.value !== lang) gSel.value = lang;
+      if (bSel && bSel.value !== lang) bSel.value = lang;
+
+      const meta = (appState.worldLanguages || []).find(l => l.code === lang);
+      const isRtl = meta ? meta.dir === 'rtl' : RTL_LANG_CODES.has(lang);
+      document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', lang);
+
+      const badgeEl = document.getElementById('globalLangBadge');
+      if (badgeEl) {
+        badgeEl.textContent = statusMsg || (meta ? `${meta.flag} ${lang.toUpperCase()}${isRtl ? ' · RTL' : ''}` : lang.toUpperCase());
+      }
+    }
+
+    function _applyUiDictionary(lang) {
+      const dict = i18nDict[lang] || i18nDict.en;
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
       });
+    }
+
+    async function initGlobalLanguages() {
+      try {
+        const res = await fetch('/api/v1/i18n/languages');
+        if (!res.ok) return;
+        const data = await res.json();
+        const langs = data.languages || [];
+        if (!langs.length) return;
+        appState.worldLanguages = langs;
+
+        const regions = [];
+        const byRegion = {};
+        langs.forEach(l => {
+          const r = l.region || 'Global';
+          if (!byRegion[r]) {
+            byRegion[r] = [];
+            regions.push(r);
+          }
+          byRegion[r].push(l);
+        });
+
+        const buildOptions = () => regions.map(r => {
+          const opts = byRegion[r].map(l => {
+            const rtlTag = l.dir === 'rtl' ? ' · RTL' : '';
+            const label = l.code === 'en' ? `${l.flag} ${l.native} (Global)` : `${l.flag} ${l.native} (${l.name}${rtlTag})`;
+            return `<option value="${escapeHtml(l.code)}">${escapeHtml(label)}</option>`;
+          }).join('');
+          return `<optgroup label="${escapeHtml(r)}">${opts}</optgroup>`;
+        }).join('');
+
+        const htmlOpts = buildOptions();
+        const gSel = document.getElementById('globalLanguageSelect');
+        const bSel = document.getElementById('briefLanguageSelect');
+        if (gSel) gSel.innerHTML = htmlOpts;
+        if (bSel) bSel.innerHTML = htmlOpts;
+
+        const st = document.getElementById('globalLangStatus');
+        if (st && st.firstElementChild) {
+          st.firstElementChild.textContent = `🌐 ${langs.length} World Languages`;
+        }
+
+        let savedLang = 'en';
+        try { savedLang = localStorage.getItem('dataxray_lang') || 'en'; } catch (e) {}
+        if (savedLang && savedLang !== 'en') {
+          setGlobalLanguage(savedLang);
+        } else {
+          _syncLanguageSelectors('en');
+        }
+      } catch (e) {
+        // Fallback options already embedded in HTML
+      }
+    }
+
+    async function setGlobalLanguage(lang) {
+      const code = String(lang || 'en').trim() || 'en';
+      const reqId = ++appState.langRequestSeq;
+      appState.briefLanguage = code;
+      try { localStorage.setItem('dataxray_lang', code); } catch (e) {}
 
       const copilotSel = document.getElementById('copilotLangSelect');
-      if (copilotSel) copilotSel.value = appState.briefLanguage;
+      if (copilotSel) copilotSel.value = (code === 'hi') ? 'hi' : 'en';
 
+      // Fast instant path for built-in English & Hindi
+      if (code === 'en' || code === 'hi') {
+        _syncLanguageSelectors(code);
+        _applyUiDictionary(code);
+        if (appState.rankedLeaksRaw) {
+          appState.rankedLeaks = appState.rankedLeaksRaw;
+        }
+        if (appState.executivePulse) {
+          renderOwnerCardsAndPlans();
+          switchBriefLanguage(code);
+          renderCohortExplorer((appState.executivePulse || {}).cohort_breakdowns || []);
+          renderWorklistTable();
+        }
+        if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
+        if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
+        if (appState.predictCommitmentsData) renderPredictCommitments();
+        return;
+      }
+
+      // Worldwide 41 additional languages (with disk & memory cache + number-lock!)
+      const meta = (appState.worldLanguages || []).find(l => l.code === code);
+      const niceName = meta ? `${meta.flag} ${meta.native}` : code.toUpperCase();
+      const cacheKey = `${appState.activeRunId || 'none'}::${code}`;
+
+      _syncLanguageSelectors(code, '⏳...');
+      if (!appState.translatedSummaries[cacheKey]) {
+        showToast(`🌐 Translating report into ${niceName}...`, 'info');
+      }
+
+      try {
+        if (appState.activeRunId && !appState.translatedSummaries[cacheKey]) {
+          const res = await apiFetch(`/api/v1/i18n/translate-run/${encodeURIComponent(appState.activeRunId)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target_lang: code, ui_dict: i18nDict.en })
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (reqId !== appState.langRequestSeq) return; // Stale request ignored
+
+          if (data.ui_dict) i18nDict[code] = { ...i18nDict.en, ...data.ui_dict };
+          if (data.owner_friendly && appState.executivePulse) {
+            appState.executivePulse.owner_friendly = appState.executivePulse.owner_friendly || {};
+            appState.executivePulse.owner_friendly[code] = data.owner_friendly;
+          }
+          if (data.ranked_leaks) {
+            appState.translatedRankedLeaks[cacheKey] = data.ranked_leaks;
+          }
+          if (data.summary_markdown) {
+            appState.translatedSummaries[cacheKey] = data.summary_markdown;
+          }
+          if (data.engine === 'offline_fallback') {
+            showToast(`Offline mode: showing English fallback for ${niceName}`, 'warn');
+          } else {
+            showToast(`✅ Translated into ${niceName} (100% numbers verified)`, 'success');
+          }
+        } else if (!appState.activeRunId && !i18nDict[code]) {
+          const res = await apiFetch('/api/v1/i18n/translate-ui', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target_lang: code, ui_dict: i18nDict.en })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (reqId !== appState.langRequestSeq) return;
+            if (data.ui_dict) i18nDict[code] = { ...i18nDict.en, ...data.ui_dict };
+          }
+        }
+      } catch (err) {
+        if (reqId !== appState.langRequestSeq) return;
+        showToast(`Could not translate into ${niceName}: ${err.message}`, 'warn');
+      }
+
+      if (reqId !== appState.langRequestSeq) return;
+      _syncLanguageSelectors(code);
+      _applyUiDictionary(code);
+
+      if (appState.translatedRankedLeaks[cacheKey]) {
+        appState.rankedLeaks = appState.translatedRankedLeaks[cacheKey];
+      }
       if (appState.executivePulse) {
         renderOwnerCardsAndPlans();
-        switchBriefLanguage(appState.briefLanguage);
+        switchBriefLanguage(code);
         renderCohortExplorer((appState.executivePulse || {}).cohort_breakdowns || []);
         renderWorklistTable();
       }
+      if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
+      if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
+      if (appState.predictCommitmentsData) renderPredictCommitments();
     }
 
     function toggleTheme() {
@@ -3597,6 +4579,9 @@
       document.querySelectorAll('.tab-panel').forEach(p => {
         p.classList.toggle('hidden', p.id !== `tabPanel-${tabName}`);
       });
+      if (tabName === 'predict') {
+        loadDecisionPredictorOverview(false);
+      }
       const sb = document.getElementById('appSidebar');
       if (sb) sb.classList.remove('mobile-open');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4283,6 +5268,7 @@
       appState.questions200Data = null;
       appState.questions200Pillar = 'ALL';
       appState.rankedLeaks = result.ranked_leaks || null;
+      appState.rankedLeaksRaw = result.ranked_leaks || null;
       appState.copilotHistory = [];
 
       document.getElementById('executiveConsole').classList.remove('hidden');
@@ -4314,6 +5300,9 @@
 
       renderOwnerCardsAndPlans();
       switchBriefLanguage(appState.briefLanguage);
+      if (appState.briefLanguage && appState.briefLanguage !== 'en' && appState.briefLanguage !== 'hi') {
+        setGlobalLanguage(appState.briefLanguage);
+      }
       renderArtifactDownloadLinks(result.artifact_download_urls || {});
       recalculateSimulator();
       updateRoiSummaryCard(result.roi_summary || {}, sym);
@@ -4323,6 +5312,20 @@
       renderWorklistTable();
 
       document.getElementById('copilotResultContainer').classList.add('hidden');
+      appState.predictOverview = null;
+      appState.predictOverviewRunId = null;
+      appState.predictLastResult = null;
+      appState.predictCompareList = [];
+      appState.predictComboQueue = [];
+      const predStage = document.getElementById('predictResultStage');
+      if (predStage) predStage.classList.add('hidden');
+      const predCmp = document.getElementById('predictCompareCard');
+      if (predCmp) predCmp.classList.add('hidden');
+      const predCombo = document.getElementById('predictComboQueueBox');
+      if (predCombo) predCombo.classList.add('hidden');
+      if (appState.activeTab === 'predict') {
+        loadDecisionPredictorOverview(true);
+      }
       refreshTimeMachineRuns();
     }
 
@@ -4330,8 +5333,8 @@
       const pulse = appState.executivePulse || {};
       const drift = appState.historicalDrift || {};
       const sym = pulse.unit_symbol || '$';
-      const lang = appState.briefLanguage === 'hi' ? 'hi' : 'en';
-      const friendly = (pulse.owner_friendly && pulse.owner_friendly[lang]) ? pulse.owner_friendly[lang] : null;
+      const lang = appState.briefLanguage || 'en';
+      const friendly = (pulse.owner_friendly && (pulse.owner_friendly[lang] || pulse.owner_friendly.en)) || null;
 
       // Period-over-Period Trend Banner in plain language
       const rateDelta = Number((drift.deltas && drift.deltas.event_rate_delta_pct) || 0);
@@ -4355,7 +5358,20 @@
       rateEl.style.color = rateDelta > 0.5 ? 'var(--accent-crimson)' : (rateDelta < -0.5 ? 'var(--accent-emerald)' : 'var(--text-primary)');
       document.getElementById('driftExposureDelta').textContent = `${expDelta >= 0 ? '+' : ''}${formatCurrencyValue(expDelta, sym)}`;
 
-      // 4 Owner-Friendly Business Analyst Health Cards
+      // 4 Owner-Friendly Business Analyst Health Cards (adapt Money vs Quality labels automatically)
+      const isFinPulse = Boolean(pulse.is_financial && Number(pulse.total_capital_drag || 0) > 0);
+      const card2Lbl = document.querySelector('[data-i18n="card2Title"]');
+      const card4Lbl = document.querySelector('[data-i18n="card4Title"]');
+      if (card2Lbl) {
+        card2Lbl.textContent = isFinPulse
+          ? tUi('card2Title', '02 · Biggest Money Leak')
+          : (lang === 'hi' ? '02 · सबसे बड़ी समस्या कहाँ है' : tUi('card2Quality', '02 · Biggest Problem Area'));
+      }
+      if (card4Lbl) {
+        card4Lbl.textContent = isFinPulse
+          ? tUi('card4Title', '04 · Money You Can Save')
+          : (lang === 'hi' ? '04 · कितने केस सुधार सकते हैं' : tUi('card4Quality', '04 · Cases You Can Improve'));
+      }
       if (friendly) {
         const m = friendly.moat || {};
         document.getElementById('pulseMoatBadge').textContent = m.badge || 'Safe';
@@ -4446,9 +5462,15 @@
       const cards = [];
       const leaks = omni.confirmed_leak_dimensions || [];
       if (leaks.length > 0) {
-        const items = leaks.slice(0, 5).map(lk =>
-          `<li><strong>${escapeHtml(lk.dimension)} → '${escapeHtml(lk.worst_segment)}'</strong>: ${Number(lk.worst_rate_pct).toFixed(2)}% (${Number(lk.risk_multiplier).toFixed(2)}x, ${Math.round(lk.excess_events)} excess)</li>`
-        ).join('');
+        const items = leaks.slice(0, 5).map(lk => {
+          const cleanDim = String(lk.dimension || '').replace(/_/g, ' ');
+          const rawSeg = String(lk.worst_segment || '');
+          const segNice = rawSeg === '1' ? `${cleanDim} = High (1)` : (rawSeg === '0' ? `${cleanDim} = Low (0)` : `${cleanDim}: ${rawSeg}`);
+          const wInt = Math.round(Number(lk.worst_rate_pct || 0));
+          const multVal = Number(lk.risk_multiplier || 1);
+          const multTxt = multVal >= 2.65 ? (lang === 'hi' ? 'लगभग 3 गुना ज़्यादा' : 'nearly 3× usual') : (multVal >= 1.75 ? (lang === 'hi' ? 'लगभग दोगुना' : 'nearly double') : `${multVal.toFixed(1)}×`);
+          return `<li><strong>${escapeHtml(segNice)}</strong>: ${wInt}% ${lang === 'hi' ? 'में समस्या' : 'have problems'} (${escapeHtml(multTxt)}, ~${Math.round(lk.excess_events)} ${lang === 'hi' ? 'बचाये जा सकने वाले केस' : 'avoidable cases'})</li>`;
+        }).join('');
         cards.push({
           tag: lang === 'hi' ? '1. सभी कॉलम के लीकेज' : '1. All Confirmed Leak Areas',
           color: 'var(--accent-crimson)',
@@ -4581,6 +5603,13 @@
     }
 
     function _extractRatesForGauge(lk) {
+      if (lk && typeof lk.normal_rate_pct === 'number' && typeof lk.here_rate_pct === 'number') {
+        return {
+          expPct: Math.min(100, Math.max(0, lk.normal_rate_pct)),
+          actPct: Math.min(100, Math.max(0, lk.here_rate_pct)),
+          mult: typeof lk.risk_multiplier === 'number' ? lk.risk_multiplier : null,
+        };
+      }
       const expStr = String(lk.expected_standard_en || '');
       const actStr = String(lk.actual_observed_en || '');
       const expM = expStr.match(/(\d+(?:\.\d+)?)%/);
@@ -4590,6 +5619,27 @@
       const actPct = actM ? Math.min(100, Math.max(0, parseFloat(actM[1]))) : null;
       const mult = multM ? parseFloat(multM[1]) : null;
       return { expPct, actPct, mult };
+    }
+
+    function _pctToOutOfTen(pct, lang = 'en') {
+      const r = Math.max(0, Math.min(100, Number(pct || 0)));
+      if (r >= 97.5) return lang === 'hi' ? 'लगभग सब' : 'almost all';
+      if (r >= 45 && r <= 54.9) return lang === 'hi' ? 'हर 2 में 1' : '1 in 2';
+      if (r >= 8) {
+        const n10 = Math.max(1, Math.min(9, Math.round(r / 10)));
+        return lang === 'hi' ? `10 में ${n10}` : `${n10} in 10`;
+      }
+      return `${r.toFixed(1)}%`;
+    }
+
+    function _multToPlainWords(mult, lang = 'en') {
+      const m = Number(mult || 1);
+      if (m >= 3.4) return lang === 'hi' ? `~${Math.round(m)} गुना ज़्यादा` : `~${Math.round(m)}× usual`;
+      if (m >= 2.65) return lang === 'hi' ? 'लगभग 3 गुना ज़्यादा' : 'nearly 3× usual';
+      if (m >= 2.25) return lang === 'hi' ? 'लगभग ढाई गुना ज़्यादा' : '~2.5× usual';
+      if (m >= 1.75) return lang === 'hi' ? 'लगभग दोगुना' : 'nearly double';
+      if (m >= 1.35) return lang === 'hi' ? 'लगभग डेढ़ गुना ज़्यादा' : '~1.5× usual';
+      return lang === 'hi' ? 'सामान्य से ज़्यादा' : 'above normal';
     }
 
     function humanizeBusinessText(raw, lang = 'en') {
@@ -4671,17 +5721,22 @@
       const scaleMax = Math.max(100, actPct, expPct);
       const actW = Math.max(4, Math.min(100, (actPct / scaleMax) * 100));
       const basePos = Math.max(2, Math.min(98, (expPct / scaleMax) * 100));
-      const multChip = mult
-        ? `<span style="color:var(--text-muted);margin:0 4px;">·</span><span class="tabular-nums" style="font-weight:800;color:${sevColor};">${mult.toFixed(1)}× ${lang === 'hi' ? 'ज़्यादा' : 'worse'}</span>`
+      const normRatio = (lang === 'hi' ? lk.normal_ratio_hi : lk.normal_ratio_en) || _pctToOutOfTen(expPct, lang);
+      const hereRatio = (lang === 'hi' ? lk.here_ratio_hi : lk.here_ratio_en) || _pctToOutOfTen(actPct, lang);
+      const multPlain = (lang === 'hi' ? lk.mult_phrase_hi : lk.mult_phrase_en) || (mult ? _multToPlainWords(mult, lang) : '');
+      const multChip = multPlain
+        ? `<span style="color:var(--text-muted);margin:0 4px;">·</span><span style="font-weight:800;color:${sevColor};">${escapeHtml(multPlain)}</span>`
         : '';
+      const lblNorm = lang === 'hi' ? 'सामान्य जगह:' : tUi('normally', 'Normally:');
+      const lblHere = lang === 'hi' ? 'यहाँ:' : tUi('here', 'Here:');
       return `
         <div class="exc-gauge-box">
           <div class="exc-gauge-labels">
-            <span style="color:var(--text-muted);">${lang === 'hi' ? 'सामान्य:' : 'Normal:'} <strong class="tabular-nums" style="color:var(--accent-emerald);">${expPct.toFixed(1)}%</strong></span>
-            <span>${lang === 'hi' ? 'यहाँ:' : 'Here:'} <strong class="tabular-nums" style="color:${sevColor};">${actPct.toFixed(1)}%</strong>${multChip}</span>
+            <span style="color:var(--text-muted);">${escapeHtml(lblNorm)} <strong style="color:var(--accent-emerald);">${escapeHtml(normRatio)} (${Math.round(expPct)}%)</strong></span>
+            <span>${escapeHtml(lblHere)} <strong style="color:${sevColor};">${escapeHtml(hereRatio)} (${Math.round(actPct)}%)</strong>${multChip}</span>
           </div>
           <div class="exc-gauge-track">
-            <div class="exc-gauge-base-tick" style="left:${basePos}%;" title="Normal level: ${expPct.toFixed(1)}%"></div>
+            <div class="exc-gauge-base-tick" style="left:${basePos}%;" title="Normal level: ${Math.round(expPct)}%"></div>
             <div class="exc-gauge-fill" style="width:${actW}%;background:${sevColor};"></div>
           </div>
         </div>
@@ -4703,7 +5758,7 @@
       }
       sec.classList.remove('hidden');
 
-      const lang = appState.briefLanguage === 'hi' ? 'hi' : 'en';
+      const lang = appState.briefLanguage || 'en';
       const titleEl = document.getElementById('rankedLeaksTitle');
       const verdictEl = document.getElementById('rankedVerdictLine');
       const badgeEl = document.getElementById('rankedLeaksBadge');
@@ -4720,20 +5775,27 @@
       const unlockEl = document.getElementById('rankedUnlockStrip');
       const s = data.summary || {};
 
+      const isFinLeak = Boolean(data.is_financial);
       if (titleEl) {
-        titleEl.textContent = lang === 'hi'
-          ? 'आपके बिज़नेस में कहाँ नुकसान हो रहा है (इसे पहले सुधारें)'
-          : 'Where Your Business Is Losing Money (Fix These First)';
+        if (isFinLeak) {
+          titleEl.textContent = lang === 'hi'
+            ? 'आपके बिज़नेस में कहाँ नुकसान हो रहा है (इन्हें पहले सुधारें)'
+            : tUi('whereLosingMoney', 'Where Your Business Is Losing Money (Fix These First)');
+        } else {
+          titleEl.textContent = lang === 'hi'
+            ? 'क्वालिटी और कामकाज में सबसे बड़ी कमियाँ कहाँ हैं (इन्हें पहले सुधारें)'
+            : tUi('whereQualityBreaking', 'Where Quality & Operations Are Breaking Down (Fix These First)');
+        }
       }
       if (verdictEl) {
         verdictEl.textContent = lang === 'hi'
           ? `हमने आपका पूरा डेटा चेक किया — ${allLeaks.length} असली समस्याएँ मिलीं। जो ${healthy.length} चीज़ें सही चल रही हैं, उन्हें नीचे छुपा दिया गया है।`
-          : `We checked everything automatically — found ${allLeaks.length} real problems to fix. ${healthy.length} areas working normally are hidden to keep this page simple.`;
+          : `${allLeaks.length} ${tUi('problemsFound', 'Problems Found')} · ${healthy.length} ${tUi('workingFine', 'Working Fine')}`;
       }
       if (badgeEl) {
         badgeEl.textContent = lang === 'hi'
           ? `${allLeaks.length} असली समस्याएँ · ${healthy.length} ठीक हैं`
-          : `${allLeaks.length} Problems Found · ${healthy.length} Working Fine`;
+          : `${allLeaks.length} ${tUi('problemsFound', 'Problems Found')} · ${healthy.length} ${tUi('workingFine', 'Working Fine')}`;
       }
 
       const activeSev = appState.rankedSevFilter || 'ALL';
@@ -4743,10 +5805,10 @@
 
       if (filtersEl) {
         const pills = [
-          { key: 'ALL', label: lang === 'hi' ? `सभी (${allLeaks.length})` : `All (${allLeaks.length})` },
-          ...(critCnt ? [{ key: 'CRITICAL', label: lang === 'hi' ? `तुरंत सुधारें (${critCnt})` : `Urgent (${critCnt})` }] : []),
-          ...(highCnt ? [{ key: 'HIGH', label: lang === 'hi' ? `ज़्यादा असर (${highCnt})` : `Important (${highCnt})` }] : []),
-          ...(medCnt ? [{ key: 'MEDIUM', label: lang === 'hi' ? `ध्यान दें (${medCnt})` : `Watch (${medCnt})` }] : []),
+          { key: 'ALL', label: lang === 'hi' ? `सभी (${allLeaks.length})` : `${tUi('all', 'All')} (${allLeaks.length})` },
+          ...(critCnt ? [{ key: 'CRITICAL', label: lang === 'hi' ? `तुरंत सुधारें (${critCnt})` : `${tUi('urgent', 'Urgent')} (${critCnt})` }] : []),
+          ...(highCnt ? [{ key: 'HIGH', label: lang === 'hi' ? `ज़्यादा असर (${highCnt})` : `${tUi('important', 'Important')} (${highCnt})` }] : []),
+          ...(medCnt ? [{ key: 'MEDIUM', label: lang === 'hi' ? `ध्यान दें (${medCnt})` : `${tUi('watch', 'Watch')} (${medCnt})` }] : []),
         ];
         filtersEl.innerHTML = pills.map(p =>
           `<button type="button" class="exc-pill ${activeSev === p.key ? 'active' : ''}" onclick="setRankedSeverityFilter('${p.key}')">${escapeHtml(p.label)}</button>`
@@ -4761,7 +5823,7 @@
       const showAll = Boolean(appState.rankedShowAll);
       const sevLabel = (sev) => {
         if (lang === 'hi') return sev === 'CRITICAL' ? 'तुरंत सुधारें' : (sev === 'HIGH' ? 'ज़रूरी' : 'ध्यान दें');
-        return sev === 'CRITICAL' ? 'URGENT' : (sev === 'HIGH' ? 'IMPORTANT' : 'WATCH');
+        return sev === 'CRITICAL' ? tUi('urgent', 'URGENT') : (sev === 'HIGH' ? tUi('important', 'IMPORTANT') : tUi('watch', 'WATCH'));
       };
 
       if (heroEl && listEl) {
@@ -4784,26 +5846,31 @@
           const topImp = humanizeBusinessText(top1.formatted_impact || 'Top Issue', lang);
           const topGauge = _renderGaugeBar(top1, topCol, lang);
 
+          const lblTop1 = lang === 'hi' ? 'सबसे बड़ी समस्या #1' : tUi('topProblem1', 'TOP PROBLEM #1');
+          const lblWhy = lang === 'hi' ? '🔍 ऐसा क्यों हो रहा है: ' : `🔍 ${tUi('whyHappening', 'Why this is happening:')} `;
+          const lblAct = lang === 'hi' ? '✅ आपको क्या करना चाहिए:' : `✅ ${tUi('whatToDo', 'What you should do:')}`;
+          const lblImp = lang === 'hi' ? 'असली असर' : tUi('realImpact', 'REAL IMPACT');
+
           heroEl.innerHTML = `
             <div class="exc-hero-card">
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div class="exc-meta-left">
-                  <span class="exc-rank-num">${lang === 'hi' ? 'सबसे बड़ी समस्या #1' : 'TOP PROBLEM #1'}</span>
+                  <span class="exc-rank-num">${escapeHtml(lblTop1)}</span>
                   <span class="exc-sev-chip ${topSevCls}">${escapeHtml(sevLabel(topSev))}</span>
                 </div>
-                <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text-primary);line-height:1.3;letter-spacing:-0.02em;">${formatInlineMd(topHl)}</div>
-                <div class="exc-reason-text">${formatInlineMd(topRc)}</div>
-                <div class="exc-action-bar"><strong>${lang === 'hi' ? 'क्या करें:' : 'What to do:'}</strong><span>${formatInlineMd(topAct)}</span></div>
+                <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--text-primary);line-height:1.35;letter-spacing:-0.015em;">${formatInlineMd(topHl)}</div>
+                <div class="exc-reason-text"><strong style="color:var(--text-primary);">${escapeHtml(lblWhy)}</strong>${formatInlineMd(topRc)}</div>
+                <div class="exc-action-bar"><strong>${escapeHtml(lblAct)}</strong><span>${formatInlineMd(topAct)}</span></div>
               </div>
               <div class="exc-hero-metric-box">
-                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">${lang === 'hi' ? 'कुल असर' : 'TOTAL IMPACT'}</div>
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);">${escapeHtml(lblImp)}</div>
                 <div class="exc-hero-big-num">${escapeHtml(topImp)}</div>
                 ${topGauge || (topExp ? `<div style="font-size:12px;color:var(--text-secondary);">${formatInlineMd(topExp)}</div>` : '')}
               </div>
             </div>
           `;
 
-          // 2. Clean 2-Column Easy-to-Read Cards
+          // 2. Clean 2-Column Easy-to-Read Analyst Cards
           const restLeaks = filteredLeaks.slice(1);
           const visibleRest = showAll ? restLeaks : restLeaks.slice(0, INITIAL_GRID_CAP);
           if (countMetaEl) {
@@ -4825,11 +5892,12 @@
             const impTxt = humanizeBusinessText(lk.formatted_impact || '', lang);
             const gaugeHtml = _renderGaugeBar(lk, col, lang);
             const plainRcPreview = String(rc || '').replace(/[`*]/g, '');
-            const isLongRc = plainRcPreview.length > 155;
+            const whyLbl = lang === 'hi' ? '🔍 ऐसा क्यों हो रहा है: ' : `🔍 ${tUi('whyHappening', 'Why this is happening:')} `;
+            const isLongRc = plainRcPreview.length > 340;
             const rcBlock = isLongRc
-              ? `<div class="exc-reason-text">${escapeHtml(plainRcPreview.slice(0, 145))}…</div>
-                 <details class="exc-more"><summary>${lang === 'hi' ? 'पूरी जानकारी पढ़ें ▾' : 'Read full details ▾'}</summary><div class="exc-reason-text" style="margin-top:6px;">${formatInlineMd(rc)}</div></details>`
-              : `<div class="exc-reason-text">${formatInlineMd(rc)}</div>`;
+              ? `<div class="exc-reason-text"><strong style="color:var(--text-primary);">${escapeHtml(whyLbl)}</strong>${escapeHtml(plainRcPreview.slice(0, 320))}…</div>
+                 <details class="exc-more"><summary>${lang === 'hi' ? 'पूरी जानकारी पढ़ें ▾' : `${escapeHtml(tUi('readFullDetails', 'Read full details'))} ▾`}</summary><div class="exc-reason-text" style="margin-top:6px;">${formatInlineMd(rc)}</div></details>`
+              : `<div class="exc-reason-text"><strong style="color:var(--text-primary);">${escapeHtml(whyLbl)}</strong>${formatInlineMd(rc)}</div>`;
             const fallbackExpAct = !gaugeHtml && (exp || actObs)
               ? `<div class="exc-gauge-box"><div style="font-size:11.5px;color:var(--text-muted);">${formatInlineMd(exp)}</div><div style="font-size:11.5px;color:${col};font-weight:700;">${formatInlineMd(actObs)}</div></div>`
               : '';
@@ -4848,7 +5916,7 @@
                   ${gaugeHtml || fallbackExpAct}
                   ${rcBlock}
                 </div>
-                <div class="exc-action-bar"><strong>${lang === 'hi' ? 'क्या करें:' : 'What to do:'}</strong><span>${formatInlineMd(act)}</span></div>
+                <div class="exc-action-bar"><strong>${lang === 'hi' ? '✅ आपको क्या करना चाहिए:' : `✅ ${escapeHtml(tUi('whatToDo', 'What you should do:'))}`}</strong><span>${formatInlineMd(act)}</span></div>
               </article>
             `;
           }).join('');
@@ -5270,10 +6338,15 @@
     }
 
     function switchBriefLanguage(lang) {
-      appState.briefLanguage = lang;
-      document.getElementById('btnBriefEn').classList.toggle('active', lang === 'en');
-      document.getElementById('btnBriefHi').classList.toggle('active', lang === 'hi');
-      const md = lang === 'hi' ? appState.hinglishSummaryMd : appState.englishSummaryMd;
+      appState.briefLanguage = lang || 'en';
+      const bEn = document.getElementById('btnBriefEn');
+      const bHi = document.getElementById('btnBriefHi');
+      if (bEn) bEn.classList.toggle('active', lang === 'en');
+      if (bHi) bHi.classList.toggle('active', lang === 'hi');
+      const cacheKey = `${appState.activeRunId || 'none'}::${lang}`;
+      const md = lang === 'hi'
+        ? appState.hinglishSummaryMd
+        : (appState.translatedSummaries[cacheKey] || appState.englishSummaryMd);
       document.getElementById('briefReaderBox').innerHTML = renderMarkdownHtml(md);
       renderOmniLeakPanel((appState.executivePulse && appState.executivePulse.omni_leak_report) || appState.omniLeakReport || null);
       renderRankedLeaksPanel();
@@ -5641,7 +6714,20 @@
           }
         }
 
-        const mdAnswer = data.answer_markdown || data.plain_summary || data.answer || 'Checked.';
+        let mdAnswer = data.answer_markdown || data.plain_summary || data.answer || 'Checked.';
+        if (appState.briefLanguage && appState.briefLanguage !== 'en' && appState.briefLanguage !== 'hi') {
+          try {
+            const trRes = await apiFetch('/api/v1/i18n/translate-texts', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ target_lang: appState.briefLanguage, texts: { ans: mdAnswer } })
+            });
+            if (trRes.ok) {
+              const trJson = await trRes.json();
+              if (trJson.texts && trJson.texts.ans) mdAnswer = trJson.texts.ans;
+            }
+          } catch (_trErr) {}
+        }
         document.getElementById('copilotAnswerMarkdown').innerHTML = renderMarkdownHtml(mdAnswer);
         document.getElementById('copilotSqlCode').textContent = data.sql_executed || '-- Verified query';
 
@@ -6509,6 +7595,950 @@
       }
     }
 
+    // =========================================================================
+    // STAGE 8: AI DECISION PREDICTOR & MONTE CARLO SIMULATOR ("DECISION LAB")
+    // =========================================================================
+    async function loadDecisionPredictorOverview(forceReload = false) {
+      const runId = appState.activeRunId;
+      if (!runId) return;
+      if (!forceReload && appState.predictOverview && appState.predictOverviewRunId === runId) {
+        renderDecisionPredictorOverview(appState.predictOverview);
+        loadPredictCommitments();
+        return;
+      }
+
+      const pill = document.getElementById('predictModelHonestyPill');
+      const grid = document.getElementById('predictPresetsGrid');
+      const isHi = appState.briefLanguage === 'hi';
+      if (pill) {
+        pill.className = 'predict-honesty-pill';
+        pill.textContent = isHi ? '🧠 आपके डेटा पर ML मॉडल ट्रेन हो रहा है...' : '🧠 Training calibrated ML model...';
+      }
+      if (grid) {
+        grid.innerHTML = `<div style="grid-column:1/-1;padding:18px;text-align:center;color:var(--text-muted);font-size:13px;">${isHi ? 'डेटा से स्मार्ट निर्णय विकल्प तैयार हो रहे हैं...' : 'Loading smart 1-click decision scenarios from your data...'}</div>`;
+      }
+
+      try {
+        const res = await apiFetch(`/api/v1/predict/overview/${encodeURIComponent(runId)}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Failed to train model (${res.status})`);
+        appState.predictOverview = data;
+        appState.predictOverviewRunId = runId;
+        renderDecisionPredictorOverview(data);
+        loadPredictCommitments();
+      } catch (e) {
+        if (pill) {
+          pill.className = 'predict-honesty-pill warn';
+          pill.textContent = `⚠️ ${e.message}`;
+        }
+        if (grid) {
+          grid.innerHTML = `<div style="grid-column:1/-1;padding:16px;text-align:center;color:var(--accent-crimson);font-size:13px;">${escapeHtml(e.message)}</div>`;
+        }
+      }
+    }
+
+    function renderDecisionPredictorOverview(overview) {
+      if (!overview) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const m = overview.model_metrics || {};
+      const auc = Number(m.roc_auc || 0);
+      const tier = String(m.confidence_tier || 'MODERATE');
+      const pill = document.getElementById('predictModelHonestyPill');
+      if (pill) {
+        pill.className = tier === 'LOW' ? 'predict-honesty-pill warn' : 'predict-honesty-pill';
+        const blocked = (m.blocked_leakage_columns || []).length;
+        const guardTxt = blocked > 0 ? (isHi ? ` · ${blocked} लीकेज ब्लॉक` : ` · ${blocked} Leakage Blocked`) : '';
+        const ootVal = m.temporal_backtest_auc;
+        const ootTxt = (ootVal !== null && ootVal !== undefined)
+          ? (isHi ? ` · फ्यूचर बैकटेस्ट: ${Number(ootVal).toFixed(2)}` : ` · Future Backtest: ${Number(ootVal).toFixed(2)}`)
+          : '';
+        pill.textContent = isHi
+          ? `🛡️ मल्टी-मॉडल AI सटीकता (ROC-AUC): ${auc.toFixed(2)} (${m.confidence_label_hi || tier})${ootTxt}${guardTxt}`
+          : `🛡️ Multi-Model ROC-AUC: ${auc.toFixed(2)} (${tier} Confidence)${ootTxt}${guardTxt}`;
+      }
+
+      // Render 4 Friendly 1-Click Scenario Cards
+      const presets = overview.presets || [];
+      const grid = document.getElementById('predictPresetsGrid');
+      if (grid) {
+        if (!presets.length) {
+          grid.innerHTML = `<div style="grid-column:1/-1;padding:14px;text-align:center;color:var(--text-muted);font-size:13px;">${isHi ? 'नीचे बॉक्स में अपना फ़ैसला लिखकर सीधे टेस्ट करें।' : 'Type any business change in the box below or use the Custom Builder to simulate.'}</div>`;
+        } else {
+          grid.innerHTML = presets.map((p, idx) => `
+            <button type="button" class="predict-preset-card" data-preset-idx="${idx}" onclick="runPredictPreset(${idx})">
+              <div class="predict-preset-icon">${escapeHtml(p.icon || '🔮')}</div>
+              <div>
+                <div class="predict-preset-title">${escapeHtml(isHi ? (p.title_hi || p.title_en) : p.title_en)}</div>
+                <div class="predict-preset-sub">${escapeHtml(isHi ? (p.subtitle_hi || p.subtitle_en) : p.subtitle_en)}</div>
+              </div>
+            </button>
+          `).join('');
+        }
+      }
+
+      // Populate Custom Visual Builder Dropdowns
+      populatePredictCustomBuilder(overview.levers || []);
+
+      // Render Top Drivers & Honesty Strip
+      const strip = document.getElementById('predictDriversStrip');
+      if (strip) {
+        const drivers = (overview.top_drivers || []).slice(0, 5);
+        const chips = drivers.map(d =>
+          `<span class="predict-driver-chip">${escapeHtml(String(d.feature || '').replace(/_/g, ' '))} <strong style="color:var(--accent-sky);">${Number(d.importance_pct || 0).toFixed(1)}%</strong></span>`
+        ).join('');
+        const blockedList = (m.blocked_leakage_columns || []);
+        const blockedNote = blockedList.length
+          ? `<span style="color:var(--accent-emerald);font-weight:700;">🛡️ ${isHi ? 'पोस्ट-इवेंट लीकेज रोका गया' : 'Leakage Blocked'}: <code>${escapeHtml(blockedList.slice(0, 4).join(', '))}</code></span>`
+          : `<span>✅ ${isHi ? 'ज़ीरो डेटा लीकेज वेरिफ़ाइड' : 'Zero Post-Event Leakage Verified'}</span>`;
+        strip.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <strong style="color:var(--text-primary);">${isHi ? 'मुख्य AI कारण:' : 'Top AI Drivers:'}</strong>
+            ${chips || '<span>Balanced baseline</span>'}
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span>${isHi ? 'कैलिब्रेशन अंतर' : 'Calibration Gap'}: <strong>${Number(m.calibration_gap_pct || 0).toFixed(2)}%</strong></span>
+            ${blockedNote}
+          </div>
+        `;
+      }
+    }
+
+    function populatePredictCustomBuilder(levers) {
+      const colSel = document.getElementById('predictColSelect');
+      const scopeSel = document.getElementById('predictScopeSelect');
+      if (!colSel) return;
+      const prevCol = colSel.value;
+      colSel.innerHTML = levers.map(lv =>
+        `<option value="${escapeHtml(lv.column)}">${escapeHtml(lv.column.replace(/_/g, ' '))} (${lv.type === 'numeric' ? 'Number' : 'Group'})</option>`
+      ).join('');
+      if (prevCol && levers.some(l => l.column === prevCol)) {
+        colSel.value = prevCol;
+      }
+
+      if (scopeSel) {
+        let opts = `<option value="">${appState.briefLanguage === 'hi' ? 'पूरा बिज़नेस (सभी रिकॉर्ड्स)' : 'Entire Business (All Rows)'}</option>`;
+        levers.filter(l => l.type === 'categorical').slice(0, 5).forEach(lv => {
+          (lv.values || []).slice(0, 12).forEach(val => {
+            opts += `<option value="${escapeHtml(lv.column)}|||${escapeHtml(val)}">${escapeHtml(lv.column.replace(/_/g, ' '))}: ${escapeHtml(val)}</option>`;
+          });
+        });
+        scopeSel.innerHTML = opts;
+      }
+      onPredictBuilderColChange();
+    }
+
+    function onPredictBuilderColChange() {
+      const levers = (appState.predictOverview && appState.predictOverview.levers) || [];
+      const col = document.getElementById('predictColSelect')?.value || '';
+      const lv = levers.find(x => x.column === col);
+      const actSel = document.getElementById('predictActionSelect');
+      if (!lv || !actSel) return;
+      const isHi = appState.briefLanguage === 'hi';
+
+      if (lv.type === 'categorical') {
+        actSel.innerHTML = `
+          <option value="replace_category">${isHi ? 'बदलें (A की जगह B करें)' : 'Replace Value (Swap A → B)'}</option>
+          <option value="pause_segment">${isHi ? 'रोकें / बंद करें (Pause)' : 'Pause / Stop Segment Completely'}</option>
+        `;
+        const fromSel = document.getElementById('predictFromSelect');
+        const toSel = document.getElementById('predictToSelect');
+        const vals = lv.values || [];
+        if (fromSel) fromSel.innerHTML = vals.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+        if (toSel) toSel.innerHTML = vals.map((v, i) => `<option value="${escapeHtml(v)}" ${i === 1 ? 'selected' : ''}>${escapeHtml(v)}</option>`).join('');
+      } else {
+        actSel.innerHTML = `
+          <option value="cap_numeric">${isHi ? 'अधिकतम सीमा तय करें (Cap ≤)' : 'Cap Maximum Limit (≤ Value)'}</option>
+          <option value="floor_numeric">${isHi ? 'न्यूनतम सीमा बढ़ाएं (Floor ≥)' : 'Raise Minimum Floor (≥ Value)'}</option>
+          <option value="scale_numeric">${isHi ? 'प्रतिशत में घटाएं/बढ़ाएं (% Change)' : 'Change by Percentage (+/- %)'}</option>
+        `;
+        const numInp = document.getElementById('predictNumInput');
+        if (numInp) {
+          numInp.value = lv.p75 !== undefined ? lv.p75 : (lv.median !== undefined ? lv.median : '');
+        }
+      }
+      onPredictBuilderActionChange();
+    }
+
+    function onPredictBuilderActionChange() {
+      const act = document.getElementById('predictActionSelect')?.value || 'replace_category';
+      const fromW = document.getElementById('predictFromWrap');
+      const toW = document.getElementById('predictToWrap');
+      const numW = document.getElementById('predictNumWrap');
+      const numLbl = document.getElementById('predictNumLabel');
+      const numInp = document.getElementById('predictNumInput');
+      const isHi = appState.briefLanguage === 'hi';
+
+      if (act === 'replace_category') {
+        if (fromW) fromW.classList.remove('hidden');
+        if (toW) toW.classList.remove('hidden');
+        if (numW) numW.classList.add('hidden');
+      } else if (act === 'pause_segment') {
+        if (fromW) fromW.classList.remove('hidden');
+        if (toW) toW.classList.add('hidden');
+        if (numW) numW.classList.add('hidden');
+      } else {
+        if (fromW) fromW.classList.add('hidden');
+        if (toW) toW.classList.add('hidden');
+        if (numW) numW.classList.remove('hidden');
+        if (numLbl) {
+          if (act === 'scale_numeric') {
+            numLbl.textContent = isHi ? '3. कितने % बदलाव? (जैसे -20 या +15)' : '3. Change % (e.g. -20 or +15)';
+            if (numInp) numInp.value = '-20';
+          } else if (act === 'cap_numeric') {
+            numLbl.textContent = isHi ? '3. अधिकतम सीमा (Cap Value)' : '3. Maximum Cap Value';
+          } else {
+            numLbl.textContent = isHi ? '3. न्यूनतम सीमा (Minimum Floor)' : '3. Minimum Floor Value';
+          }
+        }
+      }
+    }
+
+    async function runPredictPreset(presetIdx) {
+      const presets = (appState.predictOverview && appState.predictOverview.presets) || [];
+      const p = presets[presetIdx];
+      if (!p || !p.decision) return;
+      document.querySelectorAll('.predict-preset-card').forEach(el => {
+        el.classList.toggle('active-preset', Number(el.dataset.presetIdx) === presetIdx);
+      });
+      await executeDecisionSimulation({ decision: p.decision });
+    }
+
+    async function runPredictFromText() {
+      const inp = document.getElementById('predictDecisionInput');
+      const txt = (inp && inp.value || '').trim();
+      if (!txt) {
+        showToast(appState.briefLanguage === 'hi' ? 'कृपया कोई फ़ैसला लिखें या ऊपर से 1-क्लिक कार्ड चुनें।' : 'Type a decision or click one of the 1-click cards above.', 'warn');
+        return;
+      }
+      document.querySelectorAll('.predict-preset-card').forEach(el => el.classList.remove('active-preset'));
+      await executeDecisionSimulation({ decision_text: txt });
+    }
+
+    function buildSpecFromCustomBuilder() {
+      const col = document.getElementById('predictColSelect')?.value || '';
+      const act = document.getElementById('predictActionSelect')?.value || '';
+      if (!col || !act) return null;
+      const spec = { action_type: act, column: col };
+      if (act === 'replace_category') {
+        spec.from_value = document.getElementById('predictFromSelect')?.value;
+        spec.to_value = document.getElementById('predictToSelect')?.value;
+      } else if (act === 'pause_segment') {
+        spec.from_value = document.getElementById('predictFromSelect')?.value;
+      } else {
+        const val = parseFloat(document.getElementById('predictNumInput')?.value);
+        if (!Number.isFinite(val)) {
+          showToast('Please enter a valid number.', 'warn');
+          return null;
+        }
+        if (act === 'scale_numeric') spec.delta_pct = val;
+        else spec.value = val;
+      }
+      const scopeRaw = document.getElementById('predictScopeSelect')?.value || '';
+      if (scopeRaw && scopeRaw.includes('|||')) {
+        const [sc, sv] = scopeRaw.split('|||');
+        spec.scope_column = sc;
+        spec.scope_value = sv;
+      }
+      return spec;
+    }
+
+    async function runPredictFromBuilder() {
+      const spec = buildSpecFromCustomBuilder();
+      if (!spec) return;
+      document.querySelectorAll('.predict-preset-card').forEach(el => el.classList.remove('active-preset'));
+      await executeDecisionSimulation({ decision: spec });
+    }
+
+    function _shortLeverChipLabel(sp) {
+      const sc = sp.scope_value ? ` (${sp.scope_value})` : '';
+      if (sp.action_type === 'replace_category') return `🔄 ${sp.from_value} → ${sp.to_value}${sc}`;
+      if (sp.action_type === 'pause_segment') return `⏸️ Pause ${sp.from_value}${sc}`;
+      if (sp.action_type === 'cap_numeric') return `🛡️ ${sp.column} ≤ ${sp.value}${sc}`;
+      if (sp.action_type === 'floor_numeric') return `📈 ${sp.column} ≥ ${sp.value}${sc}`;
+      return `⚙️ ${sp.column} ${sp.delta_pct > 0 ? '+' : ''}${sp.delta_pct}%${sc}`;
+    }
+
+    function addCurrentBuilderToCombo() {
+      const spec = buildSpecFromCustomBuilder();
+      if (!spec) return;
+      const q = appState.predictComboQueue || [];
+      if (q.length >= 4) {
+        showToast(appState.briefLanguage === 'hi' ? 'अधिकतम 4 बदलाव एक साथ कॉम्बो में जोड़ सकते हैं।' : 'Maximum 4 levers per combo simulation.', 'warn');
+        return;
+      }
+      q.push(spec);
+      appState.predictComboQueue = q;
+      renderComboQueue();
+      showToast(appState.briefLanguage === 'hi' ? `कॉम्बो में जोड़ा गया (${q.length}/4)` : `Added to combo (${q.length}/4)`, 'info');
+    }
+
+    function removeComboLever(idx) {
+      appState.predictComboQueue = (appState.predictComboQueue || []).filter((_, i) => i !== idx);
+      renderComboQueue();
+    }
+
+    function clearComboQueue() {
+      appState.predictComboQueue = [];
+      renderComboQueue();
+    }
+
+    function renderComboQueue() {
+      const box = document.getElementById('predictComboQueueBox');
+      const chips = document.getElementById('predictComboChips');
+      if (!box || !chips) return;
+      const q = appState.predictComboQueue || [];
+      if (!q.length) {
+        box.classList.add('hidden');
+        chips.innerHTML = '';
+        return;
+      }
+      box.classList.remove('hidden');
+      chips.innerHTML = q.map((sp, i) => `
+        <span class="predict-combo-chip">
+          <span>${escapeHtml(_shortLeverChipLabel(sp))}</span>
+          <button type="button" style="border:none;background:transparent;cursor:pointer;color:var(--text-muted);font-weight:700;" onclick="removeComboLever(${i})">✕</button>
+        </span>
+      `).join('<span style="font-weight:800;color:var(--accent-sky);">+</span>');
+    }
+
+    async function runPredictCombo() {
+      const q = appState.predictComboQueue || [];
+      if (!q.length) return;
+      document.querySelectorAll('.predict-preset-card').forEach(el => el.classList.remove('active-preset'));
+      await executeDecisionSimulation({ decisions: q });
+    }
+
+    async function executeDecisionSimulation(payload) {
+      const runId = appState.activeRunId;
+      if (!runId) return;
+      const loader = document.getElementById('predictLoadingBox');
+      const stage = document.getElementById('predictResultStage');
+      const btn = document.getElementById('btnPredictRun');
+      const costRaw = parseFloat(document.getElementById('predictRolloutCostInput')?.value || '0');
+      const reqBody = {
+        ...payload,
+        implementation_cost: Number.isFinite(costRaw) && costRaw > 0 ? costRaw : 0
+      };
+      if (loader) loader.classList.remove('hidden');
+      if (btn) btn.disabled = true;
+
+      try {
+        const res = await apiFetch(`/api/v1/predict/simulate/${encodeURIComponent(runId)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reqBody)
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Simulation failed (${res.status})`);
+        appState.predictLastResult = data;
+        if (data.status === 'simulated') {
+          recordPredictComparison(data);
+        }
+        renderDecisionSimulationResult(data);
+        if (stage) {
+          stage.classList.remove('hidden');
+          stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      } catch (e) {
+        showToast(`Prediction error: ${e.message}`, 'error');
+      } finally {
+        if (loader) loader.classList.add('hidden');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function renderDecisionSimulationResult(data) {
+      if (!data) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const pred = data.prediction || {};
+      const app = data.decision_applied || {};
+      const comp = pred.breakdown_components || {};
+      const sym = pred.unit_symbol || '$';
+      const vCode = String(pred.verdict_code || 'NEUTRAL');
+
+      if (data.status === 'no_effect' || data.status === 'parse_needed') {
+        const hero = document.getElementById('predictVerdictHero');
+        if (hero) hero.className = 'predict-verdict-hero verdict-NEUTRAL';
+        document.getElementById('predictGaugePctText').textContent = '0%';
+        document.getElementById('predictGaugeCircle').style.strokeDashoffset = '351.86';
+        document.getElementById('predictLossRiskPill').textContent = isHi ? 'कोई सीधा असर नहीं' : 'No Direct Match';
+        document.getElementById('predictVerdictBadge').className = 'predict-verdict-badge NEUTRAL';
+        document.getElementById('predictVerdictBadge').textContent = data.status === 'no_effect' ? 'NO MATCHING ROWS' : 'CLARIFY DECISION';
+        document.getElementById('predictVerdictHeadline').textContent = isHi ? (data.message_hi || data.message_en || 'कोई रिकॉर्ड प्रभावित नहीं हुआ') : (data.message_en || 'No matching rows found.');
+        document.getElementById('predictDecisionAppliedLine').textContent = isHi ? 'कृपया ऊपर दिए 1-क्लिक कार्ड चुनें या सटीक नाम लिखें।' : 'Try picking one of the 1-click cards above or use the exact group/column name.';
+        document.getElementById('predictKpiNetVal').textContent = '0';
+        document.getElementById('predictKpiCiVal').textContent = '--';
+        document.getElementById('predictKpiRateVal').textContent = '--';
+        document.getElementById('predictKpiEventsVal').textContent = '--';
+        document.getElementById('predictKpiCompVal').textContent = '--';
+        document.getElementById('predictKpiCompNote').textContent = '--';
+        document.getElementById('predictHelpsList').innerHTML = `<div style="font-size:12.5px;color:var(--text-muted);">--</div>`;
+        document.getElementById('predictNoHelpList').innerHTML = `<div style="font-size:12.5px;color:var(--text-muted);">--</div>`;
+        document.getElementById('predictRisksList').innerHTML = `<li>${escapeHtml(isHi ? (data.message_hi || data.message_en || '') : (data.message_en || ''))}</li>`;
+        const confBox = document.getElementById('predictConfidenceMeterBox');
+        if (confBox) confBox.classList.add('hidden');
+        const actStrip = document.getElementById('predictActionStrip');
+        if (actStrip) actStrip.classList.add('hidden');
+        return;
+      }
+      const actStrip = document.getElementById('predictActionStrip');
+      if (actStrip) actStrip.classList.remove('hidden');
+
+      const hero = document.getElementById('predictVerdictHero');
+      if (hero) hero.className = `predict-verdict-hero verdict-${vCode}`;
+
+      // Circular SVG Probability Ring
+      const benefitPct = Math.max(0, Math.min(100, Number(pred.chance_of_benefit_pct || 0)));
+      const lossPct = Math.max(0, Math.min(100, Number(pred.chance_of_loss_pct || (100 - benefitPct))));
+      const circ = 351.86;
+      const offset = circ * (1 - benefitPct / 100);
+      const gaugeCircle = document.getElementById('predictGaugeCircle');
+      const colorMap = {
+        STRONG_GO: 'var(--accent-emerald)',
+        PILOT_FIRST: 'var(--accent-amber)',
+        NEUTRAL: 'var(--accent-sky)',
+        LIKELY_LOSS: 'var(--accent-crimson)'
+      };
+      if (gaugeCircle) {
+        gaugeCircle.style.stroke = colorMap[vCode] || 'var(--accent-sky)';
+        gaugeCircle.style.strokeDashoffset = String(offset.toFixed(2));
+      }
+      document.getElementById('predictGaugePctText').textContent = `${benefitPct.toFixed(0)}%`;
+      document.getElementById('predictGaugeSubText').textContent = isHi ? 'फ़ायदे का चांस' : 'BENEFIT CHANCE';
+      document.getElementById('predictLossRiskPill').textContent = isHi
+        ? `नुकसान का ख़तरा: ${lossPct.toFixed(1)}%`
+        : `Loss Risk: ${lossPct.toFixed(1)}%`;
+
+      // Verdict Badge & Headline
+      const badge = document.getElementById('predictVerdictBadge');
+      if (badge) {
+        badge.className = `predict-verdict-badge ${vCode}`;
+        const badgeLabels = {
+          STRONG_GO: isHi ? '🟢 मज़बूत फ़ैसला (STRONG GO)' : '🟢 STRONG GO',
+          PILOT_FIRST: isHi ? '🟡 पहले पायलट करें (PILOT FIRST)' : '🟡 PILOT FIRST',
+          NEUTRAL: isHi ? '🟠 लगभग बराबर (NEUTRAL)' : '🟠 NEUTRAL',
+          LIKELY_LOSS: isHi ? '🔴 नुकसान का ख़तरा (LIKELY LOSS)' : '🔴 LIKELY LOSS'
+        };
+        badge.textContent = badgeLabels[vCode] || vCode;
+      }
+      document.getElementById('predictVerdictHeadline').textContent = isHi
+        ? (pred.verdict_hi || pred.verdict_en || '')
+        : (pred.verdict_en || '');
+      document.getElementById('predictDecisionAppliedLine').textContent = isHi
+        ? `लागू बदलाव: ${app.label_hi || app.label_en || ''} · प्रभावित रिकॉर्ड्स: ${Number(app.affected_records || 0).toLocaleString('en-US')} (${app.affected_share_pct || 0}%)${app.implementation_cost > 0 ? ` · रोलआउट खर्च: ${app.formatted_implementation_cost}` : ''}`
+        : `Simulated Change: ${app.label_en || ''} · Affected: ${Number(app.affected_records || 0).toLocaleString('en-US')} records (${app.affected_share_pct || 0}% of data)${app.implementation_cost > 0 ? ` · Rollout Cost: ${app.formatted_implementation_cost}` : ''}`;
+
+      // 4-Pillar Visual Simulation Confidence Score Meter (0-100)
+      const confBox = document.getElementById('predictConfidenceMeterBox');
+      const sc = pred.simulation_confidence || null;
+      if (confBox && sc) {
+        confBox.classList.remove('hidden');
+        const cScore = Math.max(0, Math.min(100, Number(sc.score || 0)));
+        const cColor = sc.tier === 'HIGH' ? 'var(--accent-emerald)' : (sc.tier === 'MODERATE' ? 'var(--accent-amber)' : 'var(--accent-crimson)');
+        const titleEl = document.getElementById('predictConfTitle');
+        const pillEl = document.getElementById('predictConfScorePill');
+        const fillEl = document.getElementById('predictConfBarFill');
+        const pilEl = document.getElementById('predictConfPillars');
+        if (titleEl) titleEl.textContent = isHi ? '🛡️ सिमुलेशन भरोसा स्कोर (Simulation Confidence Score)' : '🛡️ Simulation Confidence Score';
+        if (pillEl) {
+          pillEl.textContent = `${cScore}/100 · ${isHi ? (sc.label_hi || sc.tier) : (sc.label_en || sc.tier)}`;
+          pillEl.style.color = cColor;
+        }
+        if (fillEl) {
+          fillEl.style.width = `${cScore}%`;
+          fillEl.style.background = cColor;
+        }
+        const ps = sc.pillars || {};
+        const supPct = pred.causal_support_pct !== undefined && pred.causal_support_pct !== null ? Number(pred.causal_support_pct) : null;
+        const beObj = pred.break_even_analysis || {};
+        const beSummary = isHi ? (beObj.summary_hi || beObj.summary_en || '') : (beObj.summary_en || '');
+        if (pilEl) {
+          const tags = [
+            `<span class="predict-conf-pillar-tag">${isHi ? 'मॉडल AUC' : 'Model AUC'}: ${ps.model_strength?.score ?? 0}/${ps.model_strength?.max ?? 30}</span>`,
+            `<span class="predict-conf-pillar-tag">${isHi ? 'सैंपल' : 'Sample'}: ${ps.sample_size?.score ?? 0}/${ps.sample_size?.max ?? 25}</span>`,
+            `<span class="predict-conf-pillar-tag">${isHi ? 'स्थिरता' : 'Stability'}: ${ps.ensemble_stability?.score ?? 0}/${ps.ensemble_stability?.max ?? 25}</span>`,
+            `<span class="predict-conf-pillar-tag">${isHi ? 'सिग्नल शुद्धता' : 'Signal Purity'}: ${ps.signal_purity?.score ?? 0}/${ps.signal_purity?.max ?? 20}</span>`,
+          ];
+          if (supPct !== null) {
+            const supColor = supPct < 35 ? 'var(--accent-crimson)' : 'var(--accent-emerald)';
+            tags.push(`<span class="predict-conf-pillar-tag" style="color:${supColor};font-weight:700;">${isHi ? 'डेटा सपोर्ट' : 'Historical Support'}: ${supPct.toFixed(0)}%</span>`);
+          }
+          pilEl.innerHTML = tags.join('') + (beSummary ? `<div style="width:100%;margin-top:6px;font-size:12px;color:var(--text-secondary);font-weight:600;">💡 ${escapeHtml(beSummary)}</div>` : '');
+        }
+      }
+
+      // 3 Crisp KPI Tiles
+      const netValEl = document.getElementById('predictKpiNetVal');
+      const netNum = Number(pred.expected_net_impact || 0);
+      const signPrefix = netNum > 0 ? '+' : '';
+      const roiTxt = (pred.roi_multiple !== null && pred.roi_multiple !== undefined)
+        ? ` · ROI ${Number(pred.roi_multiple).toFixed(2)}x`
+        : '';
+      document.getElementById('predictKpiNetLabel').textContent = isHi
+        ? (app.implementation_cost > 0 ? 'खर्च काटकर शुद्ध लाभ (Net After Cost)' : 'अनुमानित शुद्ध असर (Net Impact)')
+        : (app.implementation_cost > 0 ? 'Net Impact (After Rollout Cost)' : 'Expected Net Impact');
+      if (netValEl) {
+        netValEl.textContent = `${signPrefix}${pred.formatted_net_impact || '0'}`;
+        netValEl.style.color = netNum > 0 ? 'var(--accent-emerald)' : (netNum < 0 ? 'var(--accent-crimson)' : 'var(--text-primary)');
+      }
+      document.getElementById('predictKpiCiVal').textContent = `${isHi ? '95% ईमानदार रेंज' : '95% Honest Range'}: ${pred.formatted_ci_95 || '--'}${roiTxt}`;
+
+      document.getElementById('predictKpiRateLabel').textContent = isHi ? 'रिस्क रेट (पहले → बाद में)' : 'Risk Rate (Before → After)';
+      const rBefore = Number(pred.before_risk_rate_pct || 0).toFixed(1);
+      const rAfter = Number(pred.after_risk_rate_pct || 0).toFixed(1);
+      const rRed = Number(pred.risk_reduction_pp || 0);
+      const rateValEl = document.getElementById('predictKpiRateVal');
+      if (rateValEl) {
+        rateValEl.textContent = `${rBefore}% → ${rAfter}%`;
+        rateValEl.style.color = rRed > 0.5 ? 'var(--accent-emerald)' : (rRed < -0.5 ? 'var(--accent-crimson)' : 'var(--text-primary)');
+      }
+      const evAv = Number(pred.expected_events_averted || 0);
+      document.getElementById('predictKpiEventsVal').textContent = isHi
+        ? (evAv >= 0 ? `लगभग ${Math.round(evAv).toLocaleString('en-US')} खराबी कम होंगी` : `लगभग ${Math.abs(Math.round(evAv)).toLocaleString('en-US')} अतिरिक्त समस्याएँ बढ़ सकती हैं`)
+        : (evAv >= 0 ? `~${Math.round(evAv).toLocaleString('en-US')} fewer failures expected` : `~${Math.abs(Math.round(evAv)).toLocaleString('en-US')} more failures expected`);
+
+      // Component split KPI
+      document.getElementById('predictKpiCompLabel').textContent = isHi ? 'बचत बनाम ट्रेड-ऑफ़' : 'Gain vs Trade-Off Split';
+      const savedLoss = Number(comp.saved_failure_loss || 0);
+      const marginRec = Number(comp.direct_margin_recovery || 0);
+      const collCost = Number(comp.collateral_tradeoff_cost || 0);
+      const fmtUnit = (v) => pred.is_monetary ? formatCurrencyValue(v, sym) : `${Math.round(v).toLocaleString('en-US')} cases`;
+      if (collCost > 0) {
+        document.getElementById('predictKpiCompVal').textContent = `-${fmtUnit(collCost)}`;
+        document.getElementById('predictKpiCompVal').style.color = 'var(--accent-amber)';
+        document.getElementById('predictKpiCompNote').textContent = isHi
+          ? `अच्छे ऑर्डर छूटने का ट्रेड-ऑफ़ (बचा नुकसान: ${fmtUnit(savedLoss)})`
+          : `Sacrificed healthy margin (Saved loss: ${fmtUnit(savedLoss)})`;
+      } else if (marginRec !== 0) {
+        document.getElementById('predictKpiCompVal').textContent = `${marginRec > 0 ? '+' : ''}${fmtUnit(marginRec)}`;
+        document.getElementById('predictKpiCompVal').style.color = 'var(--accent-emerald)';
+        document.getElementById('predictKpiCompNote').textContent = isHi ? (comp.margin_note_hi || 'सीधा मार्जिन लाभ') : (comp.margin_note_en || 'Direct margin realization');
+      } else {
+        document.getElementById('predictKpiCompVal').textContent = `${savedLoss >= 0 ? '+' : ''}${fmtUnit(savedLoss)}`;
+        document.getElementById('predictKpiCompVal').style.color = savedLoss >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)';
+        document.getElementById('predictKpiCompNote').textContent = isHi ? 'सीधा रिस्क कम होने का असर' : 'Direct risk-reduction impact';
+      }
+
+      // Column 1: Where It Helps Most
+      const helps = data.where_it_helps || [];
+      const helpsEl = document.getElementById('predictHelpsList');
+      if (helpsEl) {
+        if (!helps.length) {
+          helpsEl.innerHTML = `<div style="font-size:12.5px;color:var(--text-muted);">${isHi ? 'इस बदलाव से किसी भी सेगमेंट में बड़ा शुद्ध फ़ायदा नहीं दिख रहा।' : 'No cohort shows a significant net improvement under this change.'}</div>`;
+        } else {
+          const maxWin = Math.max(...helps.map(h => Math.abs(Number(h.net_impact || 0))), 1);
+          helpsEl.innerHTML = helps.map(h => {
+            const pctW = Math.max(10, Math.min(100, (Math.abs(Number(h.net_impact || 0)) / maxWin) * 100));
+            return `
+              <div class="predict-seg-row">
+                <div class="predict-seg-top">
+                  <strong style="color:var(--text-primary);">${escapeHtml(h.segment)}</strong>
+                  <strong style="color:var(--accent-emerald);font-family:var(--font-mono);">+${escapeHtml(h.formatted_impact)}</strong>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-secondary);">
+                  ${Number(h.rate_before_pct).toFixed(1)}% → ${Number(h.rate_after_pct).toFixed(1)}% · ${Number(h.affected_records).toLocaleString('en-US')} ${isHi ? 'रिकॉर्ड्स' : 'rows'}
+                </div>
+                <div class="predict-seg-bar-track"><div class="predict-seg-bar-fill" style="width:${pctW.toFixed(0)}%;"></div></div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Column 2: Where It Won't Help Much
+      const noHelps = data.where_it_does_not_help || [];
+      const noHelpEl = document.getElementById('predictNoHelpList');
+      if (noHelpEl) {
+        if (!noHelps.length) {
+          noHelpEl.innerHTML = `<div style="font-size:12.5px;color:var(--accent-emerald);">${isHi ? 'बढ़िया! सभी प्रमुख स्टोर्स/ग्रुप्स में सकारात्मक असर दिख रहा है।' : 'Broad lift! Every major cohort shows positive improvement.'}</div>`;
+        } else {
+          noHelpEl.innerHTML = noHelps.map(nh => {
+            const isNeg = Number(nh.net_impact || 0) < 0;
+            return `
+              <div class="predict-seg-row">
+                <div class="predict-seg-top">
+                  <strong style="color:var(--text-primary);">${escapeHtml(nh.segment)}</strong>
+                  <strong style="color:${isNeg ? 'var(--accent-crimson)' : 'var(--accent-amber)'};font-family:var(--font-mono);">${escapeHtml(nh.formatted_impact)}</strong>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-secondary);">
+                  ${Number(nh.rate_before_pct).toFixed(1)}% → ${Number(nh.rate_after_pct).toFixed(1)}% · ${Number(nh.affected_records).toLocaleString('en-US')} ${isHi ? 'रिकॉर्ड्स' : 'rows'}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Column 3: Why Loss Could Happen (Honest Downside Risk List)
+      const risksObj = data.why_loss_could_happen || {};
+      const risksArr = (isHi ? (risksObj.hi || risksObj.en) : risksObj.en) || [];
+      const risksEl = document.getElementById('predictRisksList');
+      if (risksEl) {
+        risksEl.innerHTML = risksArr.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+      }
+      renderPredictComparisonTable();
+
+      // Seamless live translation for all 41 additional global languages!
+      const activeLang = appState.briefLanguage || 'en';
+      if (activeLang !== 'en' && activeLang !== 'hi') {
+        const pay = {
+          verdict: pred.verdict_en || '',
+          applied: document.getElementById('predictDecisionAppliedLine').textContent || '',
+          ev: document.getElementById('predictKpiEventsVal').textContent || '',
+        };
+        (risksObj.en || []).slice(0, 6).forEach((rk, i) => { pay[`r${i}`] = rk; });
+        apiFetch('/api/v1/i18n/translate-texts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_lang: activeLang, texts: pay })
+        }).then(r => r.ok ? r.json() : null).then(tr => {
+          if (!tr || !tr.texts || appState.briefLanguage !== activeLang) return;
+          if (tr.texts.verdict) document.getElementById('predictVerdictHeadline').textContent = tr.texts.verdict;
+          if (tr.texts.applied) document.getElementById('predictDecisionAppliedLine').textContent = tr.texts.applied;
+          if (tr.texts.ev) document.getElementById('predictKpiEventsVal').textContent = tr.texts.ev;
+          const trRisks = (risksObj.en || []).slice(0, 6).map((rk, i) => tr.texts[`r${i}`] || rk);
+          if (risksEl && trRisks.length) {
+            risksEl.innerHTML = trRisks.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+          }
+        }).catch(() => {});
+      }
+    }
+
+    function recordPredictComparison(data) {
+      if (!data || data.status !== 'simulated') return;
+      const app = data.decision_applied || {};
+      const pred = data.prediction || {};
+      const key = `${app.label_en || ''}|${Number(app.implementation_cost || 0)}`;
+      const list = (appState.predictCompareList || []).filter(item => item.key !== key);
+      list.unshift({
+        key,
+        label_en: app.label_en || 'Decision',
+        label_hi: app.label_hi || app.label_en || 'Decision',
+        impl_cost_fmt: app.formatted_implementation_cost || '',
+        verdict_code: pred.verdict_code || 'NEUTRAL',
+        benefit_pct: Number(pred.chance_of_benefit_pct || 0),
+        conf_score: Number((pred.simulation_confidence && pred.simulation_confidence.score) || 0),
+        conf_tier: (pred.simulation_confidence && pred.simulation_confidence.tier) || 'MODERATE',
+        net_num: Number(pred.expected_net_impact || 0),
+        net_fmt: pred.formatted_net_impact || '0',
+        ci_fmt: pred.formatted_ci_95 || '--',
+      });
+      appState.predictCompareList = list.slice(0, 6);
+    }
+
+    function renderPredictComparisonTable() {
+      const card = document.getElementById('predictCompareCard');
+      const tbody = document.getElementById('predictCompareTableBody');
+      if (!card || !tbody) return;
+      const list = appState.predictCompareList || [];
+      if (list.length < 2) {
+        card.classList.add('hidden');
+        return;
+      }
+      card.classList.remove('hidden');
+      const isHi = appState.briefLanguage === 'hi';
+      const bestNet = Math.max(...list.map(x => x.net_num));
+
+      tbody.innerHTML = list.map(item => {
+        const isBest = item.net_num === bestNet && item.net_num > 0;
+        const netColor = item.net_num > 0 ? 'var(--accent-emerald)' : (item.net_num < 0 ? 'var(--accent-crimson)' : 'var(--text-primary)');
+        const confColor = item.conf_tier === 'HIGH' ? 'var(--accent-emerald)' : (item.conf_tier === 'MODERATE' ? 'var(--accent-amber)' : 'var(--accent-crimson)');
+        const bestTag = isBest ? `<span style="margin-left:6px;font-size:10.5px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--accent-emerald-bg);color:var(--accent-emerald);border:1px solid var(--accent-emerald-border);">🏆 ${isHi ? 'बेस्ट' : 'BEST'}</span>` : '';
+        const costTag = item.impl_cost_fmt ? `<div style="font-size:11px;color:var(--text-muted);">${isHi ? 'खर्च' : 'Cost'}: ${escapeHtml(item.impl_cost_fmt)}</div>` : '';
+        return `
+          <tr>
+            <td><strong>${escapeHtml(isHi ? item.label_hi : item.label_en)}</strong>${bestTag}${costTag}</td>
+            <td><span class="predict-verdict-badge ${escapeHtml(item.verdict_code)}" style="margin-bottom:0;">${escapeHtml(item.verdict_code.replace('_', ' '))}</span></td>
+            <td class="tabular-nums" style="font-weight:700;">${item.benefit_pct.toFixed(0)}%</td>
+            <td class="tabular-nums" style="font-weight:800;color:${confColor};">${item.conf_score}/100</td>
+            <td class="tabular-nums" style="font-weight:800;color:${netColor};">${item.net_num > 0 ? '+' : ''}${escapeHtml(item.net_fmt)}</td>
+            <td class="tabular-nums" style="font-size:11.5px;color:var(--text-secondary);">${escapeHtml(item.ci_fmt)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function clearPredictComparison() {
+      appState.predictCompareList = [];
+      renderPredictComparisonTable();
+    }
+
+    // -------------------------------------------------------------------------
+    // STAGE 8.2: PREDICTED VS ACTUAL ACCOUNTABILITY TRACKER & BOARD MEMO EXPORT
+    // -------------------------------------------------------------------------
+    async function commitCurrentDecision() {
+      const last = appState.predictLastResult;
+      const runId = appState.activeRunId;
+      if (!last || last.status !== 'simulated' || !runId) {
+        showToast('Run a decision simulation first before committing.', 'warn');
+        return;
+      }
+      const btn = document.getElementById('btnCommitDecision');
+      if (btn) btn.disabled = true;
+      try {
+        const tenantId = document.getElementById('tenantInput')?.value?.trim() || 'founder_workspace';
+        const res = await apiFetch('/api/v1/predict/commitments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            baseline_run_id: runId,
+            simulation: last,
+            tenant_id: tenantId,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Commit failed (${res.status})`);
+        showToast(
+          appState.briefLanguage === 'hi'
+            ? '📌 फ़ैसला ट्रैक हो गया! अगले महीने के डेटा पर असली रिज़ल्ट मिलाएँ।'
+            : '📌 Decision committed! Verify it against next month\'s report anytime.',
+          'success'
+        );
+        await loadPredictCommitments();
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadPredictCommitments() {
+      try {
+        const tenantId = document.getElementById('tenantInput')?.value?.trim() || 'founder_workspace';
+        const res = await apiFetch(`/api/v1/predict/commitments?tenant_id=${encodeURIComponent(tenantId)}`, { silentAuth: true });
+        if (!res.ok) return;
+        const data = await res.json();
+        appState.predictCommitmentsData = data;
+        renderPredictCommitments();
+      } catch (e) {}
+    }
+
+    function _getAvailableRunOptionsForVerify(excludeRunId) {
+      const sel = document.getElementById('timeMachineSelect');
+      const opts = [];
+      if (sel) {
+        Array.from(sel.options).forEach(o => {
+          if (o.value && o.value !== excludeRunId) {
+            opts.push({ id: o.value, label: o.textContent || o.value });
+          }
+        });
+      }
+      return opts;
+    }
+
+    function renderPredictCommitments() {
+      const card = document.getElementById('predictCommitmentsCard');
+      const listEl = document.getElementById('predictCommitmentsList');
+      const pill = document.getElementById('predictTrackSummaryPill');
+      const data = appState.predictCommitmentsData;
+      if (!card || !listEl) return;
+      const items = (data && data.commitments) || [];
+      if (!items.length) {
+        card.classList.add('hidden');
+        return;
+      }
+      card.classList.remove('hidden');
+      const isHi = appState.briefLanguage === 'hi';
+      if (pill) {
+        const accTxt = data.average_accuracy_pct !== null && data.average_accuracy_pct !== undefined
+          ? ` · ${isHi ? 'औसत सटीकता' : 'Avg Accuracy'}: ${data.average_accuracy_pct}%`
+          : '';
+        pill.textContent = `${data.total_committed} ${isHi ? 'ट्रैक' : 'Tracked'} · ${data.total_verified} ${isHi ? 'प्रमाणित' : 'Verified'}${accTxt}`;
+      }
+
+      listEl.innerHTML = items.map(it => {
+        const label = isHi ? (it.decision_label_hi || it.decision_label_en) : it.decision_label_en;
+        const isVer = it.status === 'VERIFIED';
+        const runOpts = _getAvailableRunOptionsForVerify(it.baseline_run_id);
+        const selHtml = runOpts.length
+          ? `<select id="verifyRunSel-${escapeHtml(it.commitment_id)}" style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);max-width:210px;">
+              ${runOpts.map(o => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.label)}</option>`).join('')}
+            </select>`
+          : `<input id="verifyRunSel-${escapeHtml(it.commitment_id)}" type="text" placeholder="Next report run_id..." style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);width:170px;" />`;
+
+        const statusBadge = isVer
+          ? `<span class="predict-verdict-badge ${it.calibration_hit_ci95 ? 'STRONG_GO' : 'PILOT_FIRST'}" style="margin-bottom:0;">${it.calibration_hit_ci95 ? '✅ VERIFIED · IN 95% CI' : '📊 VERIFIED'} (${it.accuracy_score_pct ?? 0}% Match)</span>`
+          : `<span class="predict-verdict-badge NEUTRAL" style="margin-bottom:0;">📌 COMMITTED · AWAITING NEXT DATA</span>`;
+
+        const verBody = isVer
+          ? `<div style="margin-top:6px;font-size:12.5px;color:var(--text-primary);">
+               <strong>${isHi ? 'असली असर' : 'Actual Realized'}:</strong> <span style="font-family:var(--font-mono);font-weight:800;color:${Number(it.actual_net_impact) >= 0 ? 'var(--accent-emerald)' : 'var(--accent-crimson)'};">${Number(it.actual_net_impact) > 0 ? '+' : ''}${escapeHtml(it.formatted_actual_net || '0')}</span>
+               · ${isHi ? 'अमल' : 'Executed'}: <strong>${it.execution_compliance_pct ?? 0}%</strong>
+               <div style="font-size:11.8px;color:var(--text-secondary);margin-top:3px;">${escapeHtml(isHi ? (it.verification_note_hi || it.verification_note_en || '') : (it.verification_note_en || ''))}</div>
+             </div>`
+          : '';
+
+        return `
+          <div class="predict-commit-item">
+            <div style="flex:1;min-width:240px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                ${statusBadge}
+                <span style="font-size:11.5px;color:var(--text-muted);font-family:var(--font-mono);">Base: ${escapeHtml(it.baseline_run_id)}</span>
+              </div>
+              <div style="font-size:13.8px;font-weight:700;color:var(--text-primary);">${escapeHtml(label)}</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
+                ${isHi ? 'अनुमानित' : 'Predicted'}: <strong style="font-family:var(--font-mono);">${Number(it.predicted_net_impact) > 0 ? '+' : ''}${escapeHtml(it.formatted_predicted_net)}</strong>
+                ${escapeHtml(it.formatted_predicted_ci)} · Trust: <strong>${it.confidence_score}/100</strong>
+              </div>
+              ${verBody}
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              ${selHtml}
+              <button type="button" class="btn btn-primary btn-sm" onclick="verifyPredictCommitment('${escapeHtml(it.commitment_id)}')">
+                ✓ ${isHi ? 'असली जाँचें' : 'Verify'}
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" title="Remove" onclick="deletePredictCommitment('${escapeHtml(it.commitment_id)}')">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function verifyPredictCommitment(commitmentId) {
+      const inp = document.getElementById(`verifyRunSel-${commitmentId}`);
+      const actualRunId = (inp && inp.value || '').trim();
+      if (!actualRunId) {
+        showToast('Select or enter the next period report ID to verify against.', 'warn');
+        return;
+      }
+      try {
+        const tenantId = document.getElementById('tenantInput')?.value?.trim() || 'founder_workspace';
+        const res = await apiFetch(`/api/v1/predict/commitments/${encodeURIComponent(commitmentId)}/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ actual_run_id: actualRunId, tenant_id: tenantId }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || `Verification failed (${res.status})`);
+        showToast(`Verified against ${actualRunId}: ${data.accuracy_score_pct ?? 0}% match!`, 'success');
+        await loadPredictCommitments();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function deletePredictCommitment(commitmentId) {
+      try {
+        const tenantId = document.getElementById('tenantInput')?.value?.trim() || 'founder_workspace';
+        const res = await apiFetch(`/api/v1/predict/commitments/${encodeURIComponent(commitmentId)}?tenant_id=${encodeURIComponent(tenantId)}`, {
+          method: 'DELETE',
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(() => ({}));
+          throw new Error(d.detail || 'Delete failed');
+        }
+        showToast('Removed tracked decision.', 'info');
+        await loadPredictCommitments();
+      } catch (e) {
+        showToast(e.message, 'error');
+      }
+    }
+
+    async function shareDecisionWhatsAppMemo() {
+      const data = appState.predictLastResult;
+      if (!data || data.status !== 'simulated') return;
+      const isHi = appState.briefLanguage === 'hi';
+      const app = data.decision_applied || {};
+      const pred = data.prediction || {};
+      const sc = pred.simulation_confidence || {};
+      const topWin = (data.where_it_helps || [])[0];
+      const topRisk = ((isHi ? data.why_loss_could_happen?.hi : data.why_loss_could_happen?.en) || [])[0] || '';
+      const netSign = Number(pred.expected_net_impact || 0) > 0 ? '+' : '';
+      const costLine = app.implementation_cost > 0
+        ? `\n💰 ${isHi ? 'रोलआउट खर्च' : 'Rollout Cost'}: ${app.formatted_implementation_cost} (ROI: ${pred.roi_multiple ?? '--'}x)`
+        : '';
+      const lines = isHi
+        ? [
+            `🔮 *DataX-Ray AI Decision Memo* (${appState.activeRunId || ''})`,
+            `📌 *फ़ैसला*: ${app.label_hi || app.label_en}`,
+            `✅ *वर्डिक्ट*: ${pred.verdict_hi || pred.verdict_code}`,
+            `📊 *फ़ायदे का चांस*: ${pred.chance_of_benefit_pct}% (रिस्क: ${pred.chance_of_loss_pct}%) | *Trust*: ${sc.score ?? '--'}/100`,
+            `💵 *शुद्ध असर*: ${netSign}${pred.formatted_net_impact} (95% रेंज: ${pred.formatted_ci_95})${costLine}`,
+            `📉 *रिस्क बदलाव*: ${pred.before_risk_rate_pct}% → ${pred.after_risk_rate_pct}% (${app.affected_records} रिकॉर्ड्स)`,
+            topWin ? `🏆 *सबसे बड़ा फ़ायदा*: ${topWin.segment} (+${topWin.formatted_impact})` : '',
+            topRisk ? `⚠️ *मुख्य चेतावनी*: ${topRisk}` : '',
+          ].filter(Boolean).join('\n')
+        : [
+            `🔮 *DataX-Ray AI Decision Memo* (${appState.activeRunId || ''})`,
+            `📌 *Decision*: ${app.label_en}`,
+            `✅ *Verdict*: ${pred.verdict_en || pred.verdict_code}`,
+            `📊 *Benefit Chance*: ${pred.chance_of_benefit_pct}% (Loss Risk: ${pred.chance_of_loss_pct}%) | *Trust Score*: ${sc.score ?? '--'}/100`,
+            `💵 *Expected Net Impact*: ${netSign}${pred.formatted_net_impact} (95% CI: ${pred.formatted_ci_95})${costLine}`,
+            `📉 *Risk Rate*: ${pred.before_risk_rate_pct}% → ${pred.after_risk_rate_pct}% (${app.affected_records} records)`,
+            topWin ? `🏆 *Top Winner*: ${topWin.segment} (+${topWin.formatted_impact})` : '',
+            topRisk ? `⚠️ *Key Risk*: ${topRisk}` : '',
+          ].filter(Boolean).join('\n');
+
+      await copyTextSafe(lines, isHi ? 'WhatsApp मेमो कॉपी हो गया!' : 'WhatsApp decision memo copied!');
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines)}`, '_blank', 'noopener,noreferrer');
+    }
+
+    function printExecutiveBoardMemo() {
+      const data = appState.predictLastResult;
+      if (!data || data.status !== 'simulated') return;
+      const isHi = appState.briefLanguage === 'hi';
+      const app = data.decision_applied || {};
+      const pred = data.prediction || {};
+      const sc = pred.simulation_confidence || {};
+      const sa = data.statistical_audit || {};
+      const mh = data.model_honesty || {};
+      const risks = (isHi ? data.why_loss_could_happen?.hi : data.why_loss_could_happen?.en) || [];
+      const wins = data.where_it_helps || [];
+      const noHelps = data.where_it_does_not_help || [];
+      const netSign = Number(pred.expected_net_impact || 0) > 0 ? '+' : '';
+
+      const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>DataX-Ray Board Decision Memo</title>
+        <style>
+          body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111827;margin:32px;line-height:1.5;max-width:860px;}
+          .hdr{border-bottom:2px solid #047857;padding-bottom:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;}
+          .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:800;font-size:12px;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;}
+          .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;}
+          .box{border:1px solid #e5e7eb;border-radius:10px;padding:12px;background:#f9fafb;}
+          .box span{display:block;font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;}
+          .box strong{display:block;font-size:19px;margin-top:4px;font-family:ui-monospace,monospace;}
+          h3{font-size:15px;margin:18px 0 8px;border-bottom:1px solid #e5e7eb;padding-bottom:4px;}
+          ul{margin:0;padding-left:18px;font-size:13px;} li{margin-bottom:6px;}
+          .foot{margin-top:24px;padding-top:10px;border-top:1px dashed #d1d5db;font-size:11.5px;color:#6b7280;}
+          @media print{body{margin:16px;}}
+        </style></head><body>
+        <div class="hdr">
+          <div>
+            <div style="font-size:11px;font-weight:800;color:#047857;letter-spacing:.06em;">DATAX-RAY · EXECUTIVE BOARD DECISION MEMO</div>
+            <h1 style="font-size:21px;margin:4px 0 0;">${escapeHtml(isHi ? (app.label_hi || app.label_en) : app.label_en)}</h1>
+          </div>
+          <div style="text-align:right;font-size:12px;color:#4b5563;">
+            <div><strong>Dataset:</strong> ${escapeHtml(appState.activeRunId || '')}</div>
+            <div><strong>Date:</strong> ${escapeHtml(new Date().toISOString().slice(0, 10))}</div>
+          </div>
+        </div>
+        <div class="badge">${escapeHtml(pred.verdict_code || '')} · ${escapeHtml(isHi ? (pred.verdict_hi || pred.verdict_en) : pred.verdict_en)}</div>
+        <div class="grid">
+          <div class="box"><span>${isHi ? 'फ़ायदे का चांस / भरोसा' : 'Benefit Chance & Trust'}</span><strong>${Number(pred.chance_of_benefit_pct || 0).toFixed(1)}%</strong><small>Trust Score: ${sc.score ?? '--'}/100 (${escapeHtml(sc.tier || '')})</small></div>
+          <div class="box"><span>${isHi ? 'अनुमानित शुद्ध असर' : 'Expected Net Impact'}</span><strong>${netSign}${escapeHtml(pred.formatted_net_impact || '0')}</strong><small>95% CI: ${escapeHtml(pred.formatted_ci_95 || '--')}${pred.roi_multiple ? ` · ROI ${pred.roi_multiple}x` : ''}</small></div>
+          <div class="box"><span>${isHi ? 'रिस्क रेट बदलाव' : 'Risk Rate Shift'}</span><strong>${Number(pred.before_risk_rate_pct || 0).toFixed(1)}% → ${Number(pred.after_risk_rate_pct || 0).toFixed(1)}%</strong><small>${Number(app.affected_records || 0).toLocaleString('en-US')} affected rows${app.overlap_rows_deduplicated ? ` (${app.overlap_rows_deduplicated} overlaps deduplicated)` : ''}</small></div>
+        </div>
+        <h3>${isHi ? '✅ सबसे ज़्यादा फ़ायदा कहाँ होगा (Top Winners)' : '✅ Where You Win Most (Top Cohorts)'}</h3>
+        <ul>${wins.length ? wins.map(w => `<li><strong>${escapeHtml(w.segment)}</strong>: +${escapeHtml(w.formatted_impact)} (${w.rate_before_pct}% → ${w.rate_after_pct}%, ${w.affected_records} rows)</li>`).join('') : '<li>No single cohort dominates gain.</li>'}</ul>
+        <h3>${isHi ? '⚠️ कम / ज़ीरो असर वाले क्षेत्र' : '⚠️ Low / Zero-Benefit Zones'}</h3>
+        <ul>${noHelps.length ? noHelps.map(w => `<li><strong>${escapeHtml(w.segment)}</strong>: ${escapeHtml(w.formatted_impact)} (${w.rate_before_pct}% → ${w.rate_after_pct}%)</li>`).join('') : '<li>Broad positive lift across major cohorts.</li>'}</ul>
+        <h3>${isHi ? '🔍 ईमानदार रिस्क और सावधानियाँ (Why Loss Could Happen)' : '🔍 Honest Downside Risks & Caveats'}</h3>
+        <ul>${risks.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+        <div class="foot">
+          <strong>Statistical Audit Seal:</strong> 3-Fold Cross-Fitted HistGradientBoosting (Out-of-Fold ROC-AUC = ${mh.roc_auc ?? '--'}, Brier = ${mh.brier_score ?? '--'}) · 500-Iteration Bootstrap + Epistemic + Elasticity Monte Carlo · Empirical p = ${sa.empirical_p_value ?? '--'} · Blocked Leakage Columns: ${escapeHtml((mh.blocked_leakage_columns || []).join(', ') || 'None')}.
+        </div>
+        </body></html>`;
+
+      const win = window.open('', '_blank', 'width=920,height=740');
+      if (!win) {
+        showToast('Pop-up blocked — allow pop-ups to print Board PDF.', 'warn');
+        return;
+      }
+      win.document.open();
+      win.document.write(htmlDoc);
+      win.document.close();
+      setTimeout(() => { try { win.focus(); win.print(); } catch (e) {} }, 250);
+    }
+
     function setAppStudioTheme(themeId) {
       const valid = ['light', 'stripe_alabaster', 'nordic_frost', 'royal_gold', 'sunset_coral', 'dark'];
       const t = valid.includes(themeId) ? themeId : 'light';
@@ -6540,6 +8570,7 @@
       } catch (e) {}
 
       updateAuthUIState();
+      initGlobalLanguages();
       loadCertifiedBenchmark('hotel_booking_cancellation', true);
       refreshTimeMachineRuns();
     });

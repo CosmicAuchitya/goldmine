@@ -166,6 +166,13 @@ def is_deterministic_target_leakage(
     if t_low in ('payment', 'payment_type') and c_low in ('tip', 'tips'):
         return True
 
+    # Post-rating derived display labels / color bands (e.g. Zomato 'Rating text' / 'Rating color' for 'Aggregate rating')
+    if any(k in t_low for k in ['rating', 'score', 'grade']):
+        if any(k in c_low for k in ['rating', 'score', 'grade']) and any(
+            k in c_low for k in ['text', 'color', 'colour', 'label', 'band', 'tier', 'category', 'bucket']
+        ):
+            return True
+
     if len(series) < 50:
         return False
 
@@ -664,6 +671,14 @@ def resolve_canonical_target_and_cost(
             is_cut_sub = s_str.isin(['fair', 'good'])
             binary_target = is_cut_sub.astype(int)
             target_desc = f"{target_col} in ['Fair', 'Good'] (Substandard Cut)"
+        elif any(k in target_col.lower() for k in ['quality', 'grade', 'rating', 'condition']) and s_str_norm.str.contains(
+            r'\b(?:low|poor|substandard|bad|weak|inferior|rejected|spoiled|grade\s*[cdf])\b', regex=True
+        ).any():
+            is_low_q = s_str_norm.str.contains(
+                r'\b(?:low|poor|substandard|bad|weak|inferior|rejected|spoiled|grade\s*[cdf])\b', regex=True
+            ) & clean_mask
+            binary_target = is_low_q.astype(int)
+            target_desc = f"{target_col} Low / Substandard Quality"
         elif is_adv.sum() > 0:
             binary_target = is_adv.astype(int)
             target_desc = f"{target_col} Adverse State"
@@ -791,8 +806,15 @@ def resolve_canonical_target_and_cost(
         if (c == target_col and not is_target_valuation) or is_index_artifact(c) or is_synthetic_column(c, blueprint):
             continue
         c_low = c.lower().strip()
-        if any(x in c_low for x in excluded_cost_terms) and c_low not in ['adr', 'daily_rate', 'hourly_rate', 'fare']:
-            continue
+        c_words = re.sub(r'[^a-z0-9]+', ' ', re.sub(r'([a-z])([A-Z])', r'\1 \2', c).lower()).strip()
+        # Use word-boundary matching for short/ambiguous tokens like 'age' (so 'Average Cost' / 'Package' isn't wrongly blocked)
+        _word_boundary_excl = {'age', 'rate', 'rank', 'idx', 'level', 'hours', 'range', 'tier', 'bracket', 'band', 'bucket'}
+        _substr_excl = [x for x in excluded_cost_terms if x not in _word_boundary_excl]
+        if c_low not in ['adr', 'daily_rate', 'hourly_rate', 'fare']:
+            if any(x in c_low for x in _substr_excl):
+                continue
+            if any(re.search(rf'\b{re.escape(w)}\b', c_words) for w in _word_boundary_excl):
+                continue
         # Exclude count metrics (preserving 'discount')
         if bool(re.search(r'(?<!dis)count', c_low)):
             continue
@@ -802,7 +824,7 @@ def resolve_canonical_target_and_cost(
         # Exclude pure ID/key/code suffix unless column explicitly contains money words
         money_words = [
             'amount', 'price', 'cost', 'revenue', 'mrr', 'sales', 'net_sale', 'gross_sale', 'total_sale',
-            'sale_amount', 'sale_value', 'bill_amount', 'mrp', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment',
+            'sale_amount', 'sale_value', 'net_bill', 'bill_amount', 'bill_value', 'invoice_total', 'order_total', 'mrp', 'billing', 'charge', 'salary', 'income', 'expense', 'fee', 'payment',
             'credit', 'balance', 'claim', 'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'fare',
             'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
             'house_value', 'property_value', 'asset_value', 'total_bill', 'gross income', 'gross_income',
@@ -831,8 +853,8 @@ def resolve_canonical_target_and_cost(
     elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
-            'invoiced_amount', 'net_billed', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount',
-            'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'total_amount', 'total_sales', 'exact_total',
+            'invoiced_amount', 'net_billed', 'net_bill', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount', 'bill_value',
+            'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'order_total', 'invoice_total', 'total_amount', 'total_sales', 'exact_total',
             'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',
             'gross income', 'gross_income', 'billing_amount', 'gross_billing', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',

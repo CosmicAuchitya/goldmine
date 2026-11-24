@@ -738,27 +738,75 @@ def generate_plain_business_summary(
         temp_note_en = f"\n- **Time Trend ({p_count} periods)**: The defect rate is currently **{t_dir}** (recent period shift: {pop_delta:+.2f} percentage points)."
         temp_note_hi = f"\n- **Time Trend ({p_count} periods)**: Defect rate abhi **{t_dir}** trend mein hai (recent period change: {pop_delta:+.2f} percentage points)."
 
+    # Domain-aware human analyst vocabulary (so Dairy sees 'milk batches', Restaurants see 'outlets', etc.)
+    try:
+        try:
+            from .human_analyst_narrator import (
+                clean_column_label,
+                diagnose_segment_root_reasons,
+                humanize_interval,
+                humanize_segment,
+                infer_domain_vocab,
+                rate_out_of_ten_phrase,
+            )
+        except ImportError:
+            from human_analyst_narrator import (
+                clean_column_label,
+                diagnose_segment_root_reasons,
+                humanize_interval,
+                humanize_segment,
+                infer_domain_vocab,
+                rate_out_of_ten_phrase,
+            )
+        vocab = infer_domain_vocab(list(df_fact.columns), target_col=target_col, is_financial=has_cost)
+    except Exception:
+        vocab = {
+            "domain": "general", "entity_en": "cases", "entity_hi": "केस",
+            "fail_en": "run into problems", "fail_hi": "समस्या में आ रहे हैं",
+            "action_owner_en": "operations team", "action_owner_hi": "ऑपरेशंस टीम",
+        }
+        clean_column_label = lambda c, l="en": str(c)
+        humanize_segment = lambda d, s, l="en", v=None: str(s)
+        humanize_interval = lambda s, l="en": str(s)
+        rate_out_of_ten_phrase = lambda r, l="en": f"{r:.1f}%"
+        diagnose_segment_root_reasons = lambda *a, **kw: {"reasons_en": [], "reasons_hi": []}
+
+    ent_en = vocab.get("entity_en", "cases")
+    ent_hi = vocab.get("entity_hi", "केस")
+    fail_en = vocab.get("fail_en", "run into problems")
+    fail_hi = vocab.get("fail_hi", "समस्या में आ रहे हैं")
+
     # =========================================================================
     # BLOCK 2: Bottleneck Identification
     # =========================================================================
     if not is_cb_active and prim_dim and top_leak_seg and top_leak_seg != "N/A" and top_leak_rate > 0.0 and top_leak_rate > rest_rate:
+        _bn_seg_en = humanize_segment(prim_dim, top_leak_seg, "en", vocab)
+        _bn_seg_hi = humanize_segment(prim_dim, top_leak_seg, "hi", vocab)
+        _bn_10_en = rate_out_of_ten_phrase(top_leak_rate, "en")
+        _bn_rest_10_en = rate_out_of_ten_phrase(rest_rate, "en")
+        _bn_10_hi = rate_out_of_ten_phrase(top_leak_rate, "hi")
+        _bn_rest_10_hi = rate_out_of_ten_phrase(rest_rate, "hi")
+        _diag_bn = diagnose_segment_root_reasons(df_fact, prim_dim, top_leak_seg, s_bin, target_col=target_col, blueprint=blueprint)
+        _why_bn_en = f" Why this is happening: {'; and '.join(_diag_bn.get('reasons_en', [])[:2])}." if _diag_bn.get("reasons_en") else ""
+        _why_bn_hi = f" Asli kaaran: {' aur '.join(_diag_bn.get('reasons_hi', [])[:2])}." if _diag_bn.get("reasons_hi") else ""
         bottleneck_en = (
             f"- **Main Bottleneck Identified**: Group `{prim_dim}` = **'{top_leak_seg}'** has the highest failure rate at **{top_leak_rate:.2f}%** (compared to {rest_rate:.2f}% across the rest of the business).\n"
-            f"- **Strategic Priority**: Direct intervention on this specific group will yield the highest return on operational effort."
+            f"- **In Plain Words**: In **{_bn_seg_en}**, **{_bn_10_en}** {ent_en} {fail_en} — vs only **{_bn_rest_10_en}** in the rest of your business.{_why_bn_en}\n"
+            f"- **What to Focus On First**: Fix **{_bn_seg_en}** first — this single change delivers the fastest improvement for your {vocab.get('action_owner_en', 'team')}."
         )
         bottleneck_hi = (
-            f"- **Sabse Bada Bottleneck Kahan Hai?**: Group `{prim_dim}` = **'{top_leak_seg}'** mein sabse zyada failure/churn rate **{top_leak_rate:.2f}%** hai (jabki baaki business mein yeh sirf {rest_rate:.2f}% hai).\n"
-            f"- **Team Ka Focus**: Sabse pehle isi specific cohort par dhyan dein, yahin se sabse tez improvement milega."
+            f"- **Sabse Bada Problem Kahan Hai?**: **{_bn_seg_hi}** (`{prim_dim}` = **'{top_leak_seg}'**) mein **{_bn_10_hi}** {ent_hi} {fail_hi} ({top_leak_rate:.2f}% vs baaki business mein sirf {rest_rate:.2f}% · {_bn_rest_10_hi}).{_why_bn_hi}\n"
+            f"- **Team Ka Focus**: Sabse pehle **{_bn_seg_hi}** par dhyan dein — yahin se sabse tez sudhar milega."
         )
     else:
         dim_name_str = f"`{prim_dim}`" if prim_dim else "sub-segment"
         bottleneck_en = (
             f"- **🛑 $0 Spend Advisory (No Cherry-Picking)**: Our Statistical Circuit-Breaker proves that failure rates across {dim_name_str} are **uniformly distributed (random noise)**.\n"
-            f"- **Action**: Do NOT waste capital targeting individual groups within {dim_name_str}. Focus instead on global process improvements across the entire operation."
+            f"- **Action**: Do NOT waste capital targeting individual groups within {dim_name_str}. Focus instead on steady daily quality across all {ent_en}."
         )
         bottleneck_hi = (
             f"- **🛑 $0 Spend Advisory (Targeted Paisa Barbaad Mat Karein)**: Statistical Circuit-Breaker ne confirm kiya hai ki {dim_name_str} ke alag-alag groups mein farak sirf **random luck / noise** hai.\n"
-            f"- **Sahi Action**: Kisi ek cohort par targeted marketing ya discount ka paisa mat lagayein. Poore system ke standard process ko globally improve karein."
+            f"- **Sahi Action**: Kisi ek group par alag se paisa mat lagayein. Sabhi {ent_hi} ke standard process ko globally improve karein."
         )
 
     # =========================================================================
@@ -790,18 +838,24 @@ def generate_plain_business_summary(
         b_range = best_b.get("range", "")
         w_rate = worst_b.get("rate_pct", 0.0)
         b_rate = best_b.get("rate_pct", 0.0)
+        _col_lbl_en = clean_column_label(col_n, "en")
+        _col_lbl_hi = clean_column_label(col_n, "hi")
+        _w_rng_en = humanize_interval(w_range, "en")
+        _b_rng_en = humanize_interval(b_range, "en")
+        _w_rng_hi = humanize_interval(w_range, "hi")
+        _b_rng_hi = humanize_interval(b_range, "hi")
 
         cliff_text_en = (
             f"- **Key Operational Red-Line**: In metric `{col_n}`, when values reach **{w_range}**, failure risk surges abruptly to **{w_rate:.2f}%** (compared to **{b_rate:.2f}%** in range {b_range}).\n"
-            f"- **Preventive Guardrail**: Establish early-warning alerts before accounts cross this critical `{col_n}` threshold to prevent realized losses."
+            f"- **In Plain Words**: Once **{_col_lbl_en}** crosses **{_w_rng_en}**, **{rate_out_of_ten_phrase(w_rate, 'en')}** {ent_en} {fail_en} — vs only **{rate_out_of_ten_phrase(b_rate, 'en')}** when kept at **{_b_rng_en}**. Set an early alert before {ent_en} cross this line."
         )
         cliff_text_hi = (
-            f"- **Khatre Ki Laal Rekha (Danger Limit)**: Metric `{col_n}` mein jab values **{w_range}** ke daayre mein pahunchti hain, toh failure rate badhkar **{w_rate:.2f}%** ho jata hai (jabki {b_range} range mein yeh sirf **{b_rate:.2f}%** rehta hai).\n"
-            f"- **Bachav Ka Tarika**: Accounts ko is `{col_n}` limit tak pahunchne se pehle hi early-warning trigger karein taaki realized churn/default ko pehle hi roka ja sake."
+            f"- **Khatre Ki Laal Rekha (Danger Limit)**: Jaise hi **{_col_lbl_hi}** (`{col_n}`) **{_w_rng_hi}** pahunchta hai, **{rate_out_of_ten_phrase(w_rate, 'hi')}** {ent_hi} {fail_hi} ({w_rate:.2f}% — jabki **{_b_rng_hi}** mein yeh sirf **{b_rate:.2f}%** rehta hai).\n"
+            f"- **Bachav Ka Tarika**: {ent_hi} ko is **{_col_lbl_hi}** seema se upar jaane se pehle hi alert lagayein."
         )
     else:
-        cliff_text_en = "- **No Physical Numeric Cliffs**: No continuous operational metrics in the current schema exhibit statistically significant threshold failure cliff behavior."
-        cliff_text_hi = "- **Koi Numeric Cliff Nahi**: Is dataset ke raw columns mein koi aisa continuous metric nahi mila jisme statistically significant threshold risk cliff ho."
+        cliff_text_en = "- **No Sudden Danger Limit**: No single numeric reading breaks abruptly at one cliff — keep steady daily monitoring."
+        cliff_text_hi = "- **Koi Achanak Khatre Ki Seema Nahi**: Kisi ek number par achanak nuksan nahi badhta — rozana nigrani rakhein."
 
     # =========================================================================
     # BLOCK 4: 3 Strategic Choices (Pathways A, B, C)
@@ -919,7 +973,7 @@ def generate_plain_business_summary(
     brief_en = f"""## 🇬🇧 Executive Business Summary (Plain English — Zero Jargon)
 
 ### 1. Business Health Snapshot
-Across **{total_records:,} physical records** audited in your dataset, our system identified **{target_count:,} critical failure events ({target_rate_pct}%)**, generating {cost_drag_en}.{temp_note_en}{multi_curr_warn_en}
+Across **{total_records:,} {ent_en}** audited in your dataset, our system found **{target_count:,} problem {ent_en} ({rate_out_of_ten_phrase(target_rate_pct, 'en')})**, generating {cost_drag_en}.{temp_note_en}{multi_curr_warn_en}
 
 ### 2. Where Is the Bottleneck?
 {bottleneck_en}
@@ -931,14 +985,14 @@ Across **{total_records:,} physical records** audited in your dataset, our syste
 {pathways_en}
 
 ### 5. Immediate Team Action Worklist (`actionable_priority_worklist.csv`)
-- **Preventive Retention Watch ({n_prev_watch:,} active accounts)**: High-risk active accounts that have NOT yet failed. Have your customer success or QA team contact these accounts immediately.
-- **Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Already-breached records prioritized by financial impact for root-cause analysis and recovery.{omni_sec_en}
+- **Preventive Watch ({n_prev_watch:,} high-risk {ent_en})**: Active {ent_en} that have NOT yet failed but sit in the danger zone. Have your {vocab.get('action_owner_en', 'team')} check these first.
+- **Root-Cause & Recovery Audit ({n_loss_audit:,} {ent_en})**: Already-failed {ent_en} ranked by impact so your team can fix the root cause fast.{omni_sec_en}
 """
 
     brief_hi = f"""## 🇮🇳 Business X-Ray Summary (Simple Hinglish — Seedhi Bhasha Mein)
 
 ### 1. Aaj Business Ki Asli Halat (Health Snapshot)
-Aapke audit kiye gaye **{total_records:,} records** mein se, system ne **{target_count:,} failure / churn cases ({target_rate_pct}%)** pakde hain, jisse {cost_drag_hi} ho raha hai.{temp_note_hi}{multi_curr_warn_hi}
+Aapke check kiye gaye **{total_records:,} {ent_hi}** mein se, system ne **{target_count:,} samasya wale {ent_hi} ({rate_out_of_ten_phrase(target_rate_pct, 'hi')})** pakde hain, jisse {cost_drag_hi} ho raha hai.{temp_note_hi}{multi_curr_warn_hi}
 
 ### 2. Sabse Bada Nuksan Kahan Ho Raha Hai?
 {bottleneck_hi}
@@ -950,8 +1004,8 @@ Aapke audit kiye gaye **{total_records:,} records** mein se, system ne **{target
 {pathways_hi}
 
 ### 5. Aaj Subah Team Ko Kya Kaam Dein? (`actionable_priority_worklist.csv`)
-- **Bachav Soochi - Preventive Retention Watch ({n_prev_watch:,} active accounts)**: Yeh wo active accounts hain jo abhi tak kharab nahi hue hain, par risk zone mein hain. Team se turant preventive contact karwayein.
-- **Vasooli Aur Jaanch - Realized Loss Recovery Audit ({n_loss_audit:,} accounts)**: Yeh wo accounts hain jinka nuksan pehle hi ho chuka hai. Inhein recovery aur root-cause audit ke liye use karein.{omni_sec_hi}
+- **Bachav Soochi - Preventive Watch ({n_prev_watch:,} {ent_hi})**: Yeh wo {ent_hi} hain jo abhi kharab nahi hue hain, par khatre ke daayre mein hain. Apni {vocab.get('action_owner_hi', 'team')} se inki turant jaanch karwayein.
+- **Root-Cause Audit ({n_loss_audit:,} {ent_hi})**: Yeh wo {ent_hi} hain jahan kharabi pehle hi ho chuki hai — inse asli wajah pakad kar aage ka nuksan rokein.{omni_sec_hi}
 """
 
     full_brief_md = brief_en.strip() + "\n\n---\n\n" + brief_hi.strip() + "\n"

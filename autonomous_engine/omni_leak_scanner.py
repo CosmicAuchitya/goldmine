@@ -1156,15 +1156,33 @@ def render_plain_omni_sections(report: Dict[str, Any]) -> Tuple[str, str]:
         dedup_leaks.append(lk)
 
     if dedup_leaks:
-        en_lines.append(f"- **All {len(dedup_leaks)} Distinct Verified Leak Dimensions (Out of {report.get('audited_dimensions_count', 0)} Audited Columns)**:")
-        hi_lines.append(f"- **Sabhi {len(dedup_leaks)} Asli Verified Leakage Areas ({report.get('audited_dimensions_count', 0)} check kiye gaye columns mein se)**:")
+        try:
+            try:
+                from .human_analyst_narrator import humanize_segment, multiplier_human_phrase, rate_out_of_ten_phrase
+            except ImportError:
+                from human_analyst_narrator import humanize_segment, multiplier_human_phrase, rate_out_of_ten_phrase
+        except Exception:
+            humanize_segment = lambda d, s, l="en": f"{d} = {s}"
+            rate_out_of_ten_phrase = lambda r, l="en": f"{r:.0f}%"
+            multiplier_human_phrase = lambda m, l="en": f"{m:.1f}x higher"
+
+        en_lines.append(f"- **All {len(dedup_leaks)} Confirmed Problem Areas (Out of {report.get('audited_dimensions_count', 0)} Checked Factors)**:")
+        hi_lines.append(f"- **Sabhi {len(dedup_leaks)} Asli Samasya Wale Hisse ({report.get('audited_dimensions_count', 0)} check kiye gaye columns mein se)**:")
         for lk in dedup_leaks[:6]:
             cost_str = f", **{sym}{lk['worst_adverse_cost']:,.2f}** at risk" if lk.get("worst_adverse_cost", 0) > 0 else ""
+            seg_en = humanize_segment(lk["dimension"], lk["worst_segment"], "en")
+            seg_hi = humanize_segment(lk["dimension"], lk["worst_segment"], "hi")
+            here_en = rate_out_of_ten_phrase(lk["worst_rate_pct"], "en")
+            rest_en = rate_out_of_ten_phrase(lk["rest_rate_pct"], "en")
+            here_hi = rate_out_of_ten_phrase(lk["worst_rate_pct"], "hi")
+            rest_hi = rate_out_of_ten_phrase(lk["rest_rate_pct"], "hi")
+            mult_en = multiplier_human_phrase(lk["risk_multiplier"], "en")
+            mult_hi = multiplier_human_phrase(lk["risk_multiplier"], "hi")
             en_lines.append(
-                f"  - `{lk['dimension']}` → **'{lk['worst_segment']}'**: **{lk['worst_rate_pct']:.2f}%** failure rate vs {lk['rest_rate_pct']:.2f}% rest-of-business (**{lk['risk_multiplier']}x risk**, {lk['excess_events']:,.0f} excess failures across {lk['worst_volume']:,} records{cost_str})."
+                f"  - **{seg_en}**: **{here_en}** run into problems vs {rest_en} normally (**{mult_en}**, ~{lk['excess_events']:,.0f} avoidable cases across {lk['worst_volume']:,} checked{cost_str})."
             )
             hi_lines.append(
-                f"  - `{lk['dimension']}` → **'{lk['worst_segment']}'**: **{lk['worst_rate_pct']:.2f}%** failure/RTO rate vs baaki business mein {lk['rest_rate_pct']:.2f}% (**{lk['risk_multiplier']}x zyada khatra**, {lk['worst_volume']:,} mein se {lk['excess_events']:,.0f} extra fail cases{cost_str})."
+                f"  - **{seg_hi}**: **{here_hi}** mein samasya aa rahi hai jabki baaki jagah {rest_hi} hai (**{mult_hi}**, {lk['worst_volume']:,} mein se ~{lk['excess_events']:,.0f} cases bachaye ja sakte hain{cost_str})."
             )
 
     if noise:

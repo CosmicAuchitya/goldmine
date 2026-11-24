@@ -306,6 +306,7 @@ TENANT_SCOPED_TABLES = (
     "actions",
     "tenant_roi_meta",
     "jobs",
+    "decision_commitments",
 )
 
 
@@ -480,6 +481,40 @@ CREATE TABLE IF NOT EXISTS pipeline_runs (
     drift_rows INTEGER DEFAULT 0,
     summary_json TEXT
 );
+
+CREATE TABLE IF NOT EXISTS decision_commitments (
+    commitment_id TEXT PRIMARY KEY,
+    tenant_id TEXT NOT NULL,
+    baseline_run_id TEXT NOT NULL,
+    decision_label_en TEXT NOT NULL,
+    decision_label_hi TEXT NOT NULL,
+    decision_specs_json TEXT NOT NULL,
+    verdict_code TEXT NOT NULL,
+    predicted_before_rate_pct DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    predicted_after_rate_pct DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    predicted_net_impact DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    predicted_ci_low DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    predicted_ci_high DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    predicted_benefit_prob_pct DOUBLE PRECISION NOT NULL DEFAULT 50.0,
+    confidence_score INTEGER NOT NULL DEFAULT 50,
+    implementation_cost DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    unit_symbol TEXT NOT NULL DEFAULT '$',
+    is_monetary INTEGER NOT NULL DEFAULT 1,
+    status TEXT NOT NULL DEFAULT 'COMMITTED',
+    created_at DOUBLE PRECISION NOT NULL,
+    verified_at DOUBLE PRECISION,
+    actual_run_id TEXT,
+    actual_baseline_scope_rate_pct DOUBLE PRECISION,
+    actual_observed_rate_pct DOUBLE PRECISION,
+    actual_net_impact DOUBLE PRECISION,
+    actual_affected_records INTEGER,
+    execution_compliance_pct DOUBLE PRECISION,
+    calibration_hit_ci95 INTEGER,
+    accuracy_score_pct DOUBLE PRECISION,
+    verification_note_en TEXT,
+    verification_note_hi TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_dc_tenant_created ON decision_commitments(tenant_id, created_at DESC);
 """
     if enable_rls:
         rls_lines = [

@@ -42,6 +42,25 @@ from typing import Any, Dict, List, Optional, Set
 import numpy as np
 import pandas as pd
 
+try:
+    from .human_analyst_narrator import (
+        clean_column_label,
+        compose_human_dimension_story,
+        diagnose_segment_root_reasons,
+        humanize_segment,
+        infer_domain_vocab,
+        polish_leaks_with_gemini,
+    )
+except ImportError:
+    from human_analyst_narrator import (
+        clean_column_label,
+        compose_human_dimension_story,
+        diagnose_segment_root_reasons,
+        humanize_segment,
+        infer_domain_vocab,
+        polish_leaks_with_gemini,
+    )
+
 
 def _clean_float(val: Any) -> float:
     try:
@@ -199,8 +218,10 @@ def synthesize_ranked_leaks(
     # Compute physical average monetary value per adverse record so every dimensional leak shows real ₹/$ impact
     avg_adverse_unit_value = 0.0
     cost_col_name: Optional[str] = None
+    target_col_name: Optional[str] = None
+    binary_target_ser: Optional[pd.Series] = None
     canon_meta: Dict[str, Any] = {}
-    if is_fin and isinstance(df, pd.DataFrame) and len(df) > 0:
+    if isinstance(df, pd.DataFrame) and len(df) > 0:
         try:
             try:
                 from .target_resolver import resolve_canonical_target_and_cost
@@ -208,18 +229,25 @@ def synthesize_ranked_leaks(
                 from target_resolver import resolve_canonical_target_and_cost
             canon = resolve_canonical_target_and_cost(df, blueprint=blueprint)
             canon_meta = canon or {}
+            target_col_name = canon.get("target_col")
             cost_col_name = canon.get("cost_col")
-            s_bin = canon.get("binary_target")
-            if cost_col_name and cost_col_name in df.columns:
+            binary_target_ser = canon.get("binary_target")
+            if is_fin and cost_col_name and cost_col_name in df.columns:
                 c_s = pd.to_numeric(df[cost_col_name], errors="coerce").dropna()
-                if s_bin is not None and (s_bin == 1).any():
-                    adv_s = pd.to_numeric(df.loc[s_bin == 1, cost_col_name], errors="coerce").dropna()
+                if binary_target_ser is not None and (binary_target_ser == 1).any():
+                    adv_s = pd.to_numeric(df.loc[binary_target_ser == 1, cost_col_name], errors="coerce").dropna()
                     if len(adv_s) > 0:
                         avg_adverse_unit_value = float(adv_s.abs().mean())
                 if avg_adverse_unit_value <= 0 and len(c_s) > 0:
                     avg_adverse_unit_value = float(c_s.abs().mean())
         except Exception:
             avg_adverse_unit_value = 0.0
+
+    vocab = infer_domain_vocab(
+        list(df.columns) if isinstance(df, pd.DataFrame) else [],
+        target_col=target_col_name,
+        is_financial=is_fin,
+    )
 
     raw_leaks: List[Dict[str, Any]] = []
     healthy_checks: List[Dict[str, Any]] = []
@@ -648,42 +676,76 @@ def synthesize_ranked_leaks(
             if seg_unit_val > 0:
                 cap_drag = round(exc * seg_unit_val, 2)
 
-        dim_en = _friendly_dim_name(dim_name, "en")
-        dim_hi = _friendly_dim_name(dim_name, "hi")
-        seg_en = _friendly_seg_name(dim_name, w_seg, "en")
-        seg_hi = _friendly_seg_name(dim_name, w_seg, "hi")
-        cash_note_en = f" worth {_fmt_money(cap_drag, sym, numbering)}" if (is_fin and cap_drag > 0) else ""
-        cash_note_hi = f" (~{_fmt_money(cap_drag, sym, numbering)} का नुकसान)" if (is_fin and cap_drag > 0) else ""
+        dim_en = clean_column_label(dim_name, "en")
+        dim_hi = clean_column_label(dim_name, "hi")
+        money_str = _fmt_money(cap_drag, sym, numbering) if (is_fin and cap_drag > 0) else ""
 
         if mult < 1.15 and exc < 15:
             _add_healthy(
                 f"CHK_DIM_{dim_name}",
                 f"{dim_en} Balance",
                 f"{dim_hi} संतुलन",
-                f"Normal across groups ({mult:.2f}x)",
+                f"Working evenly across all groups",
                 "Similar performance across groups",
                 ["Q183"],
             )
             continue
+
+        # Automatic cross-column physical root-cause check ("WHY is this group failing?")
+        diag = diagnose_segment_root_reasons(
+            df,
+            dim_name=dim_name,
+            seg_val=w_seg,
+            binary_target=binary_target_ser,
+            target_col=target_col_name,
+            blueprint=blueprint,
+        )
+        story = compose_human_dimension_story(
+            dim_name=dim_name,
+            seg_val=w_seg,
+            w_rate=w_rate,
+            b_rate=b_rate,
+            mult=mult,
+            excess_events=exc,
+            cap_drag=cap_drag,
+            is_fin=is_fin,
+            money_str=money_str,
+            vocab=vocab,
+            diag=diag,
+        )
         _add_deviation(
             f"LEAK_DIM_{dim_name}",
-            f"{dim_en} Bottleneck",
+            f"{dim_en} Issue",
             "CRITICAL" if (mult >= 2.0 and exc >= 50) else "HIGH",
             cap_drag,
             exc,
-            f"Expected: '{seg_en}' should stay near the normal rest-of-business rate (~{b_rate:.1f}%)" if b_rate > 0 else f"Expected: normal performance across {dim_en}",
-            f"सामान्य स्तर: बाकी बिज़नेस में यह नुकसान सिर्फ़ {b_rate:.1f}% है" if b_rate > 0 else f"सामान्य स्तर: {dim_hi} में बराबर प्रदर्शन",
-            f"Actual: '{seg_en}' fails at {w_rate:.1f}% ({mult:.1f}x higher than normal — ~{round(exc):,} extra cases{cash_note_en})",
-            f"यहाँ स्थिति: '{seg_hi}' में नुकसान {w_rate:.1f}% है (सामान्य से {mult:.1f} गुना ज़्यादा — ~{round(exc):,} एक्स्ट्रा केस{cash_note_hi})",
+            story["expected_en"],
+            story["expected_hi"],
+            story["actual_en"],
+            story["actual_hi"],
             f"p < 0.05 AND risk_multiplier={mult:.2f}x >= 1.15x",
-            f"'{seg_en}' in {dim_en} Fails at {w_rate:.2f}% ({mult:.2f}x Normal Rate)",
-            f"{dim_hi} में '{seg_hi}' का नुकसान {w_rate:.2f}% है (सामान्य से {mult:.2f} गुना ज़्यादा)",
-            f"While the rest of your business runs at {b_rate:.1f}%, '{seg_en}' is failing at {w_rate:.1f}%, causing ~{round(exc):,} extra problem cases{cash_note_en} that can be prevented.",
-            f"बाकी बिज़नेस के {b_rate:.1f}% के मुकाबले '{seg_hi}' में {w_rate:.1f}% नुकसान हो रहा है, जिसकी वजह से लगभग {round(exc):,} अतिरिक्त ऑर्डर{cash_note_hi} खराब हो रहे हैं।",
-            f"Check '{seg_en}' orders first and call or verify the flagged customers in Today's Call List.",
-            f"सबसे पहले '{seg_hi}' के नियम सुधारें और 'Today's Call List' में दिए गए ऑर्डर्स पर तुरंत कॉल/कार्रवाई करें।",
+            story["headline_en"],
+            story["headline_hi"],
+            story["root_cause_en"],
+            story["root_cause_hi"],
+            story["fix_action_en"],
+            story["fix_action_hi"],
             ["Q071", "Q072", "Q183", "Q185"],
+            impact_label_override=story["formatted_impact"],
         )
+        raw_leaks[-1].update({
+            "normal_rate_pct": round(b_rate, 1),
+            "here_rate_pct": round(w_rate, 1),
+            "risk_multiplier": round(mult, 2),
+            "normal_ratio_en": story["normal_ratio_en"],
+            "normal_ratio_hi": story["normal_ratio_hi"],
+            "here_ratio_en": story["here_ratio_en"],
+            "here_ratio_hi": story["here_ratio_hi"],
+            "mult_phrase_en": story["mult_phrase_en"],
+            "mult_phrase_hi": story["mult_phrase_hi"],
+            "why_reasons_en": diag.get("reasons_en") or [],
+            "why_reasons_hi": diag.get("reasons_hi") or [],
+        })
         accepted_dim_masks.append((dim_name, w_seg, cur_mask, w_vol, exc, len(raw_leaks) - 1))
 
     # =========================================================================
@@ -1366,12 +1428,16 @@ def synthesize_ranked_leaks(
         else f"स्वचालित निदान: 0 खराबी — सभी {n_hlth} जाँचे गए बिज़नेस पैरामीटर बिल्कुल सामान्य और स्वस्थ हैं!"
     )
 
+    # Optional Layer 2 AI Analyst Polish (number-locked Gemini rewrite when enabled via env)
+    all_abnormal_deviations = polish_leaks_with_gemini(all_abnormal_deviations, vocab)
+
     result = {
         "schema_version": "2.0",
         "mode": "AUTONOMOUS_EXCEPTION_DETECTION",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "is_financial": is_fin,
         "unit_symbol": sym,
+        "domain_vocab": vocab,
         "summary": {
             "total_ranked_leaks": n_abn,
             "abnormal_count": n_abn,
