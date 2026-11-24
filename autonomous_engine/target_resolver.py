@@ -842,8 +842,9 @@ def resolve_canonical_target_and_cost(
                 base_c = c_low.replace('_num', '').replace('_clean', '').replace('_parsed', '').replace('_val', '')
                 if c not in raw_source_cols and base_c not in raw_low:
                     continue
-            s_c = pd.to_numeric(df[c], errors='coerce').fillna(0)
-            if (s_c > 0).mean() > 0.85 and s_c.sum() > 0:
+            s_raw = pd.to_numeric(df[c], errors='coerce')
+            s_nonnull = s_raw.dropna()
+            if len(s_nonnull) >= max(3, int(len(df) * 0.50)) and (s_nonnull > 0).mean() > 0.85 and float(s_nonnull.sum()) > 0:
                 candidate_cost_cols.append(c)
 
     if blueprint and str(blueprint.get("cost_override", "")).upper() in ("__NONE__", "NONE"):

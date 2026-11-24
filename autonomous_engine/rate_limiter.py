@@ -41,7 +41,6 @@ _DEAD_GEMINI_MODELS = set()
 # Official Gemini API per-1M-token USD pricing table (Input / Output) for live cost telemetry
 _MODEL_PRICING_PER_1M_USD = {
     "gemini-2.5-flash": (0.15, 0.60),
-    "gemini-2.5-flash-lite": (0.10, 0.40),
     "gemini-3.5-flash-lite": (0.10, 0.40),
     "gemini-3.5-flash": (0.15, 0.60),
     "gemini-3.8-flash": (0.15, 0.60),

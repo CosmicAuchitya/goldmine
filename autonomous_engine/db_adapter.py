@@ -25,8 +25,9 @@ import re
 import sqlite3
 import threading
 import urllib.parse
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 
 class DBIntegrityError(sqlite3.IntegrityError):
@@ -289,7 +290,166 @@ class DatabaseAdapter:
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.execute("PRAGMA synchronous=NORMAL;")
+        conn.execute("PRAGMA foreign_keys=ON;")
+        conn.execute("PRAGMA busy_timeout=15000;")
         return CompatConnection(conn, is_postgres=False)
+
+    def ensure_schema_version(self, version: str, description: str = "") -> bool:
+        """
+        Idempotently records a versioned schema migration inside `schema_migrations`.
+        Returns True if newly applied, False if this migration version was already recorded.
+        """
+        ver = str(version or "").strip()
+        if not ver:
+            raise ValueError("Migration version cannot be empty.")
+        now_iso = datetime.now(timezone.utc).isoformat()
+        with self.connect() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    version TEXT PRIMARY KEY,
+                    description TEXT NOT NULL DEFAULT '',
+                    applied_at_utc TEXT NOT NULL
+                )
+                """
+            )
+            cur = conn.execute("SELECT version FROM schema_migrations WHERE version = ?", (ver,))
+            if cur.fetchone() is not None:
+                return False
+            conn.execute(
+                "INSERT INTO schema_migrations (version, description, applied_at_utc) VALUES (?, ?, ?)",
+                (ver, str(description or ""), now_iso),
+            )
+            return True
+
+    def get_schema_versions(self) -> List[Dict[str, str]]:
+        """Returns all recorded schema migrations ordered chronologically."""
+        with self.connect() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    version TEXT PRIMARY KEY,
+                    description TEXT NOT NULL DEFAULT '',
+                    applied_at_utc TEXT NOT NULL
+                )
+                """
+            )
+            rows = conn.execute(
+                "SELECT version, description, applied_at_utc FROM schema_migrations ORDER BY applied_at_utc ASC"
+            ).fetchall()
+            return [
+                {
+                    "version": str(r["version"]),
+                    "description": str(r["description"]),
+                    "applied_at_utc": str(r["applied_at_utc"]),
+                }
+                for r in rows
+            ]
+
+    def check_integrity(self) -> Dict[str, Any]:
+        """Runs physical SQLite `PRAGMA integrity_check` (or PostgreSQL `SELECT 1` health check)."""
+        if self.is_postgres:
+            with self.connect() as conn:
+                row = conn.execute("SELECT 1 AS ok").fetchone()
+                return {
+                    "backend": "postgresql",
+                    "target": sanitize_database_url(self.database_url),
+                    "healthy": bool(row and row["ok"] == 1),
+                    "details": ["ok"],
+                }
+        if not self.sqlite_path.exists():
+            return {
+                "backend": "sqlite_wal",
+                "target": str(self.sqlite_path.name),
+                "healthy": True,
+                "details": ["not_yet_initialized"],
+            }
+        with self.connect() as conn:
+            rows = conn.execute("PRAGMA integrity_check;").fetchall()
+            msgs = [str(r[0]) for r in rows]
+            fk_violations = conn.execute("PRAGMA foreign_key_check;").fetchall()
+            ok = (msgs == ["ok"]) and (len(fk_violations) == 0)
+            return {
+                "backend": "sqlite_wal",
+                "target": str(self.sqlite_path.name),
+                "healthy": ok,
+                "details": msgs,
+                "foreign_key_violations": len(fk_violations),
+                "size_bytes": int(self.sqlite_path.stat().st_size),
+            }
+
+    def backup_sqlite(self, backup_dir: Optional[Path] = None, keep_last: int = 10) -> Optional[Path]:
+        """
+        Creates a WAL-safe, atomic online snapshot via `sqlite3.Connection.backup()`,
+        verifies snapshot integrity, and rotates snapshots beyond `keep_last`.
+        """
+        if self.is_postgres or not self.sqlite_path.exists():
+            return None
+        b_dir = Path(backup_dir or (self.sqlite_path.parent / "backups")).resolve()
+        b_dir.mkdir(parents=True, exist_ok=True)
+        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+        dst = b_dir / f"{self.sqlite_path.stem}_{ts}.sqlite.bak"
+        src_conn = sqlite3.connect(str(self.sqlite_path), timeout=15.0)
+        dst_conn = sqlite3.connect(str(dst), timeout=15.0)
+        try:
+            src_conn.backup(dst_conn)
+            chk = [str(r[0]) for r in dst_conn.execute("PRAGMA integrity_check;").fetchall()]
+            if chk != ["ok"]:
+                raise RuntimeError(f"Backup integrity check failed for {dst.name}: {chk}")
+        finally:
+            dst_conn.close()
+            src_conn.close()
+
+        # Rotate old backups for this database stem
+        if keep_last > 0:
+            existing = sorted(b_dir.glob(f"{self.sqlite_path.stem}_*.sqlite.bak"), key=lambda p: p.stat().st_mtime, reverse=True)
+            for old in existing[keep_last:]:
+                try:
+                    old.unlink()
+                except OSError:
+                    pass
+        return dst
+
+
+def backup_all_workspace_databases(workspace_root: Path, keep_last: int = 10) -> Dict[str, Any]:
+    """
+    Atomically backs up & integrity-checks every SQLite state database under `<workspace_root>/runs/`.
+    Never touches backups directory recursively.
+    """
+    runs_dir = Path(workspace_root).resolve() / "runs"
+    backup_root = runs_dir / "backups"
+    backup_root.mkdir(parents=True, exist_ok=True)
+    results: List[Dict[str, Any]] = []
+    if not runs_dir.exists():
+        return {"status": "ok", "databases_checked": 0, "all_healthy": True, "databases": []}
+
+    seen: set = set()
+    for pat in ("*.sqlite", "*.db"):
+        for db_file in sorted(runs_dir.rglob(pat)):
+            if "backups" in db_file.parts or db_file.name.endswith(".bak"):
+                continue
+            resolved = db_file.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            adapter = DatabaseAdapter(resolved, database_url="")
+            integrity = adapter.check_integrity()
+            snap_path = adapter.backup_sqlite(backup_dir=backup_root, keep_last=keep_last)
+            results.append({
+                "db": str(resolved.relative_to(runs_dir)).replace("\\", "/"),
+                "healthy": integrity["healthy"],
+                "size_bytes": integrity.get("size_bytes", 0),
+                "foreign_key_violations": integrity.get("foreign_key_violations", 0),
+                "backup_file": snap_path.name if snap_path else None,
+            })
+
+    return {
+        "status": "ok",
+        "backup_dir": str(backup_root),
+        "databases_checked": len(results),
+        "all_healthy": all(r["healthy"] for r in results),
+        "databases": results,
+    }
 
 
 # =============================================================================

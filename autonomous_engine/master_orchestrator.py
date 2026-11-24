@@ -179,6 +179,15 @@ def run_master_pipeline(
         dur1 = round(time.time() - t0, 2)
         run_mgr.log_stage_telemetry(1, "Topology Profiler", dur1, "SUCCESS", {"tables_scanned": len(profile['tables'])})
         print(f"[+] Stage 1 Completed in {dur1}s! ({len(profile['tables'])} tables scanned)", flush=True)
+
+        # Fast-fail gracefully on 0-row (headers-only) empty datasets instead of running Stages 2-7
+        max_table_rows = max((int(meta.get("estimated_rows") or 0) for meta in (profile.get("tables") or {}).values()), default=0)
+        if max_table_rows <= 0:
+            err_msg = "Uploaded dataset contains 0 data rows (headers only). Please upload a dataset with at least 1 data row."
+            run_mgr.log_stage_telemetry(1, "Topology Profiler", dur1, "FAILED", {"error": err_msg})
+            run_mgr.finalize_run(status="FAILED", assertion_status="FAILED", domain_invariants_status="FAILED")
+            print(f"[X] Stage 1 Fast-Fail: {err_msg}", flush=True)
+            return False
     except Exception as e:
         run_mgr.log_stage_telemetry(1, "Topology Profiler", round(time.time() - t0, 2), "FAILED", {"error": str(e)})
         run_mgr.finalize_run(status="FAILED", assertion_status="FAILED", domain_invariants_status="FAILED")

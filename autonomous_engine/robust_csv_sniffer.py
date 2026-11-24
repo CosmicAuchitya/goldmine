@@ -34,6 +34,13 @@ _PLAIN_INT_RE = re.compile(
     r'^\s*[+-]?\s*(?:€|EUR)?\s*\d+\s*(?:€|EUR|%)?\s*$',
     re.IGNORECASE,
 )
+# Matches Indian Tally/Vyapar/Busy & US/UK formatted currency strings (e.g. '₹1,24,500/-', 'Rs. 45,000.50', '$1,250.00', '£890')
+_INTL_CURRENCY_RE = re.compile(
+    r'^\s*[+-]?\s*(?:₹|â‚¹|\$|£|Rs\.?|INR|USD|GBP)\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|(?:\s*(?:INR|USD|GBP|Rs\.?)))?\s*$'
+    r'|^\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|\s*(?:₹|â‚¹|\$|£|INR|USD|GBP|Rs\.?))\s*$',
+    re.IGNORECASE,
+)
+_STD_NUM_COMMA_RE = re.compile(r'^\s*[+-]?\s*\d{1,3}(?:,\d{2,3})+(?:\.\d{1,4})?\s*$')
 
 
 def _sniff_delimiter_from_text(sample_text: str, fallback: str = ',') -> str:
@@ -77,8 +84,24 @@ def normalize_european_decimal_columns(df: pd.DataFrame) -> pd.DataFrame:
             continue
 
         sample = non_null.head(100)
-        has_non_eu_currency = any(re.search(r'[₹\$£]|(?:INR|USD|GBP|rs\b|â‚¹)', v, re.IGNORECASE) for v in sample)
+        has_non_eu_currency = any(re.search(r'[₹\$£]|(?:INR|USD|GBP|rs\.?\s*\d|/-|â‚¹)', v, re.IGNORECASE) for v in sample)
         if has_non_eu_currency:
+            curr_hits = sum(1 for v in sample if _INTL_CURRENCY_RE.match(v) or _STD_NUM_COMMA_RE.match(v) or _PLAIN_INT_RE.match(v))
+            if curr_hits >= 1 and (curr_hits / len(sample)) >= 0.75:
+                cleaned = (
+                    ser.astype(str)
+                    .str.replace(r'(?i)(?:INR|USD|GBP|Rs\.?|â‚¹|[₹\$£,\s])', '', regex=True)
+                    .str.replace(r'/-$', '', regex=True)
+                )
+                parsed = pd.to_numeric(cleaned, errors='coerce')
+                if parsed.notna().sum() >= max(1, int(len(non_null) * 0.75)):
+                    # Preserve detected currency hint on DataFrame attrs for downstream resolvers
+                    sample_joined = " ".join(sample.tolist())
+                    hint = "INR" if re.search(r'(?:₹|â‚¹|Rs\.?|INR|/-)', sample_joined, re.IGNORECASE) else ("GBP" if "£" in sample_joined else "USD")
+                    hints = dict(df.attrs.get("_detected_currency_hints") or {})
+                    hints[col] = hint
+                    df.attrs["_detected_currency_hints"] = hints
+                    df[col] = parsed
             continue
         eu_hits = sum(1 for v in sample if _EU_DECIMAL_RE.match(v))
         int_hits = sum(1 for v in sample if _PLAIN_INT_RE.match(v))

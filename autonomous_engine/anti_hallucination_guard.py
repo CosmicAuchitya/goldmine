@@ -569,9 +569,18 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
                     wl_pk = pk_candidates[0]
                     q_pk = quote_sql_ident(wl_pk)
                     con.register("df_worklist_temp", df_worklist)
+                    # Allow exact physical match OR exact OWASP CWE-1236 leading apostrophe neutralization
+                    # on formula-prefixed primary keys (=, +, -, @, tab, CR) exported safely to Excel CSV.
                     unmatched_keys = int(con.execute(f"""
                         SELECT COUNT(*) FROM df_worklist_temp w
-                        LEFT JOIN fact f ON w.{q_pk} = f.{q_pk}
+                        LEFT JOIN fact f ON (
+                            CAST(w.{q_pk} AS VARCHAR) = CAST(f.{q_pk} AS VARCHAR)
+                            OR (
+                                LEFT(CAST(w.{q_pk} AS VARCHAR), 1) = ''''
+                                AND SUBSTR(CAST(w.{q_pk} AS VARCHAR), 2) = CAST(f.{q_pk} AS VARCHAR)
+                                AND SUBSTR(CAST(w.{q_pk} AS VARCHAR), 2, 1) IN ('=', '+', '-', '@', CHR(9), CHR(13))
+                            )
+                        )
                         WHERE f.{q_pk} IS NULL
                     """).fetchall()[0][0])
                     if unmatched_keys > 0:

@@ -24,9 +24,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY autonomous_engine/ /app/autonomous_engine/
 COPY 02_domain_intelligence/ /app/02_domain_intelligence/
 COPY kaggle_benchmarks/ /app/kaggle_benchmarks/
+COPY enterprise_showcase_data/ /app/enterprise_showcase_data/
 
-# 5. Initialize writable run state directories (SQLite WAL state, tenants, ledgers)
-RUN mkdir -p /app/runs/uploads /app/runs/tenants /app/runs/action_ledgers /app/runs/state && \
+# 5. Initialize writable run state directories (SQLite WAL state, tenants, ledgers, backups, i18n)
+RUN mkdir -p /app/runs/uploads /app/runs/tenants /app/runs/action_ledgers /app/runs/state /app/runs/decision_outcomes /app/runs/i18n_cache /app/runs/backups && \
     chown -R dataxray:dataxray /app
 
 USER dataxray
