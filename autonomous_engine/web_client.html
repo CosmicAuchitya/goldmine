@@ -4353,7 +4353,7 @@
         boardroomPlanTitle: 'Recommended 14-Day Safe Action Plan',
         boardroomCopyMemo: 'Copy WhatsApp Memo',
         eyebrowCheck: 'QUICK CHECK BEFORE STARTING',
-        eyebrowPredict: 'STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)',
+        eyebrowPredict: 'STAGE 8 · DATA-BACKED DECISION SIMULATOR (ESTIMATE + MONTE CARLO)',
         predictTitle: 'Test Your Business Decision Before You Take Action',
         predictLead: 'Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won\'t help, and why loss could happen.',
         btnPredictNow: 'Predict Outcome',
@@ -4489,7 +4489,7 @@
         boardroomPlanTitle: 'अगले 14 दिन का सुरक्षित एक्शन प्लान',
         boardroomCopyMemo: 'WhatsApp मेमो कॉपी करें',
         eyebrowCheck: 'शुरू करने से पहले एक नज़र',
-        eyebrowPredict: 'STAGE 8 · AI FAISLA SIMULATOR (ML + MONTE CARLO)',
+        eyebrowPredict: 'STAGE 8 · डेटा-आधारित फ़ैसला सिमुलेटर (अनुमान + MONTE CARLO)',
         predictTitle: 'Koi Bhi Faisla Lene Se Pehle Uska Asar Check Karein',
         predictLead: 'Neeche 1-click idea chunein ya seedhi Hindi/English mein apna badlav likhein — jaanein munafe ka kitna % chance hai, kahan fayda hoga, kahan nahi hoga aur nuksaan kyun ho sakta hai.',
         btnPredictNow: 'Asar Jaanchein',
@@ -8972,7 +8972,7 @@
           return `<div class="boardroom-user-bubble">👤 ${escapeHtml(item.text)}</div>`;
         }
         if (item.role === 'loading') {
-          return `<div class="boardroom-judge-card" style="opacity:0.85;font-size:13px;color:var(--text-secondary);">⏳ ${isHi ? 'असली DuckDB डेटा और Stage 8.3 Causal ML पर आपकी बात का सच-झूठ जाँचा जा रहा है...' : 'Running live DuckDB forensic audit + Stage 8.3 Causal ML simulation on your question...'}</div>`;
+          return `<div class="boardroom-judge-card" style="opacity:0.85;font-size:13px;color:var(--text-secondary);">⏳ ${isHi ? 'असली DuckDB डेटा और डेटा-आधारित सिमुलेशन पर आपकी बात जाँची जा रही है...' : 'Running live DuckDB forensic audit + data-backed simulation on your question...'}</div>`;
         }
         const d = item.payload || {};
         const v = d.verdict || {};

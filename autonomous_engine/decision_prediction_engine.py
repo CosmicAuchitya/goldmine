@@ -1704,8 +1704,8 @@ class PredictiveDecisionEngine:
 
             if expected_net > 0 and benefit_prob_pct >= 80.0 and ci_low > 0:
                 verdict_code = "STRONG_GO"
-                verdict_en = "STRONG GO — High Probability of Profit / Risk Reduction"
-                verdict_hi = "🟢 मज़बूत फ़ैसला (Strong Go) — फ़ायदा होने की बहुत ऊँची संभावना"
+                verdict_en = "STRONG ESTIMATED UPSIDE — High Data-Backed Probability (Verify via 20% Pilot)"
+                verdict_hi = "🟢 मज़बूत अनुमानित फ़ायदा — डेटा से ऊँची संभावना (पहले 20% पायलट में पक्का करें)"
             elif expected_net > 0 and benefit_prob_pct >= 58.0:
                 verdict_code = "PILOT_FIRST"
                 verdict_en = "PILOT FIRST — Promising Gain, Test on 1–2 Stores / 20% Traffic First"

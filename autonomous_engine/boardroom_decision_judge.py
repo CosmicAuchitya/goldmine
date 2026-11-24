@@ -633,12 +633,12 @@ class BoardroomDecisionJudge:
                     be_note_en = f" {be['summary_en']}" if be.get("summary_en") else ""
                     be_note_hi = f" {be['summary_hi']}" if be.get("summary_hi") else ""
                     proven_true_en.append(
-                        f"Causal ML Simulation ({f['label_en']}): {pred['chance_of_benefit_pct']:.0f}% chance of net gain "
+                        f"Data-Backed Simulation Estimate ({f['label_en']}): ~{pred['chance_of_benefit_pct']:.0f}% estimated chance of net gain "
                         f"({pred['formatted_net_impact']}, 95% range {pred['formatted_ci_95']}).{be_note_en}"
                     )
                     proven_true_hi.append(
-                        f"AI सिमुलेशन ({f['label_hi']}): फ़ायदे का {pred['chance_of_benefit_pct']:.0f}% चांस "
-                        f"(शुद्ध असर: {pred['formatted_net_impact']}, 95% रेंज: {pred['formatted_ci_95']})।{be_note_hi}"
+                        f"डेटा-आधारित सिमुलेशन अनुमान ({f['label_hi']}): फ़ायदे का ~{pred['chance_of_benefit_pct']:.0f}% अनुमानित चांस "
+                        f"(अनुमानित शुद्ध असर: {pred['formatted_net_impact']}, 95% रेंज: {pred['formatted_ci_95']})।{be_note_hi}"
                     )
                 elif sim and pred.get("expected_net_impact", 0) <= 0:
                     wrong_or_risky_en.append(
