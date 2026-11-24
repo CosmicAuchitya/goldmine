@@ -360,6 +360,7 @@ async def api_key_auth_middleware(request: Request, call_next):
                 "/api/v1/questions-200/",
                 "/api/v1/ranked-leaks/",
                 "/api/v1/predict/overview/",
+                "/api/v1/boardroom/starters/",
             ):
                 if path.startswith(prefix):
                     rid = path[len(prefix):].strip("/").split("/")[0]
@@ -377,6 +378,9 @@ async def api_key_auth_middleware(request: Request, call_next):
             is_public_demo_route = rid in PUBLIC_BENCHMARK_IDS
         elif not is_public_demo_route and request.method == "POST" and path.startswith("/api/v1/i18n/translate-run/"):
             rid = path[len("/api/v1/i18n/translate-run/"):].strip("/").split("/")[0]
+            is_public_demo_route = rid in PUBLIC_BENCHMARK_IDS
+        elif not is_public_demo_route and request.method == "POST" and path.startswith("/api/v1/boardroom/discuss/"):
+            rid = path[len("/api/v1/boardroom/discuss/"):].strip("/").split("/")[0]
             is_public_demo_route = rid in PUBLIC_BENCHMARK_IDS
 
         is_exempt = (path in exempt_exact) or is_public_demo_route
@@ -4038,6 +4042,130 @@ def translate_dynamic_texts(req: TranslateTextsRequest) -> Dict[str, Any]:
         "engine": engine,
         "texts": tr_map,
     }
+
+
+# =============================================================================
+# PART 4.95: STAGE 9 — AI BOARDROOM DECISION JUDGE (MULTI-TURN CA + DATA SCIENTIST)
+# =============================================================================
+class BoardroomDiscussRequest(BaseModel):
+    message: str = Field(..., min_length=2, max_length=1500, description="Founder's open-ended business question, team debate, CapEx pitch, or follow-up")
+    history: List[Dict[str, Any]] = Field(default_factory=list, description="Prior conversation turns for multi-turn context carry-over")
+    target_lang: str = Field("en", max_length=12, description="Optional target language code (supports all 43 world languages)")
+
+
+@app.get("/api/v1/boardroom/starters/{run_id}", tags=["Stage 9 AI Boardroom"])
+def get_boardroom_starters(run_id: str, request: Request, lang: str = Query("en")) -> Dict[str, Any]:
+    """Returns 4 dataset-tailored real-world team debate / CapEx audit starters for the AI Boardroom."""
+    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
+    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
+    try:
+        try:
+            from .boardroom_decision_judge import BoardroomDecisionJudge
+        except ImportError:
+            from boardroom_decision_judge import BoardroomDecisionJudge
+        eng = _get_cached_decision_engine(staging_out)
+        judge = BoardroomDecisionJudge(str(staging_out), engine=eng)
+        starters = judge.get_discussion_starters()
+
+        # Seamless 43-language translation for starters when user selects a global language
+        code = str(lang or "en").strip()
+        if code not in ("en", "hi") and starters:
+            try:
+                try:
+                    from .global_i18n_engine import normalize_lang_code, translate_string_map
+                except ImportError:
+                    from global_i18n_engine import normalize_lang_code, translate_string_map
+                norm_c = normalize_lang_code(code)
+                if norm_c not in ("en", "hi"):
+                    s_map = {}
+                    for i, st in enumerate(starters):
+                        s_map[f"t{i}"] = st["tag_en"]
+                        s_map[f"p{i}"] = st["prompt_en"]
+                    tr_map, _ = translate_string_map(s_map, norm_c, max_workers=4)
+                    for i, st in enumerate(starters):
+                        st["tag_en"] = tr_map.get(f"t{i}", st["tag_en"])
+                        st["prompt_en"] = tr_map.get(f"p{i}", st["prompt_en"])
+            except Exception:
+                pass
+
+        return {
+            "status": "success",
+            "run_id": run_id,
+            "model_roc_auc": eng.model_metrics.get("roc_auc"),
+            "rows_audited": int(len(eng.df_full)),
+            "starters": starters,
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Boardroom starters error: {exc}")
+
+
+@app.post("/api/v1/boardroom/discuss/{run_id}", tags=["Stage 9 AI Boardroom"])
+def discuss_in_boardroom(run_id: str, req: BoardroomDiscussRequest, request: Request) -> Dict[str, Any]:
+    """
+    Evaluates a founder's free-form business thought, team debate, or CapEx proposal
+    against physical Parquet data + Stage 8.3 Causal ML, returning a 4-part Boardroom Judgment
+    (Verdict, Proven True, Wrong/Risky, Honest Blind Spots, 14-Day Plan) in any of 43 world languages.
+    """
+    staging_out, run_tenant = _resolve_staging_out_for_run(run_id)
+    _enforce_tenant_access(request, run_tenant, run_id=run_id, allow_public_benchmark=True)
+    try:
+        try:
+            from .boardroom_decision_judge import BoardroomDecisionJudge
+        except ImportError:
+            from boardroom_decision_judge import BoardroomDecisionJudge
+        eng = _get_cached_decision_engine(staging_out)
+        judge = BoardroomDecisionJudge(str(staging_out), engine=eng)
+        result = judge.discuss(message=req.message, history=req.history)
+        result["run_id"] = run_id
+
+        # Auto-translate judgment cleanly into any of the 41 additional world languages (number-locked!)
+        code = str(req.target_lang or "en").strip()
+        if code not in ("en", "hi"):
+            try:
+                try:
+                    from .global_i18n_engine import normalize_lang_code, translate_string_map
+                except ImportError:
+                    from global_i18n_engine import normalize_lang_code, translate_string_map
+                norm_c = normalize_lang_code(code)
+                if norm_c not in ("en", "hi"):
+                    flat: Dict[str, str] = {
+                        "v_badge": result["verdict"]["badge_en"],
+                        "v_hl": result["verdict"]["headline_en"],
+                    }
+                    for i, s in enumerate(result["evidence"]["proven_true_en"]):
+                        flat[f"pt_{i}"] = s
+                    for i, s in enumerate(result["evidence"]["wrong_or_risky_en"]):
+                        flat[f"wr_{i}"] = s
+                    for i, s in enumerate(result["evidence"]["blind_spots_en"]):
+                        flat[f"bs_{i}"] = s
+                    for i, s in enumerate(result["action_plan_en"]):
+                        flat[f"ap_{i}"] = s
+                    for i, s in enumerate(result["follow_up_prompts_en"]):
+                        flat[f"fu_{i}"] = s
+                    for i, r in enumerate(result["comparison_scorecard"]):
+                        flat[f"sc_{i}"] = r["option_en"]
+                    tr_map, _ = translate_string_map(flat, norm_c, max_workers=6)
+                    result["verdict"]["badge_en"] = tr_map.get("v_badge", result["verdict"]["badge_en"])
+                    result["verdict"]["headline_en"] = tr_map.get("v_hl", result["verdict"]["headline_en"])
+                    result["evidence"]["proven_true_en"] = [tr_map.get(f"pt_{i}", s) for i, s in enumerate(result["evidence"]["proven_true_en"])]
+                    result["evidence"]["wrong_or_risky_en"] = [tr_map.get(f"wr_{i}", s) for i, s in enumerate(result["evidence"]["wrong_or_risky_en"])]
+                    result["evidence"]["blind_spots_en"] = [tr_map.get(f"bs_{i}", s) for i, s in enumerate(result["evidence"]["blind_spots_en"])]
+                    result["action_plan_en"] = [tr_map.get(f"ap_{i}", s) for i, s in enumerate(result["action_plan_en"])]
+                    result["follow_up_prompts_en"] = [tr_map.get(f"fu_{i}", s) for i, s in enumerate(result["follow_up_prompts_en"])]
+                    for i, r in enumerate(result["comparison_scorecard"]):
+                        r["option_en"] = tr_map.get(f"sc_{i}", r["option_en"])
+            except Exception:
+                pass
+
+        return result
+    except ValueError as ve:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Boardroom judge error: {exc}")
 
 
 # =============================================================================

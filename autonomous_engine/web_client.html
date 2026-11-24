@@ -1599,6 +1599,154 @@
       margin-right: 18px !important;
     }
 
+    /* Stage 9: AI Boardroom Decision Judge War-Room Styles */
+    .boardroom-starters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+    .boardroom-starter-btn {
+      text-align: left;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all var(--transition-fast);
+      color: var(--text-primary);
+    }
+    .boardroom-starter-btn:hover {
+      border-color: var(--accent-emerald);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+    .boardroom-starter-tag {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-emerald);
+    }
+    .boardroom-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .boardroom-user-bubble {
+      align-self: flex-end;
+      max-width: 85%;
+      background: var(--accent-emerald-bg);
+      border: 1px solid var(--accent-emerald-border);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 14px 14px 4px 14px;
+      font-size: 13.8px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .boardroom-judge-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .boardroom-verdict-banner {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-emerald);
+      background: var(--accent-emerald-bg);
+    }
+    .boardroom-verdict-banner.REFUTED_BY_DATA {
+      border-left-color: var(--accent-crimson);
+      background: rgba(220, 38, 38, 0.08);
+    }
+    .boardroom-verdict-banner.PARTIALLY_SUPPORTED,
+    .boardroom-verdict-banner.BOTH_MATTER {
+      border-left-color: var(--accent-amber);
+      background: rgba(217, 119, 6, 0.09);
+    }
+    .boardroom-evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+    .boardroom-ev-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12.8px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+    .boardroom-ev-box.true-box { border-top: 3px solid var(--accent-emerald); }
+    .boardroom-ev-box.risk-box { border-top: 3px solid var(--accent-crimson); }
+    .boardroom-ev-box.blind-box { border-top: 3px solid var(--accent-amber); }
+    .boardroom-ev-box ul { margin: 8px 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .boardroom-plan-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12.8px;
+      line-height: 1.55;
+    }
+    .boardroom-composer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .boardroom-textarea {
+      width: 100%;
+      min-height: 72px;
+      resize: vertical;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13.8px;
+      line-height: 1.45;
+      outline: none;
+    }
+    .boardroom-textarea:focus {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 0 2px rgba(4, 120, 87, 0.14);
+    }
+    .boardroom-followup-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .boardroom-chip {
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .boardroom-chip:hover {
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+
     /* Brief Reader */
     .brief-reader {
       background: var(--bg-subtle);
@@ -2555,6 +2703,10 @@
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="predict" onclick="switchWorkspaceTab('predict', this)">
             <span>🔮</span>
             <span data-i18n="tabPredict">Decision Predictor</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="boardroom" onclick="switchWorkspaceTab('boardroom', this)">
+            <span>🏛️</span>
+            <span data-i18n="tabBoardroom">AI Boardroom</span>
           </button>
         </nav>
 
@@ -3523,6 +3675,42 @@
         </section>
       </div>
 
+      <!-- TAB 6: STAGE 9 — AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA WAR-ROOM) -->
+      <div id="tabPanel-boardroom" class="tab-panel hidden">
+        <section class="panel-card">
+          <div class="predict-header-row" style="margin-bottom: 10px;">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="boardroomEyebrow">STAGE 9 · AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA)</div>
+              <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" data-i18n="boardroomTitle">Discuss Your Team Debate or Business Idea Against Real Data</h2>
+              <p style="font-size: 13.2px; color: var(--text-secondary);" data-i18n="boardroomLead">
+                Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.
+              </p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span id="boardroomStatusPill" class="predict-honesty-pill">🛡️ Zero-Flattery Data Judge Ready</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="clearBoardroomThread()">🧹 Clear</button>
+            </div>
+          </div>
+
+          <div id="boardroomStartersGrid" class="boardroom-starters-grid"></div>
+
+          <div id="boardroomFeed" class="boardroom-feed"></div>
+
+          <div class="boardroom-composer">
+            <textarea id="boardroomInput" class="boardroom-textarea" placeholder="Example: My supervisor wants ₹2,00,000 for a chiller upgrade, while QA says pH acidity is the real cause — who is right according to my data?"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button id="btnBoardroomMic" type="button" class="btn btn-secondary btn-sm" onclick="startBoardroomVoice()" title="Speak your thought directly">🎙️ Speak</button>
+                <span style="font-size:11.5px;color:var(--text-muted);" data-i18n="boardroomHint">Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates &amp; all 43 world languages.</span>
+              </div>
+              <button id="btnBoardroomSubmit" type="button" class="btn btn-primary" onclick="sendBoardroomDiscussion()">
+                ⚖️ <span data-i18n="btnBoardroomAsk">Ask the Boardroom Judge</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
     </div>
     </main>
   </div><!-- /.app-shell -->
@@ -4110,7 +4298,10 @@
       predictLastResult: null,
       predictCompareList: [],
       predictComboQueue: [],
-      predictCommitmentsData: null
+      predictCommitmentsData: null,
+      boardroomHistory: [],
+      boardroomStartersRunId: null,
+      boardroomStarters: []
     };
 
     const i18nDict = {
@@ -4150,6 +4341,12 @@
         tabCalculator: 'Savings Calculator',
         tabAsk: 'Ask Any Question',
         tabPredict: 'Decision Predictor',
+        tabBoardroom: 'AI Boardroom',
+        boardroomEyebrow: 'STAGE 9 · AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA)',
+        boardroomTitle: 'Discuss Your Team Debate or Business Idea Against Real Data',
+        boardroomLead: 'Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.',
+        boardroomHint: 'Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates & all 43 world languages.',
+        btnBoardroomAsk: 'Ask the Boardroom Judge',
         eyebrowPredict: 'STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)',
         predictTitle: 'Test Your Business Decision Before You Take Action',
         predictLead: 'Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won\'t help, and why loss could happen.',
@@ -4274,6 +4471,12 @@
         tabCalculator: 'Bachat Calculator',
         tabAsk: 'Koi Bhi Sawal Poochein',
         tabPredict: 'Faisla Jaanchein (AI)',
+        tabBoardroom: 'AI Boardroom (बहस व फ़ैसला)',
+        boardroomEyebrow: 'STAGE 9 · AI बोर्डरूम डिसीजन जज (पर्सनल डेटा साइंटिस्ट + CA)',
+        boardroomTitle: 'अपनी मन की बात या टीम की बहस को असली डेटा से जज करवाएँ',
+        boardroomLead: 'कोई भी बिज़नेस आइडिया, बजट प्रस्ताव या टीम की बहस सीधी भाषा में लिखें या बोलें — डेटा से साफ़ जानें क्या सच है, क्या गलत/ख़तरनाक है, और क्या डेटा में दर्ज नहीं है।',
+        boardroomHint: 'लगातार सवाल-जवाब, ₹/$ बजट चेक, Option A बनाम B बहस और सभी 43 भाषाओं में काम करता है।',
+        btnBoardroomAsk: 'बोर्डरूम जज से फ़ैसला लें',
         eyebrowPredict: 'STAGE 8 · AI FAISLA SIMULATOR (ML + MONTE CARLO)',
         predictTitle: 'Koi Bhi Faisla Lene Se Pehle Uska Asar Check Karein',
         predictLead: 'Neeche 1-click idea chunein ya seedhi Hindi/English mein apna badlav likhein — jaanein munafe ka kitna % chance hai, kahan fayda hoga, kahan nahi hoga aur nuksaan kyun ho sakta hai.',
@@ -4486,6 +4689,10 @@
         if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
         if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
         if (appState.predictCommitmentsData) renderPredictCommitments();
+        if (appState.activeTab === 'boardroom') {
+          loadBoardroomStarters(true);
+          renderBoardroomFeed();
+        }
         return;
       }
 
@@ -4559,6 +4766,10 @@
       if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
       if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
       if (appState.predictCommitmentsData) renderPredictCommitments();
+      if (appState.activeTab === 'boardroom') {
+        loadBoardroomStarters(true);
+        renderBoardroomFeed();
+      }
     }
 
     function toggleTheme() {
@@ -4581,6 +4792,8 @@
       });
       if (tabName === 'predict') {
         loadDecisionPredictorOverview(false);
+      } else if (tabName === 'boardroom') {
+        loadBoardroomStarters(false);
       }
       const sb = document.getElementById('appSidebar');
       if (sb) sb.classList.remove('mobile-open');
@@ -5325,6 +5538,14 @@
       if (predCombo) predCombo.classList.add('hidden');
       if (appState.activeTab === 'predict') {
         loadDecisionPredictorOverview(true);
+      }
+      appState.boardroomHistory = [];
+      appState.boardroomStartersRunId = null;
+      appState.boardroomStarters = [];
+      const bFeed = document.getElementById('boardroomFeed');
+      if (bFeed) bFeed.innerHTML = '';
+      if (appState.activeTab === 'boardroom') {
+        loadBoardroomStarters(true);
       }
       refreshTimeMachineRuns();
     }
@@ -8550,6 +8771,283 @@
       const btn = document.getElementById('btnThemeToggle');
       if (btn) btn.textContent = (t === 'dark') ? '☀️ Daylight' : '🎨 Studio';
       try { localStorage.setItem('dataxray_theme', t); } catch (e) {}
+    }
+
+    // =========================================================================
+    // STAGE 9: AI BOARDROOM DECISION JUDGE (MULTI-TURN CA + DATA SCIENTIST)
+    // =========================================================================
+    async function loadBoardroomStarters(forceReload = false) {
+      const runId = appState.activeRunId;
+      const grid = document.getElementById('boardroomStartersGrid');
+      const pill = document.getElementById('boardroomStatusPill');
+      if (!runId || !grid) return;
+      const lang = appState.briefLanguage || 'en';
+      const cacheKey = `${runId}::${lang}`;
+      if (!forceReload && appState.boardroomStartersRunId === cacheKey && appState.boardroomStarters.length) {
+        renderBoardroomStarters();
+        return;
+      }
+      grid.innerHTML = `<div style="grid-column:1/-1;font-size:12.5px;color:var(--text-muted);padding:10px;">⏳ Preparing live boardroom debate starters from your audited data...</div>`;
+      try {
+        const res = await apiFetch(`/api/v1/boardroom/starters/${encodeURIComponent(runId)}?lang=${encodeURIComponent(lang)}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        appState.boardroomStartersRunId = cacheKey;
+        appState.boardroomStarters = data.starters || [];
+        if (pill) {
+          const auc = Number(data.model_roc_auc || 0).toFixed(2);
+          const rows = Number(data.rows_audited || 0).toLocaleString('en-US');
+          pill.textContent = lang === 'hi'
+            ? `🛡️ लाइव डेटा जज तैयार (${rows} रिकॉर्ड · AI AUC ${auc})`
+            : `🛡️ Live Data Judge Ready (${rows} rows · AI AUC ${auc})`;
+        }
+        renderBoardroomStarters();
+      } catch (e) {
+        grid.innerHTML = '';
+      }
+    }
+
+    function renderBoardroomStarters() {
+      const grid = document.getElementById('boardroomStartersGrid');
+      if (!grid) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const items = appState.boardroomStarters || [];
+      if (!items.length) {
+        grid.innerHTML = '';
+        return;
+      }
+      grid.innerHTML = items.map((st, i) => {
+        const tag = isHi ? (st.tag_hi || st.tag_en) : st.tag_en;
+        const pr = isHi ? (st.prompt_hi || st.prompt_en) : st.prompt_en;
+        return `
+          <button type="button" class="boardroom-starter-btn" onclick="runBoardroomStarter(${i})">
+            <span class="boardroom-starter-tag">${escapeHtml(st.icon || '⚖️')} ${escapeHtml(tag)}</span>
+            <span style="font-size:12.6px;line-height:1.45;color:var(--text-primary);">${escapeHtml(pr)}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function runBoardroomStarter(idx) {
+      const st = (appState.boardroomStarters || [])[idx];
+      if (!st) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const txt = isHi ? (st.prompt_hi || st.prompt_en) : st.prompt_en;
+      const inp = document.getElementById('boardroomInput');
+      if (inp) inp.value = txt;
+      sendBoardroomDiscussion(txt);
+    }
+
+    function clearBoardroomThread() {
+      appState.boardroomHistory = [];
+      const feed = document.getElementById('boardroomFeed');
+      if (feed) feed.innerHTML = '';
+      showToast(appState.briefLanguage === 'hi' ? 'बोर्डरूम चर्चा साफ़ कर दी गई।' : 'Boardroom thread cleared.', 'info');
+    }
+
+    function startBoardroomVoice() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('Voice dictation requires Chrome or Edge browser.', 'warn');
+        return;
+      }
+      const btn = document.getElementById('btnBoardroomMic');
+      const rec = new SpeechRec();
+      const lang = appState.briefLanguage || 'en';
+      rec.lang = lang === 'hi' ? 'hi-IN' : (lang === 'en' ? 'en-IN' : lang);
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      if (btn) btn.textContent = '🔴 Listening...';
+      rec.onresult = (evt) => {
+        const transcript = evt.results?.[0]?.[0]?.transcript || '';
+        const inp = document.getElementById('boardroomInput');
+        if (inp && transcript) {
+          inp.value = inp.value ? `${inp.value} ${transcript}` : transcript;
+        }
+      };
+      rec.onerror = () => {
+        showToast('Could not capture voice — please type or try again.', 'warn');
+      };
+      rec.onend = () => {
+        if (btn) btn.textContent = '🎙️ Speak';
+      };
+      try { rec.start(); } catch (e) { if (btn) btn.textContent = '🎙️ Speak'; }
+    }
+
+    async function sendBoardroomDiscussion(overrideText) {
+      const runId = appState.activeRunId;
+      if (!runId) {
+        showToast('Please load a report first.', 'warn');
+        return;
+      }
+      const inp = document.getElementById('boardroomInput');
+      const msg = String(overrideText !== undefined ? overrideText : (inp ? inp.value : '')).trim();
+      if (!msg) {
+        showToast(appState.briefLanguage === 'hi' ? 'कृपया अपने मन की बात या टीम का सवाल लिखें।' : 'Please type your business thought or team debate.', 'warn');
+        return;
+      }
+      if (inp) inp.value = '';
+      const btn = document.getElementById('btnBoardroomSubmit');
+      if (btn) btn.disabled = true;
+
+      const priorHistory = (appState.boardroomHistory || []).map(item => ({
+        role: item.role,
+        text: item.text || ''
+      }));
+      appState.boardroomHistory.push({ role: 'user', text: msg });
+      appState.boardroomHistory.push({ role: 'loading', text: '' });
+      renderBoardroomFeed();
+
+      try {
+        const lang = appState.briefLanguage || 'en';
+        const res = await apiFetch(`/api/v1/boardroom/discuss/${encodeURIComponent(runId)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, history: priorHistory, target_lang: lang })
+        });
+        if (!res.ok) {
+          const errJ = await res.json().catch(() => ({}));
+          throw new Error(errJ.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        appState.boardroomHistory = appState.boardroomHistory.filter(x => x.role !== 'loading');
+        appState.boardroomHistory.push({ role: 'judge', text: data.verdict?.headline_en || '', payload: data });
+        renderBoardroomFeed();
+      } catch (e) {
+        appState.boardroomHistory = appState.boardroomHistory.filter(x => x.role !== 'loading');
+        renderBoardroomFeed();
+        showToast(`Boardroom error: ${e.message}`, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function copyBoardroomMemo(turnIdx) {
+      const item = (appState.boardroomHistory || [])[turnIdx];
+      if (!item || !item.payload) return;
+      const d = item.payload;
+      const isHi = appState.briefLanguage === 'hi';
+      const v = d.verdict || {};
+      const ev = d.evidence || {};
+      const lines = [
+        `🏛️ *DataX-Ray AI Boardroom Verdict* (${appState.activeRunId || ''})`,
+        `*${isHi ? (v.badge_hi || v.badge_en) : v.badge_en}*`,
+        isHi ? (v.headline_hi || v.headline_en) : v.headline_en,
+        '',
+        `✅ *${isHi ? 'डेटा से क्या सही साबित हुआ' : 'Proven True by Data'}:*`,
+        ...((isHi ? ev.proven_true_hi : ev.proven_true_en) || []).map(x => `• ${x}`),
+        '',
+        `❌ *${isHi ? 'क्या गलत / ख़तरनाक है' : 'Wrong or Risky'}:*`,
+        ...((isHi ? ev.wrong_or_risky_hi : ev.wrong_or_risky_en) || []).map(x => `• ${x}`),
+        '',
+        `⚠️ *${isHi ? 'डेटा की सीमा (Blind Spots)' : 'What Data Cannot See'}:*`,
+        ...((isHi ? ev.blind_spots_hi : ev.blind_spots_en) || []).map(x => `• ${x}`),
+        '',
+        `🎯 *${isHi ? '14-दिन का सुरक्षित प्लान' : '14-Day Safe Plan'}:*`,
+        ...((isHi ? d.action_plan_hi : d.action_plan_en) || []).map((x, i) => `${i + 1}. ${x}`),
+      ];
+      navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        showToast(isHi ? '📲 WhatsApp बोर्डरूम मेमो कॉपी हो गया!' : '📲 WhatsApp Boardroom Memo copied!', 'success');
+      }).catch(() => {});
+    }
+
+    function renderBoardroomFeed() {
+      const feed = document.getElementById('boardroomFeed');
+      if (!feed) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const items = appState.boardroomHistory || [];
+      if (!items.length) {
+        feed.innerHTML = '';
+        return;
+      }
+      feed.innerHTML = items.map((item, idx) => {
+        if (item.role === 'user') {
+          return `<div class="boardroom-user-bubble">👤 ${escapeHtml(item.text)}</div>`;
+        }
+        if (item.role === 'loading') {
+          return `<div class="boardroom-judge-card" style="opacity:0.85;font-size:13px;color:var(--text-secondary);">⏳ ${isHi ? 'असली DuckDB डेटा और Stage 8.3 Causal ML पर आपकी बात का सच-झूठ जाँचा जा रहा है...' : 'Running live DuckDB forensic audit + Stage 8.3 Causal ML simulation on your question...'}</div>`;
+        }
+        const d = item.payload || {};
+        const v = d.verdict || {};
+        const ev = d.evidence || {};
+        const badge = isHi ? (v.badge_hi || v.badge_en) : v.badge_en;
+        const hl = isHi ? (v.headline_hi || v.headline_en) : v.headline_en;
+        const pt = (isHi ? (ev.proven_true_hi || ev.proven_true_en) : ev.proven_true_en) || [];
+        const wr = (isHi ? (ev.wrong_or_risky_hi || ev.wrong_or_risky_en) : ev.wrong_or_risky_en) || [];
+        const bs = (isHi ? (ev.blind_spots_hi || ev.blind_spots_en) : ev.blind_spots_en) || [];
+        const plan = (isHi ? (d.action_plan_hi || d.action_plan_en) : d.action_plan_en) || [];
+        const fus = (isHi ? (d.follow_up_prompts_hi || d.follow_up_prompts_en) : d.follow_up_prompts_en) || [];
+        const rows = d.comparison_scorecard || [];
+
+        const scoreHtml = rows.length >= 2 ? `
+          <div class="table-scroll">
+            <table class="data-table" style="font-size:12.5px;">
+              <thead>
+                <tr>
+                  <th>${isHi ? 'विकल्प / कारण' : 'Option / Driver'}</th>
+                  <th>${isHi ? 'AI असर %' : 'AI Impact %'}</th>
+                  <th>${isHi ? 'डेटा सबूत' : 'Data Proof'}</th>
+                  <th>${isHi ? 'फ़ायदे का चांस' : 'Benefit Chance'}</th>
+                  <th>${isHi ? 'अनुमानित असर' : 'Projected Impact'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(r => `
+                  <tr>
+                    <td><strong>${escapeHtml(isHi ? (r.option_hi || r.option_en) : r.option_en)}</strong></td>
+                    <td class="tabular-nums">${Number(r.ml_driver_share_pct || 0).toFixed(1)}%</td>
+                    <td>${r.statistically_proven ? '✅ Proven' : '⚪ Noise / Flat'}</td>
+                    <td class="tabular-nums">${r.benefit_chance_pct !== null && r.benefit_chance_pct !== undefined ? `${Number(r.benefit_chance_pct).toFixed(0)}%` : '—'}</td>
+                    <td>${escapeHtml(r.expected_impact || '—')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : '';
+
+        return `
+          <article class="boardroom-judge-card">
+            <div class="boardroom-verdict-banner ${escapeHtml(v.code || '')}">
+              <div style="font-size:11.5px;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px;">${escapeHtml(badge || 'BOARDROOM VERDICT')}</div>
+              <div style="font-size:16px;font-weight:800;color:var(--text-primary);line-height:1.4;">${escapeHtml(hl || '')}</div>
+            </div>
+
+            ${scoreHtml}
+
+            <div class="boardroom-evidence-grid">
+              <div class="boardroom-ev-box true-box">
+                <strong style="color:var(--accent-emerald);">✅ ${isHi ? 'डेटा से क्या सही साबित हुआ' : 'Proven True by Your Data'}</strong>
+                <ul>${pt.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+              </div>
+              <div class="boardroom-ev-box risk-box">
+                <strong style="color:var(--accent-crimson);">❌ ${isHi ? 'क्या गलत / ख़तरनाक / भ्रम है' : 'Wrong, Risky, or Unsupported'}</strong>
+                <ul>${wr.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+              </div>
+              <div class="boardroom-ev-box blind-box">
+                <strong style="color:var(--accent-amber);">⚠️ ${isHi ? 'डेटा क्या नहीं देख सकता (ईमानदार सीमा)' : 'What Your Data Cannot See'}</strong>
+                <ul>${bs.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+              </div>
+            </div>
+
+            <div class="boardroom-plan-box">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+                <strong style="color:var(--text-primary);">🎯 ${isHi ? 'अगले 14 दिन का सुरक्षित एक्शन प्लान' : 'Recommended 14-Day Safe Action Plan'}</strong>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="copyBoardroomMemo(${idx})">📲 ${isHi ? 'WhatsApp मेमो कॉपी करें' : 'Copy WhatsApp Memo'}</button>
+              </div>
+              <ol style="margin:4px 0 0 18px;padding:0;display:flex;flex-direction:column;gap:4px;color:var(--text-secondary);">
+                ${plan.map(x => `<li>${escapeHtml(x)}</li>`).join('')}
+              </ol>
+            </div>
+
+            ${fus.length ? `
+              <div class="boardroom-followup-chips">
+                ${fus.map(f => `<button type="button" class="boardroom-chip" onclick="sendBoardroomDiscussion(${JSON.stringify(f).replace(/"/g, '&quot;')})">💬 ${escapeHtml(f)}</button>`).join('')}
+              </div>
+            ` : ''}
+          </article>
+        `;
+      }).join('');
     }
 
     // Initialize clean theme, saved auth/region, & load default example
