@@ -116,3 +116,14 @@ def test_i18n_endpoints_and_disk_cache(tmp_path):
     assert d_ar["lang"]["dir"] == "rtl"
     assert "₹4.36 L" in d_ar["texts"]["t1"]
     assert "60%" in d_ar["texts"]["t1"]
+
+    # 4. Full run translation API endpoint regression check (guards against pulse helper NameError)
+    r_run_es = client.post(
+        "/api/v1/i18n/translate-run/hotel_booking_cancellation",
+        json={"target_lang": "es"},
+    )
+    assert r_run_es.status_code == 200, r_run_es.text
+    d_run_es = r_run_es.json()
+    assert d_run_es["status"] == "success"
+    assert d_run_es["lang"]["code"] == "es"
+    assert isinstance(d_run_es.get("owner_friendly"), dict)

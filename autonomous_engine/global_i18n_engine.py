@@ -294,7 +294,7 @@ def _try_gemini_batch_translate(strings_map: Dict[str, str], target_lang: str) -
             f"3. Return ONLY a valid JSON object with the EXACT same keys.\n\n"
             f"INPUT_JSON:\n{json.dumps(shielded_map, ensure_ascii=False)}"
         )
-        resp_txt = client.generate_content_with_retry(prompt, temperature=0.15)
+        resp_txt = client.generate_text(prompt=prompt, max_retries=2)
         m = re.search(r"\{[\s\S]*\}", str(resp_txt or ""))
         if not m:
             return None

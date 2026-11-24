@@ -896,9 +896,9 @@ def polish_leaks_with_gemini(
 
     try:
         try:
-            from .rate_limiter import call_gemini_with_fallback
+            from .rate_limiter import PacedGeminiClient
         except ImportError:
-            from rate_limiter import call_gemini_with_fallback
+            from rate_limiter import PacedGeminiClient
     except Exception:
         return leaks
 
@@ -929,7 +929,8 @@ def polish_leaks_with_gemini(
     )
 
     try:
-        raw_resp = call_gemini_with_fallback(prompt, temperature=0.2)
+        client = PacedGeminiClient(quiet=True)
+        raw_resp = client.generate_text(prompt=prompt, max_retries=2)
         if not raw_resp:
             return leaks
         txt = str(raw_resp).strip()

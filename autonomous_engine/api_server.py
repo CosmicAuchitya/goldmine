@@ -4022,9 +4022,23 @@ def translate_audited_run(run_id: str, req: TranslateRunRequest, request: Reques
         from global_i18n_engine import normalize_lang_code, translate_full_run_bundle
 
     code = normalize_lang_code(req.target_lang)
-    pulse = _extract_executive_pulse_cards(staging_out)
+    manifest_data: Dict[str, Any] = {}
+    m_path = staging_out / "semantic_metrics_manifest.json"
+    if m_path.exists():
+        try:
+            manifest_data = json.loads(m_path.read_text(encoding="utf-8"))
+        except Exception:
+            manifest_data = {}
+    plain_summary_text = ""
+    s_path = staging_out / "PLAIN_BUSINESS_SUMMARY.md"
+    if s_path.exists():
+        try:
+            plain_summary_text = s_path.read_text(encoding="utf-8")
+        except Exception:
+            plain_summary_text = ""
+    pulse = _extract_executive_pulse(staging_out, manifest_data, plain_summary_text)
     owner_en = (pulse.get("owner_friendly") or {}).get("en") or {}
-    eng_md = pulse.get("english_summary_markdown") or ""
+    eng_md = pulse.get("english_summary_markdown") or plain_summary_text or ""
 
     rk_data = None
     rk_path = staging_out / "ranked_leaks_report.json"

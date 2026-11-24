@@ -38,6 +38,83 @@ load_dotenv()
 _LOGGED_POOL_BANNER = False
 _DEAD_GEMINI_MODELS = set()
 
+# Official Gemini API per-1M-token USD pricing table (Input / Output) for live cost telemetry
+_MODEL_PRICING_PER_1M_USD = {
+    "gemini-2.5-flash": (0.15, 0.60),
+    "gemini-2.5-flash-lite": (0.10, 0.40),
+    "gemini-3.5-flash-lite": (0.10, 0.40),
+    "gemini-3.5-flash": (0.15, 0.60),
+    "gemini-3.8-flash": (0.15, 0.60),
+    "gemini-2.5-pro": (1.25, 10.00),
+}
+_USD_TO_INR_RATE = 85.0
+_USAGE_LOCK = threading.Lock()
+_GLOBAL_TOKEN_LEDGER = {
+    "calls": [],
+    "total_calls": 0,
+    "prompt_tokens": 0,
+    "output_tokens": 0,
+    "thoughts_tokens": 0,
+    "total_tokens": 0,
+    "total_cost_usd": 0.0,
+    "total_cost_inr": 0.0,
+}
+
+
+def reset_token_usage_ledger() -> None:
+    with _USAGE_LOCK:
+        _GLOBAL_TOKEN_LEDGER["calls"].clear()
+        _GLOBAL_TOKEN_LEDGER["total_calls"] = 0
+        _GLOBAL_TOKEN_LEDGER["prompt_tokens"] = 0
+        _GLOBAL_TOKEN_LEDGER["output_tokens"] = 0
+        _GLOBAL_TOKEN_LEDGER["thoughts_tokens"] = 0
+        _GLOBAL_TOKEN_LEDGER["total_tokens"] = 0
+        _GLOBAL_TOKEN_LEDGER["total_cost_usd"] = 0.0
+        _GLOBAL_TOKEN_LEDGER["total_cost_inr"] = 0.0
+
+
+def get_token_usage_summary() -> dict:
+    with _USAGE_LOCK:
+        return {
+            "total_calls": _GLOBAL_TOKEN_LEDGER["total_calls"],
+            "prompt_tokens": _GLOBAL_TOKEN_LEDGER["prompt_tokens"],
+            "output_tokens": _GLOBAL_TOKEN_LEDGER["output_tokens"],
+            "thoughts_tokens": _GLOBAL_TOKEN_LEDGER["thoughts_tokens"],
+            "total_tokens": _GLOBAL_TOKEN_LEDGER["total_tokens"],
+            "total_cost_usd": round(_GLOBAL_TOKEN_LEDGER["total_cost_usd"], 6),
+            "total_cost_inr": round(_GLOBAL_TOKEN_LEDGER["total_cost_inr"], 4),
+            "calls": list(_GLOBAL_TOKEN_LEDGER["calls"]),
+        }
+
+
+def _record_usage_metadata(model: str, resp, latency_sec: float) -> None:
+    um = getattr(resp, "usage_metadata", None)
+    p_tok = int(getattr(um, "prompt_token_count", 0) or 0) if um else 0
+    c_tok = int(getattr(um, "candidates_token_count", 0) or 0) if um else 0
+    t_tok = int(getattr(um, "thoughts_token_count", 0) or 0) if um else 0
+    tot_tok = int(getattr(um, "total_token_count", 0) or (p_tok + c_tok + t_tok)) if um else 0
+    in_rate, out_rate = _MODEL_PRICING_PER_1M_USD.get(model, (0.15, 0.60))
+    cost_usd = (p_tok / 1_000_000.0) * in_rate + ((c_tok + t_tok) / 1_000_000.0) * out_rate
+    cost_inr = cost_usd * _USD_TO_INR_RATE
+    with _USAGE_LOCK:
+        _GLOBAL_TOKEN_LEDGER["total_calls"] += 1
+        _GLOBAL_TOKEN_LEDGER["prompt_tokens"] += p_tok
+        _GLOBAL_TOKEN_LEDGER["output_tokens"] += c_tok
+        _GLOBAL_TOKEN_LEDGER["thoughts_tokens"] += t_tok
+        _GLOBAL_TOKEN_LEDGER["total_tokens"] += tot_tok
+        _GLOBAL_TOKEN_LEDGER["total_cost_usd"] += cost_usd
+        _GLOBAL_TOKEN_LEDGER["total_cost_inr"] += cost_inr
+        _GLOBAL_TOKEN_LEDGER["calls"].append({
+            "model": model,
+            "prompt_tokens": p_tok,
+            "output_tokens": c_tok,
+            "thoughts_tokens": t_tok,
+            "total_tokens": tot_tok,
+            "latency_sec": round(latency_sec, 2),
+            "cost_usd": round(cost_usd, 6),
+            "cost_inr": round(cost_inr, 4),
+        })
+
 
 class PacedGeminiClient:
     def __init__(self, api_key: str = None, max_calls_per_minute: int = 14, model: str = "gemini-3.5-flash-lite", quiet: bool = False):
@@ -192,7 +269,9 @@ class PacedGeminiClient:
                 if system_instruction:
                     kwargs["config"] = {"system_instruction": system_instruction}
                 
+                t_call0 = time.time()
                 resp = active_client.models.generate_content(**kwargs)
+                _record_usage_metadata(current_model, resp, time.time() - t_call0)
                 return resp.text.strip()
                 
             except Exception as e:
