@@ -4347,6 +4347,12 @@
         boardroomLead: 'Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.',
         boardroomHint: 'Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates & all 43 world languages.',
         btnBoardroomAsk: 'Ask the Boardroom Judge',
+        boardroomProvenTitle: 'Proven True by Your Data',
+        boardroomWrongTitle: 'Wrong, Risky, or Unsupported',
+        boardroomBlindTitle: 'What Your Data Cannot See',
+        boardroomPlanTitle: 'Recommended 14-Day Safe Action Plan',
+        boardroomCopyMemo: 'Copy WhatsApp Memo',
+        eyebrowCheck: 'QUICK CHECK BEFORE STARTING',
         eyebrowPredict: 'STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)',
         predictTitle: 'Test Your Business Decision Before You Take Action',
         predictLead: 'Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won\'t help, and why loss could happen.',
@@ -4477,6 +4483,12 @@
         boardroomLead: 'कोई भी बिज़नेस आइडिया, बजट प्रस्ताव या टीम की बहस सीधी भाषा में लिखें या बोलें — डेटा से साफ़ जानें क्या सच है, क्या गलत/ख़तरनाक है, और क्या डेटा में दर्ज नहीं है।',
         boardroomHint: 'लगातार सवाल-जवाब, ₹/$ बजट चेक, Option A बनाम B बहस और सभी 43 भाषाओं में काम करता है।',
         btnBoardroomAsk: 'बोर्डरूम जज से फ़ैसला लें',
+        boardroomProvenTitle: 'डेटा से क्या सही साबित हुआ',
+        boardroomWrongTitle: 'क्या गलत / ख़तरनाक / भ्रम है',
+        boardroomBlindTitle: 'डेटा क्या नहीं देख सकता (ईमानदार सीमा)',
+        boardroomPlanTitle: 'अगले 14 दिन का सुरक्षित एक्शन प्लान',
+        boardroomCopyMemo: 'WhatsApp मेमो कॉपी करें',
+        eyebrowCheck: 'शुरू करने से पहले एक नज़र',
         eyebrowPredict: 'STAGE 8 · AI FAISLA SIMULATOR (ML + MONTE CARLO)',
         predictTitle: 'Koi Bhi Faisla Lene Se Pehle Uska Asar Check Karein',
         predictLead: 'Neeche 1-click idea chunein ya seedhi Hindi/English mein apna badlav likhein — jaanein munafe ka kitna % chance hai, kahan fayda hoga, kahan nahi hoga aur nuksaan kyun ho sakta hai.',
@@ -4773,13 +4785,8 @@
     }
 
     function toggleTheme() {
-      appState.theme = appState.theme === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', appState.theme);
-      const btn = document.getElementById('btnThemeToggle');
-      if (btn) {
-        btn.textContent = appState.theme === 'light' ? '🌙 Dark' : '☀️ Light';
-      }
-      try { localStorage.setItem('dataxray_theme', appState.theme); } catch (e) {}
+      const next = appState.theme === 'dark' ? 'stripe_alabaster' : 'dark';
+      setAppStudioTheme(next);
     }
 
     function switchWorkspaceTab(tabName, btnEl) {
@@ -9017,23 +9024,23 @@
 
             <div class="boardroom-evidence-grid">
               <div class="boardroom-ev-box true-box">
-                <strong style="color:var(--accent-emerald);">✅ ${isHi ? 'डेटा से क्या सही साबित हुआ' : 'Proven True by Your Data'}</strong>
+                <strong style="color:var(--accent-emerald);">✅ ${escapeHtml(tUi('boardroomProvenTitle', isHi ? 'डेटा से क्या सही साबित हुआ' : 'Proven True by Your Data'))}</strong>
                 <ul>${pt.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
               </div>
               <div class="boardroom-ev-box risk-box">
-                <strong style="color:var(--accent-crimson);">❌ ${isHi ? 'क्या गलत / ख़तरनाक / भ्रम है' : 'Wrong, Risky, or Unsupported'}</strong>
+                <strong style="color:var(--accent-crimson);">❌ ${escapeHtml(tUi('boardroomWrongTitle', isHi ? 'क्या गलत / ख़तरनाक / भ्रम है' : 'Wrong, Risky, or Unsupported'))}</strong>
                 <ul>${wr.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
               </div>
               <div class="boardroom-ev-box blind-box">
-                <strong style="color:var(--accent-amber);">⚠️ ${isHi ? 'डेटा क्या नहीं देख सकता (ईमानदार सीमा)' : 'What Your Data Cannot See'}</strong>
+                <strong style="color:var(--accent-amber);">⚠️ ${escapeHtml(tUi('boardroomBlindTitle', isHi ? 'डेटा क्या नहीं देख सकता (ईमानदार सीमा)' : 'What Your Data Cannot See'))}</strong>
                 <ul>${bs.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
               </div>
             </div>
 
             <div class="boardroom-plan-box">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-                <strong style="color:var(--text-primary);">🎯 ${isHi ? 'अगले 14 दिन का सुरक्षित एक्शन प्लान' : 'Recommended 14-Day Safe Action Plan'}</strong>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="copyBoardroomMemo(${idx})">📲 ${isHi ? 'WhatsApp मेमो कॉपी करें' : 'Copy WhatsApp Memo'}</button>
+                <strong style="color:var(--text-primary);">🎯 ${escapeHtml(tUi('boardroomPlanTitle', isHi ? 'अगले 14 दिन का सुरक्षित एक्शन प्लान' : 'Recommended 14-Day Safe Action Plan'))}</strong>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="copyBoardroomMemo(${idx})">📲 ${escapeHtml(tUi('boardroomCopyMemo', isHi ? 'WhatsApp मेमो कॉपी करें' : 'Copy WhatsApp Memo'))}</button>
               </div>
               <ol style="margin:4px 0 0 18px;padding:0;display:flex;flex-direction:column;gap:4px;color:var(--text-secondary);">
                 ${plan.map(x => `<li>${escapeHtml(x)}</li>`).join('')}

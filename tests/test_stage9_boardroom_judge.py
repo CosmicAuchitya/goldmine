@@ -75,6 +75,9 @@ def test_boardroom_debate_myth_buster_and_multiturn_memory(tmp_path: Path):
     res2 = judge.discuss(q2)
     assert res2["verdict"]["code"] == "REFUTED_BY_DATA"
     assert res2["context_used"]["budget_parsed"] == 50000.0
+    # Action plan must pivot to the true #1 driver (Supplier), never the refuted myth (Box Color)!
+    assert "Supplier" in res2["action_plan_en"][0]
+    assert "Box Color" not in res2["action_plan_en"][0]
 
     # 4. Multi-turn follow-up memory ("What if we cut budget to ₹25,000 instead?")
     hist = [{"role": "user", "text": q1}, {"role": "judge", "text": res1["verdict"]["headline_en"]}]
@@ -103,7 +106,10 @@ def test_boardroom_real_kaggle_dairy_debates():
 def test_boardroom_api_endpoints_and_tenant_isolation(tmp_path: Path, monkeypatch):
     client = TestClient(api_server.app)
 
-    # 1. Public benchmark starters + live Spanish discussion
+    # 1. Public benchmark starters + live Spanish discussion + v2_indian_retail_mall showcase benchmark resolution
+    if (WS / "enterprise_showcase_data" / "v2_indian_retail_mall" / "output" / "semantic_metrics_manifest.json").exists():
+        r_v2 = client.get("/api/v1/benchmarks/v2_indian_retail_mall")
+        assert r_v2.status_code == 200, r_v2.text
     r_st = client.get("/api/v1/boardroom/starters/hotel_booking_cancellation")
     assert r_st.status_code == 200, r_st.text
     assert len(r_st.json()["starters"]) >= 2

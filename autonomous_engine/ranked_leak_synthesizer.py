@@ -175,24 +175,6 @@ def _friendly_dim_name(dim_name: str, lang: str = "en") -> str:
     return en_map.get(low, raw.replace("_", " ").title())
 
 
-def _friendly_seg_name(dim_name: str, seg_val: str, lang: str = "en") -> str:
-    """Translates raw coded segment values like '0' in is_repeated_guest or 'TA/TO' into plain words."""
-    d_low = str(dim_name or "").strip().lower().replace(" ", "_")
-    s_raw = str(seg_val or "").strip()
-    if d_low == "is_repeated_guest":
-        if s_raw in ("0", "0.0", "false", "False"):
-            return "पहली बार आए ग्राहक (First-Time Guests)" if lang == "hi" else "First-Time Guests (New Customers)"
-        if s_raw in ("1", "1.0", "true", "True"):
-            return "पुराने रिपीट ग्राहक (Repeat Guests)" if lang == "hi" else "Repeat Guests"
-    if d_low == "total_of_special_requests" and s_raw in ("0", "0.0"):
-        return "बिना स्पेशल रिक्वेस्ट वाली बुकिंग (0 Requests)" if lang == "hi" else "Bookings With No Special Requests (0)"
-    if d_low in ("distribution_channel", "market_segment") and s_raw.upper() == "TA/TO":
-        return "ट्रैवल एजेंट बुकिंग (TA/TO)" if lang == "hi" else "Travel Agent Bookings (TA/TO)"
-    if d_low == "deposit_type" and s_raw.lower() in ("non refund", "non-refund"):
-        return "नॉन-रिफंडेबल बुकिंग (Non Refund)" if lang == "hi" else "Non-Refundable Bookings (Non Refund)"
-    return s_raw
-
-
 def synthesize_ranked_leaks(
     df: Optional[pd.DataFrame],
     omni_report: Optional[Dict[str, Any]] = None,

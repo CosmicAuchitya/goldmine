@@ -123,16 +123,6 @@ def _fmt_money(val: float, unit_symbol: str, numbering: str = "international", d
     return f"{sign}{unit_symbol}{av:,.{decimals}f}"
 
 
-def _fmt_pct(val: float) -> str:
-    try:
-        v = float(val)
-        if not math.isfinite(v):
-            v = 0.0
-    except Exception:
-        v = 0.0
-    return f"{v:.2f}%"
-
-
 def _fmt_pval(p: float) -> str:
     try:
         pf = float(p)

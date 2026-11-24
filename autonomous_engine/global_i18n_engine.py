@@ -581,6 +581,8 @@ def translate_full_run_bundle(
 
     # 3b. Business Health Check Ranked Leaks (Top 8 cards + shields + opportunities + healthy checks)
     rk_src = ranked_leaks_data if isinstance(ranked_leaks_data, dict) else {}
+    if isinstance(rk_src.get("summary"), dict) and rk_src["summary"].get("autonomous_verdict_en"):
+        flat_strings["rk.sum.verdict"] = str(rk_src["summary"]["autonomous_verdict_en"])
     leaks_list = list(rk_src.get("abnormal_deviations") or rk_src.get("top_ranked_leaks") or [])
     for idx_l, lk in enumerate(leaks_list[:8]):
         for fld in (
@@ -590,6 +592,9 @@ def translate_full_run_bundle(
         ):
             if lk.get(fld):
                 flat_strings[f"lk.{idx_l}.{fld}"] = str(lk[fld])
+        for idx_w, w_str in enumerate((lk.get("why_reasons_en") or [])[:4]):
+            if w_str:
+                flat_strings[f"lk.{idx_l}.why.{idx_w}"] = str(w_str)
     for idx_s, sh in enumerate((rk_src.get("do_not_spend_shields") or [])[:6]):
         if sh.get("message_en"):
             flat_strings[f"sh.{idx_s}"] = str(sh["message_en"])
@@ -630,6 +635,8 @@ def translate_full_run_bundle(
     # 5. Reconstruct translated `ranked_leaks`
     rk_tr = json.loads(json.dumps(rk_src)) if rk_src else None
     if isinstance(rk_tr, dict):
+        if isinstance(rk_tr.get("summary"), dict) and "rk.sum.verdict" in tr_flat:
+            rk_tr["summary"]["autonomous_verdict_en"] = tr_flat["rk.sum.verdict"]
         for arr_key in ("abnormal_deviations", "top_ranked_leaks"):
             arr = rk_tr.get(arr_key)
             if isinstance(arr, list):
@@ -642,6 +649,11 @@ def translate_full_run_bundle(
                         fk = f"lk.{idx_l}.{fld}"
                         if fk in tr_flat:
                             lk[fld] = tr_flat[fk]
+                    if isinstance(lk.get("why_reasons_en"), list):
+                        lk["why_reasons_en"] = [
+                            tr_flat.get(f"lk.{idx_l}.why.{idx_w}", w_str)
+                            for idx_w, w_str in enumerate(lk["why_reasons_en"][:4])
+                        ]
         for idx_s, sh in enumerate((rk_tr.get("do_not_spend_shields") or [])[:6]):
             if f"sh.{idx_s}" in tr_flat:
                 sh["message_en"] = tr_flat[f"sh.{idx_s}"]

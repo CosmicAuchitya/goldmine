@@ -27,45 +27,29 @@ Zero-Hallucination & Zero-Sycophancy Architecture:
 from __future__ import annotations
 
 import json
-import math
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import numpy as np
 import pandas as pd
 
 try:
     from .decision_prediction_engine import PredictiveDecisionEngine, _fmt_money, _two_prop_p_value
     from .human_analyst_narrator import (
         clean_column_label,
-        diagnose_segment_root_reasons,
         humanize_segment,
         infer_domain_vocab,
         multiplier_human_phrase,
         rate_out_of_ten_phrase,
-    )
-    from .target_resolver import (
-        is_deterministic_target_leakage,
-        is_index_artifact,
-        is_pseudo_numeric_identifier,
-        is_synthetic_column,
     )
 except ImportError:
     from decision_prediction_engine import PredictiveDecisionEngine, _fmt_money, _two_prop_p_value
     from human_analyst_narrator import (
         clean_column_label,
-        diagnose_segment_root_reasons,
         humanize_segment,
         infer_domain_vocab,
         multiplier_human_phrase,
         rate_out_of_ten_phrase,
-    )
-    from target_resolver import (
-        is_deterministic_target_leakage,
-        is_index_artifact,
-        is_pseudo_numeric_identifier,
-        is_synthetic_column,
     )
 
 
@@ -307,14 +291,14 @@ class BoardroomDecisionJudge:
                 tokens_to_check.append(lbl_hi)
             # Also check meaningful individual words of multi-word columns
             for tok in tokens_to_check:
-                if len(tok) >= 2 and re.search(rf"(?<![a-z0-9]){re.escape(tok)}(?![a-z0-9])", low_clean):
+                if len(tok) >= 2 and re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(tok)}(?![a-z0-9\u0900-\u097f])", low_clean):
                     if col not in matched_cols:
                         matched_cols.append(col)
                     break
 
         # 2. Semantic synonym dictionary match (e.g. "chiller" -> Temprature, "sour" -> pH, "cloudy" -> Turbidity)
         for _concept, syn_words in SEMANTIC_CONCEPT_SYNONYMS.items():
-            if any(re.search(rf"(?<![a-z0-9]){re.escape(sw)}(?![a-z0-9])", low_clean) for sw in syn_words):
+            if any(re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(sw)}(?![a-z0-9\u0900-\u097f])", low_clean) for sw in syn_words):
                 for col in self.engine.all_features:
                     c_norm = re.sub(r"[\s_\-]+", " ", col.lower())
                     if any(sw in c_norm or c_norm in sw for sw in syn_words if len(sw) >= 2):
@@ -328,7 +312,7 @@ class BoardroomDecisionJudge:
                 v_s = str(v).strip()
                 if len(v_s) < 2 or v_s.lower() in ("no", "yes", "0", "1", "0.0", "1.0", "other", "missing", "true", "false"):
                     continue
-                if re.search(rf"(?<![a-z0-9]){re.escape(v_s.lower())}(?![a-z0-9])", low_clean):
+                if re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(v_s.lower())}(?![a-z0-9\u0900-\u097f])", low_clean):
                     if (col, v_s) not in matched_segs:
                         matched_segs.append((col, v_s))
                     if col not in matched_cols:
@@ -835,9 +819,17 @@ class BoardroomDecisionJudge:
             )
 
         # Ensure neither True nor Risky box is ever awkwardly blank
-        if not proven_true_en and audited_factors:
-            proven_true_en.append(audited_factors[-1]["summary_en"])
-            proven_true_hi.append(audited_factors[-1]["summary_hi"])
+        if not proven_true_en:
+            if audited_factors and (audited_factors[-1]["is_statistically_significant"] or audited_factors[-1]["is_strong_driver"]):
+                proven_true_en.append(audited_factors[-1]["summary_en"])
+                proven_true_hi.append(audited_factors[-1]["summary_hi"])
+            else:
+                proven_true_en.append(
+                    f"Baseline Reality Check: Across all {len(self.df):,} audited {ent_en}, overall problem rate is {self.base_rate * 100.0:.1f}% — protecting your capital from false alarms is itself a direct profit win."
+                )
+                proven_true_hi.append(
+                    f"बेसलाइन सच: कुल {len(self.df):,} जाँचे गए {ent_hi} में औसत समस्या दर {self.base_rate * 100.0:.1f}% है — ग़लत जगह पैसा फँसने से बचाना भी सीधा मुनाफ़ा है।"
+                )
         if not wrong_or_risky_en:
             wrong_or_risky_en.append(
                 f"No direct statistical refutation found, but rolling out overnight to 100% of {ent_en} without a 20% pilot still carries operational execution risk."
@@ -847,8 +839,13 @@ class BoardroomDecisionJudge:
             )
 
         # 7. Concrete 14-Day Safe Action Plan + Smart Follow-up Prompts
-        focus_lbl_en = (winner_factor["label_en"] if winner_factor else "your top bottleneck")
-        focus_lbl_hi = (winner_factor["label_hi"] if winner_factor else "आपकी मुख्य समस्या")
+        # When the owner's hypothesis was REFUTED, pivot the action plan & follow-ups to the TRUE #1 driver!
+        if verdict_code == "REFUTED_BY_DATA" and top1_col:
+            focus_lbl_en = clean_column_label(top1_col, "en")
+            focus_lbl_hi = clean_column_label(top1_col, "hi")
+        else:
+            focus_lbl_en = (winner_factor["label_en"] if winner_factor else "your top bottleneck")
+            focus_lbl_hi = (winner_factor["label_hi"] if winner_factor else "आपकी मुख्य समस्या")
         action_plan_en = [
             f"Days 1–3 (Audit & Isolate): Open Today's Action List and pull the top 25 highest-risk {ent_en} linked to {focus_lbl_en}.",
             f"Days 4–10 (20% Controlled Pilot): Test the fix on ~20% of volume first{f' (cap initial pilot spend at 15–20% of {_fmt_money(budget, self.sym or chr(8377), True)})' if budget else ''} without disrupting healthy operations.",

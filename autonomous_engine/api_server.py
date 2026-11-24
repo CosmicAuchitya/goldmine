@@ -14,7 +14,6 @@ SaaS frontends, and mobile apps:
 
 import os
 import re
-import sys
 import time
 import json
 import uuid
@@ -33,7 +32,7 @@ import tempfile
 
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException, status, Query, Header
+from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException, status, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -1318,14 +1317,33 @@ def _build_run_result_payload(
                 ranked_leaks_data = loaded_rk
         except Exception:
             ranked_leaks_data = {}
-    if not ranked_leaks_data and omni_data:
+    if not ranked_leaks_data:
         try:
             from .ranked_leak_synthesizer import synthesize_ranked_leaks
+            fact_pq = staging_out / "bi_ready_fact.parquet"
+            df_for_rank = pd.read_parquet(fact_pq) if fact_pq.exists() else None
+            if not omni_data and df_for_rank is not None:
+                try:
+                    from .omni_leak_scanner import run_omni_leak_scan
+                    tgt_c = (manifest_data.get("target_outcome") or {}).get("column_name")
+                    f_exp = manifest_data.get("financial_exposure") or {}
+                    cst_c = f_exp.get("monetary_column") or f_exp.get("cost_column")
+                    u_sym = f_exp.get("currency_unit") or "$"
+                    omni_data = run_omni_leak_scan(
+                        df_for_rank,
+                        target_col=tgt_c,
+                        cost_col=cst_c,
+                        is_financial=bool(executive_pulse.get("is_financial", False)),
+                        unit_symbol=u_sym,
+                    )
+                except Exception:
+                    pass
             q200_for_rank = {}
             if q200_json_path.exists():
                 with open(q200_json_path, "r", encoding="utf-8") as qf2:
                     q200_for_rank = json.load(qf2)
-            ranked_leaks_data = synthesize_ranked_leaks(None, omni_report=omni_data, q200_report=q200_for_rank, out_dir=None)
+            if omni_data or q200_for_rank or df_for_rank is not None:
+                ranked_leaks_data = synthesize_ranked_leaks(df_for_rank, omni_report=omni_data, q200_report=q200_for_rank, out_dir=None)
         except Exception:
             ranked_leaks_data = {}
 
@@ -2341,20 +2359,6 @@ def get_bespoke_dashboard_html(run_id: str, request: Request) -> HTMLResponse:
     return HTMLResponse(content=content, media_type="text/html")
 
 
-def _sniff_csv_bytes_delimiter(sample_bytes: bytes, fallback: str = ",") -> str:
-    """Auto-detects comma, semicolon (EU), tab, or pipe delimiter on raw uploaded CSV bytes."""
-    import csv as _csv
-    try:
-        sample_txt = sample_bytes[:32768].decode("utf-8", errors="ignore")
-        lines = [ln.strip() for ln in sample_txt.splitlines() if ln.strip()][:8]
-        if lines:
-            dialect = _csv.Sniffer().sniff("\n".join(lines), delimiters=[",", ";", "\t", "|"])
-            return dialect.delimiter
-    except Exception:
-        pass
-    return fallback
-
-
 # =============================================================================
 # PART 1: PRE-FLIGHT 1-SECOND INTENT HANDSHAKE
 # =============================================================================
@@ -2800,6 +2804,8 @@ def list_certified_benchmarks() -> Dict[str, Any]:
     available = []
     for item in BENCHMARK_CATALOG:
         b_dir = WORKSPACE_ROOT / "kaggle_benchmarks" / item["id"] / "output"
+        if not (b_dir / "semantic_metrics_manifest.json").exists():
+            b_dir = WORKSPACE_ROOT / "enterprise_showcase_data" / item["id"] / "output"
         if (b_dir / "semantic_metrics_manifest.json").exists():
             available.append({**item, "available": True})
     return {"status": "success", "benchmarks": available}
@@ -2815,6 +2821,8 @@ def load_certified_benchmark(benchmark_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid benchmark_id format.")
 
     bench_out = WORKSPACE_ROOT / "kaggle_benchmarks" / benchmark_id / "output"
+    if not (bench_out / "semantic_metrics_manifest.json").exists():
+        bench_out = WORKSPACE_ROOT / "enterprise_showcase_data" / benchmark_id / "output"
     if not (bench_out / "semantic_metrics_manifest.json").exists():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -3166,10 +3174,22 @@ def get_ranked_leaks_feed(run_id: str, request: Request) -> Dict[str, Any]:
             omni_data = {}
 
     from .ranked_leak_synthesizer import synthesize_ranked_leaks
+    fact_pq = staging_out / "bi_ready_fact.parquet"
+    df_fact = pd.read_parquet(fact_pq) if fact_pq.exists() else None
+    if not omni_data and df_fact is not None:
+        try:
+            from .omni_leak_scanner import run_omni_leak_scan
+            omni_data = run_omni_leak_scan(
+                df_fact,
+                is_financial=bool(q200_data.get("is_financial", False)),
+                unit_symbol=str(q200_data.get("unit_symbol") or "$"),
+            )
+        except Exception:
+            pass
     try:
-        return synthesize_ranked_leaks(None, omni_report=omni_data, q200_report=q200_data, out_dir=staging_out)
+        return synthesize_ranked_leaks(df_fact, omni_report=omni_data, q200_report=q200_data, out_dir=staging_out)
     except PermissionError:
-        return synthesize_ranked_leaks(None, omni_report=omni_data, q200_report=q200_data, out_dir=None)
+        return synthesize_ranked_leaks(df_fact, omni_report=omni_data, q200_report=q200_data, out_dir=None)
 
 
 class AlertDispatchRequest(BaseModel):

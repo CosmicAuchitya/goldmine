@@ -1116,6 +1116,7 @@ class PredictiveDecisionEngine:
                     }
                 }
             affected_mask = scope_mask & (df_base[col].fillna("Missing").astype(str) == from_v)
+            df_after[col] = df_after[col].astype(object)
             df_after.loc[affected_mask, col] = to_v
             action_label_en = f"Switch {col} from '{from_v}' → '{to_v}'" + (f" (in {scope_val})" if scope_val else "")
             action_label_hi = f"{col} में '{from_v}' की जगह '{to_v}' का उपयोग करें" + (f" ({scope_val} में)" if scope_val else "")
@@ -1124,6 +1125,7 @@ class PredictiveDecisionEngine:
             cap_v = float(spec["value"])
             s_num = pd.to_numeric(df_base[col], errors="coerce")
             affected_mask = scope_mask & s_num.notna() & (s_num > cap_v)
+            df_after[col] = pd.to_numeric(df_after[col], errors="coerce").astype(float)
             df_after.loc[affected_mask, col] = cap_v
             action_label_en = f"Cap {col} at ≤ {cap_v:g}" + (f" (in {scope_val})" if scope_val else "")
             action_label_hi = f"{col} की ऊपरी सीमा {cap_v:g} तय करें" + (f" ({scope_val} में)" if scope_val else "")
@@ -1132,6 +1134,7 @@ class PredictiveDecisionEngine:
             fl_v = float(spec["value"])
             s_num = pd.to_numeric(df_base[col], errors="coerce")
             affected_mask = scope_mask & s_num.notna() & (s_num < fl_v)
+            df_after[col] = pd.to_numeric(df_after[col], errors="coerce").astype(float)
             df_after.loc[affected_mask, col] = fl_v
             action_label_en = f"Raise minimum {col} to ≥ {fl_v:g}" + (f" (in {scope_val})" if scope_val else "")
             action_label_hi = f"{col} का न्यूनतम स्तर {fl_v:g} करें" + (f" ({scope_val} में)" if scope_val else "")
@@ -1153,6 +1156,7 @@ class PredictiveDecisionEngine:
                 }
             s_num = pd.to_numeric(df_after[col], errors="coerce")
             affected_mask = scope_mask & s_num.notna()
+            df_after[col] = s_num.astype(float)
             df_after.loc[affected_mask, col] = np.round(s_num.loc[affected_mask] * mult, 4)
             action_label_en = f"Adjust {col} by {delta_pct_val:+.1f}%" + (f" (in {scope_val})" if scope_val else "")
             action_label_hi = f"{col} में {delta_pct_val:+.1f}% बदलाव करें" + (f" ({scope_val} में)" if scope_val else "")
@@ -1174,12 +1178,15 @@ class PredictiveDecisionEngine:
         if is_disc and affected_mask.any():
             mrp_s = pd.to_numeric(df_after.loc[affected_mask, self.mrp_col], errors="coerce").fillna(0.0)
             d_after_s = pd.to_numeric(df_after.loc[affected_mask, self.discount_col], errors="coerce").fillna(0.0).clip(0.0, 95.0)
+            df_after[self.discount_col] = pd.to_numeric(df_after[self.discount_col], errors="coerce").astype(float)
             df_after.loc[affected_mask, self.discount_col] = d_after_s
             new_sale = mrp_s * (1.0 - d_after_s / 100.0)
             if self.cost_col and self.cost_col in df_after.columns and self.cost_col != self.mrp_col:
+                df_after[self.cost_col] = pd.to_numeric(df_after[self.cost_col], errors="coerce").astype(float)
                 df_after.loc[affected_mask, self.cost_col] = np.round(new_sale, 2)
             if self.margin_col and self.margin_col in df_after.columns and self.cogs_col and self.cogs_col in df_after.columns and not self._margin_is_post_event_ledger:
                 cogs_s = pd.to_numeric(df_after.loc[affected_mask, self.cogs_col], errors="coerce").fillna(0.0)
+                df_after[self.margin_col] = pd.to_numeric(df_after[self.margin_col], errors="coerce").astype(float)
                 df_after.loc[affected_mask, self.margin_col] = np.round(new_sale - cogs_s, 2)
 
         emp_gate = self._compute_empirical_lever_gate(df_base, scope_mask, action_type, col, spec)
