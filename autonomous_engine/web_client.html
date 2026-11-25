@@ -7895,16 +7895,21 @@
       const tier = String(m.confidence_tier || 'MODERATE');
       const pill = document.getElementById('predictModelHonestyPill');
       if (pill) {
-        pill.className = tier === 'LOW' ? 'predict-honesty-pill warn' : 'predict-honesty-pill';
+        const bb = m.blind_backtest_badge || null;
+        pill.className = (tier === 'LOW' || (bb && !bb.verified)) ? 'predict-honesty-pill warn' : 'predict-honesty-pill';
         const blocked = (m.blocked_leakage_columns || []).length;
         const guardTxt = blocked > 0 ? (isHi ? ` · ${blocked} लीकेज ब्लॉक` : ` · ${blocked} Leakage Blocked`) : '';
-        const ootVal = m.temporal_backtest_auc;
-        const ootTxt = (ootVal !== null && ootVal !== undefined)
-          ? (isHi ? ` · फ्यूचर बैकटेस्ट: ${Number(ootVal).toFixed(2)}` : ` · Future Backtest: ${Number(ootVal).toFixed(2)}`)
-          : '';
-        pill.textContent = isHi
-          ? `🛡️ मल्टी-मॉडल AI सटीकता (ROC-AUC): ${auc.toFixed(2)} (${m.confidence_label_hi || tier})${ootTxt}${guardTxt}`
-          : `🛡️ Multi-Model ROC-AUC: ${auc.toFixed(2)} (${tier} Confidence)${ootTxt}${guardTxt}`;
+        if (bb && bb.label_en) {
+          pill.textContent = `🛡️ ${isHi ? (bb.label_hi || bb.label_en) : bb.label_en} · AUC ${auc.toFixed(2)}${guardTxt}`;
+        } else {
+          const ootVal = m.temporal_backtest_auc;
+          const ootTxt = (ootVal !== null && ootVal !== undefined)
+            ? (isHi ? ` · फ्यूचर बैकटेस्ट: ${Number(ootVal).toFixed(2)}` : ` · Future Backtest: ${Number(ootVal).toFixed(2)}`)
+            : '';
+          pill.textContent = isHi
+            ? `🛡️ मल्टी-मॉडल AI सटीकता (ROC-AUC): ${auc.toFixed(2)} (${m.confidence_label_hi || tier})${ootTxt}${guardTxt}`
+            : `🛡️ Multi-Model ROC-AUC: ${auc.toFixed(2)} (${tier} Confidence)${ootTxt}${guardTxt}`;
+        }
       }
 
       // Render 4 Friendly 1-Click Scenario Cards
@@ -8312,6 +8317,15 @@
           if (supPct !== null) {
             const supColor = supPct < 35 ? 'var(--accent-crimson)' : 'var(--accent-emerald)';
             tags.push(`<span class="predict-conf-pillar-tag" style="color:${supColor};font-weight:700;">${isHi ? 'डेटा सपोर्ट' : 'Historical Support'}: ${supPct.toFixed(0)}%</span>`);
+          }
+          const drObj = pred.doubly_robust_audit || null;
+          if (drObj && drObj.computed) {
+            const drOk = !drObj.dr_divergence_warning && drObj.dr_agrees_with_gcomp;
+            const drCol = drOk ? 'var(--accent-emerald)' : 'var(--accent-amber)';
+            const drTxt = isHi
+              ? (drOk ? `✓ डबली-रोबस्ट कॉज़ल पास (${Number(drObj.dr_att_rate_diff_pct || 0).toFixed(1)} pp)` : `⚠ प्रोपेंसिटी अंतर (${Number(drObj.dr_att_rate_diff_pct || 0).toFixed(1)} pp)`)
+              : (drOk ? `✓ Doubly-Robust Causal Match (${Number(drObj.dr_att_rate_diff_pct || 0).toFixed(1)} pp)` : `⚠ Propensity Divergence (${Number(drObj.dr_att_rate_diff_pct || 0).toFixed(1)} pp)`);
+            tags.push(`<span class="predict-conf-pillar-tag" style="color:${drCol};font-weight:700;">${escapeHtml(drTxt)}</span>`);
           }
           pilEl.innerHTML = tags.join('') + (beSummary ? `<div style="width:100%;margin-top:6px;font-size:12px;color:var(--text-secondary);font-weight:600;">💡 ${escapeHtml(beSummary)}</div>` : '');
         }
@@ -8826,9 +8840,17 @@
         if (pill) {
           const auc = Number(data.model_roc_auc || 0).toFixed(2);
           const rows = Number(data.rows_audited || 0).toLocaleString('en-US');
-          pill.textContent = lang === 'hi'
-            ? `🛡️ लाइव डेटा जज तैयार (${rows} रिकॉर्ड · AI AUC ${auc})`
-            : `🛡️ Live Data Judge Ready (${rows} rows · AI AUC ${auc})`;
+          const bb = data.blind_backtest_badge || null;
+          if (bb && bb.label_en) {
+            pill.className = bb.verified ? 'predict-honesty-pill' : 'predict-honesty-pill warn';
+            pill.textContent = lang === 'hi'
+              ? `🛡️ ${bb.label_hi || bb.label_en} (${rows} रिकॉर्ड)`
+              : `🛡️ ${bb.label_en} (${rows} rows)`;
+          } else {
+            pill.textContent = lang === 'hi'
+              ? `🛡️ लाइव डेटा जज तैयार (${rows} रिकॉर्ड · AI AUC ${auc})`
+              : `🛡️ Live Data Judge Ready (${rows} rows · AI AUC ${auc})`;
+          }
         }
         renderBoardroomStarters();
       } catch (e) {

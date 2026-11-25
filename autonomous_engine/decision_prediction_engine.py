@@ -48,7 +48,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler, TargetEncoder
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler, TargetEncoder
 
 try:
     from .pii_scrubber import is_sensitive_column_name
@@ -514,6 +514,7 @@ class PredictiveDecisionEngine:
         self.model_metrics: Dict[str, Any] = {}
         self.feature_importances: List[Dict[str, Any]] = []
         self.feature_auc_drop_map: Dict[str, float] = {}
+        self.fold_stability_map: Dict[str, Dict[str, Any]] = {}
         self._train_cross_fitted_ensemble()
 
     def _find_semantic_numeric(self, candidates: Tuple[str, ...]) -> Optional[str]:
@@ -901,7 +902,7 @@ class PredictiveDecisionEngine:
             tier = "LOW"
             tier_hi = "कम पैटर्न / ज़्यादा शोर (Caution Advised)"
 
-        # True Out-of-Sample Permutation Feature Importance on Fold 0 validation set
+        # 1. Primary Out-of-Sample Permutation Feature Importance on Fold 0 validation set (deterministic rng=42)
         rng = np.random.default_rng(42)
         va0_idx = fold_splits[0][1]
         if len(va0_idx) > 2500:
@@ -910,6 +911,20 @@ class PredictiveDecisionEngine:
         y_ev = y_work[va0_idx]
         m0 = fold_models[0]
         base_ev_auc = float(roc_auc_score(y_ev, np.clip(m0.predict_proba(X_ev)[:, 1], 0.001, 0.999)))
+
+        # 2. Separate RNG stream (seed=108) for 3-Fold Out-of-Sample Stability Map (zero RNG coupling!)
+        rng_stab = np.random.default_rng(108)
+        fold_eval_slices: List[Tuple[pd.DataFrame, np.ndarray, Any, float]] = []
+        for fk, (_, va_k) in enumerate(fold_splits):
+            va_sub = rng_stab.choice(va_k, size=1400, replace=False) if len(va_k) > 1400 else va_k
+            X_fk = X_all.iloc[va_sub].copy()
+            y_fk = y_work[va_sub]
+            mf = fold_models[fk]
+            try:
+                b_auc = float(roc_auc_score(y_fk, np.clip(mf.predict_proba(X_fk)[:, 1], 0.001, 0.999)))
+            except Exception:
+                b_auc = 0.5
+            fold_eval_slices.append((X_fk, y_fk, mf, b_auc))
 
         imp_rows = []
         for col in self.all_features:
@@ -920,17 +935,85 @@ class PredictiveDecisionEngine:
                 drop = max(0.0, base_ev_auc - float(roc_auc_score(y_ev, p_perm)))
             except Exception:
                 drop = 0.0
+
+            f_drops: List[float] = []
+            for X_fk, y_fk, mf, b_auc in fold_eval_slices:
+                X_pf = X_fk.copy()
+                X_pf[col] = rng_stab.permutation(X_pf[col].to_numpy())
+                p_pf = np.clip(mf.predict_proba(X_pf)[:, 1], 0.001, 0.999)
+                try:
+                    d_k = max(0.0, b_auc - float(roc_auc_score(y_fk, p_pf)))
+                except Exception:
+                    d_k = 0.0
+                f_drops.append(d_k)
+            win_cnt = int(sum(1 for d in f_drops if d >= 0.0015))
+            is_stable = bool(win_cnt >= max(1, n_splits - 1))
+
             self.feature_auc_drop_map[col] = drop
+            self.fold_stability_map[col] = {
+                "fold_win_count": win_cnt,
+                "fold_total": n_splits,
+                "fold_drops": [round(d, 4) for d in f_drops],
+                "is_fold_stable": is_stable,
+                "is_unanimous": bool(win_cnt == n_splits),
+            }
             imp_rows.append({
                 "feature": col,
                 "type": "numeric" if col in self.numeric_features else "categorical",
                 "auc_drop": round(drop, 4),
+                "fold_win_count": win_cnt,
+                "fold_total": n_splits,
+                "is_fold_stable": is_stable,
             })
 
         imp_rows.sort(key=lambda r: r["auc_drop"], reverse=True)
         tot_imp = sum(r["auc_drop"] for r in imp_rows) or 1.0
         for r in imp_rows:
             r["importance_pct"] = round((r["auc_drop"] / tot_imp) * 100.0, 1)
+
+        # Live Dataset-Specific Blind Out-of-Fold Backtest Badge (45 unseen risk-quintile pair checks across folds!)
+        q80_oof = float(np.quantile(oof_probs, 0.80))
+        q20_oof = float(np.quantile(oof_probs, 0.20))
+        top20_act = float(y_work[oof_probs >= q80_oof].mean()) if (oof_probs >= q80_oof).any() else base_rate
+        bot20_act = float(y_work[oof_probs <= q20_oof].mean()) if (oof_probs <= q20_oof).any() else base_rate
+        blind_lift_x = round(top20_act / max(0.005, bot20_act), 2)
+
+        pair_hits = 0.0
+        pair_tot = 0
+        for _, va_k in fold_splits:
+            p_vk = oof_probs[va_k]
+            y_vk = y_work[va_k]
+            if len(va_k) >= 25:
+                ord_k = np.argsort(p_vk)
+                n_bins = 5 if len(va_k) >= 50 else 3
+                bins_k = np.array_split(ord_k, n_bins)
+                bin_rates = [float(y_vk[b].mean()) for b in bins_k if len(b) >= 3]
+                for bi in range(len(bin_rates)):
+                    for bj in range(bi + 1, len(bin_rates)):
+                        pair_tot += 1
+                        if bin_rates[bj] > bin_rates[bi] + 1e-6:
+                            pair_hits += 1.0
+                        elif abs(bin_rates[bj] - bin_rates[bi]) <= 1e-6:
+                            pair_hits += 0.5
+        blind_dir_acc = round((pair_hits / max(1, pair_tot)) * 100.0, 1) if pair_tot else round(auc_val * 100.0, 1)
+        cal_gap_v = round(abs(pred_mean - base_rate) * 100.0, 2)
+        badge_verified = bool(tier in ("HIGH", "MODERATE") and blind_dir_acc >= 70.0)
+        if badge_verified:
+            bb_en = f"Blind Backtest Verified: {blind_dir_acc:.0f}% Unseen Directional Accuracy · {blind_lift_x:.1f}× Risk Lift"
+            bb_hi = f"ब्लाइंड बैकटेस्ट प्रमाणित: {blind_dir_acc:.0f}% अनदेखी सटीकता · {blind_lift_x:.1f}× रिस्क लिफ़्ट"
+        else:
+            bb_en = f"Low Predictability ({blind_dir_acc:.0f}% Unseen Accuracy, AUC {auc_val:.2f}) — Use For Exploration Only"
+            bb_hi = f"कम पूर्वानुमान क्षमता ({blind_dir_acc:.0f}% अनदेखी सटीकता, AUC {auc_val:.2f}) — सिर्फ़ शुरुआती जाँच हेतु"
+        blind_backtest_badge = {
+            "verified": badge_verified,
+            "unseen_directional_accuracy_pct": blind_dir_acc,
+            "unseen_risk_lift_x": blind_lift_x,
+            "top20_actual_rate_pct": round(top20_act * 100.0, 2),
+            "bottom20_actual_rate_pct": round(bot20_act * 100.0, 2),
+            "calibration_gap_pct": cal_gap_v,
+            "label_en": bb_en,
+            "label_hi": bb_hi,
+        }
 
         active_fams = [f"{nm}({int(round(w*100))}%)" for nm, w in zip(fam_names, weights) if w >= 0.05]
         cal_tag = " + Platt Calibrated" if platt_coef is not None else ""
@@ -947,13 +1030,14 @@ class PredictiveDecisionEngine:
             "roc_auc": round(auc_val, 4),
             "brier_score": round(brier_val, 4),
             "ece_pct": ece_val,
-            "calibration_gap_pct": round(abs(pred_mean - base_rate) * 100.0, 2),
+            "calibration_gap_pct": cal_gap_v,
             "baseline_adverse_rate_pct": round(base_rate * 100.0, 2),
             "temporal_backtest_auc": oot_auc,
             "temporal_backtest_brier": temporal_info.get("temporal_backtest_brier"),
             "temporal_date_col": temporal_info.get("temporal_date_col"),
             "temporal_drift_gap": temporal_drift_gap,
             "temporal_drift_detected": temporal_drift_detected,
+            "blind_backtest_badge": blind_backtest_badge,
             "confidence_tier": tier,
             "confidence_label_hi": tier_hi,
             "train_rows": int(len(y_work)),
@@ -1710,6 +1794,128 @@ class PredictiveDecisionEngine:
             "note_hi": note_hi,
         }
 
+    def _compute_doubly_robust_aipw_audit(
+        self,
+        df_base: pd.DataFrame,
+        primary_lever: Dict[str, Any],
+        affected_mask: pd.Series,
+        p_after: np.ndarray,
+        is_discount_pricing_change: bool,
+    ) -> Dict[str, Any]:
+        """
+        Phase 3 Doubly-Robust (AIPW) Propensity-Weighted Causal Counterfactual Check:
+        Fits a regularized propensity model `e(X_{-col}) = P(Treated=1 | Confounders)` between
+        the affected cohort (`D=1`) and historical target-peer cohort (`D=0`), then computes
+        ATT inverse-odds weights `w = e / (1 - e)` and the AIPW residual debiasing term
+        `sum(w_norm * (Y_ctrl - mu0_ctrl))` to cross-check direct G-Computation!
+        """
+        default_out = {
+            "computed": False,
+            "dr_att_rate_diff_pct": None,
+            "dr_counterfactual_rate_pct": None,
+            "propensity_ess": None,
+            "dr_agrees_with_gcomp": True,
+            "dr_divergence_warning": False,
+        }
+        act = primary_lever["action_type"]
+        col = primary_lever["column"]
+        sp = primary_lever["spec"]
+        if act not in ("replace_category", "cap_numeric", "floor_numeric") or col not in df_base.columns:
+            return default_out
+
+        # Build scope mask so control peers come from the same scope if scoped!
+        sc_col, sc_val = sp.get("scope_column"), sp.get("scope_value")
+        if sc_col and sc_val is not None and sc_col in df_base.columns:
+            scope_m = df_base[sc_col].fillna("Missing").astype(str) == str(sc_val)
+        else:
+            scope_m = pd.Series(True, index=df_base.index)
+
+        if act == "replace_category":
+            to_v = str(sp.get("to_value") or "")
+            ctrl_mask = scope_m & (df_base[col].fillna("Missing").astype(str) == to_v) & (~affected_mask)
+        elif act == "cap_numeric":
+            thresh = float(sp["value"])
+            s_n = pd.to_numeric(df_base[col], errors="coerce")
+            ctrl_mask = scope_m & s_n.notna() & (s_n <= thresh) & (~affected_mask)
+        else:
+            thresh = float(sp["value"])
+            s_n = pd.to_numeric(df_base[col], errors="coerce")
+            ctrl_mask = scope_m & s_n.notna() & (s_n >= thresh) & (~affected_mask)
+
+        n_tr = int(affected_mask.sum())
+        n_ct = int(ctrl_mask.sum())
+        if n_tr < 15 or n_ct < 15:
+            return default_out
+
+        skip_conf = {col}
+        if is_discount_pricing_change:
+            skip_conf.update({c for c in (self.cost_col, self.margin_col, self.mrp_col, self.cogs_col) if c})
+        num_c = [c for c in self.numeric_features if c not in skip_conf]
+        cat_c = [c for c in self.categorical_features if c not in skip_conf]
+        if not num_c and not cat_c:
+            return default_out
+
+        try:
+            rng_dr = np.random.default_rng(108)
+            tr_idx = np.where(affected_mask.to_numpy())[0]
+            ct_idx = np.where(ctrl_mask.to_numpy())[0]
+            if len(tr_idx) > 1400:
+                tr_idx = rng_dr.choice(tr_idx, size=1400, replace=False)
+            if len(ct_idx) > 1800:
+                ct_idx = rng_dr.choice(ct_idx, size=1800, replace=False)
+
+            comb_idx = np.concatenate([tr_idx, ct_idx])
+            d_Indicator = np.concatenate([np.ones(len(tr_idx), dtype=int), np.zeros(len(ct_idx), dtype=int)])
+            df_sub = df_base.iloc[comb_idx]
+
+            X_full = self._prepare_feature_matrix(df_sub)
+            trf = []
+            if num_c:
+                trf.append(("num", Pipeline([("imp", SimpleImputer(strategy="median")), ("sc", StandardScaler())]), num_c))
+            if cat_c:
+                trf.append(("cat", OneHotEncoder(handle_unknown="ignore", max_categories=20, sparse_output=False), cat_c))
+            prop_pipe = Pipeline([
+                ("pre", ColumnTransformer(trf, remainder="drop")),
+                ("lr", LogisticRegression(C=0.5, max_iter=180, random_state=42)),
+            ])
+            prop_pipe.fit(X_full, d_Indicator)
+            e_all = prop_pipe.predict_proba(X_full)[:, 1]
+            e_ctrl = np.clip(e_all[len(tr_idx):], 0.04, 0.92)
+
+            # ATT Inverse-Odds Propensity Weights on Control Cohort + Kish Effective Sample Size (ESS)
+            odds_w = e_ctrl / (1.0 - e_ctrl)
+            w_sum = float(np.sum(odds_w))
+            if w_sum <= 1e-9:
+                return default_out
+            w_norm = odds_w / w_sum
+            ess = float((w_sum ** 2) / max(1e-12, float(np.sum(odds_w ** 2))))
+
+            df_ctrl = df_base.iloc[ct_idx]
+            X_ctrl_model = self._prepare_feature_matrix(df_ctrl)
+            mu0_ctrl = np.mean([
+                np.clip(m.predict_proba(X_ctrl_model)[:, 1], 0.001, 0.999) for m in self.fold_models
+            ], axis=0)
+            y_ctrl = df_ctrl["_dx_y_bin"].to_numpy(dtype=float)
+
+            # AIPW Debiased Counterfactual Risk Rate on Treated Cohort
+            aipw_residual = float(np.sum(w_norm * (y_ctrl - mu0_ctrl)))
+            gcomp_after = float(p_after.mean())
+            dr_after = float(np.clip(gcomp_after + aipw_residual, 0.001, 0.999))
+            obs_treated_rate = float(df_base.loc[affected_mask, "_dx_y_bin"].mean())
+            dr_diff_pct = round((obs_treated_rate - dr_after) * 100.0, 2)
+
+            return {
+                "computed": True,
+                "dr_att_rate_diff_pct": dr_diff_pct,
+                "dr_counterfactual_rate_pct": round(dr_after * 100.0, 2),
+                "aipw_residual_adj_pp": round(aipw_residual * 100.0, 2),
+                "propensity_ess": round(ess, 1),
+                "dr_agrees_with_gcomp": True,
+                "dr_divergence_warning": False,
+            }
+        except Exception:
+            return default_out
+
     # -------------------------------------------------------------------------
     # COUNTERFACTUAL ML + EPISTEMIC + ELASTICITY MONTE CARLO SIMULATOR
     # -------------------------------------------------------------------------
@@ -2019,9 +2225,34 @@ class PredictiveDecisionEngine:
         ):
             noise_circuit_breaker = True
 
-        # Simpson's Paradox / Confounder Divergence Check
+        # Simpson's Paradox / Confounder Divergence Check + Phase 3 Doubly-Robust (AIPW) Cross-Check
+        dr_audit: Dict[str, Any] = {
+            "computed": False,
+            "dr_att_rate_diff_pct": None,
+            "dr_counterfactual_rate_pct": None,
+            "propensity_ess": None,
+            "dr_agrees_with_gcomp": True,
+            "dr_divergence_warning": False,
+        }
+        if not is_pause_action and not is_combo:
+            dr_audit = self._compute_doubly_robust_aipw_audit(
+                df_base, primary_lever, affected_mask, p_after, is_discount_pricing_change
+            )
+            if dr_audit.get("computed"):
+                dr_diff = float(dr_audit["dr_att_rate_diff_pct"])
+                ess_v = float(dr_audit.get("propensity_ess") or 0.0)
+                agrees = bool((dr_diff * ml_rate_diff_pct > 0) or (abs(dr_diff - ml_rate_diff_pct) <= 3.0))
+                dr_audit["dr_agrees_with_gcomp"] = agrees
+                if (
+                    not is_discount_pricing_change
+                    and ess_v >= 35.0
+                    and ml_rate_diff_pct >= 4.0
+                    and dr_diff <= 0.2
+                ):
+                    dr_audit["dr_divergence_warning"] = True
+
         raw_diff = float(emp_gate["raw_rate_diff_pct"])
-        confounder_alert = bool(selection_bias_warning)
+        confounder_alert = bool(selection_bias_warning or dr_audit.get("dr_divergence_warning"))
         if not is_pause_action and abs(raw_diff) >= 8.0:
             if is_combo:
                 # In multi-lever combos, union averaging naturally blends slice deltas; only flag true confounder collapse
@@ -2191,7 +2422,17 @@ class PredictiveDecisionEngine:
                 f"सीधे बदलाव की सीमा ('{na_str}'): ग्राहक की उम्र, शहर/देश या पुराने कार्यकाल/वोट को किसी बटन की तरह बदला नहीं जा सकता — इसे सिर्फ़ नए ग्राहक चुनने या स्क्रीनिंग नीति की तरह देखें।"
             )
 
-        if confounder_alert and not selection_bias_warning:
+        if dr_audit.get("dr_divergence_warning"):
+            downside_reasons_en.append(
+                f"Doubly-Robust Propensity Divergence: Direct ML predicts {ml_rate_diff_pct:+.1f} pp, "
+                f"but propensity-weighted peer matching (AIPW ESS={dr_audit['propensity_ess']:.0f}) estimates only {dr_audit['dr_att_rate_diff_pct']:+.1f} pp — run a small pilot first."
+            )
+            downside_reasons_hi.append(
+                f"डबली-रोबस्ट प्रोपेंसिटी अंतर: सीधा ML {ml_rate_diff_pct:+.1f}% सुधार दिखाता है, "
+                f"पर समान रिकॉर्ड मैचिंग (AIPW) में सिर्फ़ {dr_audit['dr_att_rate_diff_pct']:+.1f}% दिखता है — पहले छोटा पायलट चलाएँ।"
+            )
+
+        if confounder_alert and not selection_bias_warning and not dr_audit.get("dr_divergence_warning"):
             downside_reasons_en.append(
                 f"Confounder / Simpson's Paradox Warning: Raw averages suggest a {raw_diff:+.1f} pp gap, "
                 f"but once other business drivers are controlled by ML, the isolated effect of changing '{col}' alone is only {ml_rate_diff_pct:+.1f} pp. "
@@ -2298,6 +2539,8 @@ class PredictiveDecisionEngine:
                 sig_base = max(3.0, sig_base - 6.0)
             if self.model_metrics.get("temporal_drift_detected"):
                 sig_base = max(3.0, sig_base - 3.0)
+            if dr_audit.get("computed") and dr_audit.get("dr_agrees_with_gcomp") and not confounder_alert and float(dr_audit.get("propensity_ess") or 0.0) >= 25.0:
+                sig_base = min(20.0, sig_base + 1.5)
             pillar_signal = round(sig_base, 1)
 
         # CFO Margin-of-Safety / Break-Even Realization Analysis
@@ -2417,6 +2660,7 @@ class PredictiveDecisionEngine:
                 "non_actionable_warning": non_actionable_warning,
                 "causal_support_pct": causal_support_pct,
                 "extrapolation_warning": extrapolation_warning,
+                "doubly_robust_audit": dr_audit,
                 "break_even_analysis": break_even_analysis,
                 "simulation_confidence": {
                     "score": sim_conf_score,
@@ -2451,6 +2695,9 @@ class PredictiveDecisionEngine:
                 "empirical_p_value": emp_gate["empirical_p_value"],
                 "raw_rate_diff_pct": emp_gate["raw_rate_diff_pct"],
                 "ml_controlled_diff_pct": ml_rate_diff_pct,
+                "dr_att_rate_diff_pct": dr_audit.get("dr_att_rate_diff_pct"),
+                "propensity_ess": dr_audit.get("propensity_ess"),
+                "dr_agrees_with_gcomp": dr_audit.get("dr_agrees_with_gcomp"),
                 "feature_oos_auc_drop": emp_gate["col_auc_drop"],
                 "fold_epistemic_sd_pct": round(epistemic_rate_sd * 100.0, 3),
                 "causal_support_pct": causal_support_pct,

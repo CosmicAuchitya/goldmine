@@ -49,6 +49,7 @@ def build_boardroom_router(
                 "status": "success",
                 "run_id": run_id,
                 "model_roc_auc": eng.model_metrics.get("roc_auc"),
+                "blind_backtest_badge": eng.model_metrics.get("blind_backtest_badge"),
                 "rows_audited": int(len(eng.df_full)),
                 "starters": starters,
             }

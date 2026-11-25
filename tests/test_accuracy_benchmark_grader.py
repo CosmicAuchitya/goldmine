@@ -98,3 +98,90 @@ def test_phase2_blind_sealed_accuracy_benchmark_exceeds_85_pct():
     assert scores["boardroom_50q_accuracy_pct"] >= 85.0, f"Boardroom accuracy below 85%: {scores}"
     assert scores["mean_sealed_calibration_error_pp"] <= 3.5, f"Calibration error too high: {scores}"
     assert scores["pure_noise_placebo_rejected"] is True
+
+
+def test_phase3_doubly_robust_aipw_3fold_dual_gate_and_live_badge(tmp_path: Path):
+    from autonomous_engine.boardroom_decision_judge import BoardroomDecisionJudge
+    from autonomous_engine.decision_prediction_engine import PredictiveDecisionEngine
+
+    rng = np.random.default_rng(303)
+    n = 900
+    carrier = rng.choice(["BadVan", "FastCourier"], size=n, p=[0.45, 0.55])
+    delay_h = np.where(carrier == "BadVan", rng.normal(32, 6, size=n), rng.normal(14, 5, size=n)).clip(2, 72)
+    bill = rng.uniform(600, 3200, size=n)
+    prob = np.clip(0.06 + np.where(carrier == "BadVan", 0.36, 0.0) + np.where(delay_h > 26, 0.16, 0.0), 0.02, 0.94)
+    is_rto = (rng.random(n) < prob).astype(int)
+
+    sig_dir = tmp_path / "phase3_sig"
+    sig_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame({
+        "carrier": carrier,
+        "dispatch_delay_hours": np.round(delay_h, 1),
+        "order_bill_inr": np.round(bill, 2),
+        "is_rto": is_rto,
+    }).to_parquet(sig_dir / "bi_ready_fact.parquet", index=False)
+
+    eng = PredictiveDecisionEngine(str(sig_dir), region_profile="IN")
+
+    # 1. Live Blind Backtest Verified Badge on strong signal vs Exploration Warning on pure noise
+    bb = eng.model_metrics.get("blind_backtest_badge")
+    assert bb is not None and bb["verified"] is True
+    assert bb["unseen_directional_accuracy_pct"] >= 75.0
+    assert bb["unseen_risk_lift_x"] > 2.0
+    assert "Blind Backtest Verified" in bb["label_en"]
+
+    noise_dir = tmp_path / "phase3_noise"
+    noise_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame({
+        "carrier": rng.choice(["A", "B", "C"], size=400),
+        "score": rng.uniform(0, 100, size=400),
+        "is_rto": rng.integers(0, 2, size=400),
+    }).to_parquet(noise_dir / "bi_ready_fact.parquet", index=False)
+    n_eng = PredictiveDecisionEngine(str(noise_dir))
+    n_bb = n_eng.model_metrics.get("blind_backtest_badge")
+    assert n_bb is not None and n_bb["verified"] is False
+    assert "Exploration Only" in n_bb["label_en"]
+
+    # 2. Doubly-Robust AIPW Propensity-Weighted Causal Audit computed & agrees on genuine causal lever
+    sim = eng.simulate_decision(
+        decision={"action_type": "replace_category", "column": "carrier", "from_value": "BadVan", "to_value": "FastCourier"}
+    )
+    assert sim["status"] == "simulated"
+    dr = sim["prediction"]["doubly_robust_audit"]
+    assert dr["computed"] is True
+    assert dr["propensity_ess"] >= 25.0
+    assert dr["dr_att_rate_diff_pct"] > 10.0
+    assert dr["dr_agrees_with_gcomp"] is True
+
+    # 3. 3-Fold Out-of-Sample Stability Map + Boardroom Dual-Verification Gate
+    assert "carrier" in eng.fold_stability_map
+    assert eng.fold_stability_map["carrier"]["fold_total"] == 3
+    assert eng.fold_stability_map["carrier"]["is_fold_stable"] is True
+
+    judge = BoardroomDecisionJudge(str(sig_dir), region_profile="IN", engine=eng)
+    r_ok = judge.discuss("Should we fix carrier or dispatch_delay_hours first?")
+    assert r_ok["comparison_scorecard"][0]["fold_stability"].endswith("/3")
+    assert r_ok["context_used"]["blind_backtest_badge"]["verified"] is True
+
+    # Simulate an unstable 0/3 fold factor (<25% importance) -> Dual-Gate MUST downgrade to PILOT_FIRST!
+    eng.fold_stability_map["dispatch_delay_hours"] = {
+        "fold_win_count": 0,
+        "fold_total": 3,
+        "fold_drops": [0.0, 0.0, 0.0],
+        "is_fold_stable": False,
+        "is_unanimous": False,
+    }
+    judge.imp_map["dispatch_delay_hours"] = 15.0
+    r_folded = judge.discuss("Should we focus on dispatch_delay_hours?")
+    assert r_folded["verdict"]["code"] == "PILOT_FIRST"
+    assert any("3-Fold" in w for w in r_folded["evidence"]["wrong_or_risky_en"])
+
+    # 4. Web UI & Boardroom Starters API expose Phase 3 badges cleanly
+    client = TestClient(api_server.app)
+    r_st = client.get("/api/v1/boardroom/starters/hotel_booking_cancellation")
+    assert r_st.status_code == 200
+    assert r_st.json()["blind_backtest_badge"]["verified"] is True
+    html = client.get("/app").text
+    assert "blind_backtest_badge" in html
+    assert "doubly_robust_audit" in html
+

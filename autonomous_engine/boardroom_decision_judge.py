@@ -350,12 +350,19 @@ class BoardroomDecisionJudge:
         ent_hi = self.vocab["entity_hi"]
 
         is_non_act = _is_non_actionable_attribute(col)
+        stab = (getattr(self.engine, "fold_stability_map", None) or {}).get(col) or {}
+        f_wins = int(stab.get("fold_win_count", 3))
+        f_tot = int(stab.get("fold_total", 3))
+        f_stable = bool(stab.get("is_fold_stable", True))
         fact: Dict[str, Any] = {
             "column": col,
             "label_en": col_en,
             "label_hi": col_hi,
             "ml_importance_pct": imp_pct,
             "auc_drop": auc_drop,
+            "fold_win_count": f_wins,
+            "fold_total": f_tot,
+            "is_fold_stable": f_stable,
             "is_non_actionable": is_non_act,
             "is_strong_driver": bool(imp_pct >= 12.0 or auc_drop >= 0.015),
             "is_statistically_significant": False,
@@ -628,6 +635,8 @@ class BoardroomDecisionJudge:
                 "expected_impact": pred.get("formatted_net_impact") or (f"~{f.get('excess_cases', 0):,} avoidable cases" if f.get("excess_cases") else "Fact-checked"),
                 "trust_score": ((pred.get("simulation_confidence") or {}).get("score")),
                 "causal_support_pct": pred.get("causal_support_pct"),
+                "fold_stability": f"{f.get('fold_win_count', 3)}/{f.get('fold_total', 3)}",
+                "is_fold_stable": bool(f.get("is_fold_stable", True)),
                 "verdict_code": pred.get("verdict_code") or ("PROVEN" if f["is_statistically_significant"] else "NOISE"),
             })
 
@@ -766,24 +775,43 @@ class BoardroomDecisionJudge:
                 "बाहरी ज़मीनी कारण (कॉम्पिटिटर के ऑफ़र, स्टाफ़ का व्यवहार, सप्लायर की समयबद्धता और मौसम) इस शीट में नहीं हैं — इस डेटा फ़ैसले के साथ अपना व्यापारिक अनुभव ज़रूर मिलाएँ।"
             )
 
-        # 6. Determine Clear Overall Verdict Code & Headline
+        # 6. Determine Clear Overall Verdict Code & Headline (with Phase 3 3-Fold Out-of-Sample Dual-Verification Gate!)
         winner_factor = primary_factors[0] if primary_factors else (audited_factors[0] if audited_factors else None)
         if is_debate and len(primary_factors) >= 2:
             f_a, f_b = primary_factors[0], primary_factors[1]
-            # Primary factors are already sorted by ML importance; verify winner clearly!
+            # Primary factors are already sorted by ML importance; verify BOTH score gap AND 3-fold OOS stability!
             score_a = f_a["ml_importance_pct"] + (20.0 if f_a["is_statistically_significant"] else 0.0)
             score_b = f_b["ml_importance_pct"] + (20.0 if f_b["is_statistically_significant"] else 0.0)
-            if score_a >= score_b + 8.0:
+            fa_fold_ok = bool(f_a.get("is_fold_stable", True) or f_a["ml_importance_pct"] >= 25.0)
+            if score_a >= score_b + 8.0 and fa_fold_ok:
                 verdict_code = "CLEAR_WINNER"
                 verdict_badge_en = f"🏆 DATA VERDICT: FOCUS ON {f_a['label_en'].upper()} FIRST"
                 verdict_badge_hi = f"🏆 डेटा का फ़ैसला: पहले {f_a['label_hi']} पर काम करें"
                 verdict_hl_en = (
-                    f"{f_a['label_en']} is the bigger real driver ({f_a['ml_importance_pct']:.0f}% AI impact) compared to {f_b['label_en']} ({f_b['ml_importance_pct']:.0f}%). "
+                    f"{f_a['label_en']} is the bigger real driver ({f_a['ml_importance_pct']:.0f}% AI impact, {f_a.get('fold_win_count', 3)}/{f_a.get('fold_total', 3)} folds verified) compared to {f_b['label_en']} ({f_b['ml_importance_pct']:.0f}%). "
                     f"Fix {f_a['label_en']} first before spending heavy money on {f_b['label_en']}."
                 )
                 verdict_hl_hi = (
-                    f"असली डेटा के हिसाब से {f_a['label_hi']} ({f_a['ml_importance_pct']:.0f}% असर) की भूमिका {f_b['label_hi']} ({f_b['ml_importance_pct']:.0f}%) से ज़्यादा बड़ी है — "
+                    f"असली डेटा के हिसाब से {f_a['label_hi']} ({f_a['ml_importance_pct']:.0f}% असर, {f_a.get('fold_win_count', 3)}/{f_a.get('fold_total', 3)} फ़ोल्ड प्रमाणित) की भूमिका {f_b['label_hi']} ({f_b['ml_importance_pct']:.0f}%) से ज़्यादा बड़ी है — "
                     f"बड़ा बजट लगाने से पहले {f_a['label_hi']} ठीक करें।"
+                )
+            elif score_a >= score_b + 8.0 and not fa_fold_ok:
+                verdict_code = "PILOT_FIRST"
+                verdict_badge_en = f"🟡 LEAN TOWARD {f_a['label_en'].upper()} — VERIFY IN 14-DAY PILOT"
+                verdict_badge_hi = f"🟡 {f_a['label_hi']} आगे है — पर पहले 14-दिन के पायलट में जाँचें"
+                verdict_hl_en = (
+                    f"{f_a['label_en']} leads on average ({f_a['ml_importance_pct']:.0f}% vs {f_b['label_en']} {f_b['ml_importance_pct']:.0f}%), "
+                    f"but out-of-sample fold consistency is {f_a.get('fold_win_count', 1)}/{f_a.get('fold_total', 3)} — test on 20% volume before full rollout."
+                )
+                verdict_hl_hi = (
+                    f"{f_a['label_hi']} औसत में आगे है ({f_a['ml_importance_pct']:.0f}% बनाम {f_b['label_hi']} {f_b['ml_importance_pct']:.0f}%), "
+                    f"पर फ़ोल्ड स्थिरता {f_a.get('fold_win_count', 1)}/{f_a.get('fold_total', 3)} है — 100% लागू करने से पहले 20% पायलट करें।"
+                )
+                wrong_or_risky_en.append(
+                    f"3-Fold Stability Gate ({f_a['label_en']}): Signal held in {f_a.get('fold_win_count', 1)}/{f_a.get('fold_total', 3)} out-of-sample folds — verify via controlled pilot."
+                )
+                wrong_or_risky_hi.append(
+                    f"3-Fold स्थिरता जाँच ({f_a['label_hi']}): यह संकेत {f_a.get('fold_win_count', 1)}/{f_a.get('fold_total', 3)} अनदेखे हिस्सों में मिला — छोटे पायलट से पुष्टि करें।"
                 )
             else:
                 verdict_code = "BOTH_MATTER"
@@ -832,6 +860,26 @@ class BoardroomDecisionJudge:
             verdict_hl_hi = (
                 f"{winner_factor['label_hi']} की समस्या तो असली है, लेकिन अभी {_fmt_money(budget, self.sym or '₹', True)} का बड़ा खर्च एक साथ लगाना सुरक्षित नहीं है — "
                 f"पहले कम खर्च वाला 14-दिन का ट्रायल करें।"
+            )
+        elif winner_factor and not winner_factor.get("is_fold_stable", True) and winner_factor["ml_importance_pct"] < 25.0:
+            verdict_code = "PILOT_FIRST"
+            top_lbl_en = winner_factor["label_en"]
+            top_lbl_hi = winner_factor["label_hi"]
+            verdict_badge_en = f"🟡 PROMISING BUT FOLD-SENSITIVE: PILOT {top_lbl_en.upper()} FIRST"
+            verdict_badge_hi = f"🟡 संभावना है पर स्थिरता मध्यम: पहले {top_lbl_hi} पर छोटा पायलट करें"
+            verdict_hl_en = (
+                f"{top_lbl_en} shows signal on average ({winner_factor['ml_importance_pct']:.0f}% share), "
+                f"but held in only {winner_factor.get('fold_win_count', 1)}/{winner_factor.get('fold_total', 3)} out-of-sample folds — run a lean 14-day pilot before committing capital."
+            )
+            verdict_hl_hi = (
+                f"{top_lbl_hi} औसत में असर दिखाता है ({winner_factor['ml_importance_pct']:.0f}%), पर अनदेखे डेटा के सिर्फ़ "
+                f"{winner_factor.get('fold_win_count', 1)}/{winner_factor.get('fold_total', 3)} फ़ोल्ड में स्थिर रहा — पूरा खर्च लगाने से पहले 14-दिन का छोटा पायलट चलाएँ।"
+            )
+            wrong_or_risky_en.append(
+                f"3-Fold Out-of-Sample Dual-Gate ({top_lbl_en}): Consistent in {winner_factor.get('fold_win_count', 1)}/{winner_factor.get('fold_total', 3)} folds — downgraded from direct rollout to Pilot First."
+            )
+            wrong_or_risky_hi.append(
+                f"3-Fold सुरक्षा गेट ({top_lbl_hi}): {winner_factor.get('fold_win_count', 1)}/{winner_factor.get('fold_total', 3)} फ़ोल्ड स्थिरता के कारण इसे सीधे लागू करने के बजाय पहले पायलट पर रखा गया है।"
             )
         else:
             verdict_code = "SUPPORTED_BY_DATA"
@@ -932,6 +980,7 @@ class BoardroomDecisionJudge:
                 "broad_strategy_mode": broad_strategy_mode,
                 "model_roc_auc": self.engine.model_metrics.get("roc_auc"),
                 "temporal_backtest_auc": self.engine.model_metrics.get("temporal_backtest_auc"),
+                "blind_backtest_badge": self.engine.model_metrics.get("blind_backtest_badge"),
                 "rows_audited": int(len(self.df)),
             },
         }
