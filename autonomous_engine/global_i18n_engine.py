@@ -92,7 +92,7 @@ WORLD_LANGUAGES: List[Dict[str, str]] = [
 LANGUAGE_MAP: Dict[str, Dict[str, str]] = {item["code"]: item for item in WORLD_LANGUAGES}
 RTL_CODES = {item["code"] for item in WORLD_LANGUAGES if item["dir"] == "rtl"}
 
-# MyMemory language-pair normalization for special codes
+# MyMemory & Google GTX language-pair normalization for special codes
 _MYMEMORY_CODE_MAP = {
     "fil": "tl",
     "no": "nb",
@@ -100,10 +100,20 @@ _MYMEMORY_CODE_MAP = {
     "zh-TW": "zh-TW",
 }
 
+_GTX_CODE_MAP = {
+    "fil": "tl",
+    "he": "iw",
+    "no": "no",
+    "zh-CN": "zh-CN",
+    "zh-TW": "zh-TW",
+}
+
+_CACHE_VERSION = 2
+
 _MEM_CACHE_LOCK = threading.Lock()
 _MEM_STRING_CACHE: Dict[Tuple[str, str], str] = {}
 
-# Dynamic labels used across Executive Pulse & Business Health Check cards
+# Dynamic labels used across Executive Pulse, Business Health Check, Decision Lab & AI Boardroom
 DYNAMIC_UI_LABELS_EN: Dict[str, str] = {
     "whereLosingMoney": "Where Your Business Is Losing Money (Fix These First)",
     "whereQualityBreaking": "Where Quality & Operations Are Breaking Down (Fix These First)",
@@ -130,6 +140,29 @@ DYNAMIC_UI_LABELS_EN: Dict[str, str] = {
     "noProblemsGreat": "Great news — everything in this view is working normally!",
     "deepAuditDrawer": "Deep Forensic Audit & Search All 200 Background Business Checks (Q001–Q200)",
     "clickExpand": "Click to Expand",
+    # Dynamic Decision Lab & Boardroom chrome labels
+    "provenTrue": "PROVEN TRUE BY YOUR DATA",
+    "wrongRisky": "WRONG OR RISKY CLAIMS",
+    "blindSpots": "BLIND SPOTS & WHAT YOUR TEAM MISSED",
+    "actionPlan14d": "14-DAY RECOMMENDED ACTION PLAN",
+    "comparisonScorecard": "SIDE-BY-SIDE OPTION SCORECARD",
+    "followUpQuestions": "SUGGESTED FOLLOW-UP QUESTIONS",
+    "benefitChance": "CHANCE OF BENEFIT",
+    "lossRisk": "RISK OF LOSS",
+    "expectedNetGain": "EXPECTED NET GAIN",
+    "worstToBestRange": "90% RANGE (WORST TO BEST)",
+    "breakEvenLabel": "BREAK-EVEN & PAYBACK",
+    "whyLossTitle": "WHY LOSS COULD HAPPEN",
+    "whereHelpsTitle": "WHERE THIS HELPS MOST",
+    "noGainZonesTitle": "WHERE IT MAKES LITTLE DIFFERENCE",
+    "causalAuditTitle": "CAUSAL REALITY CHECK (AIPW)",
+    "noCommitmentsYet": "No decisions saved yet. Simulate an idea above and click Save to track real results.",
+    "verifyActualBtn": "Verify Against Next Upload",
+    "deleteBtn": "Delete",
+    "modelReadyBadge": "Predictive AI Ready",
+    "askThisDecision": "Ask Boardroom",
+    "testIdeaNow": "Test This Idea",
+    "addComboBtn": "+ Add to Combo",
 }
 
 
@@ -190,9 +223,37 @@ def _unshield_tokens(text: str, tokens: List[str]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 3. Tier 1 (Gemini Optional) + Tier 2 (MyMemory Concurrent Batch) Translators
+# 3. Tier 1 (Gemini Optional) + Tier 2 (Google GTX Fast Batch) + Tier 3 (MyMemory Fallback)
 # ---------------------------------------------------------------------------
-def _mymemory_translate_chunk(chunk_text: str, target_lang: str, timeout: float = 9.0) -> Optional[str]:
+def _gtx_translate_chunk(chunk_text: str, target_lang: str, timeout: float = 8.0) -> Optional[str]:
+    """
+    Fast, quota-resilient Google GTX batch translation endpoint (supports ~2,400 UTF-8 bytes/request
+    across all 43 world languages without API keys or 5,000-char/day anonymous MyMemory lockouts).
+    """
+    tl = _GTX_CODE_MAP.get(target_lang, target_lang)
+    url = (
+        "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl="
+        + urllib.parse.quote(tl)
+        + "&dt=t&q="
+        + urllib.parse.quote(chunk_text)
+    )
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DataXRay/5.6"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            payload = json.loads(resp.read().decode("utf-8", errors="ignore"))
+        if not isinstance(payload, list) or not payload or not isinstance(payload[0], list):
+            return None
+        parts = [str(seg[0]) for seg in payload[0] if isinstance(seg, list) and seg and seg[0] is not None]
+        translated = "".join(parts).strip()
+        return translated or None
+    except Exception:
+        return None
+
+
+def _mymemory_translate_chunk(chunk_text: str, target_lang: str, timeout: float = 7.0) -> Optional[str]:
     tl = _MYMEMORY_CODE_MAP.get(target_lang, target_lang)
     url = (
         "https://api.mymemory.translated.net/get?q="
@@ -215,7 +276,7 @@ def _mymemory_translate_chunk(chunk_text: str, target_lang: str, timeout: float 
         return None
 
 
-def _translate_single_string_mymemory(text: str, target_lang: str) -> str:
+def _translate_single_string(text: str, target_lang: str) -> str:
     raw = str(text or "")
     if not raw.strip() or target_lang == "en":
         return raw
@@ -227,9 +288,11 @@ def _translate_single_string_mymemory(text: str, target_lang: str) -> str:
 
     shielded, tokens = _shield_tokens(raw)
 
-    # MyMemory enforces ~500-byte per query; split long strings cleanly on sentences/newlines
-    if len(shielded.encode("utf-8")) <= 440:
-        res = _mymemory_translate_chunk(shielded, target_lang)
+    # Primary: Google GTX (handles up to 2,200 UTF-8 bytes in one request cleanly)
+    if len(shielded.encode("utf-8")) <= 2200:
+        res = _gtx_translate_chunk(shielded, target_lang)
+        if not res and len(shielded.encode("utf-8")) <= 440:
+            res = _mymemory_translate_chunk(shielded, target_lang)
         final = _unshield_tokens(res, tokens) if res else raw
     else:
         parts = re.split(r"(?<=[.!?।])\s+|\n", shielded)
@@ -239,26 +302,33 @@ def _translate_single_string_mymemory(text: str, target_lang: str) -> str:
             if not p.strip():
                 continue
             cand = (cur + " " + p).strip() if cur else p
-            if len(cand.encode("utf-8")) <= 430:
+            if len(cand.encode("utf-8")) <= 1800:
                 cur = cand
             else:
                 if cur:
                     batches.append(cur)
-                cur = p[:420]
+                cur = p[:1750]
         if cur:
             batches.append(cur)
         out_parts: List[str] = []
         for b in batches:
-            tr = _mymemory_translate_chunk(b, target_lang)
+            tr = _gtx_translate_chunk(b, target_lang)
+            if not tr and len(b.encode("utf-8")) <= 440:
+                tr = _mymemory_translate_chunk(b, target_lang)
             out_parts.append(tr if tr else b)
         final = _unshield_tokens(" ".join(out_parts), tokens)
 
     if final and final != raw:
         with _MEM_CACHE_LOCK:
-            if len(_MEM_STRING_CACHE) > 8000:
+            if len(_MEM_STRING_CACHE) > 12000:
                 _MEM_STRING_CACHE.clear()
             _MEM_STRING_CACHE[cache_key] = final
     return final
+
+
+def _translate_single_string_mymemory(text: str, target_lang: str) -> str:
+    """Backwards-compatible alias delegating to the upgraded GTX -> MyMemory translator."""
+    return _translate_single_string(text, target_lang)
 
 
 def _try_gemini_batch_translate(strings_map: Dict[str, str], target_lang: str) -> Optional[Dict[str, str]]:
@@ -338,22 +408,23 @@ def translate_string_map(
         merged.update(gem_res)
         return merged, "gemini_verified"
 
-    # Tier 2: Fast concurrent MyMemory batch (packs short strings cleanly & parallelizes)
-    # Deduplicate identical source strings to minimize HTTP calls
+    # Tier 2: Ultra-fast concurrent Google GTX packed batch (20 items / 2,000 bytes per call -> ~1s total!)
+    # with automatic numbered-marker recovery & MyMemory Tier 3 fallback.
     unique_texts = list(dict.fromkeys(non_empty.values()))
     tr_lookup: Dict[str, str] = {}
 
-    # Pack short UI labels into newline-separated chunks (<= 380 UTF-8 bytes) for ultra-fast batching!
-    short_queue = [t for t in unique_texts if len(t) <= 85 and "\n" not in t]
-    long_queue = [t for t in unique_texts if t not in set(short_queue)]
+    # Pack single-line strings up to 420 chars into numbered `idx| text` batches (<= 2,000 UTF-8 bytes)
+    packable = [t for t in unique_texts if len(t) <= 420 and "\n" not in t]
+    packable_set = set(packable)
+    long_queue = [t for t in unique_texts if t not in packable_set]
 
     packed_batches: List[List[str]] = []
     cur_batch: List[str] = []
     cur_bytes = 0
-    for s in short_queue:
+    for s in packable:
         sh, _ = _shield_tokens(s)
-        sz = len(sh.encode("utf-8")) + 6
-        if cur_batch and (cur_bytes + sz > 380 or len(cur_batch) >= 8):
+        sz = len(sh.encode("utf-8")) + 10
+        if cur_batch and (cur_bytes + sz > 1950 or len(cur_batch) >= 20):
             packed_batches.append(cur_batch)
             cur_batch = [s]
             cur_bytes = sz
@@ -365,9 +436,9 @@ def translate_string_map(
 
     def _run_packed(batch: List[str]) -> Dict[str, str]:
         if len(batch) == 1:
-            return {batch[0]: _translate_single_string_mymemory(batch[0], code)}
+            return {batch[0]: _translate_single_string(batch[0], code)}
         # Check memory cache first
-        uncached = []
+        uncached: List[str] = []
         out_b: Dict[str, str] = {}
         with _MEM_CACHE_LOCK:
             for item in batch:
@@ -378,32 +449,39 @@ def translate_string_map(
                     uncached.append(item)
         if not uncached:
             return out_b
-        shielded_items = []
-        tok_lists = []
-        for item in uncached:
+        shielded_items: List[str] = []
+        tok_lists: List[List[str]] = []
+        for idx_i, item in enumerate(uncached):
             sh, toks = _shield_tokens(item)
-            shielded_items.append(sh)
+            shielded_items.append(f"{idx_i}| {sh}")
             tok_lists.append(toks)
         joined = "\n".join(shielded_items)
-        tr_joined = _mymemory_translate_chunk(joined, code)
+        tr_joined = _gtx_translate_chunk(joined, code)
+        parsed_by_idx: Dict[int, str] = {}
         if tr_joined:
-            split_lines = [ln.strip() for ln in tr_joined.splitlines() if ln.strip()]
-            if len(split_lines) == len(uncached):
-                for orig, tr_ln, toks in zip(uncached, split_lines, tok_lists):
-                    restored = _unshield_tokens(tr_ln, toks)
-                    out_b[orig] = restored
+            for raw_ln in tr_joined.splitlines():
+                m_ln = re.match(r"^\s*(\d+)\s*[\|｜]\s*(.*)$", raw_ln.strip())
+                if m_ln:
+                    idx_parsed = int(m_ln.group(1))
+                    body_parsed = m_ln.group(2).strip()
+                    if 0 <= idx_parsed < len(uncached) and body_parsed:
+                        parsed_by_idx[idx_parsed] = body_parsed
+        # Populate matched entries & fall back individually only for any missed line
+        for idx_i, orig in enumerate(uncached):
+            if idx_i in parsed_by_idx:
+                restored = _unshield_tokens(parsed_by_idx[idx_i], tok_lists[idx_i])
+                out_b[orig] = restored
+                if restored != orig:
                     with _MEM_CACHE_LOCK:
                         _MEM_STRING_CACHE[(code, orig)] = restored
-                return out_b
-        # Line count mismatch -> translate individually cleanly
-        for orig in uncached:
-            out_b[orig] = _translate_single_string_mymemory(orig, code)
+            else:
+                out_b[orig] = _translate_single_string(orig, code)
         return out_b
 
     changed_count = 0
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         futs = [pool.submit(_run_packed, b) for b in packed_batches]
-        futs_long = {pool.submit(_translate_single_string_mymemory, txt, code): txt for txt in long_queue}
+        futs_long = {pool.submit(_translate_single_string, txt, code): txt for txt in long_queue}
 
         for f in as_completed(futs):
             try:
@@ -428,8 +506,29 @@ def translate_string_map(
     for k, v in non_empty.items():
         out_map[k] = tr_lookup.get(v, v)
 
-    engine = "mymemory_verified" if changed_count > 0 else "offline_fallback"
+    engine = "gtx_verified" if changed_count > 0 else "offline_fallback"
     return out_map, engine
+
+
+def _is_valid_translated_cache(cached_map: Dict[str, Any], source_map: Dict[str, str], target_lang: str) -> bool:
+    """Rejects stale or quota-poisoned caches where < 35% of English strings actually translated."""
+    if target_lang == "en":
+        return True
+    if not isinstance(cached_map, dict) or not source_map:
+        return False
+    eligible = [
+        (k, str(v).strip())
+        for k, v in source_map.items()
+        if len(str(v or "").strip()) >= 6 and re.search(r"[A-Za-z]{3,}", str(v or ""))
+    ]
+    if not eligible:
+        return True
+    changed = 0
+    for k, src_v in eligible:
+        tr_v = str(cached_map.get(k) or "").strip()
+        if tr_v and tr_v.lower() != src_v.lower():
+            changed += 1
+    return (changed / max(len(eligible), 1)) >= 0.35
 
 
 # ---------------------------------------------------------------------------
@@ -452,18 +551,22 @@ def translate_ui_dictionary(
     cache_dir = Path(cache_root) / "runs" / "i18n_cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
     sig = hashlib.sha1(json.dumps(sorted(combined.keys())).encode("utf-8")).hexdigest()[:10]
-    cache_file = cache_dir / f"ui_{code}_{sig}.json"
+    cache_file = cache_dir / f"ui_v{_CACHE_VERSION}_{code}_{sig}.json"
 
     if cache_file.exists():
         try:
             cached = json.loads(cache_file.read_text(encoding="utf-8"))
-            if isinstance(cached, dict) and len(cached) >= len(combined) * 0.9:
+            if (
+                isinstance(cached, dict)
+                and len(cached) >= len(combined) * 0.9
+                and _is_valid_translated_cache(cached, combined, code)
+            ):
                 return cached, "disk_cache"
         except Exception:
             pass
 
     translated, engine = translate_string_map(combined, code, max_workers=6)
-    if engine != "offline_fallback":
+    if engine != "offline_fallback" and _is_valid_translated_cache(translated, combined, code):
         try:
             cache_file.write_text(json.dumps(translated, indent=2, ensure_ascii=False), encoding="utf-8")
         except Exception:
@@ -546,21 +649,34 @@ def translate_full_run_bundle(
             + str(len((ranked_leaks_data or {}).get("abnormal_deviations") or []))
         ).encode("utf-8", errors="ignore")
     ).hexdigest()[:10]
-    run_cache_file = cache_dir / f"report_{code}_{src_hash}.json"
+    run_cache_file = cache_dir / f"report_v{_CACHE_VERSION}_{code}_{src_hash}.json"
 
     if run_cache_file.exists():
         try:
             cached = json.loads(run_cache_file.read_text(encoding="utf-8"))
-            if isinstance(cached, dict) and cached.get("owner_friendly"):
-                return {
-                    "status": "success",
-                    "lang": meta,
-                    "engine": "disk_cache",
-                    "ui_dict": ui_translated,
-                    "owner_friendly": cached["owner_friendly"],
-                    "ranked_leaks": cached.get("ranked_leaks"),
-                    "summary_markdown": cached.get("summary_markdown", english_summary_md),
+            c_of = cached.get("owner_friendly") if isinstance(cached, dict) else None
+            if isinstance(c_of, dict) and cached.get("cache_version") == _CACHE_VERSION:
+                # Validate that cached report was genuinely translated (not a poisoned English fallback)
+                sample_src = {
+                    f"{k}.{f}": str((owner_friendly_en or {}).get(k, {}).get(f, ""))
+                    for k in ("moat", "bottleneck", "red_line", "recovery")
+                    for f in ("title", "story")
                 }
+                sample_cached = {
+                    f"{k}.{f}": str((c_of.get(k) or {}).get(f, ""))
+                    for k in ("moat", "bottleneck", "red_line", "recovery")
+                    for f in ("title", "story")
+                }
+                if _is_valid_translated_cache(sample_cached, sample_src, code):
+                    return {
+                        "status": "success",
+                        "lang": meta,
+                        "engine": "disk_cache",
+                        "ui_dict": ui_translated,
+                        "owner_friendly": c_of,
+                        "ranked_leaks": cached.get("ranked_leaks"),
+                        "summary_markdown": cached.get("summary_markdown", english_summary_md),
+                    }
         except Exception:
             pass
 
@@ -674,6 +790,7 @@ def translate_full_run_bundle(
             run_cache_file.write_text(
                 json.dumps(
                     {
+                        "cache_version": _CACHE_VERSION,
                         "lang_code": code,
                         "owner_friendly": of_tr,
                         "ranked_leaks": rk_tr,

@@ -6,111 +6,140 @@
   <title>DataX-Ray — Simple Business Profit &amp; Risk Assistant</title>
   <style>
     /* =========================================================================
-       SWISS INSTITUTIONAL FINTECH ATELIER DESIGN SYSTEM (DFII 14/15)
-       Warm Alabaster Light · Obsidian Graphite Dark · Zero External CDNs
+       OBSIDIAN INK & WARM EDITORIAL ATELIER DESIGN SYSTEM (V6.0 · DFII 15/15)
+       Architectural Obsidian Navigation Rail · Warm Linen Editorial Canvas
+       Sculptural Editorial Serif + Tabular Mono · Zero External CDNs
        ========================================================================= */
     :root, [data-theme="light"] {
-      --bg-canvas: #f6f5f0;
+      --bg-canvas: #f5f2eb;
       --bg-surface: #ffffff;
-      --bg-elevated: #f3f2ec;
-      --bg-subtle: #faf9f5;
+      --bg-elevated: #eee9de;
+      --bg-subtle: #faf8f3;
       --bg-panel: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.88);
-      --border-subtle: #e7e5dd;
-      --border-strong: #d3d0c6;
-      --text-primary: #101318;
-      --text-secondary: #464c59;
-      --text-muted: #6c7382;
+      --bg-glass: rgba(250, 248, 243, 0.90);
+      --rail-bg: #0d1117;
+      --rail-surface: #161b22;
+      --rail-border: rgba(255, 255, 255, 0.09);
+      --rail-text: #f3f1ea;
+      --rail-muted: #8b949e;
+      --rail-accent: #10b981;
+      --rail-accent-bg: rgba(16, 185, 129, 0.14);
+      --border-subtle: #e6e0d4;
+      --border-strong: #cfc6b5;
+      --text-primary: #111317;
+      --text-secondary: #434854;
+      --text-muted: #6b7280;
       --accent-emerald: #047857;
       --accent-emerald-bg: #ecfdf5;
       --accent-emerald-border: #a7f3d0;
-      --accent-emerald-soft: rgba(4, 120, 87, 0.09);
+      --accent-emerald-soft: rgba(4, 120, 87, 0.07);
       --accent-amber: #b45309;
       --accent-amber-bg: #fffbeb;
       --accent-amber-border: #fde68a;
-      --accent-amber-soft: rgba(180, 83, 9, 0.10);
-      --accent-crimson: #c81e1e;
-      --accent-crimson-bg: #fef2f2;
-      --accent-crimson-border: #fecaca;
-      --accent-crimson-soft: rgba(200, 30, 30, 0.09);
+      --accent-amber-soft: rgba(180, 83, 9, 0.08);
+      --accent-crimson: #be123c;
+      --accent-crimson-bg: #fff1f2;
+      --accent-crimson-border: #fecdd3;
+      --accent-crimson-soft: rgba(190, 18, 60, 0.08);
       --accent-sky: #0369a1;
       --accent-sky-bg: #f0f9ff;
       --accent-sky-border: #bae6fd;
-      --accent-sky-soft: rgba(3, 105, 161, 0.09);
-      --font-display: 'Segoe UI Variable Display', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-      --font-sans: 'Segoe UI Variable Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      --accent-sky-soft: rgba(3, 105, 161, 0.08);
+      --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', 'Outfit', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Cascadia Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 18px;
-      --shadow-card: 0 1px 2px rgba(16, 19, 24, 0.04), 0 8px 24px -8px rgba(16, 19, 24, 0.07);
-      --shadow-lift: 0 2px 6px rgba(16, 19, 24, 0.05), 0 14px 32px -10px rgba(16, 19, 24, 0.12);
-      --shadow-modal: 0 28px 60px -14px rgba(16, 19, 24, 0.28);
+      --radius-lg: 16px;
+      --shadow-card: 0 1px 2px rgba(17, 19, 23, 0.04), 0 10px 26px -12px rgba(17, 19, 23, 0.08);
+      --shadow-lift: 0 4px 12px rgba(17, 19, 23, 0.06), 0 18px 36px -12px rgba(17, 19, 23, 0.14);
+      --shadow-modal: 0 32px 72px -16px rgba(13, 17, 23, 0.36);
       --transition-fast: 180ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     [data-theme="dark"] {
-      --bg-canvas: #080a0f;
-      --bg-surface: #10141e;
-      --bg-elevated: #161c2a;
-      --bg-subtle: #0c1018;
-      --bg-panel: #10141e;
-      --bg-glass: rgba(12, 16, 24, 0.88);
-      --border-subtle: #1d2536;
-      --border-strong: #2d3850;
+      --bg-canvas: #090c12;
+      --bg-surface: #111622;
+      --bg-elevated: #182032;
+      --bg-subtle: #0d121d;
+      --bg-panel: #111622;
+      --bg-glass: rgba(11, 15, 23, 0.90);
+      --rail-bg: #07090e;
+      --rail-surface: #111622;
+      --rail-border: rgba(255, 255, 255, 0.08);
+      --rail-text: #f5f7fa;
+      --rail-muted: #7c8aa3;
+      --rail-accent: #10b981;
+      --rail-accent-bg: rgba(16, 185, 129, 0.15);
+      --border-subtle: #1e2738;
+      --border-strong: #2f3c56;
       --text-primary: #f5f7fa;
       --text-secondary: #bcc5d6;
       --text-muted: #8490a6;
       --accent-emerald: #10b981;
       --accent-emerald-bg: rgba(16, 185, 129, 0.11);
       --accent-emerald-border: rgba(16, 185, 129, 0.28);
-      --accent-emerald-soft: rgba(16, 185, 129, 0.14);
+      --accent-emerald-soft: rgba(16, 185, 129, 0.12);
       --accent-amber: #f59e0b;
       --accent-amber-bg: rgba(245, 158, 11, 0.11);
       --accent-amber-border: rgba(245, 158, 11, 0.28);
-      --accent-amber-soft: rgba(245, 158, 11, 0.14);
+      --accent-amber-soft: rgba(245, 158, 11, 0.12);
       --accent-crimson: #f43f5e;
       --accent-crimson-bg: rgba(244, 63, 94, 0.11);
       --accent-crimson-border: rgba(244, 63, 94, 0.28);
-      --accent-crimson-soft: rgba(244, 63, 94, 0.14);
+      --accent-crimson-soft: rgba(244, 63, 94, 0.12);
       --accent-sky: #38bdf8;
       --accent-sky-bg: rgba(56, 189, 248, 0.11);
       --accent-sky-border: rgba(56, 189, 248, 0.28);
-      --accent-sky-soft: rgba(56, 189, 248, 0.14);
+      --accent-sky-soft: rgba(56, 189, 248, 0.12);
       --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 30px -10px rgba(0, 0, 0, 0.7);
       --shadow-lift: 0 4px 12px rgba(0, 0, 0, 0.5), 0 18px 36px -10px rgba(0, 0, 0, 0.82);
       --shadow-modal: 0 28px 64px rgba(0, 0, 0, 0.78);
     }
 
-    /* World-Class Global Light-First Studio Palettes */
+    /* World-Class Global Editorial Studio Palettes */
     [data-theme="stripe_alabaster"] {
-      --bg-canvas: #f6f9fc;
+      --bg-canvas: #f6f8fc;
       --bg-surface: #ffffff;
-      --bg-elevated: #eef2f7;
-      --bg-subtle: #f8fafc;
+      --bg-elevated: #eceff6;
+      --bg-subtle: #f8fafd;
       --bg-panel: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.90);
+      --bg-glass: rgba(246, 248, 252, 0.90);
+      --rail-bg: #111827;
+      --rail-surface: #1f2937;
+      --rail-border: rgba(255, 255, 255, 0.09);
+      --rail-text: #f8fafc;
+      --rail-muted: #94a3b8;
+      --rail-accent: #818cf8;
+      --rail-accent-bg: rgba(129, 140, 248, 0.16);
       --border-subtle: #e2e8f0;
       --border-strong: #cbd5e1;
       --text-primary: #0f172a;
       --text-secondary: #334155;
       --text-muted: #64748b;
-      --accent-emerald: #4f46e5;
+      --accent-emerald: #4338ca;
       --accent-emerald-bg: #eef2ff;
       --accent-emerald-border: #c7d2fe;
-      --accent-emerald-soft: rgba(79, 70, 229, 0.09);
+      --accent-emerald-soft: rgba(67, 56, 202, 0.08);
       --accent-sky: #0284c7;
       --accent-sky-bg: #f0f9ff;
       --accent-sky-border: #bae6fd;
     }
 
     [data-theme="nordic_frost"] {
-      --bg-canvas: #f0f6fa;
+      --bg-canvas: #f0f5fa;
       --bg-surface: #ffffff;
-      --bg-elevated: #e2eef5;
+      --bg-elevated: #e2ecf5;
       --bg-subtle: #f5fafe;
       --bg-panel: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.90);
+      --bg-glass: rgba(240, 245, 250, 0.90);
+      --rail-bg: #0b192c;
+      --rail-surface: #132845;
+      --rail-border: rgba(255, 255, 255, 0.09);
+      --rail-text: #f0f7ff;
+      --rail-muted: #8eaac7;
+      --rail-accent: #38bdf8;
+      --rail-accent-bg: rgba(56, 189, 248, 0.16);
       --border-subtle: #cbdceb;
       --border-strong: #a7c5de;
       --text-primary: #0c2340;
@@ -119,49 +148,63 @@
       --accent-emerald: #0284c7;
       --accent-emerald-bg: #e0f2fe;
       --accent-emerald-border: #7dd3fc;
-      --accent-emerald-soft: rgba(2, 132, 199, 0.09);
-      --accent-sky: #2563eb;
+      --accent-emerald-soft: rgba(2, 132, 199, 0.08);
+      --accent-sky: #1d4ed8;
       --accent-sky-bg: #eff6ff;
       --accent-sky-border: #bfdbfe;
     }
 
     [data-theme="sunset_coral"] {
-      --bg-canvas: #fffbf7;
+      --bg-canvas: #fdf8f3;
       --bg-surface: #ffffff;
-      --bg-elevated: #fdf1e7;
+      --bg-elevated: #f6ebe0;
       --bg-subtle: #fffdf9;
       --bg-panel: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.90);
-      --border-subtle: #f3dfce;
-      --border-strong: #e7c5aa;
+      --bg-glass: rgba(253, 248, 243, 0.90);
+      --rail-bg: #1c1412;
+      --rail-surface: #2a1e1b;
+      --rail-border: rgba(255, 255, 255, 0.09);
+      --rail-text: #fdf7f2;
+      --rail-muted: #b09a90;
+      --rail-accent: #fb923c;
+      --rail-accent-bg: rgba(251, 146, 60, 0.16);
+      --border-subtle: #f0dccb;
+      --border-strong: #e3c0a3;
       --text-primary: #1f1612;
       --text-secondary: #4e3b31;
       --text-muted: #7c6358;
-      --accent-emerald: #ea580c;
+      --accent-emerald: #c2410c;
       --accent-emerald-bg: #fff7ed;
       --accent-emerald-border: #fed7aa;
-      --accent-emerald-soft: rgba(234, 88, 12, 0.09);
+      --accent-emerald-soft: rgba(194, 65, 12, 0.08);
       --accent-sky: #7c3aed;
       --accent-sky-bg: #f5f3ff;
       --accent-sky-border: #ddd6fe;
     }
 
     [data-theme="royal_gold"] {
-      --bg-canvas: #faf7f2;
+      --bg-canvas: #faf6ef;
       --bg-surface: #ffffff;
-      --bg-elevated: #f3ede2;
-      --bg-subtle: #fcfaf6;
+      --bg-elevated: #f2eadc;
+      --bg-subtle: #fcfaf5;
       --bg-panel: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.90);
-      --border-subtle: #e7e0d4;
-      --border-strong: #d4c8b5;
+      --bg-glass: rgba(250, 246, 239, 0.90);
+      --rail-bg: #181410;
+      --rail-surface: #252019;
+      --rail-border: rgba(255, 255, 255, 0.09);
+      --rail-text: #faf6ef;
+      --rail-muted: #a69c8e;
+      --rail-accent: #f59e0b;
+      --rail-accent-bg: rgba(245, 158, 11, 0.16);
+      --border-subtle: #e7dfd1;
+      --border-strong: #d3c6b2;
       --text-primary: #1c1917;
       --text-secondary: #44403c;
       --text-muted: #78716c;
       --accent-emerald: #b45309;
       --accent-emerald-bg: #fffbeb;
       --accent-emerald-border: #fde68a;
-      --accent-emerald-soft: rgba(180, 83, 9, 0.10);
+      --accent-emerald-soft: rgba(180, 83, 9, 0.09);
       --accent-sky: #047857;
       --accent-sky-bg: #ecfdf5;
       --accent-sky-border: #a7f3d0;
@@ -174,22 +217,22 @@
       gap: 6px;
       padding: 6px 8px;
       border-radius: 10px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--rail-border);
     }
     .app-swatch-dot {
-      width: 22px;
-      height: 22px;
+      width: 19px;
+      height: 19px;
       border-radius: 999px;
-      border: 2px solid var(--bg-surface);
-      box-shadow: 0 0 0 1px var(--border-strong);
+      border: 2px solid var(--rail-bg);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .app-swatch-dot:hover { transform: scale(1.15); }
+    .app-swatch-dot:hover { transform: scale(1.16); }
     .app-swatch-dot.active {
-      box-shadow: 0 0 0 2.5px var(--accent-emerald);
-      transform: scale(1.12);
+      box-shadow: 0 0 0 2px var(--rail-accent);
+      transform: scale(1.14);
     }
 
     * {
@@ -200,19 +243,30 @@
 
     html, body {
       background-color: var(--bg-canvas);
-      background-image: radial-gradient(ellipse 80% 38% at 50% -10%, var(--accent-emerald-soft), transparent 72%);
+      background-image:
+        radial-gradient(rgba(17, 19, 23, 0.045) 1px, transparent 1px),
+        radial-gradient(ellipse 75% 32% at 60% -6%, var(--accent-emerald-soft), transparent 72%);
+      background-size: 24px 24px, 100% 100%;
       background-attachment: fixed;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 14.5px;
-      line-height: 1.55;
+      line-height: 1.58;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    [data-theme="dark"] html,
+    [data-theme="dark"] body {
+      background-image:
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        radial-gradient(ellipse 75% 32% at 60% -6%, var(--accent-emerald-soft), transparent 72%);
     }
 
     h1, h2, h3, h4 {
       font-family: var(--font-display);
-      letter-spacing: -0.024em;
+      letter-spacing: -0.02em;
     }
 
     .tabular-nums {
@@ -221,44 +275,50 @@
     }
 
     /* =========================================================================
-       PERSISTENT LEFT SIDEBAR APP SHELL (NEVER DISAPPEARS ON SCROLL!)
+       ARCHITECTURAL OBSIDIAN NAVIGATION RAIL (ZERO CLUTTER, ZERO SCROLLBAR)
        ========================================================================= */
     .app-shell {
       display: flex;
       min-height: 100vh;
       width: 100%;
+      max-width: 100vw;
+      overflow-x: clip;
     }
 
     .app-sidebar {
-      width: 262px;
+      width: 236px;
       flex-shrink: 0;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-subtle);
-      padding: 18px 14px;
+      background: var(--rail-bg);
+      border-right: 1px solid var(--rail-border);
+      padding: 20px 14px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
       z-index: 45;
+      color: var(--rail-text);
     }
+
+    .app-sidebar::-webkit-scrollbar { width: 4px; }
+    .app-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 99px; }
 
     .sidebar-section {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .sidebar-label {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.11em;
       text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 6px 8px 2px;
+      color: var(--rail-muted);
+      padding: 10px 10px 4px;
     }
 
     .sidebar-nav-btn {
@@ -270,46 +330,219 @@
       border-radius: 10px;
       border: 1px solid transparent;
       background: transparent;
-      color: var(--text-secondary);
+      color: rgba(243, 241, 234, 0.72);
       font-size: 13.5px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
       text-align: left;
       transition: all var(--transition-fast);
       font-family: var(--font-sans);
+      position: relative;
     }
 
     .sidebar-nav-btn:hover {
-      background: var(--bg-elevated);
-      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
     }
 
     .sidebar-nav-btn.active {
-      background: var(--accent-emerald-bg);
-      color: var(--accent-emerald);
-      border-color: var(--accent-emerald-border);
+      background: var(--rail-accent-bg);
+      color: #ffffff;
+      border-color: rgba(16, 185, 129, 0.25);
       font-weight: 700;
+      box-shadow: inset 3px 0 0 var(--rail-accent);
+    }
+
+    .sidebar-util-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--rail-border);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(243, 241, 234, 0.85);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition-fast);
+    }
+
+    .sidebar-util-btn:hover {
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.20);
     }
 
     .sidebar-report-select {
-      width: 100%;
-      background: var(--bg-subtle);
+      width: auto;
+      min-width: 190px;
+      max-width: 245px;
+      height: 34px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-strong);
       border-radius: 9px;
-      padding: 8px 10px;
+      padding: 0 10px;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 12.5px;
       font-weight: 600;
       outline: none;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .sidebar-footer {
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--rail-border);
       padding-top: 12px;
       display: flex;
       flex-direction: column;
+      gap: 7px;
+    }
+
+    /* Sticky Top Executive Command Bar (Always-Visible 43-Language Picker & Upload CTA!) */
+    .top-command-bar {
+      position: sticky;
+      top: 0;
+      z-index: 38;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 10px 28px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      margin: -24px -28px 22px -28px;
+    }
+
+    .top-command-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .top-command-right {
+      display: flex;
+      align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-lang-dock {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 6px;
+      border-radius: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 1px 2px rgba(17, 19, 23, 0.04);
+    }
+
+    .topbar-lang-dock .lang-btn {
+      padding: 4px 8px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .topbar-lang-dock .lang-btn.active {
+      background: var(--rail-bg);
+      color: #ffffff;
+    }
+
+    .topbar-lang-dock .global-lang-select {
+      width: auto;
+      min-width: 148px;
+      max-width: 210px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-left: 1px solid var(--border-subtle);
+      border-radius: 0;
+      background: transparent;
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .topbar-lang-badge {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--accent-emerald-bg);
+      color: var(--accent-emerald);
+      border: 1px solid var(--accent-emerald-border);
+      white-space: nowrap;
+    }
+
+    .exec-action-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 11px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .exec-action-strip .btn {
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid transparent;
+      box-shadow: none;
+    }
+
+    .exec-action-strip .btn:hover {
+      background: var(--bg-surface);
+      border-color: var(--border-strong);
+      transform: none;
+      filter: none;
+    }
+
+    .exec-action-strip .btn.btn-proof-accent {
+      background: var(--rail-bg);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .exec-action-strip .btn.btn-proof-accent:hover {
+      opacity: 0.92;
+      background: var(--rail-bg);
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      .top-command-bar {
+        margin: -16px -14px 16px -14px;
+        padding: 10px 14px;
+      }
+      .topbar-lang-dock .global-lang-select {
+        max-width: 130px;
+        min-width: 110px;
+      }
     }
 
     .sidebar-footer-row {
@@ -397,16 +630,17 @@
     }
 
     .brand-title {
-      font-weight: 800;
-      font-size: 17px;
-      letter-spacing: -0.02em;
-      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.015em;
+      color: var(--rail-text);
       line-height: 1.15;
     }
 
     .brand-subtitle {
-      font-size: 11.5px;
-      color: var(--text-muted);
+      font-size: 11px;
+      color: var(--rail-muted);
       display: block;
       font-weight: 500;
     }
@@ -920,6 +1154,32 @@
       color: var(--text-primary);
       border-color: var(--border-subtle);
       box-shadow: 0 1px 3px rgba(16, 19, 24, 0.08), 0 2px 8px -2px rgba(16, 19, 24, 0.06);
+    }
+
+    /* High-Specificity Obsidian Navigation Rail Overrides (Never overridden by .main-tab-btn) */
+    .app-sidebar .sidebar-nav-btn.main-tab-btn {
+      display: flex;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: rgba(243, 241, 234, 0.78);
+      background: transparent;
+      border: 1px solid transparent;
+      box-shadow: none;
+      font-weight: 500;
+    }
+
+    .app-sidebar .sidebar-nav-btn.main-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+    }
+
+    .app-sidebar .sidebar-nav-btn.main-tab-btn.active {
+      background: var(--rail-accent-bg);
+      color: #ffffff;
+      border-color: rgba(16, 185, 129, 0.28);
+      font-weight: 700;
+      box-shadow: inset 3px 0 0 var(--rail-accent);
     }
 
     /* Historical Drift Banner */
@@ -2211,26 +2471,33 @@
       border-radius: 6px;
     }
 
-    /* Toasts — Top-Right Below Sticky Header (Never Covers Bottom Buttons) */
+    /* Toasts — Bottom-Right Non-Blocking (flips to Bottom-Left in RTL so it never covers right rail) */
     .toast-container {
       position: fixed;
-      top: 76px;
-      right: 20px;
-      z-index: 80;
+      bottom: 22px;
+      right: 22px;
+      top: auto;
+      z-index: 90;
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       gap: 8px;
-      max-width: 380px;
+      max-width: 360px;
+      pointer-events: none;
+    }
+    html[dir="rtl"] .toast-container {
+      right: auto;
+      left: 22px;
     }
 
     .toast-item {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-strong);
-      border-left: 4px solid var(--accent-emerald);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-size: 13.5px;
-      color: var(--text-primary);
+      pointer-events: auto;
+      background: var(--rail-bg);
+      border: 1px solid var(--rail-border);
+      border-left: 4px solid var(--rail-accent);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: #f5f7fa;
       box-shadow: var(--shadow-modal);
       display: flex;
       align-items: center;
@@ -2255,9 +2522,13 @@
       align-items: center;
       gap: 8px;
       padding: 7px 13px;
-      border-radius: 999px;
+      border-radius: 12px;
       font-size: 12px;
       font-weight: 700;
+      max-width: 100%;
+      white-space: normal;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
       background: var(--accent-emerald-bg);
       color: var(--accent-emerald);
       border: 1px solid var(--accent-emerald-border);
@@ -2658,7 +2929,7 @@
   </header>
 
   <div class="app-shell">
-    <!-- ALWAYS-VISIBLE STICKY LEFT SIDEBAR (NEVER DISAPPEARS WHEN SCROLLING!) -->
+    <!-- ARCHITECTURAL OBSIDIAN NAVIGATION RAIL (SLEEK, ZERO SCROLLBAR CLUTTER) -->
     <aside id="appSidebar" class="app-sidebar">
       <div class="sidebar-section">
         <div class="brand-cluster">
@@ -2669,20 +2940,7 @@
           </div>
         </div>
 
-        <!-- Always-Reachable Upload & Live ERP Actions -->
-        <button id="btnTopNewUpload" type="button" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 6px;" onclick="toggleOnboardingPanel()">
-          <span>📤</span>
-          <span data-i18n="btnNewUpload">Upload CSV / Excel</span>
-        </button>
-        <button type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;" onclick="openLiveErpModal()">
-          ⚡ Connect Tally / Live ERP
-        </button>
-        <button id="btnWorkspaceHub" type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;" onclick="openWorkspaceHubModal('oauth')">
-          🔌 OAuth, Digests &amp; Team
-        </button>
-
-        <!-- Always-Visible Simple 4-Section Menu -->
-        <div class="sidebar-label" style="margin-top: 8px;">MENU</div>
+        <div class="sidebar-label" data-i18n="navMenuLabel">WORKSPACE</div>
         <nav aria-label="Primary Workspace Navigation" style="display: flex; flex-direction: column; gap: 4px;">
           <button type="button" class="sidebar-nav-btn main-tab-btn active" data-tab="overview" onclick="switchWorkspaceTab('overview', this)">
             <span>🏠</span>
@@ -2710,70 +2968,83 @@
           </button>
         </nav>
 
-        <!-- Always-Visible Report Switcher -->
-        <div class="sidebar-label" style="margin-top: 8px;" data-i18n="lblReport">SWITCH REPORT</div>
-        <select id="timeMachineSelect" class="sidebar-report-select" onchange="onTimeMachineChange(this.value)">
-          <option value="">Loading reports...</option>
-        </select>
+        <div class="sidebar-label" style="margin-top: 8px;" data-i18n="navConnectLabel">CONNECT</div>
+        <button type="button" class="sidebar-util-btn" onclick="openLiveErpModal()">
+          <span>⚡</span> <span data-i18n="btnLiveErp">Connect Tally / Live ERP</span>
+        </button>
+        <button id="btnWorkspaceHub" type="button" class="sidebar-util-btn" onclick="openWorkspaceHubModal('oauth')">
+          <span>🔌</span> <span data-i18n="btnWorkspaceHub">OAuth, Digests &amp; Team</span>
+        </button>
       </div>
 
-      <!-- Always-Visible Bottom Language, Theme & Account Controls -->
+      <!-- Compact Obsidian Footer: Studio Swatches, Settings & Sign In -->
       <div class="sidebar-footer">
-        <div class="truth-seal">
-          <span class="pulse-dot"></span>
-          <span data-i18n="sealVerified">100% Real Data Verified</span>
-        </div>
-
-        <div class="global-lang-wrap" title="Switch language (43 World Languages + RTL)">
-          <div class="lang-switch" style="width: 100%; justify-content: space-between;">
-            <button id="btnGlobalEn" type="button" class="lang-btn active" style="flex: 1;" onclick="setGlobalLanguage('en')">🇬🇧 EN</button>
-            <button id="btnGlobalHi" type="button" class="lang-btn" style="flex: 1;" onclick="setGlobalLanguage('hi')">🇮🇳 HI</button>
-          </div>
-          <select id="globalLanguageSelect" class="global-lang-select" aria-label="Choose World Language" onchange="setGlobalLanguage(this.value)">
-            <option value="en">🌐 🇬🇧 English (Global)</option>
-            <option value="hi">🇮🇳 हिन्दी / Hinglish</option>
-            <option value="es">🇪🇸 Español (Spanish)</option>
-            <option value="fr">🇫🇷 Français (French)</option>
-            <option value="de">🇩🇪 Deutsch (German)</option>
-            <option value="ar">🇸🇦 العربية (Arabic · RTL)</option>
-            <option value="zh-CN">🇨🇳 中文 (简体)</option>
-            <option value="ja">🇯🇵 日本語 (Japanese)</option>
-            <option value="pt">🇧🇷 Português (Portuguese)</option>
-            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
-            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
-            <option value="mr">🇮🇳 मराठी (Marathi)</option>
-          </select>
-          <div id="globalLangStatus" class="global-lang-status">
-            <span>🌐 43 World Languages</span>
-            <span id="globalLangBadge">EN</span>
-          </div>
-        </div>
-
-        <div class="sidebar-theme-palette" title="Choose Global Studio Theme">
-          <button type="button" class="app-swatch-dot active" data-app-theme="light" style="background:#047857;" title="Royal Emerald (Light)" onclick="setAppStudioTheme('light')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:#4f46e5;" title="Stripe Daylight (Indigo)" onclick="setAppStudioTheme('stripe_alabaster')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:#0284c7;" title="Nordic Frost (Ocean Blue)" onclick="setAppStudioTheme('nordic_frost')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:#b45309;" title="Warm Ivory &amp; Gold" onclick="setAppStudioTheme('royal_gold')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:#ea580c;" title="Growth Coral Studio" onclick="setAppStudioTheme('sunset_coral')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="dark" style="background:#0f172a;" title="Midnight Slate (Dark)" onclick="setAppStudioTheme('dark')"></button>
+        <div class="sidebar-theme-palette" title="Choose Editorial Studio Palette">
+          <button type="button" class="app-swatch-dot active" data-app-theme="light" style="background:#047857;" title="Obsidian &amp; Linen Atelier" onclick="setAppStudioTheme('light')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:#4338ca;" title="Indigo Slate Atelier" onclick="setAppStudioTheme('stripe_alabaster')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:#0284c7;" title="Nordic Fjord" onclick="setAppStudioTheme('nordic_frost')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:#b45309;" title="Private Bank Ivory &amp; Brass" onclick="setAppStudioTheme('royal_gold')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:#c2410c;" title="Terracotta Studio" onclick="setAppStudioTheme('sunset_coral')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="dark" style="background:#0f172a;" title="Obsidian Midnight (Dark)" onclick="setAppStudioTheme('dark')"></button>
         </div>
 
         <div class="sidebar-footer-row">
-          <button id="btnThemeToggle" type="button" class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Switch Light / Dark Mode">
-            🎨 Theme
+          <button id="btnThemeToggle" type="button" class="sidebar-util-btn" onclick="toggleTheme()" title="Switch Light / Dark Mode">
+            🎨 <span data-i18n="btnThemeLabel">Theme</span>
           </button>
-          <button id="btnSettingsModal" type="button" class="btn btn-secondary btn-sm" onclick="openSettingsModal()" title="Settings">
+          <button id="btnSettingsModal" type="button" class="sidebar-util-btn" onclick="openSettingsModal()" title="Settings">
             ⚙️ <span data-i18n="btnSettings">Settings</span>
           </button>
         </div>
 
-        <button id="btnAuthModal" type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;" onclick="openAuthModal()">
-          🔐 <span id="authBtnLabel">Sign In</span>
+        <button id="btnAuthModal" type="button" class="sidebar-util-btn" onclick="openAuthModal()">
+          🔐 <span id="authBtnLabel" data-i18n="btnSignIn">Sign In</span>
         </button>
       </div>
     </aside>
 
     <main class="workspace-shell">
+      <!-- STICKY TOP EXECUTIVE COMMAND BAR (ALWAYS-VISIBLE 43-LANGUAGE SWITCHER + REPORT + UPLOAD CTA) -->
+      <header class="top-command-bar">
+        <div class="top-command-left">
+          <select id="timeMachineSelect" class="sidebar-report-select" aria-label="Switch Report" onchange="onTimeMachineChange(this.value)">
+            <option value="">Loading reports...</option>
+          </select>
+          <div class="truth-seal">
+            <span class="pulse-dot"></span>
+            <span data-i18n="sealVerified">100% Real Data Verified</span>
+          </div>
+        </div>
+
+        <div class="top-command-right">
+          <div class="topbar-lang-dock" title="Instant Translation Across 43 World Languages + RTL">
+            <button id="btnGlobalEn" type="button" class="lang-btn active" onclick="setGlobalLanguage('en')">EN</button>
+            <button id="btnGlobalHi" type="button" class="lang-btn" onclick="setGlobalLanguage('hi')">HI</button>
+            <select id="globalLanguageSelect" class="global-lang-select" aria-label="Choose World Language" onchange="setGlobalLanguage(this.value)">
+              <option value="en">🌐 🇬🇧 English (Global)</option>
+              <option value="hi">🇮🇳 हिन्दी / Hinglish</option>
+              <option value="es">🇪🇸 Español (Spanish)</option>
+              <option value="fr">🇫🇷 Français (French)</option>
+              <option value="de">🇩🇪 Deutsch (German)</option>
+              <option value="ar">🇸🇦 العربية (Arabic · RTL)</option>
+              <option value="zh-CN">🇨🇳 中文 (简体)</option>
+              <option value="ja">🇯🇵 日本語 (Japanese)</option>
+              <option value="pt">🇧🇷 Português (Portuguese)</option>
+              <option value="ru">🇷🇺 Русский (Russian)</option>
+              <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+              <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+              <option value="mr">🇮🇳 मराठी (Marathi)</option>
+            </select>
+            <span id="globalLangBadge" class="topbar-lang-badge">EN</span>
+            <span id="globalLangStatus" class="hidden"><span>🌐 43 World Languages</span></span>
+          </div>
+
+          <button id="btnTopNewUpload" type="button" class="btn btn-primary btn-sm" style="background: var(--rail-bg); color: #ffffff;" onclick="toggleOnboardingPanel()">
+            <span>+</span>
+            <span data-i18n="btnNewUpload">Upload CSV / Excel</span>
+          </button>
+        </div>
+      </header>
 
     <!-- Floating Upload & Sample Business Overlay (Opens on top of screen from ANY scroll position!) -->
     <div id="onboardingSection" class="upload-drawer-backdrop hidden" onclick="if(event.target===this) closeOnboardingPanel()">
@@ -3003,17 +3274,17 @@
             <span class="meta-stat"><span data-i18n="lblRiskMoney">Money at Risk:</span> <strong id="metaCapitalDrag" style="color: var(--accent-crimson);">$0</strong></span>
           </div>
 
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button type="button" class="btn btn-amber btn-sm" onclick="openMorningDigestModal()">
+          <div class="exec-action-strip">
+            <button type="button" class="btn btn-sm" onclick="openMorningDigestModal()">
               📲 <span data-i18n="btnWhatsAppBrief">WhatsApp Summary</span>
             </button>
-            <a id="openPrintableCertLink" href="#" target="_blank" class="btn btn-secondary btn-sm">
+            <a id="openPrintableCertLink" href="#" target="_blank" class="btn btn-sm">
               🖨️ <span data-i18n="btnPrintPdf">Save PDF</span>
             </a>
-            <a id="openFullDashboardLink" href="#" target="_blank" class="btn btn-sky btn-sm">
+            <a id="openFullDashboardLink" href="#" target="_blank" class="btn btn-sm">
               📊 <span data-i18n="btnFullVisual">Charts ↗</span>
             </a>
-            <button type="button" class="btn btn-emerald btn-sm" onclick="openProofDrawer()">
+            <button type="button" class="btn btn-sm btn-proof-accent" onclick="openProofDrawer()">
               🛡️ <span data-i18n="btnProof">Data Proof</span>
             </button>
           </div>
@@ -4293,6 +4564,7 @@
       translatedSummaries: {},
       translatedRankedLeaks: {},
       langRequestSeq: 0,
+      inFlightLangKey: null,
       copilotHistory: [],
       predictOverview: null,
       predictOverviewRunId: null,
@@ -4440,7 +4712,43 @@
         eyebrowAsk: 'ASK IN PLAIN ENGLISH OR HINGLISH',
         askTitle: 'Ask Any Question About Your Business',
         askLead: 'Type your question below just like texting a business analyst — or click one of the ready-made questions:',
-        btnGetAnswer: 'Get Verified Answer'
+        btnGetAnswer: 'Get Verified Answer',
+        navMenuLabel: 'WORKSPACE',
+        navConnectLabel: 'CONNECT',
+        btnLiveErp: 'Connect Tally / Live ERP',
+        btnWorkspaceHub: 'OAuth, Digests & Team',
+        btnSignIn: 'Sign In',
+        btnThemeLabel: 'Theme',
+        lblWhereToFocus: 'Where to Focus',
+        lblTimeEffort: 'Time & Effort',
+        lblNoChangeNeeded: 'No urgent changes needed — numbers look stable.',
+        lblAskNewChat: 'New Chat',
+        lblBaselineSaved: 'First report saved — upload next month\'s file later to compare progress',
+        lblBaselineDesc: 'Next time you upload updated sales/orders, you will see automatically whether problem rates improved or worsened.',
+        lblTopDrivers: 'Top AI Drivers:',
+        lblCalibrationGap: 'Calibration Gap',
+        lblZeroLeakage: 'Zero Post-Event Leakage Verified',
+        lblLeakageBlocked: 'Leakage Blocked',
+        lblBenefitChance: 'BENEFIT CHANCE',
+        lblLossRisk: 'Loss Risk',
+        lblSimConfScore: 'Simulation Confidence Score',
+        lblExpectedNet: 'Expected Net Impact',
+        lblNetAfterCost: 'Net Impact (After Rollout Cost)',
+        lblRiskBeforeAfter: 'Risk Rate (Before → After)',
+        lblGainTradeoff: 'Gain vs Trade-Off Split',
+        lblHonestRange: '95% Honest Range',
+        lblOptionDriver: 'Option / Driver',
+        lblAiImpact: 'AI Impact %',
+        lblDataProof: 'Data Proof',
+        lblProjectedImpact: 'Projected Impact',
+        lblProvenTag: 'Proven',
+        lblNoiseTag: 'Noise / Flat',
+        lblEntireBusiness: 'Entire Business (All Rows)',
+        lblModelTraining: 'Training calibrated ML model...',
+        lblLoadingScenarios: 'Loading smart 1-click decision scenarios from your data...',
+        lblLiveJudgeReady: 'Live Data Judge Ready',
+        lblWorldLangs: '43 World Languages',
+        lblSwitchLang: 'Language'
       },
       hi: {
         brandSubtitle: 'Aasan Business Doctor',
@@ -4576,7 +4884,43 @@
         eyebrowAsk: 'APNI BHASHA MEIN SAWAL POOCHEIN',
         askTitle: 'Business Se Juda Koi Bhi Sawal Poochein',
         askLead: 'Neeche apna sawal type karein ya ready-made button dabayein — jawab aapke asli data se milega:',
-        btnGetAnswer: 'Jawab Dekhein'
+        btnGetAnswer: 'Jawab Dekhein',
+        navMenuLabel: 'वर्कस्पेस',
+        navConnectLabel: 'कनेक्ट करें',
+        btnLiveErp: 'Tally / Live ERP जोड़ें',
+        btnWorkspaceHub: 'OAuth, Digests और टीम',
+        btnSignIn: 'साइन इन करें',
+        btnThemeLabel: 'थीम',
+        lblWhereToFocus: 'कहाँ फोकस करें',
+        lblTimeEffort: 'समय और मेहनत',
+        lblNoChangeNeeded: 'बिज़नेस बिल्कुल स्थिर चल रहा है।',
+        lblAskNewChat: 'नई चैट',
+        lblBaselineSaved: 'पहली रिपोर्ट सेव हो गई है — अगली बार नया डेटा डालने पर तुलना दिखेगी',
+        lblBaselineDesc: 'आगे जब आप अगले महीने की शीट डालेंगे, तो सिस्टम खुद बताएगा कि नुकसान बढ़ा या कम हुआ।',
+        lblTopDrivers: 'मुख्य AI कारण:',
+        lblCalibrationGap: 'कैलिब्रेशन अंतर',
+        lblZeroLeakage: 'ज़ीरो डेटा लीकेज वेरिफ़ाइड',
+        lblLeakageBlocked: 'पोस्ट-इवेंट लीकेज रोका गया',
+        lblBenefitChance: 'फ़ायदे का चांस',
+        lblLossRisk: 'नुकसान का ख़तरा',
+        lblSimConfScore: 'सिमुलेशन भरोसा स्कोर',
+        lblExpectedNet: 'अनुमानित शुद्ध असर',
+        lblNetAfterCost: 'खर्च काटकर शुद्ध लाभ',
+        lblRiskBeforeAfter: 'रिस्क रेट (पहले → बाद में)',
+        lblGainTradeoff: 'बचत बनाम ट्रेड-ऑफ़',
+        lblHonestRange: '95% ईमानदार रेंज',
+        lblOptionDriver: 'विकल्प / कारण',
+        lblAiImpact: 'AI असर %',
+        lblDataProof: 'डेटा सबूत',
+        lblProjectedImpact: 'अनुमानित असर',
+        lblProvenTag: 'साबित',
+        lblNoiseTag: 'असर नहीं',
+        lblEntireBusiness: 'पूरा बिज़नेस (सभी रिकॉर्ड्स)',
+        lblModelTraining: 'आपके डेटा पर ML मॉडल ट्रेन हो रहा है...',
+        lblLoadingScenarios: 'डेटा से स्मार्ट निर्णय विकल्प तैयार हो रहे हैं...',
+        lblLiveJudgeReady: 'लाइव डेटा जज तैयार',
+        lblWorldLangs: '43 वैश्विक भाषाएँ',
+        lblSwitchLang: 'भाषा'
       }
     };
 
@@ -4657,20 +5001,20 @@
         const htmlOpts = buildOptions();
         const gSel = document.getElementById('globalLanguageSelect');
         const bSel = document.getElementById('briefLanguageSelect');
+        const cSel = document.getElementById('copilotLangSelect');
         if (gSel) gSel.innerHTML = htmlOpts;
         if (bSel) bSel.innerHTML = htmlOpts;
+        if (cSel) cSel.innerHTML = htmlOpts;
 
         const st = document.getElementById('globalLangStatus');
         if (st && st.firstElementChild) {
           st.firstElementChild.textContent = `🌐 ${langs.length} World Languages`;
         }
 
-        let savedLang = 'en';
-        try { savedLang = localStorage.getItem('dataxray_lang') || 'en'; } catch (e) {}
-        if (savedLang && savedLang !== 'en') {
-          setGlobalLanguage(savedLang);
-        } else {
-          _syncLanguageSelectors('en');
+        const activeLang = appState.briefLanguage || 'en';
+        _syncLanguageSelectors(activeLang);
+        if (activeLang !== 'en' && activeLang !== 'hi' && !appState.activeRunId && !i18nDict[activeLang]) {
+          setGlobalLanguage(activeLang);
         }
       } catch (e) {
         // Fallback options already embedded in HTML
@@ -4679,15 +5023,27 @@
 
     async function setGlobalLanguage(lang) {
       const code = String(lang || 'en').trim() || 'en';
+      const cacheKey = `${appState.activeRunId || 'none'}::${code}`;
+      if (appState.inFlightLangKey === cacheKey) {
+        return; // Deduplicate simultaneous duplicate request for the exact same run+language
+      }
       const reqId = ++appState.langRequestSeq;
       appState.briefLanguage = code;
       try { localStorage.setItem('dataxray_lang', code); } catch (e) {}
 
       const copilotSel = document.getElementById('copilotLangSelect');
-      if (copilotSel) copilotSel.value = (code === 'hi') ? 'hi' : 'en';
+      if (copilotSel) {
+        const hasOpt = Array.from(copilotSel.options || []).some(o => o.value === code);
+        copilotSel.value = hasOpt ? code : (code === 'hi' ? 'hi' : 'en');
+      }
+
+      // Invalidate tab-level language caches so Decision Lab & Boardroom refresh in new language
+      appState.boardroomStartersRunId = null;
+      appState.predictOverviewRunId = null;
 
       // Fast instant path for built-in English & Hindi
       if (code === 'en' || code === 'hi') {
+        appState.inFlightLangKey = null;
         _syncLanguageSelectors(code);
         _applyUiDictionary(code);
         if (appState.rankedLeaksRaw) {
@@ -4699,7 +5055,11 @@
           renderCohortExplorer((appState.executivePulse || {}).cohort_breakdowns || []);
           renderWorklistTable();
         }
-        if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
+        if (appState.activeTab === 'predict') {
+          loadDecisionPredictorOverview(true);
+        } else if (appState.predictOverview) {
+          renderDecisionPredictorOverview(appState.predictOverview);
+        }
         if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
         if (appState.predictCommitmentsData) renderPredictCommitments();
         if (appState.activeTab === 'boardroom') {
@@ -4709,16 +5069,16 @@
         return;
       }
 
-      // Worldwide 41 additional languages (with disk & memory cache + number-lock!)
+      // Worldwide 41 additional languages (with v2 GTX disk & memory cache + number-lock!)
       const meta = (appState.worldLanguages || []).find(l => l.code === code);
       const niceName = meta ? `${meta.flag} ${meta.native}` : code.toUpperCase();
-      const cacheKey = `${appState.activeRunId || 'none'}::${code}`;
 
       _syncLanguageSelectors(code, '⏳...');
       if (!appState.translatedSummaries[cacheKey]) {
-        showToast(`🌐 Translating report into ${niceName}...`, 'info');
+        showToast(`🌐 Translating into ${niceName}...`, 'info', 'lang-status');
       }
 
+      appState.inFlightLangKey = cacheKey;
       try {
         if (appState.activeRunId && !appState.translatedSummaries[cacheKey]) {
           const res = await apiFetch(`/api/v1/i18n/translate-run/${encodeURIComponent(appState.activeRunId)}`, {
@@ -4742,9 +5102,9 @@
             appState.translatedSummaries[cacheKey] = data.summary_markdown;
           }
           if (data.engine === 'offline_fallback') {
-            showToast(`Offline mode: showing English fallback for ${niceName}`, 'warn');
+            showToast(`Offline mode: showing English fallback for ${niceName}`, 'warn', 'lang-status');
           } else {
-            showToast(`✅ Translated into ${niceName} (100% numbers verified)`, 'success');
+            showToast(`✅ Translated into ${niceName} (100% numbers verified)`, 'success', 'lang-status');
           }
         } else if (!appState.activeRunId && !i18nDict[code]) {
           const res = await apiFetch('/api/v1/i18n/translate-ui', {
@@ -4760,7 +5120,11 @@
         }
       } catch (err) {
         if (reqId !== appState.langRequestSeq) return;
-        showToast(`Could not translate into ${niceName}: ${err.message}`, 'warn');
+        showToast(`Could not translate into ${niceName}: ${err.message}`, 'warn', 'lang-status');
+      } finally {
+        if (appState.inFlightLangKey === cacheKey) {
+          appState.inFlightLangKey = null;
+        }
       }
 
       if (reqId !== appState.langRequestSeq) return;
@@ -4776,7 +5140,11 @@
         renderCohortExplorer((appState.executivePulse || {}).cohort_breakdowns || []);
         renderWorklistTable();
       }
-      if (appState.predictOverview) renderDecisionPredictorOverview(appState.predictOverview);
+      if (appState.activeTab === 'predict') {
+        loadDecisionPredictorOverview(true);
+      } else if (appState.predictOverview) {
+        renderDecisionPredictorOverview(appState.predictOverview);
+      }
       if (appState.predictLastResult) renderDecisionSimulationResult(appState.predictLastResult);
       if (appState.predictCommitmentsData) renderPredictCommitments();
       if (appState.activeTab === 'boardroom') {
@@ -4786,7 +5154,7 @@
     }
 
     function toggleTheme() {
-      const next = appState.theme === 'dark' ? 'stripe_alabaster' : 'dark';
+      const next = appState.theme === 'dark' ? 'light' : 'dark';
       setAppStudioTheme(next);
     }
 
@@ -5100,10 +5468,19 @@
     // =========================================================================
     // TOAST NOTIFICATION SYSTEM
     // =========================================================================
-    function showToast(message, level = 'success') {
+    function showToast(message, level = 'success', replaceTag = null) {
       const container = document.getElementById('toastContainer');
+      if (!container) return;
+      if (replaceTag) {
+        container.querySelectorAll(`[data-toast-tag="${replaceTag}"]`).forEach(oldEl => oldEl.remove());
+      }
+      // Keep at most 2 visible toasts so screen never clutters
+      while (container.children.length >= 2) {
+        container.firstElementChild.remove();
+      }
       const el = document.createElement('div');
       el.className = `toast-item ${level}`;
+      if (replaceTag) el.setAttribute('data-toast-tag', replaceTag);
       el.innerHTML = `
         <span>${escapeHtml(message)}</span>
         <button type="button" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;" onclick="this.parentElement.remove()">✕</button>
@@ -5111,7 +5488,7 @@
       container.appendChild(el);
       setTimeout(() => {
         if (el.parentElement) el.remove();
-      }, 4500);
+      }, 4200);
     }
 
     function escapeHtml(str) {
@@ -5361,7 +5738,7 @@
         const sanityBanner = document.getElementById('intentSanityBanner');
         if (sanityBanner && data.detected_goal) {
           const advPct = data.detected_goal.detected_adverse_rate_pct;
-          const warnMsg = (appState.lang === 'hi' && data.detected_goal.target_sanity_warning_hi)
+          const warnMsg = (appState.briefLanguage === 'hi' && data.detected_goal.target_sanity_warning_hi)
             ? data.detected_goal.target_sanity_warning_hi
             : data.detected_goal.target_sanity_warning_en;
           sanityBanner.classList.remove('hidden');
@@ -5591,14 +5968,14 @@
       const expDelta = Number((drift.deltas && drift.deltas.mean_exposure_delta) || 0);
       const isBaseline = !drift.deltas || (rateDelta === 0 && expDelta === 0);
       if (isBaseline) {
-        document.getElementById('driftHeadline').textContent =
-          lang === 'hi'
-            ? 'Pehli report save ho gayi hai — agli baar naya data daalne par tulna (comparison) dikhegi'
-            : 'First report saved — upload next month\'s file later to compare progress';
-        document.getElementById('driftNarrative').textContent =
-          lang === 'hi'
-            ? 'Aage jab aap agle mahine ki sheet daalenge, toh system khud batayega ki nuksaan badha ya kam hua.'
-            : 'Next time you upload updated sales/orders, you will see automatically whether problem rates improved or worsened.';
+        document.getElementById('driftHeadline').textContent = tUi(
+          'lblBaselineSaved',
+          'First report saved — upload next month\'s file later to compare progress'
+        );
+        document.getElementById('driftNarrative').textContent = tUi(
+          'lblBaselineDesc',
+          'Next time you upload updated sales/orders, you will see automatically whether problem rates improved or worsened.'
+        );
       } else {
         document.getElementById('driftHeadline').textContent = drift.headline || 'Comparison Ready';
         document.getElementById('driftNarrative').textContent = drift.narrative_en || '';
@@ -6335,7 +6712,7 @@
       container.innerHTML = '';
       const lang = appState.briefLanguage === 'hi' ? 'hi' : 'en';
       if (!ownerPlans || !ownerPlans.length) {
-        container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">${lang === 'hi' ? 'Business bilkul stable chal raha hai.' : 'No urgent changes needed — numbers look stable.'}</p>`;
+        container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">${escapeHtml(tUi('lblNoChangeNeeded', 'No urgent changes needed — numbers look stable.'))}</p>`;
         return;
       }
 
@@ -6352,11 +6729,11 @@
           </p>
           <div class="pathway-meta">
             <div>
-              <span>${lang === 'hi' ? 'Kahan Focus Karein' : 'Where to Focus'}</span>
+              <span>${escapeHtml(tUi('lblWhereToFocus', 'Where to Focus'))}</span>
               <strong>${escapeHtml(p.target)}</strong>
             </div>
             <div>
-              <span>${lang === 'hi' ? 'Samay aur Mehnat' : 'Time & Effort'}</span>
+              <span>${escapeHtml(tUi('lblTimeEffort', 'Time & Effort'))}</span>
               <strong>${escapeHtml(p.effort)}</strong>
             </div>
           </div>
@@ -6921,7 +7298,8 @@
         return;
       }
 
-      const lang = document.getElementById('copilotLangSelect').value || 'en';
+      const lang = (document.getElementById('copilotLangSelect').value || appState.briefLanguage || 'en');
+      const apiLang = (lang === 'hi') ? 'hi' : 'en';
       const btn = document.getElementById('copilotAskBtn');
       btn.disabled = true;
       btn.textContent = 'Checking Data...';
@@ -6933,7 +7311,7 @@
           body: JSON.stringify({
             output_dir: appState.activeOutputDir,
             question: question,
-            language: lang,
+            language: apiLang,
             use_llm: false,
             history: (appState.copilotHistory || []).slice(-4)
           })
@@ -6965,12 +7343,13 @@
         }
 
         let mdAnswer = data.answer_markdown || data.plain_summary || data.answer || 'Checked.';
-        if (appState.briefLanguage && appState.briefLanguage !== 'en' && appState.briefLanguage !== 'hi') {
+        const trTargetLang = (lang !== 'en' && lang !== 'hi') ? lang : (appState.briefLanguage || 'en');
+        if (trTargetLang && trTargetLang !== 'en' && trTargetLang !== 'hi') {
           try {
             const trRes = await apiFetch('/api/v1/i18n/translate-texts', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ target_lang: appState.briefLanguage, texts: { ans: mdAnswer } })
+              body: JSON.stringify({ target_lang: trTargetLang, texts: { ans: mdAnswer } })
             });
             if (trRes.ok) {
               const trJson = await trRes.json();
@@ -7851,7 +8230,9 @@
     async function loadDecisionPredictorOverview(forceReload = false) {
       const runId = appState.activeRunId;
       if (!runId) return;
-      if (!forceReload && appState.predictOverview && appState.predictOverviewRunId === runId) {
+      const activeLang = appState.briefLanguage || 'en';
+      const cacheKey = `${runId}::${activeLang}`;
+      if (!forceReload && appState.predictOverview && appState.predictOverviewRunId === cacheKey) {
         renderDecisionPredictorOverview(appState.predictOverview);
         loadPredictCommitments();
         return;
@@ -7859,21 +8240,20 @@
 
       const pill = document.getElementById('predictModelHonestyPill');
       const grid = document.getElementById('predictPresetsGrid');
-      const isHi = appState.briefLanguage === 'hi';
       if (pill) {
         pill.className = 'predict-honesty-pill';
-        pill.textContent = isHi ? '🧠 आपके डेटा पर ML मॉडल ट्रेन हो रहा है...' : '🧠 Training calibrated ML model...';
+        pill.textContent = `🧠 ${tUi('lblModelTraining', 'Training calibrated ML model...')}`;
       }
       if (grid) {
-        grid.innerHTML = `<div style="grid-column:1/-1;padding:18px;text-align:center;color:var(--text-muted);font-size:13px;">${isHi ? 'डेटा से स्मार्ट निर्णय विकल्प तैयार हो रहे हैं...' : 'Loading smart 1-click decision scenarios from your data...'}</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;padding:18px;text-align:center;color:var(--text-muted);font-size:13px;">${escapeHtml(tUi('lblLoadingScenarios', 'Loading smart 1-click decision scenarios from your data...'))}</div>`;
       }
 
       try {
-        const res = await apiFetch(`/api/v1/predict/overview/${encodeURIComponent(runId)}`);
+        const res = await apiFetch(`/api/v1/predict/overview/${encodeURIComponent(runId)}?lang=${encodeURIComponent(activeLang)}`);
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.detail || `Failed to train model (${res.status})`);
         appState.predictOverview = data;
-        appState.predictOverviewRunId = runId;
+        appState.predictOverviewRunId = cacheKey;
         renderDecisionPredictorOverview(data);
         loadPredictCommitments();
       } catch (e) {
@@ -7943,15 +8323,15 @@
         ).join('');
         const blockedList = (m.blocked_leakage_columns || []);
         const blockedNote = blockedList.length
-          ? `<span style="color:var(--accent-emerald);font-weight:700;">🛡️ ${isHi ? 'पोस्ट-इवेंट लीकेज रोका गया' : 'Leakage Blocked'}: <code>${escapeHtml(blockedList.slice(0, 4).join(', '))}</code></span>`
-          : `<span>✅ ${isHi ? 'ज़ीरो डेटा लीकेज वेरिफ़ाइड' : 'Zero Post-Event Leakage Verified'}</span>`;
+          ? `<span style="color:var(--accent-emerald);font-weight:700;">🛡️ ${escapeHtml(tUi('lblLeakageBlocked', 'Leakage Blocked'))}: <code>${escapeHtml(blockedList.slice(0, 4).join(', '))}</code></span>`
+          : `<span>✅ ${escapeHtml(tUi('lblZeroLeakage', 'Zero Post-Event Leakage Verified'))}</span>`;
         strip.innerHTML = `
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <strong style="color:var(--text-primary);">${isHi ? 'मुख्य AI कारण:' : 'Top AI Drivers:'}</strong>
+            <strong style="color:var(--text-primary);">${escapeHtml(tUi('lblTopDrivers', 'Top AI Drivers:'))}</strong>
             ${chips || '<span>Balanced baseline</span>'}
           </div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <span>${isHi ? 'कैलिब्रेशन अंतर' : 'Calibration Gap'}: <strong>${Number(m.calibration_gap_pct || 0).toFixed(2)}%</strong></span>
+            <span>${escapeHtml(tUi('lblCalibrationGap', 'Calibration Gap'))}: <strong>${Number(m.calibration_gap_pct || 0).toFixed(2)}%</strong></span>
             ${blockedNote}
           </div>
         `;
@@ -7971,7 +8351,7 @@
       }
 
       if (scopeSel) {
-        let opts = `<option value="">${appState.briefLanguage === 'hi' ? 'पूरा बिज़नेस (सभी रिकॉर्ड्स)' : 'Entire Business (All Rows)'}</option>`;
+        let opts = `<option value="">${escapeHtml(tUi('lblEntireBusiness', 'Entire Business (All Rows)'))}</option>`;
         levers.filter(l => l.type === 'categorical').slice(0, 5).forEach(lv => {
           (lv.values || []).slice(0, 12).forEach(val => {
             opts += `<option value="${escapeHtml(lv.column)}|||${escapeHtml(val)}">${escapeHtml(lv.column.replace(/_/g, ' '))}: ${escapeHtml(val)}</option>`;
@@ -8172,7 +8552,8 @@
       const costRaw = parseFloat(document.getElementById('predictRolloutCostInput')?.value || '0');
       const reqBody = {
         ...payload,
-        implementation_cost: Number.isFinite(costRaw) && costRaw > 0 ? costRaw : 0
+        implementation_cost: Number.isFinite(costRaw) && costRaw > 0 ? costRaw : 0,
+        target_lang: appState.briefLanguage || 'en'
       };
       if (loader) loader.classList.remove('hidden');
       if (btn) btn.disabled = true;
@@ -8259,10 +8640,8 @@
         gaugeCircle.style.strokeDashoffset = String(offset.toFixed(2));
       }
       document.getElementById('predictGaugePctText').textContent = `${benefitPct.toFixed(0)}%`;
-      document.getElementById('predictGaugeSubText').textContent = isHi ? 'फ़ायदे का चांस' : 'BENEFIT CHANCE';
-      document.getElementById('predictLossRiskPill').textContent = isHi
-        ? `नुकसान का ख़तरा: ${lossPct.toFixed(1)}%`
-        : `Loss Risk: ${lossPct.toFixed(1)}%`;
+      document.getElementById('predictGaugeSubText').textContent = tUi('lblBenefitChance', 'BENEFIT CHANCE');
+      document.getElementById('predictLossRiskPill').textContent = `${tUi('lblLossRisk', 'Loss Risk')}: ${lossPct.toFixed(1)}%`;
 
       // Verdict Badge & Headline
       const badge = document.getElementById('predictVerdictBadge');
@@ -8294,7 +8673,7 @@
         const pillEl = document.getElementById('predictConfScorePill');
         const fillEl = document.getElementById('predictConfBarFill');
         const pilEl = document.getElementById('predictConfPillars');
-        if (titleEl) titleEl.textContent = isHi ? '🛡️ सिमुलेशन भरोसा स्कोर (Simulation Confidence Score)' : '🛡️ Simulation Confidence Score';
+        if (titleEl) titleEl.textContent = `🛡️ ${tUi('lblSimConfScore', 'Simulation Confidence Score')}`;
         if (pillEl) {
           pillEl.textContent = `${cScore}/100 · ${isHi ? (sc.label_hi || sc.tier) : (sc.label_en || sc.tier)}`;
           pillEl.style.color = cColor;
@@ -8338,16 +8717,16 @@
       const roiTxt = (pred.roi_multiple !== null && pred.roi_multiple !== undefined)
         ? ` · ROI ${Number(pred.roi_multiple).toFixed(2)}x`
         : '';
-      document.getElementById('predictKpiNetLabel').textContent = isHi
-        ? (app.implementation_cost > 0 ? 'खर्च काटकर शुद्ध लाभ (Net After Cost)' : 'अनुमानित शुद्ध असर (Net Impact)')
-        : (app.implementation_cost > 0 ? 'Net Impact (After Rollout Cost)' : 'Expected Net Impact');
+      document.getElementById('predictKpiNetLabel').textContent = app.implementation_cost > 0
+        ? tUi('lblNetAfterCost', 'Net Impact (After Rollout Cost)')
+        : tUi('lblExpectedNet', 'Expected Net Impact');
       if (netValEl) {
         netValEl.textContent = `${signPrefix}${pred.formatted_net_impact || '0'}`;
         netValEl.style.color = netNum > 0 ? 'var(--accent-emerald)' : (netNum < 0 ? 'var(--accent-crimson)' : 'var(--text-primary)');
       }
-      document.getElementById('predictKpiCiVal').textContent = `${isHi ? '95% ईमानदार रेंज' : '95% Honest Range'}: ${pred.formatted_ci_95 || '--'}${roiTxt}`;
+      document.getElementById('predictKpiCiVal').textContent = `${tUi('lblHonestRange', '95% Honest Range')}: ${pred.formatted_ci_95 || '--'}${roiTxt}`;
 
-      document.getElementById('predictKpiRateLabel').textContent = isHi ? 'रिस्क रेट (पहले → बाद में)' : 'Risk Rate (Before → After)';
+      document.getElementById('predictKpiRateLabel').textContent = tUi('lblRiskBeforeAfter', 'Risk Rate (Before → After)');
       const rBefore = Number(pred.before_risk_rate_pct || 0).toFixed(1);
       const rAfter = Number(pred.after_risk_rate_pct || 0).toFixed(1);
       const rRed = Number(pred.risk_reduction_pp || 0);
@@ -8362,7 +8741,7 @@
         : (evAv >= 0 ? `~${Math.round(evAv).toLocaleString('en-US')} fewer failures expected` : `~${Math.abs(Math.round(evAv)).toLocaleString('en-US')} more failures expected`);
 
       // Component split KPI
-      document.getElementById('predictKpiCompLabel').textContent = isHi ? 'बचत बनाम ट्रेड-ऑफ़' : 'Gain vs Trade-Off Split';
+      document.getElementById('predictKpiCompLabel').textContent = tUi('lblGainTradeoff', 'Gain vs Trade-Off Split');
       const savedLoss = Number(comp.saved_failure_loss || 0);
       const marginRec = Number(comp.direct_margin_recovery || 0);
       const collCost = Number(comp.collateral_tradeoff_cost || 0);
@@ -8812,7 +9191,7 @@
         el.classList.toggle('active', el.getAttribute('data-app-theme') === t);
       });
       const btn = document.getElementById('btnThemeToggle');
-      if (btn) btn.textContent = (t === 'dark') ? '☀️ Daylight' : '🎨 Studio';
+      if (btn) btn.innerHTML = (t === 'dark') ? '☀️ <span data-i18n="btnThemeLabel">' + escapeHtml(tUi('btnThemeLabel', 'Theme')) + '</span>' : '🎨 <span data-i18n="btnThemeLabel">' + escapeHtml(tUi('btnThemeLabel', 'Theme')) + '</span>';
       try { localStorage.setItem('dataxray_theme', t); } catch (e) {}
     }
 
@@ -9035,11 +9414,11 @@
             <table class="data-table" style="font-size:12.5px;">
               <thead>
                 <tr>
-                  <th>${isHi ? 'विकल्प / कारण' : 'Option / Driver'}</th>
-                  <th>${isHi ? 'AI असर %' : 'AI Impact %'}</th>
-                  <th>${isHi ? 'डेटा सबूत' : 'Data Proof'}</th>
-                  <th>${isHi ? 'फ़ायदे का चांस' : 'Benefit Chance'}</th>
-                  <th>${isHi ? 'अनुमानित असर' : 'Projected Impact'}</th>
+                  <th>${escapeHtml(tUi('lblOptionDriver', 'Option / Driver'))}</th>
+                  <th>${escapeHtml(tUi('lblAiImpact', 'AI Impact %'))}</th>
+                  <th>${escapeHtml(tUi('lblDataProof', 'Data Proof'))}</th>
+                  <th>${escapeHtml(tUi('lblBenefitChance', 'Benefit Chance'))}</th>
+                  <th>${escapeHtml(tUi('lblProjectedImpact', 'Projected Impact'))}</th>
                 </tr>
               </thead>
               <tbody>
@@ -9047,7 +9426,7 @@
                   <tr>
                     <td><strong>${escapeHtml(isHi ? (r.option_hi || r.option_en) : r.option_en)}</strong></td>
                     <td class="tabular-nums">${Number(r.ml_driver_share_pct || 0).toFixed(1)}%</td>
-                    <td>${r.statistically_proven ? '✅ Proven' : '⚪ Noise / Flat'}</td>
+                    <td>${r.statistically_proven ? `✅ ${escapeHtml(tUi('lblProvenTag', 'Proven'))}` : `⚪ ${escapeHtml(tUi('lblNoiseTag', 'Noise / Flat'))}`}</td>
                     <td class="tabular-nums">${r.benefit_chance_pct !== null && r.benefit_chance_pct !== undefined ? `${Number(r.benefit_chance_pct).toFixed(0)}%` : '—'}</td>
                     <td>${escapeHtml(r.expected_impact || '—')}</td>
                   </tr>
@@ -9101,14 +9480,18 @@
       }).join('');
     }
 
-    // Initialize clean theme, saved auth/region, & load default example
+    // Initialize clean theme, saved auth/region/language, & load default example (zero boot race!)
     window.addEventListener('DOMContentLoaded', () => {
       try {
         const savedTheme = localStorage.getItem('dataxray_theme');
         if (savedTheme) {
           setAppStudioTheme(savedTheme);
         } else {
-          setAppStudioTheme('stripe_alabaster');
+          setAppStudioTheme('light');
+        }
+        const savedLang = localStorage.getItem('dataxray_lang');
+        if (savedLang && savedLang.trim()) {
+          appState.briefLanguage = savedLang.trim();
         }
         const savedRegion = localStorage.getItem('dataxray_region');
         if (savedRegion) {

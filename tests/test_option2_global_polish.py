@@ -437,3 +437,48 @@ def test_universal_200_questions_engine_answers_all_200_questions(tmp_path):
     assert len(payload["questions"]) == 200
     assert len(payload["pillars"]) == 15
 
+
+def test_43_languages_i18n_and_obsidian_editorial_ui(client: TestClient):
+    """43-language i18n engine, stale-cache validator, Decision Lab ?lang, and Obsidian Editorial UI invariants."""
+    from autonomous_engine.global_i18n_engine import (
+        WORLD_LANGUAGES,
+        RTL_CODES,
+        _is_valid_translated_cache,
+        _shield_tokens,
+        _unshield_tokens,
+    )
+
+    # 1. All 43 languages + RTL catalog check
+    langs_resp = client.get("/api/v1/i18n/languages")
+    assert langs_resp.status_code == 200
+    langs_payload = langs_resp.json()
+    assert langs_payload["count"] == 43
+    assert len(WORLD_LANGUAGES) == 43
+    assert {"ar", "ur", "he", "fa"}.issubset(RTL_CODES)
+
+    # 2. Shield/unshield preserves exact numeric & brand tokens
+    src_txt = "DataX-Ray found $4.64M risk (41.73% rate) across WhatsApp orders."
+    sh, toks = _shield_tokens(src_txt)
+    assert "$4.64M" not in sh and "41.73%" not in sh and "DataX-Ray" not in sh
+    assert _unshield_tokens(sh, toks) == src_txt
+
+    # 3. Stale/broken English cache detector rejects untranslated non-EN caches
+    src_map = {"a": "Business Health Check", "b": "Biggest Money Leak", "c": "Decision Predictor"}
+    assert _is_valid_translated_cache(src_map, src_map, "es") is False
+    tr_ok = {"a": "Control de Salud Empresarial", "b": "Mayor Fuga de Dinero", "c": "Predictor de Decisiones"}
+    assert _is_valid_translated_cache(tr_ok, src_map, "es") is True
+
+    # 4. Decision Lab overview supports ?lang parameter cleanly
+    ov_resp = client.get("/api/v1/predict/overview/hotel_booking_cancellation?lang=en")
+    assert ov_resp.status_code == 200
+    assert "presets" in ov_resp.json()
+
+    # 5. Obsidian Ink & Warm Editorial Atelier UI structural markers
+    html = client.get("/app").text
+    assert "top-command-bar" in html
+    assert "topbar-lang-dock" in html
+    assert "exec-action-strip" in html
+    assert "inFlightLangKey" in html
+    assert '<script src="http' not in html
+
+

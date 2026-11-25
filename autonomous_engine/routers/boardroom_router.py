@@ -29,6 +29,7 @@ def build_boardroom_router(
             starters = judge.get_discussion_starters()
 
             code = str(lang or "en").strip()
+            badge_copy = dict(eng.model_metrics.get("blind_backtest_badge") or {}) if isinstance(eng.model_metrics.get("blind_backtest_badge"), dict) else eng.model_metrics.get("blind_backtest_badge")
             if code not in ("en", "hi") and starters:
                 try:
                     from ..global_i18n_engine import normalize_lang_code, translate_string_map
@@ -38,10 +39,14 @@ def build_boardroom_router(
                         for i, st in enumerate(starters):
                             s_map[f"t{i}"] = st["tag_en"]
                             s_map[f"p{i}"] = st["prompt_en"]
+                        if isinstance(badge_copy, dict) and badge_copy.get("label_en"):
+                            s_map["badge_en"] = str(badge_copy["label_en"])
                         tr_map, _ = translate_string_map(s_map, norm_c, max_workers=4)
                         for i, st in enumerate(starters):
                             st["tag_en"] = tr_map.get(f"t{i}", st["tag_en"])
                             st["prompt_en"] = tr_map.get(f"p{i}", st["prompt_en"])
+                        if isinstance(badge_copy, dict) and "badge_en" in tr_map:
+                            badge_copy["label_en"] = tr_map["badge_en"]
                 except Exception:
                     pass
 
@@ -49,7 +54,7 @@ def build_boardroom_router(
                 "status": "success",
                 "run_id": run_id,
                 "model_roc_auc": eng.model_metrics.get("roc_auc"),
-                "blind_backtest_badge": eng.model_metrics.get("blind_backtest_badge"),
+                "blind_backtest_badge": badge_copy,
                 "rows_audited": int(len(eng.df_full)),
                 "starters": starters,
             }
