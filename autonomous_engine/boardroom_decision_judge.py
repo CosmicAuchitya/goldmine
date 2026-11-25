@@ -295,16 +295,17 @@ class BoardroomDecisionJudge:
         matched_cols: List[str] = []
         matched_segs: List[Tuple[str, str]] = []
 
-        # 1. Direct column name & humanized label match
+        # 1. Direct column name, unit-stripped base name (e.g. "Torque [Nm]" -> "torque"), & humanized label match
         for col in self.engine.all_features:
             c_low = col.lower()
-            c_sp = c_low.replace("_", " ")
-            lbl_en = clean_column_label(col, "en").lower()
-            lbl_hi = clean_column_label(col, "hi").lower()
-            tokens_to_check = [c_low, c_sp, lbl_en]
+            c_sp = re.sub(r"[^a-z0-9\u0900-\u097f]+", " ", c_low).strip()
+            c_base = re.sub(r"[\[\(].*?[\]\)]", "", c_low)
+            c_base = re.sub(r"[^a-z0-9\u0900-\u097f]+", " ", c_base).strip()
+            lbl_en = re.sub(r"[^a-z0-9\u0900-\u097f]+", " ", clean_column_label(col, "en").lower()).strip()
+            lbl_hi = clean_column_label(col, "hi").lower().strip()
+            tokens_to_check = [c_low, c_sp, c_base, lbl_en]
             if len(lbl_hi) >= 3:
                 tokens_to_check.append(lbl_hi)
-            # Also check meaningful individual words of multi-word columns
             for tok in tokens_to_check:
                 if len(tok) >= 2 and re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(tok)}(?![a-z0-9\u0900-\u097f])", low_clean):
                     if col not in matched_cols:

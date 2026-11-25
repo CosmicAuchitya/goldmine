@@ -320,6 +320,9 @@ def resolve_currency_metadata(
     # 1. Check UK indicators
     is_uk = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['gbp', '£', 'pound', 'pence', 'sterling'])
     is_uk = is_uk or any(k in cell_sample_text for k in ['£', ' gbp ', 'pound', 'pence'])
+    if not is_uk and 'united kingdom' in cell_sample_text:
+        if not any(k in cell_sample_text for k in ['$', '€', '₹', ' usd ', ' eur ', ' inr ']):
+            is_uk = True
 
     # 2. Check India indicators (including Devanagari Hindi currency column/value clues)
     is_in = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['inr', '₹', 'rs', 'rupee', 'rupees', 'lakh', 'crore', 'gst', 'mrp', 'tally', 'रुपये', 'रुपए', 'रकम', 'राशि'])
@@ -496,6 +499,8 @@ def resolve_canonical_target_and_cost(
     # -------------------------------------------------------------
     # 1.2 Target Keywords search if blueprint candidate absent or invalid
     target_keywords = [
+        'not_fully_paid', 'not.fully.paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'writeoff', 'write_off',
+        'is_rto', 'rto_flag', 'rto_status',
         'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
         'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
         'on_time', 'time_y', 'y_n', 'cancel', 'is_returned', 'returned', 'refund', 'chargeback', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
@@ -570,40 +575,71 @@ def resolve_canonical_target_and_cost(
             if is_index_artifact(c):
                 continue
             c_low = c.lower()
-            is_rating_scale = any(k in c_low for k in ['rating', 'quality', 'score', 'grade']) and pd.api.types.is_numeric_dtype(df[c]) and (df[c].nunique() <= 100 or (df[c].min() >= 0 and df[c].max() <= 10.5))
-            if any(k in c_low for k in target_keywords) and (df[c].nunique() <= 10 or is_rating_scale) and not c_low.endswith(('_id', '_key', '_code', '_num')):
+            c_norm = re.sub(r'[.\-\s]+', '_', c_low)
+            is_rating_scale = any(k in c_norm for k in ['rating', 'quality', 'score', 'grade']) and pd.api.types.is_numeric_dtype(df[c]) and (df[c].nunique() <= 100 or (df[c].min() >= 0 and df[c].max() <= 10.5))
+            if (any(k in c_low or k in c_norm for k in target_keywords)) and (df[c].nunique() <= 10 or is_rating_scale) and not c_norm.endswith(('_id', '_key', '_code', '_num')):
                 if c_low == 'class' and any(val in ['eco', 'business', 'first'] for val in df[c].astype(str).str.lower().unique()):
                     continue
                 target_candidates.append(c)
         
         priority_targets = [
+            'not_fully_paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'is_rto',
             'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
             'readmit', 'satisfaction', 'exited', 'cancel', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status',
             'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'status', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
-        target_candidates.sort(key=lambda col: next((i for i, pt in enumerate(priority_targets) if pt in col.lower()), 999))
+        target_candidates.sort(key=lambda col: next((i for i, pt in enumerate(priority_targets) if pt in col.lower() or pt in re.sub(r'[.\-\s]+', '_', col.lower())), 999))
         if target_candidates:
             target_col = target_candidates[0]
 
-    # 1.3 Binary fallback
+    # 1.3 Binary fallback (avoid input policy/flag columns; prefer rightmost outcome column)
     if not target_col:
+        _input_flag_tokens = ('policy', 'approved', 'eligible', 'has_', 'is_active', 'is_member', 'is_vip', 'verified', 'consent', 'opted')
         strictly_binary = [
             c for c in cols
             if not is_index_artifact(c)
             and not is_demographic_attribute(c)
-            and not c.lower().endswith(('_id', '_key', '_code', '_num'))
+            and not re.sub(r'[.\-\s]+', '_', c.lower()).endswith(('_id', '_key', '_code', '_num'))
             and df[c].nunique() == 2
         ]
-        yes_no_cols = [
+        non_policy_binary = [
             c for c in strictly_binary
+            if not any(tok in re.sub(r'[.\-\s]+', '_', c.lower()) for tok in _input_flag_tokens)
+        ]
+        cand_bin = non_policy_binary or strictly_binary
+        yes_no_cols = [
+            c for c in cand_bin
             if any(str(val).strip().lower() in ['yes', 'y', '1', 'true', 't', 'sim', 'si'] for val in df[c].dropna().unique())
             and not is_demographic_attribute(c)
         ]
         if yes_no_cols:
-            target_col = yes_no_cols[0]
-        elif strictly_binary:
-            target_col = strictly_binary[0]
+            target_col = yes_no_cols[-1]
+        elif cand_bin:
+            target_col = cand_bin[-1]
+
+    # 1.4 Raw ERP Invoice Credit-Note / Negative-Quantity Return Auto-Detector (Tally/SAP/Shopify/UK Retail)
+    erp_credit_note_target: Optional[pd.Series] = None
+    erp_credit_note_desc: Optional[str] = None
+    if not target_col:
+        inv_col = next(
+            (c for c in cols if any(k in c.lower() for k in ('invoiceno', 'invoice_no', 'invoice_id', 'voucherno', 'orderno', 'order_no', 'bill_no')) and not pd.api.types.is_numeric_dtype(df[c])),
+            None,
+        )
+        qty_col = next(
+            (c for c in cols if c.lower().strip() in ('quantity', 'qty', 'units', 'order_qty', 'billed_qty') and pd.api.types.is_numeric_dtype(df[c])),
+            None,
+        )
+        if qty_col is not None:
+            q_num = pd.to_numeric(df[qty_col], errors='coerce').fillna(0)
+            neg_q = q_num < 0
+            inv_c = df[inv_col].astype(str).str.strip().str.upper().str.match(r'^(?:C\d|CN[-_\s]?\d|CR[-_\s]?\d)') if inv_col else pd.Series(False, index=df.index)
+            comb_ret = neg_q | inv_c
+            ret_rate = float(comb_ret.mean()) if len(df) else 0.0
+            if int(comb_ret.sum()) >= 5 and 0.002 <= ret_rate <= 0.45:
+                target_col = qty_col
+                erp_credit_note_target = comb_ret.astype(int)
+                erp_credit_note_desc = f"ERP Return / Credit Note ({qty_col} < 0" + (f" or {inv_col} 'C' prefix)" if inv_col and inv_c.any() else ")")
 
     # Fallback to last column if still none
     if not target_col:
@@ -654,7 +690,10 @@ def resolve_canonical_target_and_cost(
         'test results', 'test_results', 'admission'
     ])
 
-    if not is_num:
+    if erp_credit_note_target is not None:
+        binary_target = erp_credit_note_target
+        target_desc = erp_credit_note_desc or f"{target_col} < 0 (ERP Return)"
+    elif not is_num:
         s_str = s_raw.astype(str).str.lower().str.strip()
         # Normalize ERP snake_case / kebab-case / slash codes (e.g. Delayed_SLA_Breach -> delayed sla breach)
         s_str_norm = s_str.str.replace(r'[_\-/]+', ' ', regex=True).str.replace(r'\s+', ' ', regex=True).str.strip()
@@ -718,9 +757,11 @@ def resolve_canonical_target_and_cost(
     else:
         s_clean = pd.to_numeric(s_raw, errors='coerce').fillna(0)
         if s_raw.nunique() <= 2 and set(s_clean.unique()).issubset({0, 1, 0.0, 1.0}):
-            if any(k in target_col.lower() for k in ['survive', 'survival', 'pass', 'retention']):
+            tc_norm = re.sub(r'[.\-\s]+', '_', target_col.lower())
+            is_neg_prefix = any(k in tc_norm for k in ('not_', 'unpaid', 'non_', 'undelivered', 'incomplete', 'failed', 'default'))
+            if (not is_neg_prefix) and any(k in tc_norm for k in ['survive', 'survival', 'pass', 'retention', 'policy', 'approved', 'delivered', 'retained']):
                 binary_target = (s_clean == 0).astype(int)
-                target_desc = f"{target_col} == 0 (Casualty / Mortality)" if any(k in target_col.lower() for k in ['survive', 'survival']) else f"{target_col} == 0"
+                target_desc = f"{target_col} == 0 (Casualty / Mortality)" if any(k in tc_norm for k in ['survive', 'survival']) else f"{target_col} == 0 (Non-Compliant / Breach)"
             else:
                 binary_target = s_clean.astype(int)
                 target_desc = f"{target_col} == 1"
@@ -791,11 +832,11 @@ def resolve_canonical_target_and_cost(
     # -------------------------------------------------------------
     # Strict financial keywords representing physical currency ledgers
     cost_keywords = [
-        'loan_amount', 'loanamount', 'loan', 'credit_amount', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
+        'loan_amount', 'loanamount', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'monthly_payment', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
         'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value',
         'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income',
-        'order_value', 'contract_value', 'deal_value', 'invoice_value', 'order_bill', 'bill_inr', 'bill_usd',
+        'order_value', 'contract_value', 'deal_value', 'invoice_value', 'line_value', 'line_total', 'order_bill', 'bill_inr', 'bill_usd',
         'premium', 'retainer', 'monthly_rent', 'annual_rent', 'rent_inr', 'rent_usd', 'freight', 'tariff', 'principal', 'tuition', 'commission',
         'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
         'रकम', 'राशि', 'रुपये', 'रुपए', 'कीमत', 'मूल्य', 'बिल', 'बिक्री', 'खर्च', 'लागत', 'किराया', 'आय', 'वेतन', 'भुगतान'
@@ -861,9 +902,9 @@ def resolve_canonical_target_and_cost(
         cost_col = blueprint.get("cost_override")
     elif candidate_cost_cols:
         priority_cost = [
-            'loan_amount', 'loanamount', 'loan', 'credit_amount', 'house_value', 'median_house_value', 'property_value',
+            'loan_amount', 'loanamount', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'house_value', 'median_house_value', 'property_value',
             'invoiced_amount', 'net_billed', 'net_bill', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount', 'bill_value',
-            'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'order_total', 'invoice_total', 'total_amount', 'total_sales', 'exact_total',
+            'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'order_total', 'invoice_total', 'line_value', 'line_total', 'total_amount', 'total_sales', 'exact_total',
             'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',
             'gross income', 'gross_income', 'billing_amount', 'gross_billing', 'billing',
             'valormensal', 'totalgasto', 'salary', 'income',

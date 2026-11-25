@@ -2447,6 +2447,28 @@ async def preview_intent(
     unit_symbol = canonical.get("unit_symbol") or "$"
     currency_code = canonical.get("currency_code")
     numbering_system = canonical.get("numbering_system") or "western"
+    detected_adverse_rate_pct = round(float(canonical["binary_target"].mean() * 100.0), 2) if len(df_sample) else 0.0
+
+    target_sanity_warning_en = None
+    target_sanity_warning_hi = None
+    if detected_adverse_rate_pct > 65.0:
+        target_sanity_warning_en = (
+            f"Double-check Problem Column: {detected_adverse_rate_pct:.1f}% of sample rows are flagged as problems "
+            f"('{target_desc}'). If this is an approval/good column, pick your true Failure/Default/Return column below!"
+        )
+        target_sanity_warning_hi = (
+            f"कृपया Problem Column जाँच लें: सैंपल की {detected_adverse_rate_pct:.1f}% पंक्तियाँ समस्या ('{target_desc}') दिख रही हैं — "
+            f"अगर यह सही/अप्रूवल कॉलम है तो नीचे असली Return/Default/Cancel कॉलम चुनें!"
+        )
+    elif detected_adverse_rate_pct < 0.2:
+        target_sanity_warning_en = (
+            f"Double-check Problem Column: Only {detected_adverse_rate_pct:.1f}% of sample rows are flagged as problems "
+            f"('{target_desc}'). Verify this is the exact outcome column you want to fix."
+        )
+        target_sanity_warning_hi = (
+            f"कृपया Problem Column जाँच लें: सैंपल में सिर्फ़ {detected_adverse_rate_pct:.1f}% समस्या ('{target_desc}') मिली — "
+            f"पुष्टि करें कि यही कॉलम आप सुधारना चाहते हैं।"
+        )
 
     # Candidate targets (discrete / status / rating columns, excluding index and pure coordinate features)
     candidate_targets = []
@@ -2456,7 +2478,7 @@ async def preview_intent(
         if c_low in ('unnamed: 0', 'index', 'id', 'lat', 'lon', 'latitude', 'longitude'):
             continue
         nunique = int(df_sample[c].nunique())
-        if (2 <= nunique <= 20) or any(k in c_low for k in ['delay', 'churn', 'cancel', 'default', 'fraud', 'failure', 'rating', 'score', 'status', 'outcome', 'value']):
+        if (c == target_col) or (2 <= nunique <= 20) or any(k in c_low for k in ['delay', 'churn', 'cancel', 'default', 'paid', 'fraud', 'failure', 'rating', 'score', 'status', 'outcome', 'value']):
             sample_vals = [str(v) for v in df_sample[c].dropna().unique()[:4]]
             candidate_targets.append({
                 "column": c,
@@ -2505,6 +2527,9 @@ async def preview_intent(
         "detected_goal": {
             "target_col": target_col,
             "target_desc": target_desc,
+            "detected_adverse_rate_pct": detected_adverse_rate_pct,
+            "target_sanity_warning_en": target_sanity_warning_en,
+            "target_sanity_warning_hi": target_sanity_warning_hi,
             "cost_col": cost_col,
             "is_financial": canonical.get("is_financial", False),
             "unit_symbol": unit_symbol,

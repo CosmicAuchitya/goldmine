@@ -458,6 +458,21 @@ class PredictiveDecisionEngine:
                     break
                 except Exception:
                     pass
+        # Honor confirmed target/monetary columns from semantic_metrics_manifest.json / executive_pulse.json
+        # whenever execution_blueprint.json does not explicitly set target_override/cost_override.
+        for meta_name in ("semantic_metrics_manifest.json", "executive_pulse.json"):
+            mp = self.output_dir / meta_name
+            if mp.exists():
+                try:
+                    mj = json.loads(mp.read_text(encoding="utf-8"))
+                    t_hint = mj.get("target_override") or mj.get("target_column") or mj.get("target_col")
+                    c_hint = mj.get("cost_override") or mj.get("monetary_column") or mj.get("monetary_col")
+                    if t_hint and t_hint in self.df_full.columns and not blueprint.get("target_override"):
+                        blueprint["target_override"] = t_hint
+                    if c_hint and c_hint in self.df_full.columns and not blueprint.get("cost_override"):
+                        blueprint["cost_override"] = c_hint
+                except Exception:
+                    pass
 
         self.canonical = resolve_canonical_target_and_cost(
             self.df_full, blueprint=blueprint, region_profile=region_profile
@@ -525,7 +540,8 @@ class PredictiveDecisionEngine:
           margin on every healthy paying customer!
         """
         t_text = f"{self.target_col or ''} {self.canonical.get('target_desc') or ''}".lower()
-        if any(k in t_text for k in ("default", "loan_status", "charged_off", "delinq", "npa")):
+        t_norm = re.sub(r"[.\-\s]+", "_", t_text)
+        if any(k in t_norm for k in ("default", "loan_status", "charged_off", "delinq", "npa", "not_fully_paid", "unpaid")):
             return (0.65, 0.14)
         if any(
             k in t_text

@@ -2941,6 +2941,7 @@
           <div class="section-eyebrow" style="color: var(--accent-sky);" data-i18n="eyebrowCheck">QUICK CHECK BEFORE STARTING</div>
           <h3 id="intentFileTitle" style="font-size: 18px; font-weight: 800;">File Scanned</h3>
           <p id="intentQuestionSubtitle" style="font-size: 13.5px; color: var(--text-secondary); margin-top: 3px;"></p>
+          <div id="intentSanityBanner" class="hidden" style="margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600;"></div>
         </div>
         <div style="display: flex; gap: 10px;">
           <button type="button" class="btn btn-secondary" onclick="cancelIntentHandshake()">Cancel</button>
@@ -5356,6 +5357,27 @@
           `${data.filename} — ${data.columns_count} Columns Ready`;
         document.getElementById('intentQuestionSubtitle').textContent =
           data.detected_goal.business_question_en;
+
+        const sanityBanner = document.getElementById('intentSanityBanner');
+        if (sanityBanner && data.detected_goal) {
+          const advPct = data.detected_goal.detected_adverse_rate_pct;
+          const warnMsg = (appState.lang === 'hi' && data.detected_goal.target_sanity_warning_hi)
+            ? data.detected_goal.target_sanity_warning_hi
+            : data.detected_goal.target_sanity_warning_en;
+          sanityBanner.classList.remove('hidden');
+          if (warnMsg) {
+            sanityBanner.style.background = 'rgba(245, 158, 11, 0.14)';
+            sanityBanner.style.border = '1px solid rgba(245, 158, 11, 0.45)';
+            sanityBanner.style.color = 'var(--accent-amber, #b45309)';
+            sanityBanner.textContent = `⚠️ ${warnMsg}`;
+          } else {
+            sanityBanner.style.background = 'rgba(16, 185, 129, 0.10)';
+            sanityBanner.style.border = '1px solid rgba(16, 185, 129, 0.35)';
+            sanityBanner.style.color = 'var(--accent-emerald, #047857)';
+            const costLabel = data.detected_goal.cost_col ? ` | Money: ${data.detected_goal.cost_col} (${data.detected_goal.unit_symbol})` : ' | Non-monetary counts';
+            sanityBanner.textContent = `✅ Auto-Check Passed: ${advPct ?? '?'}% flagged as problem (${data.detected_goal.target_desc})${costLabel} — confirm below to start.`;
+          }
+        }
 
         const tgtSelect = document.getElementById('confirmTargetSelect');
         tgtSelect.innerHTML = '';
