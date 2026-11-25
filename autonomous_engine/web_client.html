@@ -1292,6 +1292,415 @@
       font-weight: 800;
     }
 
+    /* =========================================================================
+       V8 BUSINESS-OWNER VISUAL HERO & LIVE SVG CHARTS (2-SECOND INSTANT CLARITY)
+       ========================================================================= */
+    .owner-hero-stage {
+      display: grid;
+      grid-template-columns: 164px 1fr 228px;
+      gap: 24px;
+      align-items: center;
+      background:
+        radial-gradient(ellipse 55% 90% at 12% 50%, rgba(16, 185, 129, 0.09), transparent 70%),
+        radial-gradient(ellipse 45% 80% at 88% 20%, rgba(56, 189, 248, 0.07), transparent 70%),
+        var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (max-width: 1080px) {
+      .owner-hero-stage {
+        grid-template-columns: 150px 1fr;
+      }
+      .owner-hero-kpis {
+        grid-column: 1 / -1;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .owner-hero-stage {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .owner-hero-gauge-wrap {
+        margin: 0 auto;
+      }
+      .owner-hero-actions {
+        justify-content: center;
+      }
+      .owner-hero-kpis {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    .owner-hero-gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .owner-gauge-box {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .owner-gauge-svg {
+      width: 132px;
+      height: 132px;
+      transform: rotate(-90deg);
+    }
+
+    .owner-gauge-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .owner-gauge-num {
+      font-family: var(--font-mono);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .owner-gauge-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .owner-status-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--accent-emerald-bg);
+      color: var(--accent-emerald);
+      border: 1px solid var(--accent-emerald-border);
+      white-space: nowrap;
+    }
+
+    .owner-status-pill.warn {
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber-border);
+    }
+
+    .owner-status-pill.danger {
+      background: var(--accent-crimson-bg);
+      color: var(--accent-crimson);
+      border-color: var(--accent-crimson-border);
+    }
+
+    .owner-hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .owner-biz-tag {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--accent-sky);
+      background: var(--accent-sky-bg);
+      border: 1px solid var(--accent-sky-border);
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .owner-hero-big {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.22;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .owner-hero-big .hero-accent-money {
+      color: var(--accent-crimson);
+      font-family: var(--font-mono);
+    }
+
+    .owner-hero-sub {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 14px;
+      max-width: 560px;
+    }
+
+    .owner-hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .owner-cta-emerald {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 9px;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      background: var(--accent-emerald);
+      color: #06130e;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition-fast);
+    }
+
+    [data-theme="light"] .owner-cta-emerald {
+      color: #ffffff;
+    }
+
+    .owner-cta-emerald:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.28);
+    }
+
+    .owner-cta-glass {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 9px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition-fast);
+    }
+
+    .owner-cta-glass:hover {
+      border-color: var(--text-secondary);
+      transform: translateY(-1px);
+    }
+
+    .owner-hero-kpis {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .owner-kpi-mini {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .owner-kpi-mini span {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .owner-kpi-mini strong {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Live Visual Charts Row (2 Side-by-Side Interactive Native Charts) */
+    .owner-charts-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .owner-charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .owner-chart-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .owner-chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .owner-chart-head h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .owner-chart-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .viz-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .viz-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .viz-bar-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+
+    .viz-bar-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+    }
+
+    .viz-bar-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .viz-bar-track {
+      position: relative;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      overflow: visible;
+    }
+
+    .viz-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .viz-avg-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--text-secondary);
+      border-radius: 2px;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .viz-split-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      overflow: hidden;
+      display: flex;
+      gap: 2px;
+    }
+
+    .viz-split-ok {
+      background: linear-gradient(90deg, #059669, #10b981);
+      height: 100%;
+      transition: width 420ms ease;
+    }
+
+    .viz-split-risk {
+      background: linear-gradient(90deg, #e11d48, #fb7185);
+      height: 100%;
+      transition: width 420ms ease;
+    }
+
+    .viz-quick-plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .viz-quick-plan-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition-fast);
+    }
+
+    .viz-quick-plan-btn:hover {
+      border-color: var(--accent-emerald-border);
+      background: var(--accent-emerald-bg);
+      transform: translateX(2px);
+    }
+
+    .pulse-badge {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
     /* 4 Glass Cockpit Metric Cards (Linear / Mercury Dark Aesthetic — Zero Heavy Rainbow Stripes) */
     .pulse-grid {
       display: grid;
@@ -3381,8 +3790,93 @@
         </div>
       </div>
 
-      <!-- TAB 1: BUSINESS OVERVIEW (Health Cards + Plain Summary + 3 Plans) -->
+      <!-- TAB 1: BUSINESS OVERVIEW (Owner Visual Hero + Live Charts + 4 Cards + Health Check) -->
       <div id="tabPanel-overview" class="tab-panel">
+        <!-- V8 OWNER VISUAL HERO SPOTLIGHT (UNDERSTAND YOUR ENTIRE BUSINESS IN 2 SECONDS) -->
+        <section id="ownerHeroStage" class="owner-hero-stage">
+          <div class="owner-hero-gauge-wrap">
+            <div class="owner-gauge-box">
+              <svg class="owner-gauge-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border-subtle)" stroke-width="10"></circle>
+                <circle id="ownerHealthRingArc" cx="60" cy="60" r="50" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="100" style="transition: stroke-dashoffset 550ms ease, stroke 300ms ease;"></circle>
+              </svg>
+              <div class="owner-gauge-center">
+                <span id="ownerHealthScoreNum" class="owner-gauge-num">--</span>
+                <span class="owner-gauge-lbl" data-i18n="lblHealthScore">HEALTH / 100</span>
+              </div>
+            </div>
+            <span id="ownerHealthStatusPill" class="owner-status-pill">Checking...</span>
+          </div>
+
+          <div>
+            <div class="owner-hero-title-row">
+              <span id="ownerBizNameTag" class="owner-biz-tag">Business Overview</span>
+              <span id="ownerCheckedSubTag" style="font-size: 12px; color: var(--text-muted);" class="tabular-nums">0 records checked</span>
+            </div>
+            <h1 id="ownerHeroHeadline" class="owner-hero-big">Loading your business snapshot...</h1>
+            <p id="ownerHeroActionLine" class="owner-hero-sub">Scanning your highest-impact savings opportunity and priority action list.</p>
+            <div class="owner-hero-actions">
+              <button type="button" class="owner-cta-emerald" onclick="switchWorkspaceTab('actions', document.querySelector('[data-tab=&quot;actions&quot;]'))">
+                <span data-i18n="ctaFixToday">Open Today's Action List</span>
+                <span>→</span>
+              </button>
+              <button type="button" class="owner-cta-glass" onclick="switchWorkspaceTab('predict', document.querySelector('[data-tab=&quot;predict&quot;]'))">
+                <span data-i18n="ctaTestIdea">Test a Business Idea</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="owner-hero-kpis">
+            <div class="owner-kpi-mini">
+              <span data-i18n="kpiHealthyRate">Running Smoothly</span>
+              <strong id="ownerKpiHealthyPct" style="color: var(--accent-emerald);">--%</strong>
+            </div>
+            <div class="owner-kpi-mini">
+              <span data-i18n="kpiProblemRate">Problem Rate</span>
+              <strong id="ownerKpiProblemPct" style="color: var(--accent-crimson);">--%</strong>
+            </div>
+            <div class="owner-kpi-mini">
+              <span id="ownerKpiSaveLbl" data-i18n="kpiQuickSavings">Quick Savings</span>
+              <strong id="ownerKpiQuickSaveVal" style="color: var(--accent-sky);">--</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- V8 LIVE VISUAL CHARTS ROW (AT-A-GLANCE BARS + QUICK ACTION ROADMAP) -->
+        <section id="ownerChartsGrid" class="owner-charts-grid">
+          <div class="owner-chart-card">
+            <div class="owner-chart-head">
+              <div>
+                <h3 id="ownerBarChartTitle" data-i18n="chartLeaksTitle">Where Problems Happen Most</h3>
+                <span id="ownerBarChartSub" class="owner-chart-sub">Comparing each group against your business average</span>
+              </div>
+              <span id="ownerBarAvgBadge" class="topbar-lang-badge">Avg: --%</span>
+            </div>
+            <div id="ownerVisualBarsList" class="viz-bar-list"></div>
+          </div>
+
+          <div class="owner-chart-card">
+            <div class="owner-chart-head">
+              <div>
+                <h3 data-i18n="chartRoadmapTitle">Fastest Ways to Improve</h3>
+                <span class="owner-chart-sub" data-i18n="chartRoadmapSub">Click any option to see exact profit in the calculator</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px;">
+                <span style="color:var(--accent-emerald);font-weight:600;" id="ownerSplitOkLabel">Healthy: --%</span>
+                <span style="color:var(--accent-crimson);font-weight:600;" id="ownerSplitRiskLabel">At Risk: --%</span>
+              </div>
+              <div class="viz-split-bar">
+                <div id="ownerSplitOkBar" class="viz-split-ok" style="width: 65%;"></div>
+                <div id="ownerSplitRiskBar" class="viz-split-risk" style="width: 35%;"></div>
+              </div>
+            </div>
+            <div id="ownerQuickPlansList" class="viz-quick-plan-list"></div>
+          </div>
+        </section>
+
         <!-- Period-over-Period Comparison Banner (Auto-hidden on single baseline to keep page clean!) -->
         <div id="driftRadarBanner" class="drift-banner hidden">
           <div>
@@ -4838,7 +5332,30 @@
         lblLoadingScenarios: 'Loading smart 1-click decision scenarios from your data...',
         lblLiveJudgeReady: 'Live Data Judge Ready',
         lblWorldLangs: '43 World Languages',
-        lblSwitchLang: 'Language'
+        lblSwitchLang: 'Language',
+        lblHealthScore: 'HEALTH / 100',
+        ctaFixToday: 'Open Today\'s Action List',
+        ctaTestIdea: 'Test a Business Idea',
+        kpiHealthyRate: 'Running Smoothly',
+        kpiProblemRate: 'Problem Rate',
+        kpiQuickSavings: 'Quick Savings',
+        kpiFixableCases: 'Fixable Cases',
+        chartLeaksTitle: 'Where Problems Happen Most',
+        chartLeaksSub: 'Comparing each group against your business average',
+        chartRoadmapTitle: 'Fastest Ways to Improve',
+        chartRoadmapSub: 'Click any option to see exact profit in the calculator',
+        statusHealthy: 'Strong Health',
+        statusAttention: 'Needs Attention',
+        statusUrgent: 'Urgent Leaks',
+        lblRecordsChecked: 'records checked',
+        lblAtRiskAcross: 'at risk across',
+        lblProblemCasesFound: 'problem cases found',
+        lblCasesWord: 'cases',
+        lblTopPriorityPrefix: 'Top priority:',
+        lblAvgPrefix: 'Avg:',
+        lblHealthyShort: 'Healthy:',
+        lblAtRiskShort: 'At Risk:',
+        lblSimulateShort: 'Simulate →'
       },
       hi: {
         brandSubtitle: 'Aasan Business Doctor',
@@ -4867,10 +5384,10 @@
         lblRows: 'Kul Records:',
         lblIssues: 'Nuksaan / Problem Cases:',
         lblRiskMoney: 'Khatre Mein Paisa:',
-        btnWhatsAppBrief: 'WhatsApp Summary',
-        btnPrintPdf: 'PDF Print Karein',
-        btnFullVisual: 'Full Charts ↗',
-        btnProof: 'Hisaab Proof',
+        btnWhatsAppBrief: 'संक्षेप',
+        btnPrintPdf: 'PDF',
+        btnFullVisual: 'चार्ट',
+        btnProof: 'सबूत',
         tabOverview: 'Business Health',
         tabActions: 'Aaj Ki Call List',
         tabCalculator: 'Bachat Calculator',
@@ -5010,7 +5527,30 @@
         lblLoadingScenarios: 'डेटा से स्मार्ट निर्णय विकल्प तैयार हो रहे हैं...',
         lblLiveJudgeReady: 'लाइव डेटा जज तैयार',
         lblWorldLangs: '43 वैश्विक भाषाएँ',
-        lblSwitchLang: 'भाषा'
+        lblSwitchLang: 'भाषा',
+        lblHealthScore: 'हेल्थ / 100',
+        ctaFixToday: 'आज की एक्शन लिस्ट खोलें',
+        ctaTestIdea: 'नया आइडिया टेस्ट करें',
+        kpiHealthyRate: 'बिल्कुल ठीक चल रहा है',
+        kpiProblemRate: 'समस्या / नुकसान दर',
+        kpiQuickSavings: 'तुरंत बचत का मौका',
+        kpiFixableCases: 'सुधारे जा सकने वाले केस',
+        chartLeaksTitle: 'सबसे ज़्यादा समस्या कहाँ हो रही है',
+        chartLeaksSub: 'हर ग्रुप की तुलना आपके बिज़नेस औसत से',
+        chartRoadmapTitle: 'सुधार के सबसे तेज़ 3 रास्ते',
+        chartRoadmapSub: 'किसी भी प्लान पर क्लिक करके सटीक मुनाफा देखें',
+        statusHealthy: 'बढ़िया स्थिति',
+        statusAttention: 'ध्यान देने की ज़रूरत',
+        statusUrgent: 'तुरंत सुधार ज़रूरी',
+        lblRecordsChecked: 'रिकॉर्ड जाँचे गए',
+        lblAtRiskAcross: 'खतरे में — कुल',
+        lblProblemCasesFound: 'समस्या के केस मिले',
+        lblCasesWord: 'केस',
+        lblTopPriorityPrefix: 'सबसे पहले यह ठीक करें:',
+        lblAvgPrefix: 'औसत:',
+        lblHealthyShort: 'सुरक्षित:',
+        lblAtRiskShort: 'खतरे में:',
+        lblSimulateShort: 'बचत देखें →'
       }
     };
 
@@ -5985,8 +6525,9 @@
       const pulse = appState.executivePulse;
       const sym = pulse.unit_symbol || '$';
 
-      // Top Summary Ribbon
-      document.getElementById('activeRunBadge').textContent = `REPORT: ${result.run_id}`;
+      // Top Summary Ribbon (Humanized business name instead of ugly raw snake_case ID)
+      const prettyBizName = humanizeRunTitle(result.run_id);
+      document.getElementById('activeRunBadge').textContent = prettyBizName;
       document.getElementById('metaTotalRecords').textContent = Number(pulse.total_records || 0).toLocaleString('en-US');
       document.getElementById('metaAdverseCount').textContent = Number(pulse.total_adverse_events || 0).toLocaleString('en-US');
       document.getElementById('metaAdverseRate').textContent = `${Number(pulse.overall_adverse_rate_pct || 0).toFixed(2)}%`;
@@ -6145,11 +6686,186 @@
 
         renderStrategicPathways(pulse.pathways || []);
       }
+      renderOwnerVisualCockpit(friendly);
       renderOmniLeakPanel(pulse.omni_leak_report || appState.omniLeakReport || null);
       if (appState.activeRunId) {
         loadAndRenderRankedLeaks(appState.activeRunId, appState.rankedLeaks);
         loadAndRender200Questions(appState.activeRunId);
       }
+    }
+
+    function humanizeRunTitle(runId) {
+      const raw = String(runId || 'Business Report').replace(/^job_\d+_[a-z0-9]+$/i, 'Uploaded Business Data');
+      return raw
+        .replace(/[_-]+/g, ' ')
+        .replace(/\b\w/g, ch => ch.toUpperCase())
+        .trim();
+    }
+
+    function renderOwnerVisualCockpit(friendly) {
+      const pulse = appState.executivePulse || {};
+      const totalRec = Number(pulse.total_records || 0);
+      const totalAdv = Number(pulse.total_adverse_events || 0);
+      const advRate = Math.max(0, Math.min(100, Number(pulse.overall_adverse_rate_pct || 0)));
+      const healthyRate = Math.max(0, Math.min(100, 100 - advRate));
+      const healthScore = Math.round(healthyRate);
+      const isFin = Boolean(pulse.is_financial && Number(pulse.total_capital_drag || 0) > 0);
+
+      // 1. Animated SVG Business Health Ring Gauge
+      const arc = document.getElementById('ownerHealthRingArc');
+      const scoreEl = document.getElementById('ownerHealthScoreNum');
+      const pillEl = document.getElementById('ownerHealthStatusPill');
+      const circ = 314.16;
+      const offset = circ * (1 - healthScore / 100);
+      const ringColor = healthScore >= 75 ? '#10b981' : (healthScore >= 50 ? '#fbbf24' : '#fb7185');
+      if (arc) {
+        arc.style.strokeDashoffset = String(offset.toFixed(2));
+        arc.style.stroke = ringColor;
+      }
+      if (scoreEl) scoreEl.textContent = String(healthScore);
+      if (pillEl) {
+        pillEl.className = healthScore >= 75 ? 'owner-status-pill' : (healthScore >= 50 ? 'owner-status-pill warn' : 'owner-status-pill danger');
+        pillEl.textContent = healthScore >= 75
+          ? tUi('statusHealthy', 'Strong Health')
+          : (healthScore >= 50 ? tUi('statusAttention', 'Needs Attention') : tUi('statusUrgent', 'Urgent Leaks'));
+      }
+
+      // 2. Plain-Language Hero Headline & Instant Action Summary
+      const bizTag = document.getElementById('ownerBizNameTag');
+      const chkTag = document.getElementById('ownerCheckedSubTag');
+      const heroBig = document.getElementById('ownerHeroHeadline');
+      const heroSub = document.getElementById('ownerHeroActionLine');
+      if (bizTag) bizTag.textContent = humanizeRunTitle(appState.activeRunId);
+      if (chkTag) chkTag.textContent = `${totalRec.toLocaleString('en-US')} ${tUi('lblRecordsChecked', 'records checked')}`;
+
+      if (heroBig) {
+        if (isFin) {
+          heroBig.innerHTML = `<span class="hero-accent-money">${escapeHtml(pulse.formatted_capital_drag || '$0')}</span> ${escapeHtml(tUi('lblAtRiskAcross', 'at risk across'))} <span class="tabular-nums">${totalAdv.toLocaleString('en-US')}</span> ${escapeHtml(tUi('lblCasesWord', 'cases'))}`;
+        } else {
+          heroBig.innerHTML = `<span class="hero-accent-money">${totalAdv.toLocaleString('en-US')}</span> ${escapeHtml(tUi('lblProblemCasesFound', 'problem cases found'))} <span class="tabular-nums">(${advRate.toFixed(1)}%)</span>`;
+        }
+      }
+
+      const topLeakTitle = (friendly && friendly.bottleneck && friendly.bottleneck.title)
+        || (pulse.bottleneck && pulse.bottleneck.headline)
+        || '';
+      const quickSaveBadge = (friendly && friendly.recovery && friendly.recovery.badge)
+        || (isFin ? (pulse.formatted_capital_drag || '--') : `${totalAdv.toLocaleString('en-US')}`);
+      if (heroSub) {
+        heroSub.textContent = topLeakTitle
+          ? `${tUi('lblTopPriorityPrefix', 'Top priority:')} ${topLeakTitle}`
+          : '';
+      }
+
+      // 3. Three Scannable Right-Side KPI Pills
+      const okPctEl = document.getElementById('ownerKpiHealthyPct');
+      const badPctEl = document.getElementById('ownerKpiProblemPct');
+      const saveLblEl = document.getElementById('ownerKpiSaveLbl');
+      const saveValEl = document.getElementById('ownerKpiQuickSaveVal');
+      if (okPctEl) okPctEl.textContent = `${healthyRate.toFixed(1)}%`;
+      if (badPctEl) badPctEl.textContent = `${advRate.toFixed(1)}%`;
+      if (saveLblEl) {
+        saveLblEl.textContent = isFin
+          ? tUi('kpiQuickSavings', 'Quick Savings')
+          : tUi('kpiFixableCases', 'Fixable Cases');
+      }
+      if (saveValEl) saveValEl.textContent = String(quickSaveBadge).replace(/^Save\s+/i, '');
+
+      // 4. Live Visual Horizontal Bar Chart (Top 5 Problem Groups vs Business Avg)
+      const barsEl = document.getElementById('ownerVisualBarsList');
+      const barTitleEl = document.getElementById('ownerBarChartTitle');
+      const barSubEl = document.getElementById('ownerBarChartSub');
+      const avgBadgeEl = document.getElementById('ownerBarAvgBadge');
+      const breakdowns = pulse.cohort_breakdowns || [];
+      const firstDim = breakdowns[0] || null;
+      if (avgBadgeEl) avgBadgeEl.textContent = `${tUi('lblAvgPrefix', 'Avg:')} ${advRate.toFixed(1)}%`;
+      if (barTitleEl) {
+        barTitleEl.textContent = firstDim && firstDim.dimension_label
+          ? `${tUi('chartLeaksTitle', 'Where Problems Happen Most')} · ${firstDim.dimension_label}`
+          : tUi('chartLeaksTitle', 'Where Problems Happen Most');
+      }
+      if (barSubEl) barSubEl.textContent = tUi('chartLeaksSub', 'Comparing each group against your business average');
+
+      if (barsEl) {
+        const rows = (firstDim && Array.isArray(firstDim.rows)) ? firstDim.rows.slice(0, 5) : [];
+        if (!rows.length) {
+          barsEl.innerHTML = `<div style="font-size:12.5px;color:var(--text-muted);padding:12px 0;">${escapeHtml(tUi('lblNoChangeNeeded', 'No urgent changes needed — numbers look stable.'))}</div>`;
+        } else {
+          const maxR = Math.max(advRate * 1.15, ...rows.map(r => Number(r.adverse_rate_pct || 0)), 1);
+          const avgLeftPct = Math.min(96, Math.max(4, (advRate / maxR) * 100));
+          barsEl.innerHTML = rows.map(r => {
+            const rate = Number(r.adverse_rate_pct || 0);
+            const widthPct = Math.min(100, Math.max(4, (rate / maxR) * 100));
+            const isAboveAvg = rate > advRate + 1.5;
+            const fillBg = isAboveAvg
+              ? 'linear-gradient(90deg, #be123c, #fb7185)'
+              : (rate < advRate - 1.5 ? 'linear-gradient(90deg, #059669, #10b981)' : 'linear-gradient(90deg, #d97706, #fbbf24)');
+            const valColor = isAboveAvg ? 'var(--accent-crimson)' : (rate < advRate - 1.5 ? 'var(--accent-emerald)' : 'var(--accent-amber)');
+            const extraMeta = (isFin && r.total_liability && r.total_liability !== '--') ? ` · ${r.total_liability}` : ` · ${r.adverse_events || 0}`;
+            return `
+              <div class="viz-bar-row">
+                <div class="viz-bar-meta">
+                  <span class="viz-bar-name" title="${escapeHtml(r.segment)}">${escapeHtml(r.segment)}</span>
+                  <span class="viz-bar-val" style="color:${valColor};">${rate.toFixed(1)}%<span style="color:var(--text-muted);font-weight:500;">${escapeHtml(extraMeta)}</span></span>
+                </div>
+                <div class="viz-bar-track">
+                  <div class="viz-bar-fill" style="width:${widthPct.toFixed(1)}%;background:${fillBg};"></div>
+                  <div class="viz-avg-marker" style="left:${avgLeftPct.toFixed(1)}%;" title="Business Avg: ${advRate.toFixed(1)}%"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // 5. Right Chart Card: Healthy-vs-Risky Split Meter + 3 Clickable Improvement Plans
+      const okLbl = document.getElementById('ownerSplitOkLabel');
+      const riskLbl = document.getElementById('ownerSplitRiskLabel');
+      const okBar = document.getElementById('ownerSplitOkBar');
+      const riskBar = document.getElementById('ownerSplitRiskBar');
+      if (okLbl) okLbl.textContent = `${tUi('lblHealthyShort', 'Healthy:')} ${healthyRate.toFixed(1)}%`;
+      if (riskLbl) riskLbl.textContent = `${tUi('lblAtRiskShort', 'At Risk:')} ${advRate.toFixed(1)}%`;
+      if (okBar) okBar.style.width = `${healthyRate.toFixed(1)}%`;
+      if (riskBar) riskBar.style.width = `${advRate.toFixed(1)}%`;
+
+      const plansEl = document.getElementById('ownerQuickPlansList');
+      const plans = (friendly && Array.isArray(friendly.pathways) && friendly.pathways.length)
+        ? friendly.pathways.slice(0, 3)
+        : (pulse.pathways || []).slice(0, 3);
+      if (plansEl) {
+        if (!plans.length) {
+          plansEl.innerHTML = `<div style="font-size:12.5px;color:var(--text-muted);">${escapeHtml(tUi('lblNoChangeNeeded', 'No urgent changes needed — numbers look stable.'))}</div>`;
+        } else {
+          plansEl.innerHTML = plans.map((p, idx) => {
+            const pTitle = p.title || p.name || `Plan ${idx + 1}`;
+            const pBadge = p.badge || p.roi_range || '';
+            const pEffort = p.effort || p.target || '';
+            return `
+              <button type="button" class="viz-quick-plan-btn" onclick="openOwnerQuickPlan(${idx})">
+                <div style="min-width:0;">
+                  <div style="font-size:12.8px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pTitle)}</div>
+                  <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pEffort)}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                  <div class="tabular-nums" style="font-size:12px;font-weight:700;color:var(--accent-emerald);">${escapeHtml(pBadge)}</div>
+                  <div style="font-size:10.5px;color:var(--text-muted);">${escapeHtml(tUi('lblSimulateShort', 'Simulate →'))}</div>
+                </div>
+              </button>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    function openOwnerQuickPlan(idx) {
+      const presetReductions = [25, 40, 60];
+      const presetCosts = [2500, 10000, 25000];
+      const rSl = document.getElementById('simReductionSlider');
+      const cSl = document.getElementById('simCostSlider');
+      if (rSl) rSl.value = presetReductions[idx] || 25;
+      if (cSl) cSl.value = presetCosts[idx] !== undefined ? presetCosts[idx] : 2500;
+      recalculateSimulator();
+      switchWorkspaceTab('calculator', document.querySelector('[data-tab="calculator"]'));
     }
 
     function renderOmniLeakPanel(omni) {
