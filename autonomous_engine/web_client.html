@@ -6,234 +6,250 @@
   <title>DataX-Ray — AI Business Intelligence Cockpit</title>
   <style>
     /* =========================================================================
-       LINEAR / RAYCAST MATTE BLACK AI COCKPIT DESIGN SYSTEM (V7.0 · DFII 15/15)
-       Deep Matte Carbon · Crisp Hairline Glass Cards · Geometric Sans + Mono
-       Zero Emojis · Zero Serif · Zero Beige · Zero External CDNs
+       V9 MIDNIGHT AURORA EXECUTIVE BENTO SUITE (DFII 15/15)
+       Full-Width Floating Glass Top-Nav · Deep Sapphire Aurora Mesh · Frosted Bento Cards
+       Electric Indigo + Mint Teal Accents · Zero Left Sidebar · Zero External CDNs
        ========================================================================= */
     :root, [data-theme="dark"] {
-      --bg-canvas: #09090b;
-      --bg-surface: #111114;
-      --bg-elevated: #18181c;
-      --bg-subtle: #0d0d10;
-      --bg-panel: #111114;
-      --bg-glass: rgba(9, 9, 11, 0.82);
-      --rail-bg: #0b0b0e;
-      --rail-surface: #141418;
-      --rail-border: rgba(255, 255, 255, 0.075);
-      --rail-text: #fafafa;
-      --rail-muted: #71717a;
-      --rail-accent: #10b981;
-      --rail-accent-bg: rgba(255, 255, 255, 0.075);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.15);
-      --text-primary: #fafafa;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
-      --accent-emerald: #10b981;
-      --accent-emerald-bg: rgba(16, 185, 129, 0.11);
-      --accent-emerald-border: rgba(16, 185, 129, 0.26);
-      --accent-emerald-soft: rgba(16, 185, 129, 0.12);
+      --bg-canvas: #070b18;
+      --bg-surface: rgba(15, 23, 42, 0.74);
+      --bg-elevated: rgba(30, 41, 59, 0.72);
+      --bg-subtle: rgba(15, 23, 42, 0.52);
+      --bg-panel: rgba(15, 23, 42, 0.78);
+      --bg-glass: rgba(10, 15, 31, 0.78);
+      --rail-bg: rgba(13, 20, 40, 0.82);
+      --rail-surface: rgba(30, 41, 59, 0.75);
+      --rail-border: rgba(148, 163, 184, 0.16);
+      --rail-text: #f8fafc;
+      --rail-muted: #94a3b8;
+      --rail-accent: #6366f1;
+      --rail-accent-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(20, 184, 166, 0.22));
+      --border-subtle: rgba(148, 163, 184, 0.15);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent-emerald: #2dd4bf;
+      --accent-emerald-bg: rgba(45, 212, 191, 0.12);
+      --accent-emerald-border: rgba(45, 212, 191, 0.30);
+      --accent-emerald-soft: rgba(99, 102, 241, 0.18);
       --accent-amber: #fbbf24;
-      --accent-amber-bg: rgba(251, 191, 36, 0.10);
-      --accent-amber-border: rgba(251, 191, 36, 0.26);
-      --accent-amber-soft: rgba(251, 191, 36, 0.11);
+      --accent-amber-bg: rgba(251, 191, 36, 0.12);
+      --accent-amber-border: rgba(251, 191, 36, 0.30);
+      --accent-amber-soft: rgba(251, 191, 36, 0.12);
       --accent-crimson: #fb7185;
-      --accent-crimson-bg: rgba(251, 113, 133, 0.10);
-      --accent-crimson-border: rgba(251, 113, 133, 0.26);
-      --accent-crimson-soft: rgba(251, 113, 133, 0.11);
-      --accent-sky: #38bdf8;
-      --accent-sky-bg: rgba(56, 189, 248, 0.10);
-      --accent-sky-border: rgba(56, 189, 248, 0.26);
-      --accent-sky-soft: rgba(56, 189, 248, 0.11);
+      --accent-crimson-bg: rgba(251, 113, 133, 0.13);
+      --accent-crimson-border: rgba(251, 113, 133, 0.32);
+      --accent-crimson-soft: rgba(251, 113, 133, 0.12);
+      --accent-sky: #818cf8;
+      --accent-sky-bg: rgba(129, 140, 248, 0.14);
+      --accent-sky-border: rgba(129, 140, 248, 0.32);
+      --accent-sky-soft: rgba(56, 189, 248, 0.14);
+      --aurora-1: rgba(99, 102, 241, 0.24);
+      --aurora-2: rgba(20, 184, 166, 0.18);
+      --cta-grad: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
       --font-display: 'SF Pro Display', 'Geist', 'Plus Jakarta Sans', 'Segoe UI Variable Display', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-sans: 'SF Pro Text', 'Geist', 'Plus Jakarta Sans', 'Segoe UI Variable Text', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Geist Mono', 'Cascadia Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      --radius-sm: 8px;
-      --radius-md: 11px;
-      --radius-lg: 14px;
-      --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 12px 32px -16px rgba(0, 0, 0, 0.75);
-      --shadow-lift: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 18px 40px -12px rgba(0, 0, 0, 0.9);
-      --shadow-modal: 0 32px 72px rgba(0, 0, 0, 0.85);
-      --transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1);
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 42px -18px rgba(2, 6, 23, 0.85);
+      --shadow-lift: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 24px 52px -16px rgba(2, 6, 23, 0.95);
+      --shadow-modal: 0 36px 80px rgba(2, 6, 23, 0.90);
+      --transition-fast: 170ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* Crisp Apple / Vercel Pure White Light Mode (Zero Beige, Zero Serif) */
-    [data-theme="light"] {
-      --bg-canvas: #fafafa;
-      --bg-surface: #ffffff;
-      --bg-elevated: #f4f4f5;
-      --bg-subtle: #f4f4f5;
-      --bg-panel: #ffffff;
-      --bg-glass: rgba(250, 250, 250, 0.88);
-      --rail-bg: #111114;
-      --rail-surface: #18181b;
-      --rail-border: rgba(255, 255, 255, 0.08);
-      --rail-text: #fafafa;
-      --rail-muted: #71717a;
+    /* Theme 2: Emerald Private Wealth */
+    [data-theme="stripe_alabaster"] {
+      --bg-canvas: #051310;
+      --bg-surface: rgba(10, 31, 26, 0.78);
+      --bg-elevated: rgba(16, 46, 39, 0.78);
+      --bg-subtle: rgba(8, 24, 20, 0.60);
+      --bg-panel: rgba(10, 31, 26, 0.82);
+      --bg-glass: rgba(6, 21, 17, 0.84);
+      --rail-bg: rgba(8, 26, 22, 0.86);
+      --rail-border: rgba(52, 211, 153, 0.18);
+      --rail-text: #ecfdf5;
+      --rail-muted: #86efac;
       --rail-accent: #10b981;
-      --rail-accent-bg: rgba(255, 255, 255, 0.09);
-      --border-subtle: #e4e4e7;
-      --border-strong: #d4d4d8;
-      --text-primary: #09090b;
-      --text-secondary: #52525b;
-      --text-muted: #71717a;
+      --rail-accent-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(245, 158, 11, 0.18));
+      --border-subtle: rgba(52, 211, 153, 0.16);
+      --border-strong: rgba(52, 211, 153, 0.30);
+      --text-primary: #f0fdf4;
+      --text-secondary: #bbf7d0;
+      --text-muted: #6ee7b7;
+      --accent-emerald: #10b981;
+      --accent-emerald-bg: rgba(16, 185, 129, 0.14);
+      --accent-emerald-border: rgba(16, 185, 129, 0.34);
+      --accent-sky: #f59e0b;
+      --accent-sky-bg: rgba(245, 158, 11, 0.14);
+      --accent-sky-border: rgba(245, 158, 11, 0.34);
+      --aurora-1: rgba(16, 185, 129, 0.22);
+      --aurora-2: rgba(245, 158, 11, 0.14);
+      --cta-grad: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    /* Theme 3: Arctic Frost Glass (Crisp Airy Light Blue Glass — Zero Beige!) */
+    [data-theme="nordic_frost"] {
+      --bg-canvas: #edf4fc;
+      --bg-surface: rgba(255, 255, 255, 0.86);
+      --bg-elevated: rgba(238, 245, 255, 0.90);
+      --bg-subtle: rgba(244, 248, 255, 0.88);
+      --bg-panel: rgba(255, 255, 255, 0.92);
+      --bg-glass: rgba(255, 255, 255, 0.84);
+      --rail-bg: rgba(255, 255, 255, 0.88);
+      --rail-surface: #eff6ff;
+      --rail-border: rgba(37, 99, 235, 0.14);
+      --rail-text: #0f172a;
+      --rail-muted: #64748b;
+      --rail-accent: #2563eb;
+      --rail-accent-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(6, 182, 212, 0.12));
+      --border-subtle: rgba(148, 163, 184, 0.28);
+      --border-strong: rgba(100, 116, 139, 0.36);
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
       --accent-emerald: #059669;
       --accent-emerald-bg: #ecfdf5;
       --accent-emerald-border: #a7f3d0;
-      --accent-emerald-soft: rgba(5, 150, 105, 0.07);
       --accent-amber: #d97706;
       --accent-amber-bg: #fffbeb;
       --accent-amber-border: #fde68a;
-      --accent-amber-soft: rgba(217, 119, 6, 0.08);
       --accent-crimson: #e11d48;
       --accent-crimson-bg: #fff1f2;
       --accent-crimson-border: #fecdd3;
-      --accent-crimson-soft: rgba(225, 29, 72, 0.08);
-      --accent-sky: #0284c7;
-      --accent-sky-bg: #f0f9ff;
-      --accent-sky-border: #bae6fd;
-      --accent-sky-soft: rgba(2, 132, 199, 0.08);
-      --shadow-card: 0 1px 2px rgba(9, 9, 11, 0.04), 0 8px 24px -12px rgba(9, 9, 11, 0.08);
-      --shadow-lift: 0 4px 12px rgba(9, 9, 11, 0.06), 0 16px 32px -12px rgba(9, 9, 11, 0.14);
-      --shadow-modal: 0 28px 64px -16px rgba(9, 9, 11, 0.30);
+      --accent-sky: #2563eb;
+      --accent-sky-bg: #eff6ff;
+      --accent-sky-border: #bfdbfe;
+      --aurora-1: rgba(37, 99, 235, 0.13);
+      --aurora-2: rgba(6, 182, 212, 0.12);
+      --cta-grad: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+      --shadow-card: 0 2px 6px rgba(15, 23, 42, 0.04), 0 16px 36px -14px rgba(37, 99, 235, 0.12);
+      --shadow-lift: 0 6px 14px rgba(15, 23, 42, 0.06), 0 22px 44px -14px rgba(37, 99, 235, 0.18);
     }
 
-    /* High-Tech Dark & Light Cockpit Palettes */
-    [data-theme="stripe_alabaster"] {
-      --bg-canvas: #0b0d14;
-      --bg-surface: #121521;
-      --bg-elevated: #1a1f30;
-      --bg-subtle: #0e111b;
-      --bg-panel: #121521;
-      --bg-glass: rgba(11, 13, 20, 0.84);
-      --rail-bg: #080a10;
-      --rail-surface: #131724;
-      --rail-border: rgba(255, 255, 255, 0.08);
-      --rail-text: #f8fafc;
-      --rail-muted: #7c87a3;
-      --rail-accent: #818cf8;
-      --rail-accent-bg: rgba(129, 140, 248, 0.14);
-      --border-subtle: rgba(148, 163, 184, 0.12);
-      --border-strong: rgba(148, 163, 184, 0.22);
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-emerald: #818cf8;
-      --accent-emerald-bg: rgba(129, 140, 248, 0.12);
-      --accent-emerald-border: rgba(129, 140, 248, 0.30);
-      --accent-emerald-soft: rgba(129, 140, 248, 0.12);
-      --accent-sky: #38bdf8;
-      --accent-sky-bg: rgba(56, 189, 248, 0.12);
-      --accent-sky-border: rgba(56, 189, 248, 0.28);
-    }
-
-    [data-theme="nordic_frost"] {
-      --bg-canvas: #06101c;
-      --bg-surface: #0c192b;
-      --bg-elevated: #13253d;
-      --bg-subtle: #091423;
-      --bg-panel: #0c192b;
-      --bg-glass: rgba(6, 16, 28, 0.85);
-      --rail-bg: #050d17;
-      --rail-surface: #0d1d31;
-      --rail-border: rgba(56, 189, 248, 0.12);
-      --rail-text: #f0f9ff;
-      --rail-muted: #7aa0c4;
-      --rail-accent: #38bdf8;
-      --rail-accent-bg: rgba(56, 189, 248, 0.15);
-      --border-subtle: rgba(56, 189, 248, 0.12);
-      --border-strong: rgba(56, 189, 248, 0.24);
-      --text-primary: #f0f9ff;
-      --text-secondary: #93b8d9;
-      --text-muted: #6487a8;
-      --accent-emerald: #38bdf8;
-      --accent-emerald-bg: rgba(56, 189, 248, 0.12);
-      --accent-emerald-border: rgba(56, 189, 248, 0.30);
-      --accent-emerald-soft: rgba(56, 189, 248, 0.12);
-      --accent-sky: #22d3ee;
-      --accent-sky-bg: rgba(34, 211, 238, 0.12);
-      --accent-sky-border: rgba(34, 211, 238, 0.28);
-    }
-
-    [data-theme="sunset_coral"] {
-      --bg-canvas: #120d0c;
-      --bg-surface: #1b1413;
-      --bg-elevated: #261c1a;
-      --bg-subtle: #16100f;
-      --bg-panel: #1b1413;
-      --bg-glass: rgba(18, 13, 12, 0.85);
-      --rail-bg: #0e0a09;
-      --rail-surface: #1e1614;
-      --rail-border: rgba(251, 146, 60, 0.12);
-      --rail-text: #fff7ed;
-      --rail-muted: #a68b80;
-      --rail-accent: #fb923c;
-      --rail-accent-bg: rgba(251, 146, 60, 0.15);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text-primary: #fff7ed;
-      --text-secondary: #c7b1a7;
-      --text-muted: #8f776c;
-      --accent-emerald: #fb923c;
-      --accent-emerald-bg: rgba(251, 146, 60, 0.12);
-      --accent-emerald-border: rgba(251, 146, 60, 0.30);
-      --accent-emerald-soft: rgba(251, 146, 60, 0.12);
-      --accent-sky: #f472b6;
-      --accent-sky-bg: rgba(244, 114, 182, 0.12);
-      --accent-sky-border: rgba(244, 114, 182, 0.28);
-    }
-
+    /* Theme 4: Royal Champagne Obsidian */
     [data-theme="royal_gold"] {
-      --bg-canvas: #0f0e0c;
-      --bg-surface: #181612;
-      --bg-elevated: #23201a;
-      --bg-subtle: #14120f;
-      --bg-panel: #181612;
-      --bg-glass: rgba(15, 14, 12, 0.85);
-      --rail-bg: #0b0a08;
-      --rail-surface: #1a1813;
-      --rail-border: rgba(245, 158, 11, 0.14);
+      --bg-canvas: #100d0a;
+      --bg-surface: rgba(26, 21, 16, 0.80);
+      --bg-elevated: rgba(40, 32, 24, 0.80);
+      --bg-subtle: rgba(20, 16, 12, 0.65);
+      --bg-panel: rgba(26, 21, 16, 0.84);
+      --bg-glass: rgba(16, 13, 10, 0.86);
+      --rail-bg: rgba(24, 19, 14, 0.88);
+      --rail-border: rgba(234, 179, 8, 0.18);
       --rail-text: #fefce8;
-      --rail-muted: #9e9482;
-      --rail-accent: #f59e0b;
-      --rail-accent-bg: rgba(245, 158, 11, 0.15);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text-primary: #fafaf9;
-      --text-secondary: #b8b0a2;
-      --text-muted: #827a6c;
-      --accent-emerald: #f59e0b;
-      --accent-emerald-bg: rgba(245, 158, 11, 0.12);
-      --accent-emerald-border: rgba(245, 158, 11, 0.30);
-      --accent-emerald-soft: rgba(245, 158, 11, 0.11);
-      --accent-sky: #10b981;
-      --accent-sky-bg: rgba(16, 185, 129, 0.12);
-      --accent-sky-border: rgba(16, 185, 129, 0.28);
+      --rail-muted: #c2b59b;
+      --rail-accent: #eab308;
+      --rail-accent-bg: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(245, 158, 11, 0.15));
+      --border-subtle: rgba(234, 179, 8, 0.15);
+      --border-strong: rgba(234, 179, 8, 0.28);
+      --text-primary: #fefce8;
+      --text-secondary: #d6cbb8;
+      --text-muted: #9e917d;
+      --accent-emerald: #eab308;
+      --accent-emerald-bg: rgba(234, 179, 8, 0.13);
+      --accent-emerald-border: rgba(234, 179, 8, 0.34);
+      --accent-sky: #34d399;
+      --accent-sky-bg: rgba(52, 211, 153, 0.13);
+      --accent-sky-border: rgba(52, 211, 153, 0.32);
+      --aurora-1: rgba(234, 179, 8, 0.19);
+      --aurora-2: rgba(244, 63, 94, 0.12);
+      --cta-grad: linear-gradient(135deg, #eab308 0%, #d97706 100%);
+    }
+
+    /* Theme 5: Neon Plum & Sunset Coral */
+    [data-theme="sunset_coral"] {
+      --bg-canvas: #130b1c;
+      --bg-surface: rgba(29, 17, 43, 0.78);
+      --bg-elevated: rgba(45, 27, 66, 0.78);
+      --bg-subtle: rgba(23, 13, 35, 0.65);
+      --bg-panel: rgba(29, 17, 43, 0.84);
+      --bg-glass: rgba(19, 11, 28, 0.85);
+      --rail-bg: rgba(26, 15, 39, 0.88);
+      --rail-border: rgba(236, 72, 153, 0.20);
+      --rail-text: #fdf4ff;
+      --rail-muted: #c4b5fd;
+      --rail-accent: #f97316;
+      --rail-accent-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.28), rgba(236, 72, 153, 0.24));
+      --border-subtle: rgba(216, 180, 254, 0.15);
+      --border-strong: rgba(216, 180, 254, 0.28);
+      --text-primary: #fdf4ff;
+      --text-secondary: #e2d4f0;
+      --text-muted: #a792c2;
+      --accent-emerald: #fb923c;
+      --accent-emerald-bg: rgba(251, 146, 60, 0.14);
+      --accent-emerald-border: rgba(251, 146, 60, 0.34);
+      --accent-sky: #f472b6;
+      --accent-sky-bg: rgba(244, 114, 182, 0.14);
+      --accent-sky-border: rgba(244, 114, 182, 0.34);
+      --aurora-1: rgba(236, 72, 153, 0.22);
+      --aurora-2: rgba(249, 115, 22, 0.18);
+      --cta-grad: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+    }
+
+    /* Theme 6: Pure Apple Daylight */
+    [data-theme="light"] {
+      --bg-canvas: #f8fafc;
+      --bg-surface: rgba(255, 255, 255, 0.92);
+      --bg-elevated: #f1f5f9;
+      --bg-subtle: #f1f5f9;
+      --bg-panel: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.88);
+      --rail-bg: rgba(255, 255, 255, 0.92);
+      --rail-surface: #f1f5f9;
+      --rail-border: rgba(15, 23, 42, 0.09);
+      --rail-text: #0f172a;
+      --rail-muted: #64748b;
+      --rail-accent: #4f46e5;
+      --rail-accent-bg: rgba(79, 70, 229, 0.10);
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-emerald: #059669;
+      --accent-emerald-bg: #ecfdf5;
+      --accent-emerald-border: #a7f3d0;
+      --accent-amber: #d97706;
+      --accent-amber-bg: #fffbeb;
+      --accent-amber-border: #fde68a;
+      --accent-crimson: #e11d48;
+      --accent-crimson-bg: #fff1f2;
+      --accent-crimson-border: #fecdd3;
+      --accent-sky: #4f46e5;
+      --accent-sky-bg: #eef2ff;
+      --accent-sky-border: #c7d2fe;
+      --aurora-1: rgba(79, 70, 229, 0.08);
+      --aurora-2: rgba(16, 185, 129, 0.08);
+      --cta-grad: linear-gradient(135deg, #4f46e5 0%, #059669 100%);
+      --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.05), 0 12px 28px -12px rgba(15, 23, 42, 0.09);
+      --shadow-lift: 0 6px 14px rgba(15, 23, 42, 0.07), 0 20px 38px -12px rgba(15, 23, 42, 0.14);
     }
 
     .sidebar-theme-palette {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      padding: 5px 8px;
-      border-radius: 9px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--rail-border);
+      gap: 5px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
     }
     .app-swatch-dot {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 999px;
-      border: 1.5px solid var(--rail-bg);
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+      border: 1.5px solid var(--bg-canvas);
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35);
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .app-swatch-dot:hover { transform: scale(1.18); }
+    .app-swatch-dot:hover { transform: scale(1.22); }
     .app-swatch-dot.active {
       box-shadow: 0 0 0 2px var(--rail-accent);
-      transform: scale(1.15);
+      transform: scale(1.18);
     }
 
     * {
@@ -245,25 +261,16 @@
     html, body {
       background-color: var(--bg-canvas);
       background-image:
-        radial-gradient(ellipse 68% 36% at 50% -12%, var(--accent-emerald-soft), transparent 72%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-      background-size: 100% 100%, 48px 48px, 48px 48px;
+        radial-gradient(ellipse 60% 42% at 15% -8%, var(--aurora-1), transparent 70%),
+        radial-gradient(ellipse 55% 40% at 88% -5%, var(--aurora-2), transparent 70%);
       background-attachment: fixed;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.56;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    [data-theme="light"] html,
-    [data-theme="light"] body {
-      background-image:
-        radial-gradient(ellipse 70% 34% at 50% -10%, var(--accent-emerald-soft), transparent 70%);
-      background-size: 100% 100%;
     }
 
     h1, h2, h3, h4 {
@@ -289,10 +296,11 @@
     }
 
     /* =========================================================================
-       ULTRA-CLEAN MATTE OBSIDIAN LEFT RAIL (220px · LINEAR/RAYCAST STYLE)
+       FULL-WIDTH FLOATING GLASS TOP-NAV BENTO ARCHITECTURE (NO LEFT SIDEBAR!)
        ========================================================================= */
     .app-shell {
       display: flex;
+      flex-direction: column;
       min-height: 100vh;
       width: 100%;
       max-width: 100vw;
@@ -300,123 +308,152 @@
     }
 
     .app-sidebar {
-      width: 222px;
-      flex-shrink: 0;
       position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
+      top: 10px;
+      z-index: 48;
+      width: calc(100% - 32px);
+      max-width: 1320px;
+      height: auto;
+      margin: 12px auto 0;
+      padding: 9px 14px;
+      border-radius: 18px;
       background: var(--rail-bg);
-      border-right: 1px solid var(--rail-border);
-      padding: 16px 12px 14px;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid var(--rail-border);
+      box-shadow: var(--shadow-card);
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
-      z-index: 45;
       color: var(--rail-text);
+      overflow: visible;
     }
-
-    .app-sidebar::-webkit-scrollbar { width: 4px; }
-    .app-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 99px; }
 
     .sidebar-section {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
 
     .sidebar-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      color: var(--rail-muted);
-      padding: 12px 10px 4px;
+      display: none;
     }
 
-    .sidebar-nav-btn {
-      display: flex;
+    .topnav-pills {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
+      gap: 3px;
+      padding: 4px;
+      border-radius: 13px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .sidebar-nav-btn,
+    .app-sidebar .sidebar-nav-btn.main-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: auto;
+      padding: 7px 12px;
+      border-radius: 9px;
       border: 1px solid transparent;
       background: transparent;
-      color: #a1a1aa;
-      font-size: 13px;
+      color: var(--rail-muted);
+      font-size: 12.8px;
       font-weight: 500;
       cursor: pointer;
-      text-align: left;
+      white-space: nowrap;
       transition: all var(--transition-fast);
       font-family: var(--font-sans);
+      box-shadow: none;
     }
 
-    .sidebar-nav-btn:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fafafa;
+    .sidebar-nav-btn:hover,
+    .app-sidebar .sidebar-nav-btn.main-tab-btn:hover {
+      background: rgba(148, 163, 184, 0.11);
+      color: var(--rail-text);
     }
 
-    .sidebar-nav-btn.active {
+    .sidebar-nav-btn.active,
+    .app-sidebar .sidebar-nav-btn.main-tab-btn.active {
       background: var(--rail-accent-bg);
-      color: #fafafa;
-      border-color: rgba(255, 255, 255, 0.08);
+      color: var(--rail-text);
+      border-color: var(--border-strong);
       font-weight: 600;
+      box-shadow: 0 2px 10px -2px rgba(99, 102, 241, 0.25);
+    }
+
+    .sidebar-footer {
+      border-top: none;
+      padding-top: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-icon-dock {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .sidebar-util-btn {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      width: 100%;
-      padding: 7px 9px;
-      border-radius: 8px;
-      border: 1px solid var(--rail-border);
-      background: rgba(255, 255, 255, 0.025);
-      color: #a1a1aa;
+      width: auto;
+      height: 32px;
+      padding: 0 9px;
+      border-radius: 9px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-subtle);
+      color: var(--rail-muted);
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       font-family: var(--font-sans);
       transition: all var(--transition-fast);
+      white-space: nowrap;
     }
 
     .sidebar-util-btn:hover {
-      background: rgba(255, 255, 255, 0.07);
-      color: #fafafa;
-      border-color: rgba(255, 255, 255, 0.16);
-    }
-
-    .sidebar-icon-dock {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
+      background: var(--bg-elevated);
+      color: var(--rail-text);
+      border-color: var(--border-strong);
     }
 
     .sidebar-icon-dock .sidebar-util-btn {
-      padding: 7px 0;
+      width: 32px;
+      padding: 0;
     }
 
     .sidebar-report-select {
       width: auto;
-      min-width: 170px;
-      max-width: 230px;
-      height: 32px;
-      background: var(--bg-elevated);
+      min-width: 195px;
+      max-width: 260px;
+      height: 34px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0 10px;
+      border-radius: 10px;
+      padding: 0 11px;
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 12.5px;
-      font-weight: 500;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      backdrop-filter: blur(12px);
       transition: border-color var(--transition-fast);
     }
 
@@ -424,62 +461,54 @@
       border-color: var(--border-strong);
     }
 
-    .sidebar-footer {
-      border-top: 1px solid var(--rail-border);
-      padding-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    /* SINGLE-ROW ULTRA-SLIM STICKY TOP COMMAND BAR (52px · ZERO WRAPPING CLUTTER) */
+    /* Clean Floating Utility Sub-Bar inside Full-Width Workspace */
     .top-command-bar {
-      position: sticky;
-      top: 0;
-      z-index: 38;
+      position: relative;
+      z-index: 30;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 9px 28px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
-      margin: -24px -28px 18px -28px;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 0;
+      background: transparent;
+      backdrop-filter: none;
+      border-bottom: none;
+      margin: 0 0 16px 0;
     }
 
     .top-command-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
       min-width: 0;
-      flex-shrink: 1;
+      flex-wrap: wrap;
     }
 
     .top-command-right {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      gap: 9px;
+      flex-wrap: wrap;
     }
 
     .topbar-lang-dock {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      height: 32px;
-      padding: 0 6px;
-      border-radius: 8px;
-      background: var(--bg-elevated);
+      height: 34px;
+      padding: 0 7px;
+      border-radius: 10px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(12px);
     }
 
     .topbar-lang-dock .lang-btn {
-      padding: 3px 7px;
-      border-radius: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
       background: transparent;
       color: var(--text-muted);
@@ -488,14 +517,14 @@
     }
 
     .topbar-lang-dock .lang-btn.active {
-      background: var(--text-primary);
-      color: var(--bg-canvas);
+      background: var(--cta-grad);
+      color: #ffffff;
     }
 
     .topbar-lang-dock .global-lang-select {
       width: auto;
-      min-width: 118px;
-      max-width: 165px;
+      min-width: 124px;
+      max-width: 175px;
       padding: 2px 6px;
       font-size: 12px;
       font-weight: 500;
@@ -510,16 +539,23 @@
 
     .topbar-lang-dock .global-lang-select option,
     .sidebar-report-select option {
-      background: var(--bg-surface);
-      color: var(--text-primary);
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    [data-theme="nordic_frost"] .topbar-lang-dock .global-lang-select option,
+    [data-theme="nordic_frost"] .sidebar-report-select option,
+    [data-theme="light"] .topbar-lang-dock .global-lang-select option,
+    [data-theme="light"] .sidebar-report-select option {
+      background: #ffffff;
+      color: #0f172a;
     }
 
     .topbar-lang-badge {
       font-family: var(--font-mono);
       font-size: 10px;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
       background: var(--accent-emerald-bg);
       color: var(--accent-emerald);
       border: 1px solid var(--accent-emerald-border);
@@ -527,49 +563,45 @@
     }
 
     .btn-cockpit-primary {
-      height: 32px;
+      height: 34px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 0 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: #fafafa;
-      color: #09090b;
+      gap: 7px;
+      padding: 0 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--cta-grad);
+      color: #ffffff;
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       font-family: var(--font-sans);
       white-space: nowrap;
+      box-shadow: 0 8px 22px -6px rgba(99, 102, 241, 0.55);
       transition: all var(--transition-fast);
     }
 
     .btn-cockpit-primary:hover {
-      background: #ffffff;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+      filter: brightness(1.1);
       transform: translateY(-1px);
-    }
-
-    [data-theme="light"] .btn-cockpit-primary {
-      background: #09090b;
-      color: #ffffff;
-      border-color: #09090b;
+      box-shadow: 0 12px 28px -6px rgba(99, 102, 241, 0.7);
     }
 
     .exec-action-strip {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
       padding: 3px;
-      border-radius: 9px;
-      background: var(--bg-subtle);
+      border-radius: 11px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(12px);
       flex-wrap: nowrap;
     }
 
     .exec-action-strip .btn {
-      border-radius: 6px;
-      padding: 5px 9px;
+      border-radius: 8px;
+      padding: 5px 10px;
       font-size: 12px;
       font-weight: 500;
       background: transparent;
@@ -594,19 +626,44 @@
       font-weight: 600;
     }
 
-    .exec-action-strip .btn.btn-proof-accent:hover {
-      filter: brightness(1.12);
+    @media (max-width: 1160px) {
+      .app-sidebar {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .topnav-pills {
+        overflow-x: auto;
+        max-width: 100%;
+      }
     }
 
     @media (max-width: 960px) {
-      .top-command-bar {
-        margin: -16px -14px 14px -14px;
-        padding: 8px 14px;
-        flex-wrap: wrap;
+      .app-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 260px;
+        margin: 0;
+        border-radius: 0;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
       }
-      .topbar-lang-dock .global-lang-select {
-        max-width: 118px;
-        min-width: 96px;
+      .sidebar-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .topnav-pills {
+        flex-direction: column;
+        align-items: stretch;
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+      .sidebar-footer {
+        flex-direction: column;
+        align-items: stretch;
       }
       .exec-action-strip {
         flex-wrap: wrap;
@@ -742,13 +799,14 @@
       50% { opacity: 0.45; transform: scale(0.85); }
     }
 
-    /* Main Container */
+    /* Main Full-Width Centered Bento Workspace (1320px Airy Executive Canvas) */
     .workspace-shell {
       flex: 1;
       min-width: 0;
-      max-width: 1140px;
+      width: 100%;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 24px 28px 64px;
+      padding: 18px 16px 64px;
     }
 
     @media (max-width: 960px) {
@@ -1226,31 +1284,31 @@
       box-shadow: 0 1px 3px rgba(16, 19, 24, 0.08), 0 2px 8px -2px rgba(16, 19, 24, 0.06);
     }
 
-    /* High-Specificity Linear/Raycast Matte Obsidian Navigation Rail Overrides */
+    /* High-Specificity Floating Top-Nav Pill Overrides (V9 Aurora Bento) */
     .app-sidebar .sidebar-nav-btn.main-tab-btn {
-      display: flex;
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      color: #a1a1aa;
+      display: inline-flex;
+      width: auto;
+      padding: 7px 12px;
+      border-radius: 9px;
+      color: var(--rail-muted);
       background: transparent;
       border: 1px solid transparent;
       box-shadow: none;
       font-weight: 500;
-      font-size: 13px;
+      font-size: 12.8px;
     }
 
     .app-sidebar .sidebar-nav-btn.main-tab-btn:hover {
-      background: rgba(255, 255, 255, 0.055);
-      color: #fafafa;
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--rail-text);
     }
 
     .app-sidebar .sidebar-nav-btn.main-tab-btn.active {
-      background: rgba(255, 255, 255, 0.085);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.11);
+      background: var(--rail-accent-bg);
+      color: var(--rail-text);
+      border-color: var(--border-strong);
       font-weight: 600;
-      box-shadow: inset 2.5px 0 0 var(--rail-accent);
+      box-shadow: 0 2px 12px -2px rgba(99, 102, 241, 0.28);
     }
 
     /* Historical Drift Banner */
@@ -1297,17 +1355,19 @@
        ========================================================================= */
     .owner-hero-stage {
       display: grid;
-      grid-template-columns: 164px 1fr 228px;
-      gap: 24px;
+      grid-template-columns: 168px 1fr 240px;
+      gap: 26px;
       align-items: center;
       background:
-        radial-gradient(ellipse 55% 90% at 12% 50%, rgba(16, 185, 129, 0.09), transparent 70%),
-        radial-gradient(ellipse 45% 80% at 88% 20%, rgba(56, 189, 248, 0.07), transparent 70%),
+        radial-gradient(ellipse 60% 100% at 10% 50%, var(--aurora-1), transparent 72%),
+        radial-gradient(ellipse 50% 90% at 92% 15%, var(--aurora-2), transparent 72%),
         var(--bg-surface);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
       border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 22px 24px;
-      margin-bottom: 16px;
+      border-radius: 22px;
+      padding: 26px 28px;
+      margin-bottom: 18px;
       box-shadow: var(--shadow-card);
       position: relative;
       overflow: hidden;
@@ -1465,15 +1525,16 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      padding: 9px 16px;
-      border-radius: 9px;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      background: var(--accent-emerald);
-      color: #06130e;
+      padding: 10px 18px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--cta-grad);
+      color: #ffffff;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       font-family: var(--font-sans);
+      box-shadow: 0 8px 22px -6px rgba(99, 102, 241, 0.55);
       transition: all var(--transition-fast);
     }
 
@@ -3424,48 +3485,57 @@
   </header>
 
   <div class="app-shell">
-    <!-- ULTRA-CLEAN MATTE OBSIDIAN LEFT RAIL (LINEAR / RAYCAST STYLE · ZERO EMOJIS) -->
+    <!-- FLOATING GLASS TOP-NAV EXECUTIVE BAR (V9 AURORA BENTO · ZERO LEFT SIDEBAR) -->
     <aside id="appSidebar" class="app-sidebar">
       <div class="sidebar-section">
-        <div class="brand-cluster" style="padding: 2px 4px 10px;">
-          <div class="brand-mark" style="width: 32px; height: 32px; border-radius: 9px; font-size: 13px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);">DX</div>
+        <div class="brand-cluster" style="padding: 0 2px;">
+          <div class="brand-mark" style="width: 34px; height: 34px; border-radius: 10px; font-size: 13.5px; background: var(--cta-grad); box-shadow: 0 6px 18px -4px rgba(99, 102, 241, 0.55);">DX</div>
           <div>
-            <div class="brand-title" style="font-size: 15.5px; font-weight: 700; letter-spacing: -0.02em;">DataX-Ray</div>
-            <span class="brand-subtitle" data-i18n="brandSubtitle" style="font-size: 10.5px;">AI Business Cockpit</span>
+            <div class="brand-title" style="font-size: 15.5px; font-weight: 700; letter-spacing: -0.025em;">DataX-Ray</div>
+            <span class="brand-subtitle" data-i18n="brandSubtitle" style="font-size: 10.5px;">AI Executive Suite</span>
           </div>
         </div>
 
         <div class="sidebar-label" data-i18n="navMenuLabel">WORKSPACE</div>
-        <nav aria-label="Primary Workspace Navigation" style="display: flex; flex-direction: column; gap: 3px;">
+        <nav aria-label="Primary Workspace Navigation" class="topnav-pills">
           <button type="button" class="sidebar-nav-btn main-tab-btn active" data-tab="overview" onclick="switchWorkspaceTab('overview', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             <span data-i18n="tabOverview">Business Health</span>
           </button>
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="actions" onclick="switchWorkspaceTab('actions', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-            <span data-i18n="tabActions">Today's Call List</span>
+            <span data-i18n="tabActions">Call List</span>
           </button>
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="calculator" onclick="switchWorkspaceTab('calculator', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-            <span data-i18n="tabCalculator">Savings Calculator</span>
+            <span data-i18n="tabCalculator">Calculator</span>
           </button>
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="ask" onclick="switchWorkspaceTab('ask', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span data-i18n="tabAsk">Ask Any Question</span>
+            <span data-i18n="tabAsk">Ask AI</span>
           </button>
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="predict" onclick="switchWorkspaceTab('predict', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><path d="M4.93 19.07l2.83-2.83"></path><path d="M16.24 7.76l2.83-2.83"></path></svg>
-            <span data-i18n="tabPredict">Decision Predictor</span>
+            <span data-i18n="tabPredict">Decision Lab</span>
           </button>
           <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="boardroom" onclick="switchWorkspaceTab('boardroom', this)">
             <svg class="svg-ico" viewBox="0 0 24 24"><path d="M12 3v18"></path><path d="M5 7h14"></path><path d="M3 14l2-7 2 7a3 3 0 0 1-4 0z"></path><path d="M17 14l2-7 2 7a3 3 0 0 1-4 0z"></path><path d="M8 21h8"></path></svg>
-            <span data-i18n="tabBoardroom">AI Boardroom</span>
+            <span data-i18n="tabBoardroom">Boardroom</span>
           </button>
         </nav>
       </div>
 
-      <!-- Minimalist Cockpit Footer: 4-Icon Dock + Swatches + Sign In -->
+      <!-- Right Floating Utility Cluster: 6 Luxury Theme Swatches + 4 Icon Tools + Sign In -->
       <div class="sidebar-footer">
+        <div class="sidebar-theme-palette" title="Switch Luxury Theme">
+          <button type="button" class="app-swatch-dot active" data-app-theme="dark" style="background:linear-gradient(135deg,#6366f1,#14b8a6);" title="Midnight Sapphire Aurora (Default)" onclick="setAppStudioTheme('dark')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:linear-gradient(135deg,#10b981,#f59e0b);" title="Emerald Private Wealth" onclick="setAppStudioTheme('stripe_alabaster')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:linear-gradient(135deg,#e0f2fe,#2563eb);" title="Arctic Frost Glass (Light)" onclick="setAppStudioTheme('nordic_frost')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:linear-gradient(135deg,#eab308,#78350f);" title="Royal Champagne Obsidian" onclick="setAppStudioTheme('royal_gold')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:linear-gradient(135deg,#f97316,#ec4899);" title="Neon Plum &amp; Sunset Coral" onclick="setAppStudioTheme('sunset_coral')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="light" style="background:#f8fafc;" title="Pure Apple Daylight" onclick="setAppStudioTheme('light')"></button>
+        </div>
+
         <div class="sidebar-icon-dock">
           <button type="button" class="sidebar-util-btn" onclick="openLiveErpModal()" title="Connect Tally / Live ERP" aria-label="Connect Tally / Live ERP">
             <svg class="svg-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
@@ -3479,15 +3549,6 @@
           <button id="btnSettingsModal" type="button" class="sidebar-util-btn" onclick="openSettingsModal()" title="Settings" aria-label="Settings">
             <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           </button>
-        </div>
-
-        <div class="sidebar-theme-palette" title="Cockpit Color Theme">
-          <button type="button" class="app-swatch-dot active" data-app-theme="dark" style="background:#10b981;" title="Matte Black Emerald (Default)" onclick="setAppStudioTheme('dark')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:#818cf8;" title="Linear Indigo Dark" onclick="setAppStudioTheme('stripe_alabaster')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:#38bdf8;" title="Deep Arctic Cyan" onclick="setAppStudioTheme('nordic_frost')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:#f59e0b;" title="Obsidian Gold" onclick="setAppStudioTheme('royal_gold')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:#fb923c;" title="Carbon Amber" onclick="setAppStudioTheme('sunset_coral')"></button>
-          <button type="button" class="app-swatch-dot" data-app-theme="light" style="background:#fafafa;" title="Pure White Minimal" onclick="setAppStudioTheme('light')"></button>
         </div>
 
         <button id="btnAuthModal" type="button" class="sidebar-util-btn" onclick="openAuthModal()">
@@ -5193,12 +5254,12 @@
         btnPrintPdf: 'PDF',
         btnFullVisual: 'Charts',
         btnProof: 'Proof',
-        tabOverview: 'Business Health',
-        tabActions: 'Today\'s Call List',
-        tabCalculator: 'Savings Calculator',
-        tabAsk: 'Ask Any Question',
-        tabPredict: 'Decision Predictor',
-        tabBoardroom: 'AI Boardroom',
+        tabOverview: 'Health',
+        tabActions: 'Call List',
+        tabCalculator: 'Calculator',
+        tabAsk: 'Ask AI',
+        tabPredict: 'Decision Lab',
+        tabBoardroom: 'Boardroom',
         boardroomEyebrow: 'STAGE 9 · AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA)',
         boardroomTitle: 'Discuss Your Team Debate or Business Idea Against Real Data',
         boardroomLead: 'Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.',
@@ -10290,15 +10351,15 @@
       }).join('');
     }
 
-    // Initialize Linear/Raycast Matte Black AI Cockpit theme (auto-migrating prior light cache once), auth/region/language & default report
+    // Initialize V9 Midnight Aurora Executive Bento Suite (auto-migrating prior theme cache once)
     window.addEventListener('DOMContentLoaded', () => {
       try {
-        const uiVer = localStorage.getItem('dataxray_ui_v7');
+        const uiVer = localStorage.getItem('dataxray_ui_v9');
         const savedTheme = localStorage.getItem('dataxray_theme');
         if (uiVer === '1' && savedTheme) {
           setAppStudioTheme(savedTheme);
         } else {
-          localStorage.setItem('dataxray_ui_v7', '1');
+          localStorage.setItem('dataxray_ui_v9', '1');
           setAppStudioTheme('dark');
         }
         const savedLang = localStorage.getItem('dataxray_lang');
