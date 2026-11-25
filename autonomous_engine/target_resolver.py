@@ -301,9 +301,17 @@ def resolve_currency_metadata(
     cost_col_low = str(cost_col).lower()
 
     # Inspect actual cell data for explicit currency symbols and regional entities
+    # Skip free-text person/name/note columns so surnames like "Nguyen" never trigger 'yen'!
+    _skip_sample_tokens = (
+        "surname", "last_name", "first_name", "customer_name", "full_name",
+        "emp_name", "patient_name", "email", "phone", "comment", "note", "review_text",
+    )
     cell_sample_text = ""
     for col in [cost_col] + [c for c in df.columns if c != cost_col]:
         if col in df.columns:
+            c_low_i = str(col).lower()
+            if col != cost_col and (c_low_i == "name" or any(tok in c_low_i for tok in _skip_sample_tokens)):
+                continue
             non_null_strs = df[col].dropna().astype(str).head(80)
             cell_sample_text += " " + " ".join(non_null_strs.str.lower())
             if len(cell_sample_text) > 4000:
@@ -327,7 +335,7 @@ def resolve_currency_metadata(
 
     # 3.5 Check Japanese Yen / Global Asian & Regional Currency indicators
     is_jp = any(k in cost_col_low or f"_{k}" in all_col_text or f"({k})" in all_col_text for k in ['jpy', '¥', '￥', 'yen', '円'])
-    is_jp = is_jp or any(k in cell_sample_text for k in ['¥', '￥', ' jpy ', 'yen'])
+    is_jp = is_jp or bool(re.search(r'(?:¥|￥|円|\bjpy\b|\byen\b)', cell_sample_text))
     is_kr = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['krw', '₩', 'won']) or ('₩' in cell_sample_text)
     is_br = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['brl', 'r$']) or ('r$' in cell_sample_text)
     is_ae = any(k in cost_col_low or f"_{k}" in all_col_text for k in ['aed', 'dirham'])

@@ -698,4 +698,127 @@ def test_stage83_multimodel_calibration_temporal_and_causal_support(tmp_path: Pa
     assert "margin of safety" in be["summary_en"].lower()
 
 
+# -----------------------------------------------------------------------------
+# TEST 8: Anti-Deception Guards Across Real Industry Traps (Yen Surname Bug,
+#         Revenue=Qty*Price Formula Tautology, Immutable/Survival Presets,
+#         Cancellation Pause Economics & Reverse-Causality Policy Tag Guard)
+# -----------------------------------------------------------------------------
+def test_stage8_anti_deception_tautology_immutable_yen_and_policy_guards(tmp_path: Path):
+    rng = np.random.default_rng(2026)
+
+    # 1. Surname "Nguyen" MUST NOT trigger false Japanese Yen (¥) currency!
+    bank_dir = tmp_path / "bank_yen_guard"
+    bank_dir.mkdir(parents=True, exist_ok=True)
+    n_b = 500
+    age = rng.integers(22, 72, size=n_b)
+    prods = rng.choice([1, 2, 3, 4], size=n_b, p=[0.48, 0.42, 0.06, 0.04])
+    tenure = rng.integers(1, 10, size=n_b)
+    balance = rng.uniform(0, 180000, size=n_b)
+    salary = rng.uniform(30000, 150000, size=n_b)
+    p_churn = np.clip(0.08 + np.where(prods >= 3, 0.62, 0.0) + np.where(age > 52, 0.20, 0.0), 0.02, 0.95)
+    churn = (rng.random(n_b) < p_churn).astype(int)
+    pd.DataFrame({
+        "Surname": rng.choice(["Nguyen", "Smith", "Muller", "Dubois"], size=n_b),
+        "Geography": rng.choice(["France", "Germany", "Spain"], size=n_b),
+        "Age": age,
+        "tenure": tenure,
+        "Balance": np.round(balance, 2),
+        "EstimatedSalary": np.round(salary, 2),
+        "NumOfProducts": prods,
+        "Exited": churn,
+    }).to_parquet(bank_dir / "bi_ready_fact.parquet", index=False)
+
+    bank_eng = PredictiveDecisionEngine(str(bank_dir))
+    assert bank_eng.unit_sym == "$", f"Surname 'Nguyen' triggered wrong currency: {bank_eng.unit_sym}"
+    bank_ov = bank_eng.get_model_overview_and_presets()
+    preset_cols = {p["decision"]["column"] for p in bank_ov["presets"]}
+    for forbidden in ("Age", "Geography", "tenure", "Balance", "EstimatedSalary"):
+        assert forbidden not in preset_cols, f"Immutable/non-actionable column leaked into presets: {forbidden}"
+    for p in bank_ov["presets"]:
+        s = bank_eng.simulate_decision(decision=p["decision"])
+        assert s["status"] == "simulated"
+        assert s["prediction"]["chance_of_benefit_pct"] < 92.0  # No mechanical 95.0% stamp!
+
+    # Manual simulation on immutable Age MUST flag non_actionable_warning & never STRONG_GO!
+    age_sim = bank_eng.simulate_decision(decision={"action_type": "cap_numeric", "column": "Age", "value": 45})
+    assert age_sim["status"] == "simulated"
+    assert age_sim["prediction"]["non_actionable_warning"] is True
+    assert age_sim["prediction"]["verdict_code"] != "STRONG_GO"
+
+    # 2. Algebraic Formula Tautology (`Total_Revenue = Qty_Sold * Unit_Price` & `In_Stock = Batch_Qty - Qty_Sold`)
+    dairy_dir = tmp_path / "dairy_tautology_guard"
+    dairy_dir.mkdir(parents=True, exist_ok=True)
+    n_d = 450
+    batch_qty = rng.uniform(100, 900, size=n_d)
+    frac_sold = rng.uniform(0.2, 0.95, size=n_d)
+    qty_sold = np.round(batch_qty * frac_sold, 2)
+    in_stock = np.round(batch_qty - qty_sold, 2)
+    unit_price = rng.uniform(35, 120, size=n_d)
+    tot_rev = np.round(qty_sold * unit_price, 2)
+    pd.DataFrame({
+        "Brand": rng.choice(["Amul", "Mother Dairy", "Sudha"], size=n_d),
+        "Sales_Channel": rng.choice(["Retail", "Online", "Wholesale"], size=n_d),
+        "Batch_Qty_Liters": np.round(batch_qty, 2),
+        "Quantity_Sold_Liters": qty_sold,
+        "Quantity_In_Stock_Liters": in_stock,
+        "Price_Per_Unit_INR": np.round(unit_price, 2),
+        "Approx_Total_Revenue_INR": tot_rev,
+    }).to_parquet(dairy_dir / "bi_ready_fact.parquet", index=False)
+    (dairy_dir / "semantic_metrics_manifest.json").write_text(
+        json.dumps({"target_column": "Approx_Total_Revenue_INR", "monetary_column": "Approx_Total_Revenue_INR"}),
+        encoding="utf-8",
+    )
+
+    dairy_eng = PredictiveDecisionEngine(str(dairy_dir), region_profile="IN")
+    blk = set(dairy_eng.model_metrics["blocked_leakage_columns"])
+    assert "Quantity_Sold_Liters" in blk
+    assert "Price_Per_Unit_INR" in blk
+    assert "Quantity_In_Stock_Liters" in blk
+    assert dairy_eng.model_metrics["roc_auc"] < 0.92, f"Formula tautology leaked: AUC={dairy_eng.model_metrics['roc_auc']}"
+
+    # 3. Hotel Cancellation Pause Economics & >=95% Reverse-Causality Policy Tag (`Non Refund`)
+    hotel_dir = tmp_path / "hotel_policy_guard"
+    hotel_dir.mkdir(parents=True, exist_ok=True)
+    n_h = 600
+    dep = rng.choice(["No Deposit", "Non Refund"], size=n_h, p=[0.78, 0.22])
+    seg = rng.choice(["Direct", "Online TA", "Groups"], size=n_h, p=[0.30, 0.45, 0.25])
+    lead = rng.integers(5, 240, size=n_h)
+    adr = rng.uniform(80, 220, size=n_h)
+    is_canc = np.where(
+        dep == "Non Refund",
+        (rng.random(n_h) < 0.99).astype(int),
+        (rng.random(n_h) < np.where(seg == "Groups", 0.52, 0.22)).astype(int),
+    )
+    pd.DataFrame({
+        "deposit_type": dep,
+        "market_segment": seg,
+        "lead_time": lead,
+        "agent": rng.choice([9, 14, 240, 314], size=n_h),
+        "adr": np.round(adr, 2),
+        "is_canceled": is_canc,
+    }).to_parquet(hotel_dir / "bi_ready_fact.parquet", index=False)
+
+    hotel_eng = PredictiveDecisionEngine(str(hotel_dir))
+    assert "agent" in hotel_eng.categorical_features and "agent" not in hotel_eng.numeric_features
+    h_ov = hotel_eng.get_model_overview_and_presets()
+    for p in h_ov["presets"]:
+        assert p["decision"].get("from_value") != "Non Refund"
+        assert p["decision"].get("column") != "agent"
+
+    # Manual `Non Refund -> No Deposit` MUST flag selection_bias_warning & never STRONG_GO!
+    pol_sim = hotel_eng.simulate_decision(
+        decision={"action_type": "replace_category", "column": "deposit_type", "from_value": "Non Refund", "to_value": "No Deposit"}
+    )
+    assert pol_sim["prediction"]["selection_bias_warning"] is True
+    assert pol_sim["prediction"]["verdict_code"] != "STRONG_GO"
+
+    # Pausing a 52%-cancellation hotel booking channel MUST be net negative (`LIKELY_LOSS`), not fake cash profit!
+    pause_h = hotel_eng.simulate_decision(
+        decision={"action_type": "pause_segment", "column": "market_segment", "from_value": "Groups"}
+    )
+    assert pause_h["prediction"]["expected_net_impact"] < 0
+    assert pause_h["prediction"]["verdict_code"] == "LIKELY_LOSS"
+
+
+
 

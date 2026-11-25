@@ -227,6 +227,209 @@ def _is_date_like_column(series: pd.Series, col_name: str) -> bool:
     return False
 
 
+def _is_non_actionable_attribute(col_name: str) -> bool:
+    """
+    Identifies immutable customer/entity attributes (human age, gender, geography,
+    physical store/city/country/cuisine identity) and post-start cumulative survival
+    or popularity counters (tenure, TotalCharges, Votes, review_count) that a business
+    owner CANNOT flip like an operational switch on existing records.
+    Note: Inventory `stock_age_days` is an actionable clearance policy and stays False!
+    """
+    c_low = str(col_name).strip().lower()
+    c_norm = re.sub(r"[\s\-]+", "_", c_low)
+
+    # 1. Human age / demographics (explicitly preserving inventory stock_age_days / item_age)
+    if re.match(
+        r"^(?:customer_|borrower_|patient_|member_|user_|emp_|employee_|client_|applicant_)?age(?:_years|_yrs|_group|_band)?$",
+        c_norm,
+    ):
+        return True
+    if any(
+        tok in c_norm
+        for tok in (
+            "gender", "sex", "marital", "seniorcitizen", "senior_citizen",
+            "dependents", "pregnancies", "ethnicity", "nationality",
+        )
+    ):
+        return True
+
+    # 2. Fixed geographic / physical branch / cuisine identity
+    geo_identity_tokens = (
+        "country", "state", "city", "geography", "region", "zone", "location",
+        "locality", "borough", "ocean_proximity", "origin", "store", "branch",
+        "hub", "circle", "airport", "cuisines", "cuisine", "manager", "cashier",
+        "pincode", "zipcode", "postal_code",
+    )
+    if any(
+        c_norm == tok or c_norm.startswith(f"{tok}_") or c_norm.endswith(f"_{tok}") or f"_{tok}_" in c_norm
+        for tok in geo_identity_tokens
+    ):
+        return True
+
+    # 3. Post-start cumulative survival / billing / popularity / customer-wealth & past-history traits
+    if re.match(r"^(?:customer_|account_|member_)?tenure(?:_months|_mos|_years|_days)?$", c_norm):
+        return True
+    if c_norm in (
+        "totalcharges", "total_charges", "votes", "review_count",
+        "num_reviews", "number_of_reviews", "reviews_per_month",
+        "agent", "company", "agent_id", "company_id", "broker_id",
+        "previous_cancellations", "previous_bookings_not_canceled",
+        "estimatedsalary", "estimated_salary", "annual_income", "customer_income",
+        "income", "salary", "balance", "account_balance",
+        "total_land_area_(acres)", "farm_size",
+    ) or c_norm.startswith("previous_") or c_norm.startswith("prior_"):
+        return True
+
+    return False
+
+
+def _is_pseudo_categorical_code_column(series: pd.Series, col_name: str) -> bool:
+    """
+    Detects integer-coded entity columns (`agent`, `company`, `Country Code`, `pincode`)
+    stored as numeric dtype so we treat them as categoricals rather than continuous numbers.
+    """
+    if not pd.api.types.is_numeric_dtype(series):
+        return False
+    c_norm = re.sub(r"[\s\-]+", "_", str(col_name).strip().lower())
+    code_names = {
+        "agent", "company", "broker", "country_code", "city_code", "state_code",
+        "branch_code", "store_code", "dept_code", "pincode", "zipcode", "postal_code",
+    }
+    if c_norm not in code_names:
+        return False
+    nunq = int(series.nunique(dropna=True))
+    return 2 <= nunq <= 250
+
+
+def _detect_formula_tautology_columns(
+    df: pd.DataFrame,
+    target_col: Optional[str],
+    skip_exact: set,
+) -> List[str]:
+    """
+    Universal Algebraic Formula / Multiplicative Tautology Blocker:
+    When `target_col` is a continuous accounting/revenue/volume quantity `T`
+    (e.g., `Approx. Total Revenue = Quantity Sold * Price per Unit`), detects:
+      1. Single columns with `|corr(X, T)| >= 0.965`
+      2. Pairwise multiplicative/ratio/additive components (`X * Z`, `X / Z`, `X ± Z`)
+         with `|corr(f(X, Z), T)| >= 0.965`
+      3. Post-sale residual closure (`A - B == X_blocked`, e.g. `Quantity - Quantity in Stock == Quantity Sold`)
+    Returns the list of tautological columns so ML evaluates genuine upstream levers instead of
+    bragging fake 0.999 AUC on `Revenue = Qty * Price`.
+    """
+    if not target_col or target_col not in df.columns:
+        return []
+    s_t_full = pd.to_numeric(df[target_col], errors="coerce")
+    valid_t = s_t_full.dropna()
+    # Only activate on true continuous unbounded/wide-range targets (not 0/1 flags or 1-10 ratings)
+    if len(valid_t) < 40 or int(valid_t.nunique()) <= 15 or float(valid_t.max()) <= 15.0:
+        return []
+
+    sample_idx = valid_t.index
+    if len(sample_idx) > 800:
+        rng = np.random.default_rng(42)
+        sample_idx = pd.Index(rng.choice(sample_idx.to_numpy(), size=800, replace=False))
+
+    t_vec = s_t_full.loc[sample_idx].to_numpy(dtype=float)
+    if float(np.nanstd(t_vec)) <= 1e-9:
+        return []
+
+    cand_vecs: Dict[str, np.ndarray] = {}
+    for col in df.columns:
+        if col in skip_exact:
+            continue
+        s_c = pd.to_numeric(df[col], errors="coerce")
+        if s_c.notna().mean() < 0.70:
+            continue
+        v = s_c.loc[sample_idx].to_numpy(dtype=float)
+        if np.isfinite(v).sum() >= 40 and float(np.nanstd(v)) > 1e-9:
+            cand_vecs[col] = v
+
+    def _abs_corr(a: np.ndarray, b: np.ndarray) -> float:
+        m = np.isfinite(a) & np.isfinite(b)
+        if int(m.sum()) < 35:
+            return 0.0
+        aa, bb = a[m], b[m]
+        sa, sb = float(np.std(aa)), float(np.std(bb))
+        if sa <= 1e-9 or sb <= 1e-9:
+            return 0.0
+        r = float(np.corrcoef(aa, bb)[0, 1])
+        return abs(r) if np.isfinite(r) else 0.0
+
+    tautology_cols: List[str] = []
+    cols_list = list(cand_vecs.keys())
+
+    # 1. Direct single-column linear identity with continuous target
+    for c in cols_list:
+        if _abs_corr(cand_vecs[c], t_vec) >= 0.965:
+            if c not in tautology_cols:
+                tautology_cols.append(c)
+
+    # 2. Pairwise algebraic formula identity (X * Z, X / Z, X + Z, X - Z == Target)
+    for i in range(len(cols_list)):
+        ci = cols_list[i]
+        vi = cand_vecs[ci]
+        for j in range(i + 1, len(cols_list)):
+            cj = cols_list[j]
+            vj = cand_vecs[cj]
+            hit = False
+            if _abs_corr(vi * vj, t_vec) >= 0.965:
+                hit = True
+            elif _abs_corr(vi + vj, t_vec) >= 0.965 or _abs_corr(vi - vj, t_vec) >= 0.965:
+                hit = True
+            else:
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    if (np.abs(vj) > 1e-9).mean() > 0.8 and _abs_corr(np.where(np.abs(vj) > 1e-9, vi / vj, np.nan), t_vec) >= 0.965:
+                        hit = True
+                    elif (np.abs(vi) > 1e-9).mean() > 0.8 and _abs_corr(np.where(np.abs(vi) > 1e-9, vj / vi, np.nan), t_vec) >= 0.965:
+                        hit = True
+            if hit:
+                if ci not in tautology_cols:
+                    tautology_cols.append(ci)
+                if cj not in tautology_cols:
+                    tautology_cols.append(cj)
+
+    # 3. Secondary accounting ledger closure: if remaining (A ± B) reconstructs a blocked component
+    #    (e.g., `Quantity - Quantity in Stock == Quantity Sold`) or `Total Value = Quantity * BlockedPrice`,
+    #    block the post-sale residual / valuation column so tree ensembles cannot reconstruct the formula!
+    if tautology_cols:
+        rem = [c for c in cols_list if c not in tautology_cols]
+        residual_tokens = ("in stock", "in_stock", "remaining", "closing", "unsold", "balance", "left", "total value", "total_value")
+        for blk_c in list(tautology_cols):
+            vb = cand_vecs[blk_c]
+            for i in range(len(rem)):
+                ca = rem[i]
+                if ca in tautology_cols:
+                    continue
+                va = cand_vecs[ca]
+                # Check derived valuation column `V = A * BlockedPrice`
+                if any(tok in ca.lower() for tok in ("value", "amount", "revenue", "total")):
+                    for blk_p in list(tautology_cols):
+                        if blk_p != blk_c and _abs_corr(va, cand_vecs[blk_c] * cand_vecs[blk_p]) >= 0.985:
+                            if ca not in tautology_cols:
+                                tautology_cols.append(ca)
+                for j in range(i + 1, len(rem)):
+                    cb = rem[j]
+                    if cb in tautology_cols:
+                        continue
+                    vc = cand_vecs[cb]
+                    if _abs_corr(va - vc, vb) >= 0.985 or _abs_corr(va + vc, vb) >= 0.985:
+                        pick = cb if any(t in cb.lower() for t in residual_tokens) else (
+                            ca if any(t in ca.lower() for t in residual_tokens) else cb
+                        )
+                        if pick not in tautology_cols:
+                            tautology_cols.append(pick)
+                    # Also check `Total Value = Quantity * BlockedPrice` across (ca, cb)
+                    if _abs_corr(va, vc * vb) >= 0.985 and any(t in ca.lower() for t in ("value", "amount", "revenue", "total")):
+                        if ca not in tautology_cols:
+                            tautology_cols.append(ca)
+                    elif _abs_corr(vc, va * vb) >= 0.985 and any(t in cb.lower() for t in ("value", "amount", "revenue", "total")):
+                        if cb not in tautology_cols:
+                            tautology_cols.append(cb)
+
+    return tautology_cols
+
+
 class PredictiveDecisionEngine:
     """
     Self-contained, leak-proof, 3-fold cross-fitted ML Decision Predictor &
@@ -309,13 +512,41 @@ class PredictiveDecisionEngine:
                     return orig
         return None
 
+    def _infer_pause_unit_rates(self) -> Tuple[float, float]:
+        """
+        Returns `(adverse_loss_rate, healthy_margin_rate)` when explicit `margin_col` is absent:
+        - Credit/Loan Default (`default`, `loan_status`, `charged_off`): ~65% LGD saved on defaults vs
+          ~14% Net Interest Margin sacrificed on healthy performing loans.
+        - Physical/Out-of-Pocket Loss (`rto`, `return`, `refund`, `fraud`, `claim`, `damage`, `spoil`):
+          ~52% out-of-pocket loss saved vs ~28% contribution margin sacrificed on healthy orders.
+        - Unshipped Cancellation / Churn / Rating / Revenue-Tier (`cancel`, `churn`, `exited`, `rating`,
+          `csat`, `revenue`, `sales`, `delay`): stopping a channel does NOT earn the unshipped order value
+          on cancelled/churned rows (~6% avoided admin friction), while sacrificing ~35% contribution
+          margin on every healthy paying customer!
+        """
+        t_text = f"{self.target_col or ''} {self.canonical.get('target_desc') or ''}".lower()
+        if any(k in t_text for k in ("default", "loan_status", "charged_off", "delinq", "npa")):
+            return (0.65, 0.14)
+        if any(
+            k in t_text
+            for k in ("rto", "return", "refund", "fraud", "claim", "damage", "spoil", "scrap", "chargeback", "writeoff")
+        ):
+            return (0.52, 0.28)
+        return (0.06, 0.35)
+
     def _select_clean_features(self, blueprint: Dict[str, Any]) -> None:
         y_bin = self.df_full["_dx_y_bin"].to_numpy()
         n_rows = len(self.df_full)
         skip_exact = {self.target_col, "_dx_y_bin", "_is_target_event"}
 
+        # Detect multiplicative/additive accounting formula tautologies against continuous targets
+        formula_tautologies = set(_detect_formula_tautology_columns(self.df_full, self.target_col, skip_exact))
+        for ft_col in formula_tautologies:
+            if ft_col not in self.blocked_leakage_cols:
+                self.blocked_leakage_cols.append(ft_col)
+
         for col in self.df_full.columns:
-            if col in skip_exact:
+            if col in skip_exact or col in formula_tautologies:
                 continue
             c_low = str(col).lower()
             if is_index_artifact(col):
@@ -349,7 +580,11 @@ class PredictiveDecisionEngine:
             if ser.dropna().nunique() <= 1:
                 continue
 
-            if pd.api.types.is_numeric_dtype(ser):
+            if _is_pseudo_categorical_code_column(ser, col):
+                self.categorical_features.append(col)
+                top_vals = ser.fillna("Missing").astype(str).value_counts().head(65).index.tolist()
+                self._top_cat_maps[col] = top_vals
+            elif pd.api.types.is_numeric_dtype(ser):
                 self.numeric_features.append(col)
             else:
                 nunq = int(ser.nunique(dropna=True))
@@ -728,19 +963,35 @@ class PredictiveDecisionEngine:
         df = self.df_full
         y = df["_dx_y_bin"].to_numpy()
         base_rate = float(y.mean()) if len(y) else 0.0
+        auc_model = float(self.model_metrics.get("roc_auc", 0.50))
+        is_low_signal_model = auc_model < 0.56
+        p_thresh = 0.005 if is_low_signal_model else 0.05
 
-        non_replaceable_tokens = (
-            "store", "branch", "city", "region", "state", "country", "zone",
-            "geography", "location", "manager", "cashier", "circle", "hub",
-        )
-        top_cat_feats = [f["feature"] for f in self.feature_importances if f["type"] == "categorical"] or self.categorical_features[:3]
+        def _smart_round(val: float) -> float:
+            av = abs(val)
+            if 0.0 < av < 1.0:
+                return round(val, 3)
+            if av < 10.0:
+                return round(val, 2)
+            return round(val, 1)
 
-        # 1. Best Statistically Significant Categorical Replacement Preset
-        for c_col in top_cat_feats:
-            if any(tok in c_col.lower() for tok in non_replaceable_tokens):
-                continue
+        all_cat_ranked = [f["feature"] for f in self.feature_importances if f["type"] == "categorical"] + [
+            c for c in self.categorical_features if not any(f["feature"] == c for f in self.feature_importances)
+        ]
+        actionable_cats = [c for c in all_cat_ranked if not _is_non_actionable_attribute(c)]
+
+        all_num_ranked = [f["feature"] for f in self.feature_importances if f["type"] == "numeric"] + [
+            c for c in self.numeric_features if not any(f["feature"] == c for f in self.feature_importances)
+        ]
+        actionable_nums = [c for c in all_num_ranked if not _is_non_actionable_attribute(c)]
+
+        # 1. Best Statistically Significant & Controllable Categorical Replacement Preset
+        for c_col in actionable_cats:
             grp = df.groupby(c_col, dropna=False)["_dx_y_bin"].agg(["count", "sum", "mean"])
             valid = grp[grp["count"] >= max(15, int(len(df) * 0.02))].sort_values("mean", ascending=False)
+            # Exclude >=95% purity risk-tag / forfeited-deposit buckets (reverse-causality trap!)
+            if base_rate < 0.65:
+                valid = valid[~((valid["mean"] >= 0.95) & (valid["count"] >= 40))]
             if len(valid) >= 2:
                 worst_val = str(valid.index[0])
                 best_val = str(valid.index[-1])
@@ -750,7 +1001,8 @@ class PredictiveDecisionEngine:
                     int(valid.iloc[0]["sum"]), int(valid.iloc[0]["count"]),
                     int(valid.iloc[-1]["sum"]), int(valid.iloc[-1]["count"]),
                 )
-                if worst_r > best_r + 0.03 and pval < 0.05:
+                min_gap = 0.08 if is_low_signal_model else 0.03
+                if worst_r > best_r + min_gap and pval < p_thresh:
                     presets.append({
                         "preset_id": f"replace_{c_col}",
                         "icon": "🔄",
@@ -769,9 +1021,27 @@ class PredictiveDecisionEngine:
                     if len(presets) >= 1:
                         break
 
-        # 2. Best Statistically Significant Numeric Cap / Floor Preset
-        top_num_feats = [f["feature"] for f in self.feature_importances if f["type"] == "numeric"] or self.numeric_features[:3]
-        for n_col in top_num_feats:
+        # Helper: fast single-fold counterfactual risk-reduction check so we NEVER emit a 0-impact or backfire preset!
+        m0 = self.fold_models[0] if self.fold_models else None
+
+        def _has_positive_ml_lift(col_name: str, action: str, thresh_val: float) -> bool:
+            if m0 is None:
+                return True
+            s_v = pd.to_numeric(df[col_name], errors="coerce")
+            m_aff = (s_v > thresh_val) if action == "cap_numeric" else (s_v < thresh_val)
+            if int(m_aff.sum()) < 10:
+                return False
+            sub_before = df.loc[m_aff].head(400)
+            sub_after = sub_before.copy()
+            sub_after[col_name] = float(thresh_val)
+            xb = self._prepare_feature_matrix(sub_before)
+            xa = self._prepare_feature_matrix(sub_after)
+            pb = m0.predict_proba(xb)[:, 1]
+            pa = m0.predict_proba(xa)[:, 1]
+            return float((pb - pa).mean()) >= 0.012
+
+        # 2. Best Statistically Significant & Controllable Numeric Cap / Floor Preset (verified ML lift & >0 rows!)
+        for n_col in actionable_nums:
             if n_col in (self.cost_col, self.margin_col, self.cogs_col, self.mrp_col):
                 continue
             s_num = pd.to_numeric(df[n_col], errors="coerce")
@@ -780,49 +1050,87 @@ class PredictiveDecisionEngine:
                 continue
             q70 = float(s_num[valid_mask].quantile(0.70))
             q30 = float(s_num[valid_mask].quantile(0.30))
-            hi_m = valid_mask & (s_num > q70)
-            lo_m = valid_mask & (s_num <= q30)
-            if hi_m.sum() < 10 or lo_m.sum() < 10:
-                continue
-            hi_rate = float(y[hi_m].mean())
-            lo_rate = float(y[lo_m].mean())
-            pval = _two_prop_p_value(int(y[hi_m].sum()), int(hi_m.sum()), int(y[lo_m].sum()), int(lo_m.sum()))
-            if hi_rate > lo_rate + 0.04 and pval < 0.05:
-                cap_v = round(q70, 1)
-                presets.append({
-                    "preset_id": f"cap_{n_col}",
-                    "icon": "🛡️",
-                    "title_en": f"Cap '{n_col.replace('_', ' ').title()}' at ≤ {cap_v:g}",
-                    "title_hi": f"'{n_col.replace('_', ' ')}' की अधिकतम सीमा {cap_v:g} तय करें",
-                    "subtitle_en": f"High values (> {cap_v:g}) fail at {hi_rate*100:.1f}% vs {lo_rate*100:.1f}% in lower band.",
-                    "subtitle_hi": f"{cap_v:g} से ऊपर खराबी {hi_rate*100:.1f}% है, जबकि नीचे सिर्फ़ {lo_rate*100:.1f}%।",
-                    "decision": {
-                        "action_type": "cap_numeric",
-                        "column": n_col,
-                        "value": cap_v,
-                        "description": f"Cap {n_col} at maximum {cap_v:g}",
-                    },
-                })
-                if len(presets) >= 3:
-                    break
-            elif lo_rate > hi_rate + 0.04 and pval < 0.05:
-                fl_v = round(q30, 1)
-                presets.append({
-                    "preset_id": f"floor_{n_col}",
-                    "icon": "📈",
-                    "title_en": f"Raise Minimum '{n_col.replace('_', ' ').title()}' to ≥ {fl_v:g}",
-                    "title_hi": f"'{n_col.replace('_', ' ')}' का न्यूनतम स्तर {fl_v:g} बढ़ाएं",
-                    "subtitle_en": f"Low values (≤ {fl_v:g}) fail at {lo_rate*100:.1f}% vs {hi_rate*100:.1f}% above.",
-                    "subtitle_hi": f"{fl_v:g} से नीचे खराबी {lo_rate*100:.1f}% है, ऊपर सिर्फ़ {hi_rate*100:.1f}%।",
-                    "decision": {
-                        "action_type": "floor_numeric",
-                        "column": n_col,
-                        "value": fl_v,
-                        "description": f"Raise floor of {n_col} to {fl_v:g}",
-                    },
-                })
-                if len(presets) >= 3:
-                    break
+            good_med = float(s_num[valid_mask & (y == 0)].median()) if (valid_mask & (y == 0)).sum() >= 15 else float(s_num[valid_mask].median())
+            cap_v = _smart_round(q70)
+            fl_v = _smart_round(q30)
+
+            hi_strict = valid_mask & (s_num > cap_v)
+            lo_ref_cap = valid_mask & (s_num <= cap_v)
+            if hi_strict.sum() >= 10 and lo_ref_cap.sum() >= 10:
+                hi_rate = float(y[hi_strict].mean())
+                lo_rate = float(y[lo_ref_cap].mean())
+                pval_cap = _two_prop_p_value(int(y[hi_strict].sum()), int(hi_strict.sum()), int(y[lo_ref_cap].sum()), int(lo_ref_cap.sum()))
+                if hi_rate > lo_rate + (0.08 if is_low_signal_model else 0.04) and pval_cap < p_thresh:
+                    # If capping at q70 sits above the tree cliff (e.g. Loan to Income 0.137 > 0.10), step down to healthy median!
+                    chosen_cap = cap_v
+                    if not _has_positive_ml_lift(n_col, "cap_numeric", chosen_cap):
+                        med_cap = _smart_round(good_med)
+                        if med_cap < chosen_cap and (valid_mask & (s_num > med_cap)).sum() >= 10 and _has_positive_ml_lift(n_col, "cap_numeric", med_cap):
+                            chosen_cap = med_cap
+                            hi_s2 = valid_mask & (s_num > chosen_cap)
+                            lo_s2 = valid_mask & (s_num <= chosen_cap)
+                            hi_rate = float(y[hi_s2].mean())
+                            lo_rate = float(y[lo_s2].mean())
+                        else:
+                            chosen_cap = None  # Confounded / zero-ML-lift feature (e.g. Balance) — skip preset!
+                    if chosen_cap is not None:
+                        presets.append({
+                            "preset_id": f"cap_{n_col}",
+                            "icon": "🛡️",
+                            "title_en": f"Cap '{n_col.replace('_', ' ').title()}' at ≤ {chosen_cap:g}",
+                            "title_hi": f"'{n_col.replace('_', ' ')}' की अधिकतम सीमा {chosen_cap:g} तय करें",
+                            "subtitle_en": f"High values (> {chosen_cap:g}) fail at {hi_rate*100:.1f}% vs {lo_rate*100:.1f}% in lower band.",
+                            "subtitle_hi": f"{chosen_cap:g} से ऊपर खराबी {hi_rate*100:.1f}% है, जबकि नीचे सिर्फ़ {lo_rate*100:.1f}%।",
+                            "decision": {
+                                "action_type": "cap_numeric",
+                                "column": n_col,
+                                "value": chosen_cap,
+                                "description": f"Cap {n_col} at maximum {chosen_cap:g}",
+                            },
+                        })
+                        if len(presets) >= 3:
+                            break
+                        continue
+
+            # For floor_numeric: if q30 equals the minimum (so `s_num < fl_v` is empty on ordinal tiers like 1..4),
+            # fall back to median/q55 threshold so `s_num < fl_v` genuinely tests moving bottom tier upward!
+            if (valid_mask & (s_num < fl_v)).sum() < 10:
+                fl_v = _smart_round(float(s_num[valid_mask].quantile(0.55)))
+            lo_strict = valid_mask & (s_num < fl_v)
+            hi_ref_fl = valid_mask & (s_num >= fl_v)
+            if lo_strict.sum() >= 10 and hi_ref_fl.sum() >= 10:
+                lo_rate = float(y[lo_strict].mean())
+                hi_rate = float(y[hi_ref_fl].mean())
+                pval_fl = _two_prop_p_value(int(y[lo_strict].sum()), int(lo_strict.sum()), int(y[hi_ref_fl].sum()), int(hi_ref_fl.sum()))
+                if lo_rate > hi_rate + (0.08 if is_low_signal_model else 0.04) and pval_fl < p_thresh:
+                    chosen_fl = fl_v
+                    if not _has_positive_ml_lift(n_col, "floor_numeric", chosen_fl):
+                        med_fl = _smart_round(good_med)
+                        if med_fl > chosen_fl and (valid_mask & (s_num < med_fl)).sum() >= 10 and _has_positive_ml_lift(n_col, "floor_numeric", med_fl):
+                            chosen_fl = med_fl
+                            lo_s2 = valid_mask & (s_num < chosen_fl)
+                            hi_s2 = valid_mask & (s_num >= chosen_fl)
+                            lo_rate = float(y[lo_s2].mean())
+                            hi_rate = float(y[hi_s2].mean())
+                        else:
+                            chosen_fl = None
+                    if chosen_fl is not None:
+                        presets.append({
+                            "preset_id": f"floor_{n_col}",
+                            "icon": "📈",
+                            "title_en": f"Raise Minimum '{n_col.replace('_', ' ').title()}' to ≥ {chosen_fl:g}",
+                            "title_hi": f"'{n_col.replace('_', ' ')}' का न्यूनतम स्तर {chosen_fl:g} बढ़ाएं",
+                            "subtitle_en": f"Low values (< {chosen_fl:g}) fail at {lo_rate*100:.1f}% vs {hi_rate*100:.1f}% at or above {chosen_fl:g}.",
+                            "subtitle_hi": f"{chosen_fl:g} से नीचे खराबी {lo_rate*100:.1f}% है, ऊपर सिर्फ़ {hi_rate*100:.1f}%।",
+                            "decision": {
+                                "action_type": "floor_numeric",
+                                "column": n_col,
+                                "value": chosen_fl,
+                                "description": f"Raise floor of {n_col} to {chosen_fl:g}",
+                            },
+                        })
+                        if len(presets) >= 3:
+                            break
 
         # 3. Discount Cap Preset if discount_col exists and wasn't added yet
         if self.discount_col and not any(p["decision"].get("column") == self.discount_col for p in presets):
@@ -845,38 +1153,53 @@ class PredictiveDecisionEngine:
                         },
                     })
 
-        # 4. Pause / Exclude Worst Cohort Preset (Honest Trade-Off Test!)
-        if top_cat_feats:
-            c0 = top_cat_feats[0]
-            grp = df.groupby(c0, dropna=False)["_dx_y_bin"].agg(["count", "mean"])
-            valid = grp[grp["count"] >= max(15, int(len(df) * 0.02))].sort_values("mean", ascending=False)
-            if len(valid) >= 2:
-                w_val = str(valid.index[0])
-                presets.append({
-                    "preset_id": f"pause_{c0}",
-                    "icon": "⏸️",
-                    "title_en": f"Pause / Stop '{w_val}' Completely (Trade-Off Test)",
-                    "title_hi": f"'{w_val}' को पूरी तरह बंद करें (नफ़ा बनाम नुकसान टेस्ट)",
-                    "subtitle_en": "Honest CFO test: does shutting it down save more than the healthy profit you give up?",
-                    "subtitle_hi": "ईमानदार जाँच: क्या इसे बंद करने से नुकसान बचेगा या अच्छे ऑर्डर छूटने का घाटा ज़्यादा होगा?",
-                    "decision": {
-                        "action_type": "pause_segment",
-                        "column": c0,
-                        "from_value": w_val,
-                        "description": f"Pause/exclude {c0} = {w_val}",
-                    },
-                })
+        # 4. Pause / Exclude Worst Controllable Cohort Preset (Honest CFO Trade-Off Test — never countries/cities/ages!)
+        if not is_low_signal_model:
+            for c0 in actionable_cats:
+                grp = df.groupby(c0, dropna=False)["_dx_y_bin"].agg(["count", "mean"])
+                valid = grp[grp["count"] >= max(15, int(len(df) * 0.02))].sort_values("mean", ascending=False)
+                if base_rate < 0.65:
+                    valid = valid[~((valid["mean"] >= 0.95) & (valid["count"] >= 40))]
+                if len(valid) >= 2:
+                    w_val = str(valid.index[0])
+                    presets.append({
+                        "preset_id": f"pause_{c0}",
+                        "icon": "⏸️",
+                        "title_en": f"Pause / Stop '{w_val}' Completely (Trade-Off Test)",
+                        "title_hi": f"'{w_val}' को पूरी तरह बंद करें (नफ़ा बनाम नुकसान टेस्ट)",
+                        "subtitle_en": "Honest CFO test: does shutting it down save more than the healthy profit you give up?",
+                        "subtitle_hi": "ईमानदार जाँच: क्या इसे बंद करने से नुकसान बचेगा या अच्छे ऑर्डर छूटने का घाटा ज़्यादा होगा?",
+                        "decision": {
+                            "action_type": "pause_segment",
+                            "column": c0,
+                            "from_value": w_val,
+                            "description": f"Pause/exclude {c0} = {w_val}",
+                        },
+                    })
+                    break
 
         levers = []
-        for c in self.categorical_features[:12]:
+        ordered_cats = [c for c in self.categorical_features if not _is_non_actionable_attribute(c)] + [
+            c for c in self.categorical_features if _is_non_actionable_attribute(c)
+        ]
+        ordered_nums = [c for c in self.numeric_features if not _is_non_actionable_attribute(c)] + [
+            c for c in self.numeric_features if _is_non_actionable_attribute(c)
+        ]
+        for c in ordered_cats[:12]:
             vals = df[c].fillna("Missing").astype(str).value_counts().head(25).index.tolist()
-            levers.append({"column": c, "type": "categorical", "values": vals})
-        for c in self.numeric_features[:12]:
+            levers.append({
+                "column": c,
+                "type": "categorical",
+                "actionable": not _is_non_actionable_attribute(c),
+                "values": vals,
+            })
+        for c in ordered_nums[:12]:
             s = pd.to_numeric(df[c], errors="coerce").dropna()
             if len(s):
                 levers.append({
                     "column": c,
                     "type": "numeric",
+                    "actionable": not _is_non_actionable_attribute(c),
                     "min": round(float(s.min()), 2),
                     "median": round(float(s.median()), 2),
                     "p75": round(float(s.quantile(0.75)), 2),
@@ -1221,6 +1544,7 @@ class PredictiveDecisionEngine:
 
         p_val = 1.0
         raw_rate_diff_pct = 0.0
+        selection_bias_warning = False
         note = ""
 
         if action_type == "replace_category":
@@ -1243,6 +1567,8 @@ class PredictiveDecisionEngine:
                 p_val = _two_prop_p_value(int(y_use[m1].sum()), int(m1.sum()), int(y_use[m2].sum()), int(m2.sum()))
                 raw_rate_diff_pct = (r1 - r2) * 100.0
                 note = f"raw {r1*100:.1f}% vs {r2*100:.1f}%"
+                if int(m1.sum()) >= 40 and r1 >= 0.95 and float(y_all.mean()) < 0.65 and (r1 - r2) >= 0.35:
+                    selection_bias_warning = True
 
         elif action_type in ("cap_numeric", "floor_numeric"):
             thresh = float(spec["value"])
@@ -1280,6 +1606,7 @@ class PredictiveDecisionEngine:
             "empirical_p_value": round(p_val, 5),
             "raw_rate_diff_pct": round(raw_rate_diff_pct, 2),
             "col_auc_drop": round(float(self.feature_auc_drop_map.get(col, 0.0)), 4),
+            "selection_bias_warning": selection_bias_warning,
             "note": note,
         }
 
@@ -1468,12 +1795,17 @@ class PredictiveDecisionEngine:
             best_p = min(lv["emp_gate"]["empirical_p_value"] for lv in applied_levers)
             best_auc_drop = max(lv["emp_gate"]["col_auc_drop"] for lv in applied_levers)
             max_abs_raw = max((lv["emp_gate"]["raw_rate_diff_pct"] for lv in applied_levers), key=lambda x: abs(x))
+            any_sel_bias = any(bool(lv["emp_gate"].get("selection_bias_warning")) for lv in applied_levers)
             emp_gate = {
                 "empirical_p_value": best_p,
                 "raw_rate_diff_pct": max_abs_raw,
                 "col_auc_drop": best_auc_drop,
+                "selection_bias_warning": any_sel_bias,
                 "note": f"combo of {len(applied_levers)} levers",
             }
+        selection_bias_warning = bool(emp_gate.get("selection_bias_warning"))
+        non_actionable_cols = [lv["column"] for lv in applied_levers if _is_non_actionable_attribute(lv["column"])]
+        non_actionable_warning = len(non_actionable_cols) > 0
 
         # Predict probabilities across ALL 3 cross-fitted fold models (gives real epistemic uncertainty!)
         df_aff_before = df_base.loc[affected_mask]
@@ -1541,8 +1873,9 @@ class PredictiveDecisionEngine:
                     saved_loss_arr[pm] = p_before[pm] * (exposure_arr[pm] * 0.50)
                     collateral_cost_arr[pm] = (1.0 - p_before[pm]) * np.maximum(0.0, margin_arr[pm])
                 else:
-                    saved_loss_arr[pm] = p_before[pm] * exposure_arr[pm]
-                    collateral_cost_arr[pm] = (1.0 - p_before[pm]) * exposure_arr[pm]
+                    adv_loss_r, healthy_marg_r = self._infer_pause_unit_rates()
+                    saved_loss_arr[pm] = p_before[pm] * (exposure_arr[pm] * adv_loss_r)
+                    collateral_cost_arr[pm] = (1.0 - p_before[pm]) * (exposure_arr[pm] * healthy_marg_r)
             else:
                 saved_loss_arr[pm] = p_before[pm]
                 collateral_cost_arr[pm] = 1.0 - p_before[pm]
@@ -1585,7 +1918,7 @@ class PredictiveDecisionEngine:
         # 500-Iteration Bootstrap + Fold-Epistemic + Elasticity + Extrapolation Monte Carlo Simulation!
         rng = np.random.default_rng(2026)
         brier_v = float(self.model_metrics.get("brier_score", 0.15))
-        epistemic_sd_eff = max(epistemic_rate_sd, 0.005 * math.sqrt(max(0.05, brier_v) / 0.15))
+        epistemic_sd_eff = max(epistemic_rate_sd, 0.006 * math.sqrt(max(0.05, brier_v) / 0.15))
         if extrapolation_warning:
             # Honestly widen epistemic spread when historical support is thin
             epistemic_sd_eff *= (1.0 + (35.0 - causal_support_pct) / 40.0)
@@ -1672,7 +2005,7 @@ class PredictiveDecisionEngine:
 
         # Simpson's Paradox / Confounder Divergence Check
         raw_diff = float(emp_gate["raw_rate_diff_pct"])
-        confounder_alert = False
+        confounder_alert = bool(selection_bias_warning)
         if not is_pause_action and abs(raw_diff) >= 8.0:
             if is_combo:
                 # In multi-lever combos, union averaging naturally blends slice deltas; only flag true confounder collapse
@@ -1683,10 +2016,35 @@ class PredictiveDecisionEngine:
                 or (raw_diff * ml_rate_diff_pct < 0 and abs(ml_rate_diff_pct) >= 1.5)
             ):
                 confounder_alert = True
+        elif (
+            not is_pause_action
+            and not is_combo
+            and abs(raw_diff) >= 3.0
+            and raw_diff * ml_rate_diff_pct < 0
+            and abs(ml_rate_diff_pct) >= 0.4
+        ):
+            confounder_alert = True
 
         raw_benefit_prob = float((boot_totals > 0.0).mean() * 100.0)
         auc_v = float(self.model_metrics.get("roc_auc", 0.65))
-        max_honest_conf = min(95.0, max(60.0, 55.0 + (auc_v - 0.50) * 165.0))
+
+        # Differentiated multi-signal observational ceiling (eliminates flat mechanical 95.0% everywhere!)
+        auc_clamped = min(0.98, max(0.50, auc_v))
+        sup_factor = min(1.0, max(0.35, causal_support_pct / 100.0))
+        n_aff_bonus = min(3.5, math.log10(max(10, int(round(n_aff * scale_factor)))) * 1.1)
+        max_honest_conf = (
+            56.0
+            + (auc_clamped - 0.50) * 62.0
+            + (sup_factor - 0.50) * 10.0
+            + n_aff_bonus
+            + min(4.0, abs(ml_rate_diff_pct) * 0.22)
+            - (11.0 if confounder_alert and not selection_bias_warning else 0.0)
+            - (8.0 if extrapolation_warning else 0.0)
+            - (9.0 if non_actionable_warning else 0.0)
+            - (16.0 if selection_bias_warning else 0.0)
+            - (4.0 if self.model_metrics.get("temporal_drift_detected") else 0.0)
+        )
+        max_honest_conf = round(min(91.5, max(58.0, max_honest_conf)), 1)
 
         if noise_circuit_breaker:
             # Never force certainty on statistically indistinguishable noise!
@@ -1702,14 +2060,25 @@ class PredictiveDecisionEngine:
                 benefit_prob_pct = round(max(100.0 - max_honest_conf, raw_benefit_prob), 1)
             loss_risk_pct = round(100.0 - benefit_prob_pct, 1)
 
-            if expected_net > 0 and benefit_prob_pct >= 80.0 and ci_low > 0:
+            if (
+                expected_net > 0
+                and benefit_prob_pct >= 80.0
+                and ci_low > 0
+                and not confounder_alert
+                and not selection_bias_warning
+                and not non_actionable_warning
+            ):
                 verdict_code = "STRONG_GO"
                 verdict_en = "STRONG ESTIMATED UPSIDE — High Data-Backed Probability (Verify via 20% Pilot)"
                 verdict_hi = "🟢 मज़बूत अनुमानित फ़ायदा — डेटा से ऊँची संभावना (पहले 20% पायलट में पक्का करें)"
-            elif expected_net > 0 and benefit_prob_pct >= 58.0:
+            elif expected_net > 0 and benefit_prob_pct >= 58.0 and not selection_bias_warning:
                 verdict_code = "PILOT_FIRST"
                 verdict_en = "PILOT FIRST — Promising Gain, Test on 1–2 Stores / 20% Traffic First"
                 verdict_hi = "🟡 पहले छोटा पायलट करें — फ़ायदा संभव है, पर रिस्क जाँचने को 1–2 स्टोर में टेस्ट करें"
+            elif selection_bias_warning and expected_net > 0:
+                verdict_code = "PILOT_FIRST"
+                verdict_en = "CAUTION (REVERSE-CAUSALITY RISK TAG) — Verify Policy Effect Before Changing"
+                verdict_hi = "🟡 सावधान (उलटा कारण / रिस्क-टैग जाल) — नियम बदलने से पहले छोटे पायलट में जाँचें"
             elif expected_net < 0 and (benefit_prob_pct <= 30.0 or ci_high < 0):
                 verdict_code = "LIKELY_LOSS"
                 verdict_en = "DO NOT EXECUTE AS-IS — High Risk of Net Loss / Backfire"
@@ -1789,7 +2158,24 @@ class PredictiveDecisionEngine:
                 f"(अनुमानित शुद्ध घाटा: {_fmt_money(expected_net, self.unit_sym, self.is_monetary)})।"
             )
 
-        if confounder_alert:
+        if selection_bias_warning:
+            downside_reasons_en.append(
+                f"Reverse-Causality / Policy Selection-Bias Trap: '{spec.get('from_value')}' in '{col}' has >95% adverse rate because high-risk or forfeited cases were tagged with this policy rule. Removing the protection rule on risky customers will NOT magically make them safe!"
+            )
+            downside_reasons_hi.append(
+                f"उलटे कारण (Reverse-Causality) की चेतावनी: '{col}' में '{spec.get('from_value')}' पर 95%+ खराबी इसलिए दिख रही है क्योंकि हाई-रिस्क या ज़ब्त केस पर यह नियम लगाया गया था — सुरक्षा नियम हटाने से रिस्की ग्राहक अपने-आप सुरक्षित नहीं हो जाएंगे!"
+            )
+
+        if non_actionable_warning:
+            na_str = ", ".join(non_actionable_cols)
+            downside_reasons_en.append(
+                f"Actionability Limit ('{na_str}'): Customer age, fixed geography/branch, or cumulative tenure/votes cannot be flipped like a button on existing records — treat this only as a future targeting or screening policy."
+            )
+            downside_reasons_hi.append(
+                f"सीधे बदलाव की सीमा ('{na_str}'): ग्राहक की उम्र, शहर/देश या पुराने कार्यकाल/वोट को किसी बटन की तरह बदला नहीं जा सकता — इसे सिर्फ़ नए ग्राहक चुनने या स्क्रीनिंग नीति की तरह देखें।"
+            )
+
+        if confounder_alert and not selection_bias_warning:
             downside_reasons_en.append(
                 f"Confounder / Simpson's Paradox Warning: Raw averages suggest a {raw_diff:+.1f} pp gap, "
                 f"but once other business drivers are controlled by ML, the isolated effect of changing '{col}' alone is only {ml_rate_diff_pct:+.1f} pp. "
@@ -2011,6 +2397,8 @@ class PredictiveDecisionEngine:
                 "formatted_ci_95": f"[{_fmt_money(ci_low, self.unit_sym, self.is_monetary)} to {_fmt_money(ci_high, self.unit_sym, self.is_monetary)}]",
                 "noise_circuit_breaker_active": noise_circuit_breaker,
                 "confounder_alert_active": confounder_alert,
+                "selection_bias_warning": selection_bias_warning,
+                "non_actionable_warning": non_actionable_warning,
                 "causal_support_pct": causal_support_pct,
                 "extrapolation_warning": extrapolation_warning,
                 "break_even_analysis": break_even_analysis,

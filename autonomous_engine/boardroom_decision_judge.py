@@ -34,7 +34,12 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 
 try:
-    from .decision_prediction_engine import PredictiveDecisionEngine, _fmt_money, _two_prop_p_value
+    from .decision_prediction_engine import (
+        PredictiveDecisionEngine,
+        _fmt_money,
+        _is_non_actionable_attribute,
+        _two_prop_p_value,
+    )
     from .human_analyst_narrator import (
         clean_column_label,
         humanize_segment,
@@ -43,7 +48,12 @@ try:
         rate_out_of_ten_phrase,
     )
 except ImportError:
-    from decision_prediction_engine import PredictiveDecisionEngine, _fmt_money, _two_prop_p_value
+    from decision_prediction_engine import (
+        PredictiveDecisionEngine,
+        _fmt_money,
+        _is_non_actionable_attribute,
+        _two_prop_p_value,
+    )
     from human_analyst_narrator import (
         clean_column_label,
         humanize_segment,
@@ -192,9 +202,10 @@ class BoardroomDecisionJudge:
         starters: List[Dict[str, str]] = []
         domain = self.vocab.get("domain", "general")
         ent_en = self.vocab.get("entity_en", "records")
-        top_feats = self.top_drivers[:4] or self.engine.all_features[:4]
+        actionable_drivers = [c for c in self.top_drivers if not _is_non_actionable_attribute(c)]
+        top_feats = (actionable_drivers + [c for c in self.top_drivers if c not in actionable_drivers])[:4] or self.engine.all_features[:4]
 
-        # Starter 1: Top-2 Drivers Head-to-Head Debate (e.g. pH vs Temperature, Votes vs City, Courier vs Discount)
+        # Starter 1: Top-2 Drivers Head-to-Head Debate (e.g. pH vs Temperature, Online Delivery vs Table Booking, Courier vs Discount)
         if len(top_feats) >= 2:
             f1_en = clean_column_label(top_feats[0], "en")
             f2_en = clean_column_label(top_feats[1], "en")
@@ -225,12 +236,16 @@ class BoardroomDecisionJudge:
                     "prompt_hi": f"हमारी टीम दो हिस्सों में बँटी है: आधे कहते हैं पहले {f1_hi} सुधारें, आधे कहते हैं {f2_hi} — असली डेटा से बताओ कौन सही है?",
                 })
 
-        # Starter 2: Worst Segment Gut-Check / Drop-or-Fix Question
-        cat_candidates = [c for c in self.top_drivers if c in self.engine.categorical_features] or self.engine.categorical_features[:2]
+        # Starter 2: Worst Controllable Segment Gut-Check / Drop-or-Fix Question (never countries/cities!)
+        cat_candidates = [
+            c for c in self.top_drivers if c in self.engine.categorical_features and not _is_non_actionable_attribute(c)
+        ] or [c for c in self.engine.categorical_features if not _is_non_actionable_attribute(c)][:2]
         if cat_candidates:
             c0 = cat_candidates[0]
             grp = self.df.groupby(c0, dropna=False)["_dx_y_bin"].agg(["count", "mean"])
             valid = grp[grp["count"] >= max(10, int(len(self.df) * 0.02))].sort_values("mean", ascending=False)
+            if self.base_rate < 0.65:
+                valid = valid[~((valid["mean"] >= 0.95) & (valid["count"] >= 40))]
             if len(valid) >= 2:
                 worst_v = str(valid.index[0])
                 best_v = str(valid.index[-1])
@@ -333,12 +348,14 @@ class BoardroomDecisionJudge:
         ent_en = self.vocab["entity_en"]
         ent_hi = self.vocab["entity_hi"]
 
+        is_non_act = _is_non_actionable_attribute(col)
         fact: Dict[str, Any] = {
             "column": col,
             "label_en": col_en,
             "label_hi": col_hi,
             "ml_importance_pct": imp_pct,
             "auc_drop": auc_drop,
+            "is_non_actionable": is_non_act,
             "is_strong_driver": bool(imp_pct >= 12.0 or auc_drop >= 0.015),
             "is_statistically_significant": False,
             "p_value": 1.0,
@@ -413,8 +430,8 @@ class BoardroomDecisionJudge:
                         f"{seg_hi} में समस्या दर ({r1:.1f}%) बाकी बिज़नेस ({r2:.1f}%) के लगभग बराबर है — यह सिर्फ़ रैंडम शोर है (AI महत्व: {imp_pct:.1f}%)।"
                     )
 
-                # Simulate shifting tgt_val -> best_val (if categorical & valid lever)
-                if col in self.engine.categorical_features and tgt_val != best_val:
+                # Simulate shifting tgt_val -> best_val ONLY if controllable categorical lever!
+                if col in self.engine.categorical_features and tgt_val != best_val and not is_non_act:
                     try:
                         sim = self.engine.simulate_decision(
                             decision={"action_type": "replace_category", "column": col, "from_value": tgt_val, "to_value": best_val},
@@ -481,24 +498,25 @@ class BoardroomDecisionJudge:
                         f"{col_hi} का AI प्रभाव {imp_pct:.1f}% है (खराब केस में औसत {med_b:g} बनाम सही केस में {med_g:g})।"
                     )
 
-                # Simulate capping or flooring into the healthy band!
-                try:
-                    if bad_above >= bad_below and (s_num > q95).sum() >= 10:
-                        sim = self.engine.simulate_decision(
-                            decision={"action_type": "cap_numeric", "column": col, "value": round(q95, 2)},
-                            implementation_cost=budget,
-                        )
-                        if sim.get("status") == "simulated":
-                            fact["simulation"] = sim
-                    elif (s_num < q05).sum() >= 10:
-                        sim = self.engine.simulate_decision(
-                            decision={"action_type": "floor_numeric", "column": col, "value": round(q05, 2)},
-                            implementation_cost=budget,
-                        )
-                        if sim.get("status") == "simulated":
-                            fact["simulation"] = sim
-                except Exception:
-                    pass
+                # Simulate capping or flooring into the healthy band ONLY when controllable operational lever!
+                if not is_non_act:
+                    try:
+                        if bad_above >= bad_below and (s_num > q95).sum() >= 10:
+                            sim = self.engine.simulate_decision(
+                                decision={"action_type": "cap_numeric", "column": col, "value": round(q95, 2)},
+                                implementation_cost=budget,
+                            )
+                            if sim.get("status") == "simulated":
+                                fact["simulation"] = sim
+                        elif (s_num < q05).sum() >= 10:
+                            sim = self.engine.simulate_decision(
+                                decision={"action_type": "floor_numeric", "column": col, "value": round(q05, 2)},
+                                implementation_cost=budget,
+                            )
+                            if sim.get("status") == "simulated":
+                                fact["simulation"] = sim
+                    except Exception:
+                        pass
 
         return fact
 
@@ -543,11 +561,12 @@ class BoardroomDecisionJudge:
                             is_debate = _is_debate_prompt(prev["text"])
                         break
 
-        # If owner asked a broad strategic question ("What should I do first in 14 days?"), audit the Top 2 real ML drivers!
+        # If owner asked a broad strategic question ("What should I do first in 14 days?"), audit Top 2 controllable ML drivers!
         broad_strategy_mode = False
         if not matched_cols:
             broad_strategy_mode = True
-            matched_cols = self.top_drivers[:2] or self.engine.all_features[:2]
+            act_drv = [c for c in self.top_drivers if not _is_non_actionable_attribute(c)]
+            matched_cols = act_drv[:2] or self.top_drivers[:2] or self.engine.all_features[:2]
 
         # 2. Check direct Stage 8.3 natural-language action simulation (e.g. explicit switch/cap/pause)
         direct_sim = None
@@ -584,8 +603,8 @@ class BoardroomDecisionJudge:
         for col in matched_cols[:3]:
             audited_factors.append(self._audit_single_factor(col, focus_val=seg_by_col.get(col), budget=budget or 0.0))
 
-        # Also check the #1 true ML driver in the entire dataset if the owner didn't mention it!
-        top1_col = self.top_drivers[0] if self.top_drivers else None
+        # Also check the #1 controllable ML driver in the entire dataset if the owner didn't mention it!
+        top1_col = next((c for c in self.top_drivers if not _is_non_actionable_attribute(c)), self.top_drivers[0] if self.top_drivers else None)
         top1_missing_note_en = ""
         top1_missing_note_hi = ""
         if top1_col and top1_col not in matched_cols and self.imp_map.get(top1_col, 0.0) >= 20.0:
@@ -628,7 +647,21 @@ class BoardroomDecisionJudge:
             if f["is_statistically_significant"] or f["is_strong_driver"]:
                 proven_true_en.append(f["summary_en"])
                 proven_true_hi.append(f["summary_hi"])
-                if sim and pred.get("expected_net_impact", 0) > 0 and not pred.get("noise_circuit_breaker_active"):
+                if f.get("is_non_actionable"):
+                    wrong_or_risky_en.append(
+                        f"Targeting Segment Only ({f['label_en']}): You cannot directly change existing customers' age, city, or cumulative tenure/votes — use {f['label_en']} for screening/targeting while fixing controllable operational levers."
+                    )
+                    wrong_or_risky_hi.append(
+                        f"सिर्फ़ स्क्रीनिंग सेगमेंट ({f['label_hi']}): मौजूदा ग्राहकों की उम्र, शहर या पुराने कार्यकाल/वोट को सीधे बदला नहीं जा सकता — इसे सिर्फ़ टार्गेटिंग में इस्तेमाल करें और असली ऑपरेशनल लीवर सुधारें।"
+                    )
+                elif pred.get("selection_bias_warning"):
+                    wrong_or_risky_en.append(
+                        f"Reverse-Causality Trap ({f['label_en']}): High-risk or forfeited cases were tagged with this policy rule (>95% adverse rate) — removing the rule will NOT make risky customers safe."
+                    )
+                    wrong_or_risky_hi.append(
+                        f"उलटे कारण का जाल ({f['label_hi']}): हाई-रिस्क या ज़ब्त केस पर यह नियम लगाया गया था (95%+ खराबी) — नियम हटाने से रिस्की ग्राहक सुरक्षित नहीं हो जाएंगे।"
+                    )
+                elif sim and pred.get("expected_net_impact", 0) > 0 and not pred.get("noise_circuit_breaker_active"):
                     be = (pred.get("break_even_analysis") or {})
                     be_note_en = f" {be['summary_en']}" if be.get("summary_en") else ""
                     be_note_hi = f" {be['summary_hi']}" if be.get("summary_hi") else ""
@@ -658,7 +691,7 @@ class BoardroomDecisionJudge:
                     wrong_or_risky_hi.append(
                         f"कम ऐतिहासिक मिलान ({f['label_hi']}): पुराने डेटा में सिर्फ़ {pred.get('causal_support_pct', 0):.0f}% समान केस इस सेटिंग पर चले हैं — 100% रोलआउट एक साथ न करें।"
                     )
-                if pred.get("confounder_alert_active"):
+                if pred.get("confounder_alert_active") and not pred.get("selection_bias_warning"):
                     wrong_or_risky_en.append(
                         f"Confounder Trap ({f['label_en']}): Surface averages exaggerate this lever — hidden co-drivers explain most of the gap."
                     )
