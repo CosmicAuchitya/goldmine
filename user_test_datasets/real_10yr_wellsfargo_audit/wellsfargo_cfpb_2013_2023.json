@@ -1,0 +1,219 @@
+{
+  "company": "WELLS FARGO & COMPANY",
+  "years": [
+    {
+      "year": 2013,
+      "total_complaints": 11123,
+      "monetary_relief_count": 852,
+      "monetary_relief_pct": 7.66,
+      "untimely_count": 65,
+      "top_responses": {
+        "Closed with explanation": 9472,
+        "Closed with monetary relief": 852,
+        "Closed with non-monetary relief": 695,
+        "Closed": 104
+      },
+      "top_products": {
+        "Mortgage": 7310,
+        "Bank account or service": 2391,
+        "Credit card": 632,
+        "Consumer Loan": 366,
+        "Student loan": 206
+      }
+    },
+    {
+      "year": 2014,
+      "total_complaints": 9165,
+      "monetary_relief_count": 759,
+      "monetary_relief_pct": 8.28,
+      "untimely_count": 48,
+      "top_responses": {
+        "Closed with explanation": 7858,
+        "Closed with monetary relief": 759,
+        "Closed with non-monetary relief": 464,
+        "Closed": 84
+      },
+      "top_products": {
+        "Mortgage": 4967,
+        "Bank account or service": 2363,
+        "Credit card": 672,
+        "Debt collection": 414,
+        "Consumer Loan": 403
+      }
+    },
+    {
+      "year": 2015,
+      "total_complaints": 9281,
+      "monetary_relief_count": 665,
+      "monetary_relief_pct": 7.17,
+      "untimely_count": 117,
+      "top_responses": {
+        "Closed with explanation": 8174,
+        "Closed with monetary relief": 665,
+        "Closed with non-monetary relief": 401,
+        "Closed": 41
+      },
+      "top_products": {
+        "Mortgage": 5100,
+        "Bank account or service": 2329,
+        "Credit card": 709,
+        "Consumer Loan": 496,
+        "Debt collection": 277
+      }
+    },
+    {
+      "year": 2016,
+      "total_complaints": 11198,
+      "monetary_relief_count": 913,
+      "monetary_relief_pct": 8.15,
+      "untimely_count": 1550,
+      "top_responses": {
+        "Closed with explanation": 9611,
+        "Closed with monetary relief": 913,
+        "Closed with non-monetary relief": 588,
+        "Closed": 86
+      },
+      "top_products": {
+        "Mortgage": 5650,
+        "Bank account or service": 3064,
+        "Credit card": 1019,
+        "Consumer Loan": 648,
+        "Debt collection": 377
+      }
+    },
+    {
+      "year": 2017,
+      "total_complaints": 9064,
+      "monetary_relief_count": 1057,
+      "monetary_relief_pct": 11.66,
+      "untimely_count": 1031,
+      "top_responses": {
+        "Closed with explanation": 7014,
+        "Closed with monetary relief": 1057,
+        "Closed with non-monetary relief": 983,
+        "Closed": 10
+      },
+      "top_products": {
+        "Mortgage": 3633,
+        "Checking or savings account": 1591,
+        "Bank account or service": 912,
+        "Credit card or prepaid card": 666,
+        "Credit reporting, credit repair services, or other personal consumer reports": 500
+      }
+    },
+    {
+      "year": 2018,
+      "total_complaints": 8789,
+      "monetary_relief_count": 1009,
+      "monetary_relief_pct": 11.48,
+      "untimely_count": 298,
+      "top_responses": {
+        "Closed with explanation": 6707,
+        "Closed with non-monetary relief": 1073,
+        "Closed with monetary relief": 1009
+      },
+      "top_products": {
+        "Mortgage": 3040,
+        "Checking or savings account": 2467,
+        "Credit card or prepaid card": 963,
+        "Credit reporting, credit repair services, or other personal consumer reports": 856,
+        "Debt collection": 466
+      }
+    },
+    {
+      "year": 2019,
+      "total_complaints": 7423,
+      "monetary_relief_count": 705,
+      "monetary_relief_pct": 9.5,
+      "untimely_count": 499,
+      "top_responses": {
+        "Closed with explanation": 5980,
+        "Closed with non-monetary relief": 738,
+        "Closed with monetary relief": 705
+      },
+      "top_products": {
+        "Checking or savings account": 2437,
+        "Mortgage": 2065,
+        "Credit card or prepaid card": 930,
+        "Credit reporting, credit repair services, or other personal consumer reports": 840,
+        "Debt collection": 398
+      }
+    },
+    {
+      "year": 2020,
+      "total_complaints": 7534,
+      "monetary_relief_count": 658,
+      "monetary_relief_pct": 8.73,
+      "untimely_count": 138,
+      "top_responses": {
+        "Closed with explanation": 6090,
+        "Closed with non-monetary relief": 786,
+        "Closed with monetary relief": 658
+      },
+      "top_products": {
+        "Checking or savings account": 2294,
+        "Mortgage": 1852,
+        "Credit reporting, credit repair services, or other personal consumer reports": 1177,
+        "Credit card or prepaid card": 942,
+        "Debt collection": 412
+      }
+    },
+    {
+      "year": 2021,
+      "total_complaints": 9066,
+      "monetary_relief_count": 636,
+      "monetary_relief_pct": 7.02,
+      "untimely_count": 1,
+      "top_responses": {
+        "Closed with explanation": 6570,
+        "Closed with non-monetary relief": 1860,
+        "Closed with monetary relief": 636
+      },
+      "top_products": {
+        "Checking or savings account": 3083,
+        "Credit reporting, credit repair services, or other personal consumer reports": 1625,
+        "Mortgage": 1599,
+        "Credit card or prepaid card": 901,
+        "Debt collection": 762
+      }
+    },
+    {
+      "year": 2022,
+      "total_complaints": 10822,
+      "monetary_relief_count": 988,
+      "monetary_relief_pct": 9.13,
+      "untimely_count": 1,
+      "top_responses": {
+        "Closed with explanation": 8357,
+        "Closed with non-monetary relief": 1477,
+        "Closed with monetary relief": 988
+      },
+      "top_products": {
+        "Checking or savings account": 4552,
+        "Credit reporting, credit repair services, or other personal consumer reports": 1672,
+        "Mortgage": 1394,
+        "Credit card or prepaid card": 1151,
+        "Money transfer, virtual currency, or money service": 1048
+      }
+    },
+    {
+      "year": 2023,
+      "total_complaints": 20722,
+      "monetary_relief_count": 1413,
+      "monetary_relief_pct": 6.82,
+      "untimely_count": 0,
+      "top_responses": {
+        "Closed with explanation": 17759,
+        "Closed with non-monetary relief": 1550,
+        "Closed with monetary relief": 1413
+      },
+      "top_products": {
+        "Checking or savings account": 9917,
+        "Mortgage": 3456,
+        "Vehicle loan or lease": 1636,
+        "Credit card or prepaid card": 1301,
+        "Credit reporting, credit repair services, or other personal consumer reports": 1218
+      }
+    }
+  ]
+}

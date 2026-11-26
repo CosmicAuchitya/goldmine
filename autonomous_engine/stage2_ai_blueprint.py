@@ -153,7 +153,7 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
 
     # Priority 1: High priority adverse / event outcomes
     if not target:
-        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'is_returned', 'rto', 'returned', 'refund', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status', 'claim_status', 'overdue', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'is_returned', 'rto', 'returned', 'refund', 'loan_status', 'loanstatus', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status', 'claim_status', 'charge_off', 'charged_off', 'chgoff', 'overdue', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
         for kw in adverse_kws:
             for c in clean_cols:
                 if kw in c.lower():

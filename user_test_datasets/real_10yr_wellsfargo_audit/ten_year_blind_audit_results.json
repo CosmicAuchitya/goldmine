@@ -1,0 +1,808 @@
+{
+  "summary": {
+    "company": "Wells Fargo Bank, N.A. (FDIC #03511 / NYSE: WFC)",
+    "blind_window": "FY2013-FY2015 (Settled SBA 7(a), ZERO Identity, ZERO Overrides)",
+    "sealed_future_window": "FY2016-FY2021 (Settled SBA 7(a), 6 Unseen Years)",
+    "checks_passed": 8,
+    "checks_total": 9,
+    "overall_accuracy_pct": 88.9,
+    "total_elapsed_s": 36.86,
+    "sealed_auc": 0.6395,
+    "sealed_lift_x": 3.94,
+    "lat_intent_ms": 128.6,
+    "lat_pipeline_s": 10.77,
+    "lat_hindi_s": 0.64
+  },
+  "timeline": {
+    "yearly_sba": [
+      {
+        "fy": 2010,
+        "n_total_loans": 2457,
+        "n_settled": 2082.0,
+        "n_chgoff": 160.0,
+        "settled_default_pct": 7.68,
+        "approved_musd": 862.08,
+        "chargeoff_musd": 37.43,
+        "settled_unsecured_pct": 33.1,
+        "express_pct": 38.9,
+        "new_startup_pct": 34.7,
+        "median_rate_pct": 6.0,
+        "median_loan_kusd": 214.5
+      },
+      {
+        "fy": 2011,
+        "n_total_loans": 3139,
+        "n_settled": 2695.0,
+        "n_chgoff": 170.0,
+        "settled_default_pct": 6.31,
+        "approved_musd": 1217.82,
+        "chargeoff_musd": 32.83,
+        "settled_unsecured_pct": 43.8,
+        "express_pct": 43.3,
+        "new_startup_pct": 28.8,
+        "median_rate_pct": 6.22,
+        "median_loan_kusd": 200.0
+      },
+      {
+        "fy": 2012,
+        "n_total_loans": 3173,
+        "n_settled": 2669.0,
+        "n_chgoff": 198.0,
+        "settled_default_pct": 7.42,
+        "approved_musd": 1238.84,
+        "chargeoff_musd": 31.24,
+        "settled_unsecured_pct": 41.7,
+        "express_pct": 42.5,
+        "new_startup_pct": 34.2,
+        "median_rate_pct": 6.25,
+        "median_loan_kusd": 200.0
+      },
+      {
+        "fy": 2013,
+        "n_total_loans": 3476,
+        "n_settled": 2768.0,
+        "n_chgoff": 210.0,
+        "settled_default_pct": 7.59,
+        "approved_musd": 1467.46,
+        "chargeoff_musd": 36.7,
+        "settled_unsecured_pct": 44.1,
+        "express_pct": 42.3,
+        "new_startup_pct": 40.7,
+        "median_rate_pct": 6.0,
+        "median_loan_kusd": 200.0
+      },
+      {
+        "fy": 2014,
+        "n_total_loans": 4037,
+        "n_settled": 3296.0,
+        "n_chgoff": 291.0,
+        "settled_default_pct": 8.83,
+        "approved_musd": 1624.03,
+        "chargeoff_musd": 34.06,
+        "settled_unsecured_pct": 52.1,
+        "express_pct": 47.4,
+        "new_startup_pct": 46.4,
+        "median_rate_pct": 6.0,
+        "median_loan_kusd": 150.0
+      },
+      {
+        "fy": 2015,
+        "n_total_loans": 7253,
+        "n_settled": 5857.0,
+        "n_chgoff": 578.0,
+        "settled_default_pct": 9.87,
+        "approved_musd": 1917.62,
+        "chargeoff_musd": 37.41,
+        "settled_unsecured_pct": 71.1,
+        "express_pct": 66.0,
+        "new_startup_pct": 52.1,
+        "median_rate_pct": 7.75,
+        "median_loan_kusd": 20.0
+      },
+      {
+        "fy": 2016,
+        "n_total_loans": 8737,
+        "n_settled": 6668.0,
+        "n_chgoff": 597.0,
+        "settled_default_pct": 8.95,
+        "approved_musd": 1967.87,
+        "chargeoff_musd": 41.83,
+        "settled_unsecured_pct": 78.5,
+        "express_pct": 73.5,
+        "new_startup_pct": 64.2,
+        "median_rate_pct": 8.5,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2017,
+        "n_total_loans": 5445,
+        "n_settled": 4197.0,
+        "n_chgoff": 385.0,
+        "settled_default_pct": 9.17,
+        "approved_musd": 1759.57,
+        "chargeoff_musd": 38.86,
+        "settled_unsecured_pct": 71.6,
+        "express_pct": 61.1,
+        "new_startup_pct": 58.0,
+        "median_rate_pct": 8.0,
+        "median_loan_kusd": 20.0
+      },
+      {
+        "fy": 2018,
+        "n_total_loans": 3898,
+        "n_settled": 2869.0,
+        "n_chgoff": 305.0,
+        "settled_default_pct": 10.63,
+        "approved_musd": 1197.73,
+        "chargeoff_musd": 24.22,
+        "settled_unsecured_pct": 75.2,
+        "express_pct": 63.9,
+        "new_startup_pct": 20.9,
+        "median_rate_pct": 9.25,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2019,
+        "n_total_loans": 3149,
+        "n_settled": 2066.0,
+        "n_chgoff": 278.0,
+        "settled_default_pct": 13.46,
+        "approved_musd": 786.39,
+        "chargeoff_musd": 13.89,
+        "settled_unsecured_pct": 83.1,
+        "express_pct": 71.0,
+        "new_startup_pct": 6.6,
+        "median_rate_pct": 10.5,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2020,
+        "n_total_loans": 1872,
+        "n_settled": 1032.0,
+        "n_chgoff": 132.0,
+        "settled_default_pct": 12.79,
+        "approved_musd": 547.01,
+        "chargeoff_musd": 6.07,
+        "settled_unsecured_pct": 86.2,
+        "express_pct": 67.8,
+        "new_startup_pct": 26.8,
+        "median_rate_pct": 9.25,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2021,
+        "n_total_loans": 1843,
+        "n_settled": 791.0,
+        "n_chgoff": 132.0,
+        "settled_default_pct": 16.69,
+        "approved_musd": 600.62,
+        "chargeoff_musd": 1.93,
+        "settled_unsecured_pct": 91.2,
+        "express_pct": 67.6,
+        "new_startup_pct": 82.7,
+        "median_rate_pct": 7.75,
+        "median_loan_kusd": 10.0
+      },
+      {
+        "fy": 2022,
+        "n_total_loans": 1933,
+        "n_settled": 451.0,
+        "n_chgoff": 226.0,
+        "settled_default_pct": 50.11,
+        "approved_musd": 395.92,
+        "chargeoff_musd": 3.39,
+        "settled_unsecured_pct": 90.0,
+        "express_pct": 79.7,
+        "new_startup_pct": 87.5,
+        "median_rate_pct": 9.0,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2023,
+        "n_total_loans": 2140,
+        "n_settled": 323.0,
+        "n_chgoff": 166.0,
+        "settled_default_pct": 51.39,
+        "approved_musd": 427.6,
+        "chargeoff_musd": 6.08,
+        "settled_unsecured_pct": 87.9,
+        "express_pct": 80.6,
+        "new_startup_pct": 89.3,
+        "median_rate_pct": 12.75,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2024,
+        "n_total_loans": 2224,
+        "n_settled": 208.0,
+        "n_chgoff": 84.0,
+        "settled_default_pct": 40.38,
+        "approved_musd": 567.03,
+        "chargeoff_musd": 2.45,
+        "settled_unsecured_pct": 87.0,
+        "express_pct": 76.3,
+        "new_startup_pct": 87.0,
+        "median_rate_pct": 13.5,
+        "median_loan_kusd": 15.0
+      },
+      {
+        "fy": 2025,
+        "n_total_loans": 1607,
+        "n_settled": 49.0,
+        "n_chgoff": 10.0,
+        "settled_default_pct": 20.41,
+        "approved_musd": 539.14,
+        "chargeoff_musd": 0.18,
+        "settled_unsecured_pct": 75.5,
+        "express_pct": 66.8,
+        "new_startup_pct": 83.5,
+        "median_rate_pct": 12.25,
+        "median_loan_kusd": 20.0
+      },
+      {
+        "fy": 2026,
+        "n_total_loans": 531,
+        "n_settled": 0.0,
+        "n_chgoff": 0.0,
+        "settled_default_pct": null,
+        "approved_musd": 464.38,
+        "chargeoff_musd": 0.0,
+        "settled_unsecured_pct": null,
+        "express_pct": 16.4,
+        "new_startup_pct": 65.7,
+        "median_rate_pct": 7.59,
+        "median_loan_kusd": 613.9
+      }
+    ],
+    "cfpb_years": [
+      {
+        "year": 2013,
+        "total_complaints": 11123,
+        "monetary_relief_count": 852,
+        "monetary_relief_pct": 7.66,
+        "untimely_count": 65,
+        "top_responses": {
+          "Closed with explanation": 9472,
+          "Closed with monetary relief": 852,
+          "Closed with non-monetary relief": 695,
+          "Closed": 104
+        },
+        "top_products": {
+          "Mortgage": 7310,
+          "Bank account or service": 2391,
+          "Credit card": 632,
+          "Consumer Loan": 366,
+          "Student loan": 206
+        }
+      },
+      {
+        "year": 2014,
+        "total_complaints": 9165,
+        "monetary_relief_count": 759,
+        "monetary_relief_pct": 8.28,
+        "untimely_count": 48,
+        "top_responses": {
+          "Closed with explanation": 7858,
+          "Closed with monetary relief": 759,
+          "Closed with non-monetary relief": 464,
+          "Closed": 84
+        },
+        "top_products": {
+          "Mortgage": 4967,
+          "Bank account or service": 2363,
+          "Credit card": 672,
+          "Debt collection": 414,
+          "Consumer Loan": 403
+        }
+      },
+      {
+        "year": 2015,
+        "total_complaints": 9281,
+        "monetary_relief_count": 665,
+        "monetary_relief_pct": 7.17,
+        "untimely_count": 117,
+        "top_responses": {
+          "Closed with explanation": 8174,
+          "Closed with monetary relief": 665,
+          "Closed with non-monetary relief": 401,
+          "Closed": 41
+        },
+        "top_products": {
+          "Mortgage": 5100,
+          "Bank account or service": 2329,
+          "Credit card": 709,
+          "Consumer Loan": 496,
+          "Debt collection": 277
+        }
+      },
+      {
+        "year": 2016,
+        "total_complaints": 11198,
+        "monetary_relief_count": 913,
+        "monetary_relief_pct": 8.15,
+        "untimely_count": 1550,
+        "top_responses": {
+          "Closed with explanation": 9611,
+          "Closed with monetary relief": 913,
+          "Closed with non-monetary relief": 588,
+          "Closed": 86
+        },
+        "top_products": {
+          "Mortgage": 5650,
+          "Bank account or service": 3064,
+          "Credit card": 1019,
+          "Consumer Loan": 648,
+          "Debt collection": 377
+        }
+      },
+      {
+        "year": 2017,
+        "total_complaints": 9064,
+        "monetary_relief_count": 1057,
+        "monetary_relief_pct": 11.66,
+        "untimely_count": 1031,
+        "top_responses": {
+          "Closed with explanation": 7014,
+          "Closed with monetary relief": 1057,
+          "Closed with non-monetary relief": 983,
+          "Closed": 10
+        },
+        "top_products": {
+          "Mortgage": 3633,
+          "Checking or savings account": 1591,
+          "Bank account or service": 912,
+          "Credit card or prepaid card": 666,
+          "Credit reporting, credit repair services, or other personal consumer reports": 500
+        }
+      },
+      {
+        "year": 2018,
+        "total_complaints": 8789,
+        "monetary_relief_count": 1009,
+        "monetary_relief_pct": 11.48,
+        "untimely_count": 298,
+        "top_responses": {
+          "Closed with explanation": 6707,
+          "Closed with non-monetary relief": 1073,
+          "Closed with monetary relief": 1009
+        },
+        "top_products": {
+          "Mortgage": 3040,
+          "Checking or savings account": 2467,
+          "Credit card or prepaid card": 963,
+          "Credit reporting, credit repair services, or other personal consumer reports": 856,
+          "Debt collection": 466
+        }
+      },
+      {
+        "year": 2019,
+        "total_complaints": 7423,
+        "monetary_relief_count": 705,
+        "monetary_relief_pct": 9.5,
+        "untimely_count": 499,
+        "top_responses": {
+          "Closed with explanation": 5980,
+          "Closed with non-monetary relief": 738,
+          "Closed with monetary relief": 705
+        },
+        "top_products": {
+          "Checking or savings account": 2437,
+          "Mortgage": 2065,
+          "Credit card or prepaid card": 930,
+          "Credit reporting, credit repair services, or other personal consumer reports": 840,
+          "Debt collection": 398
+        }
+      },
+      {
+        "year": 2020,
+        "total_complaints": 7534,
+        "monetary_relief_count": 658,
+        "monetary_relief_pct": 8.73,
+        "untimely_count": 138,
+        "top_responses": {
+          "Closed with explanation": 6090,
+          "Closed with non-monetary relief": 786,
+          "Closed with monetary relief": 658
+        },
+        "top_products": {
+          "Checking or savings account": 2294,
+          "Mortgage": 1852,
+          "Credit reporting, credit repair services, or other personal consumer reports": 1177,
+          "Credit card or prepaid card": 942,
+          "Debt collection": 412
+        }
+      },
+      {
+        "year": 2021,
+        "total_complaints": 9066,
+        "monetary_relief_count": 636,
+        "monetary_relief_pct": 7.02,
+        "untimely_count": 1,
+        "top_responses": {
+          "Closed with explanation": 6570,
+          "Closed with non-monetary relief": 1860,
+          "Closed with monetary relief": 636
+        },
+        "top_products": {
+          "Checking or savings account": 3083,
+          "Credit reporting, credit repair services, or other personal consumer reports": 1625,
+          "Mortgage": 1599,
+          "Credit card or prepaid card": 901,
+          "Debt collection": 762
+        }
+      },
+      {
+        "year": 2022,
+        "total_complaints": 10822,
+        "monetary_relief_count": 988,
+        "monetary_relief_pct": 9.13,
+        "untimely_count": 1,
+        "top_responses": {
+          "Closed with explanation": 8357,
+          "Closed with non-monetary relief": 1477,
+          "Closed with monetary relief": 988
+        },
+        "top_products": {
+          "Checking or savings account": 4552,
+          "Credit reporting, credit repair services, or other personal consumer reports": 1672,
+          "Mortgage": 1394,
+          "Credit card or prepaid card": 1151,
+          "Money transfer, virtual currency, or money service": 1048
+        }
+      },
+      {
+        "year": 2023,
+        "total_complaints": 20722,
+        "monetary_relief_count": 1413,
+        "monetary_relief_pct": 6.82,
+        "untimely_count": 0,
+        "top_responses": {
+          "Closed with explanation": 17759,
+          "Closed with non-monetary relief": 1550,
+          "Closed with monetary relief": 1413
+        },
+        "top_products": {
+          "Checking or savings account": 9917,
+          "Mortgage": 3456,
+          "Vehicle loan or lease": 1636,
+          "Credit card or prepaid card": 1301,
+          "Credit reporting, credit repair services, or other personal consumer reports": 1218
+        }
+      }
+    ],
+    "sec_years": [
+      {
+        "year": 2013,
+        "net_income": 21878000000.0,
+        "noninterest_expense": 48842000000.0,
+        "provision_credit_losses": 2309000000.0,
+        "assets": 1523502000000.0,
+        "deposits": 1079177000000.0
+      },
+      {
+        "year": 2014,
+        "net_income": 23057000000.0,
+        "noninterest_expense": 49037000000.0,
+        "provision_credit_losses": 1395000000.0,
+        "assets": 1687155000000.0,
+        "deposits": 1168310000000.0
+      },
+      {
+        "year": 2015,
+        "net_income": 22894000000.0,
+        "noninterest_expense": 49974000000.0,
+        "provision_credit_losses": 2442000000.0,
+        "assets": 1787632000000.0,
+        "deposits": 1223312000000.0
+      },
+      {
+        "year": 2016,
+        "net_income": 21938000000.0,
+        "noninterest_expense": 52377000000.0,
+        "provision_credit_losses": 3770000000.0,
+        "assets": 1930115000000.0,
+        "deposits": 1306079000000.0
+      },
+      {
+        "year": 2017,
+        "net_income": 22183000000.0,
+        "noninterest_expense": 58484000000.0,
+        "provision_credit_losses": 2528000000.0,
+        "assets": 1951757000000.0,
+        "deposits": 1335991000000.0
+      },
+      {
+        "year": 2018,
+        "net_income": 22393000000.0,
+        "noninterest_expense": 56126000000.0,
+        "provision_credit_losses": 1744000000.0,
+        "assets": 1895883000000.0,
+        "deposits": 1286170000000.0
+      },
+      {
+        "year": 2019,
+        "net_income": 19715000000.0,
+        "noninterest_expense": 58178000000.0,
+        "provision_credit_losses": 2687000000.0,
+        "assets": 1927555000000.0,
+        "deposits": 1322626000000.0
+      },
+      {
+        "year": 2020,
+        "net_income": 3377000000.0,
+        "noninterest_expense": 57630000000.0,
+        "provision_credit_losses": 14129000000.0,
+        "assets": 1952911000000.0,
+        "deposits": 1404381000000.0
+      },
+      {
+        "year": 2021,
+        "net_income": 22109000000.0,
+        "noninterest_expense": 53758000000.0,
+        "provision_credit_losses": -4155000000.0,
+        "assets": 1948068000000.0,
+        "deposits": 1482479000000.0
+      },
+      {
+        "year": 2022,
+        "net_income": 13677000000.0,
+        "noninterest_expense": 57205000000.0,
+        "provision_credit_losses": 1534000000.0,
+        "assets": 1881020000000.0,
+        "deposits": 1383985000000.0
+      },
+      {
+        "year": 2023,
+        "net_income": 19142000000.0,
+        "noninterest_expense": 55562000000.0,
+        "provision_credit_losses": 5399000000.0,
+        "assets": 1932468000000.0,
+        "deposits": 1358173000000.0
+      },
+      {
+        "year": 2024,
+        "net_income": 19722000000.0,
+        "noninterest_expense": 54598000000.0,
+        "provision_credit_losses": 4334000000.0,
+        "assets": 1929845000000.0,
+        "deposits": 1371804000000.0
+      }
+    ]
+  },
+  "blind_middle_truth": {
+    "n_rows": 11921,
+    "n_adv": 1079,
+    "rate_pct": 9.05,
+    "approved_total_usd": 3525087300.0,
+    "adv_approved_exposure_usd": 168740700.0,
+    "actual_chargeoff_usd": 108174482.69,
+    "blind_csv_path": "C:\\Users\\91945\\OneDrive\\Desktop\\XXX\\Ai aotumation learning\\user_test_datasets\\real_10yr_wellsfargo_audit\\blind_anonymized_middle_window.csv"
+  },
+  "detected": {
+    "target_col": "LoanStatus",
+    "cost_col": "GrossApproval",
+    "records": 11921,
+    "adverse_events": 1079,
+    "adverse_rate_pct": 9.05,
+    "capital_drag": "$168.74M",
+    "top_leaks": [
+      {
+        "severity": "CRITICAL",
+        "headline": "V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)",
+        "impact": "$33.12M at risk (~437 loan accounts)"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default",
+        "impact": "$20.40M at risk (~94 loan accounts)"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "Startup, Loan Funds will Open Business (Businessage): 1 in 10 Loan Accounts Fall Into Default",
+        "impact": "$15.92M at risk (~37 loan accounts)"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "N (Collateralind): 1 in 10 Loan Accounts Fall Into Default",
+        "impact": "$15.16M at risk (~292 loan accounts)"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "SBA Express Program (Processingmethod): 1 in 10 Loan Accounts Fall Into Default",
+        "impact": "$8.87M at risk (~282 loan accounts)"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "INDIVIDUAL (Businesstype): 1 in 10 Loan Accounts Fall Into Default",
+        "impact": "$7.56M at risk (~84 loan accounts)"
+      }
+    ]
+  },
+  "sealed_future_evaluation": {
+    "n_future_settled": 17623,
+    "n_future_defaults": 1829,
+    "future_default_rate_pct": 10.38,
+    "future_approved_musd": 3420.9,
+    "future_actual_chargeoff_musd": 126.8,
+    "sealed_auc": 0.6395,
+    "calibration_gap_pp": 3.25,
+    "top20_rate_pct": 18.22,
+    "bot20_rate_pct": 4.62,
+    "risk_lift_x": 3.94,
+    "loss_top20_musd": 18.31,
+    "loss_bot20_musd": 39.21,
+    "top_fix_label": "Cap InitialInterestRate at ≤ 6.25",
+    "top_fix_spec": {
+      "action_type": "cap_numeric",
+      "column": "InitialInterestRate",
+      "value": 6.25,
+      "description": "Cap InitialInterestRate at maximum 6.25"
+    },
+    "pred_before_pct": 11.74,
+    "pred_after_pct": 7.35,
+    "pred_net": "$4,507,271.03",
+    "violated_n": 13715,
+    "violated_default_pct": 11.64,
+    "violated_approved_musd": 748.35,
+    "violated_chargeoff_musd": 71.38,
+    "violated_loss_pct": 9.54,
+    "complied_n": 3908,
+    "complied_default_pct": 5.96,
+    "complied_approved_musd": 2672.55,
+    "complied_chargeoff_musd": 55.42,
+    "complied_loss_pct": 2.07,
+    "fisher_p_value": 2.5061282537515662e-27,
+    "est_avoidable_defaults": 778,
+    "est_avoidable_loss_musd": 34.8,
+    "mgmt_yearly": [
+      {
+        "fy": 2016,
+        "settled_n": 6668,
+        "violating_n": 4841,
+        "violating_share_pct": 72.6,
+        "violating_default_pct": 10.0,
+        "compliant_default_pct": 6.19,
+        "violating_chargeoff_musd": 16.2,
+        "total_chargeoff_musd": 41.83
+      },
+      {
+        "fy": 2017,
+        "settled_n": 4197,
+        "violating_n": 3017,
+        "violating_share_pct": 71.9,
+        "violating_default_pct": 10.21,
+        "compliant_default_pct": 6.53,
+        "violating_chargeoff_musd": 21.74,
+        "total_chargeoff_musd": 38.86
+      },
+      {
+        "fy": 2018,
+        "settled_n": 2869,
+        "violating_n": 2388,
+        "violating_share_pct": 83.2,
+        "violating_default_pct": 11.89,
+        "compliant_default_pct": 4.37,
+        "violating_chargeoff_musd": 16.55,
+        "total_chargeoff_musd": 24.22
+      },
+      {
+        "fy": 2019,
+        "settled_n": 2066,
+        "violating_n": 1915,
+        "violating_share_pct": 92.7,
+        "violating_default_pct": 14.41,
+        "compliant_default_pct": 1.32,
+        "violating_chargeoff_musd": 13.79,
+        "total_chargeoff_musd": 13.89
+      },
+      {
+        "fy": 2020,
+        "settled_n": 1032,
+        "violating_n": 861,
+        "violating_share_pct": 83.4,
+        "violating_default_pct": 13.47,
+        "compliant_default_pct": 9.36,
+        "violating_chargeoff_musd": 2.02,
+        "total_chargeoff_musd": 6.07
+      },
+      {
+        "fy": 2021,
+        "settled_n": 791,
+        "violating_n": 693,
+        "violating_share_pct": 87.6,
+        "violating_default_pct": 18.47,
+        "compliant_default_pct": 4.08,
+        "violating_chargeoff_musd": 1.08,
+        "total_chargeoff_musd": 1.93
+      }
+    ],
+    "all_presets_future_check": [
+      {
+        "label": "Switch RevolverStatus from 'Y' → 'N'",
+        "action_type": "replace_category",
+        "violate_n": 13262,
+        "comply_n": 4361,
+        "violate_default_pct": 10.99,
+        "comply_default_pct": 8.51,
+        "p_value": 2.2759559190819045e-06,
+        "violate_loss_musd": 18.05
+      },
+      {
+        "label": "Cap InitialInterestRate at ≤ 6.25",
+        "action_type": "cap_numeric",
+        "violate_n": 13715,
+        "comply_n": 3908,
+        "violate_default_pct": 11.64,
+        "comply_default_pct": 5.96,
+        "p_value": 2.5061282537515662e-27,
+        "violate_loss_musd": 71.38
+      },
+      {
+        "label": "Pause / Stop 'Y' in RevolverStatus",
+        "action_type": "pause_segment",
+        "violate_n": 13262,
+        "comply_n": 4361,
+        "violate_default_pct": 10.99,
+        "comply_default_pct": 8.51,
+        "p_value": 2.2759559190819045e-06,
+        "violate_loss_musd": 18.05
+      }
+    ]
+  },
+  "boardroom": {
+    "debate_verdict": "BOTH_MATTER",
+    "debate_headline": "Both Processingmethod (0%) and Collateralind (0%) drive real risk. Run a combined low-cost 14-day pilot addressing both instead of picking only one side.",
+    "myth_verdict": "REFUTED_BY_DATA",
+    "myth_headline": "Your data shows Jobssupported is statistically flat (random noise, not a true root cause). Save your money — focus instead on your real #1 driver (Initialinterestrate).",
+    "blindspot_budget": 40000.0,
+    "blindspots_count": 1
+  },
+  "ask_ai_answer": "### 🔍 Direct Business Breakdown (Audited Data)\nHere is the exact comparison from your records:\n\n- **#1 None** — Total Orders: **1** | Problem / Returned Orders: **1** | Problem / Return Rate: **100.00%** | Money at Risk / Lost: **$5,000.00**\n- **#2 INDIVIDUAL** — Total Orders: **1,667** | Problem / Returned Orders: **223** | Problem / Return Rate: **13.38%** | Money at Risk / Lost: **$3,954,800.00**\n- **#3 CORPORATION** — Total Orders: **9,922** | Problem / Returned Orders: **846** | Problem / Return Rate: **8.53%** | Money at Risk / Lost: **$163,587,700.00**\n- **#4 PARTNERSHIP** — Total Orders: **331** | Problem / Returned Orders: **9** | Problem / Return Rate: **2.72%** | Money at Risk / Lost: **$1,193,200.00**\n\n🩺 **Business-Doctor Verdict:** ⚠️ **High Problem Alert** — **None** has a **100.00%** problem rate vs **9.04%** rest-of-business normal rate (**11.06x higher** than normal).",
+  "checks": [
+    {
+      "gate": "1_Blind_ZeroHint_AutoDetect",
+      "pass": true,
+      "detail": "target=LoanStatus, cost=GrossApproval, sym=$, latency=128.6ms"
+    },
+    {
+      "gate": "2_Blind_DuckDB_GroundTruth",
+      "pass": true,
+      "detail": "rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=10.77s"
+    },
+    {
+      "gate": "3_SealedFuture_2016_2021_AUC_Lift",
+      "pass": false,
+      "detail": "SealedAUC=0.6395, Top20=18.22% vs Bot20=4.62% (3.94x lift), CalGap=3.25pp, LossTop20=$18.31M vs Bot20=$39.21M"
+    },
+    {
+      "gate": "4_Blind_RootCause_Discovery",
+      "pass": true,
+      "detail": "LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)'; Exposure=$33.12M"
+    },
+    {
+      "gate": "5_BlindSolution_Proven_In_SealedFuture",
+      "pass": true,
+      "detail": "Fix='Cap InitialInterestRate at ≤ 6.25' | Pred: 11.74%->7.35% | Sealed 2016-21: Violated=11.64% ($71.38M lost) vs Followed=5.96% ($55.42M lost), p=2.51e-27, Avoidable≈$34.8M"
+    },
+    {
+      "gate": "6_Boardroom_Debate",
+      "pass": true,
+      "detail": "Verdict=BOTH_MATTER"
+    },
+    {
+      "gate": "7_Boardroom_MythCheck",
+      "pass": true,
+      "detail": "Verdict=REFUTED_BY_DATA"
+    },
+    {
+      "gate": "8_Boardroom_BudgetBlindSpot",
+      "pass": true,
+      "detail": "BudgetParsed=40000.0, BlindSpots=1"
+    },
+    {
+      "gate": "9_AskAI_And_Hindi_Live",
+      "pass": true,
+      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.64s)"
+    }
+  ]
+}

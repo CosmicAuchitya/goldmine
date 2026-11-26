@@ -501,7 +501,7 @@ def resolve_canonical_target_and_cost(
     target_keywords = [
         'not_fully_paid', 'not.fully.paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'writeoff', 'write_off',
         'is_rto', 'rto_flag', 'rto_status',
-        'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
+        'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
         'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
         'on_time', 'time_y', 'y_n', 'cancel', 'is_returned', 'returned', 'refund', 'chargeback', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
         'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
@@ -583,13 +583,34 @@ def resolve_canonical_target_and_cost(
                 target_candidates.append(c)
         
         priority_targets = [
-            'not_fully_paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'is_rto',
-            'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
+            'not_fully_paid', 'unpaid', 'charged_off', 'charge_off', 'chgoff', 'delinquent', 'is_rto',
+            'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
             'readmit', 'satisfaction', 'exited', 'cancel', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status',
             'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'status', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
-        target_candidates.sort(key=lambda col: next((i for i, pt in enumerate(priority_targets) if pt in col.lower() or pt in re.sub(r'[.\-\s]+', '_', col.lower())), 999))
+        _generic_idx = priority_targets.index('outcome')
+        _adv_val_re = re.compile(
+            r'\b(?:bad|default|defaulted|charged off|charge off|chgoff|delinquent|fraud|churn|attrition|'
+            r'defect|fail|failed|failure|cancel|cancelled|canceled|delayed|delay|late|returned|rto|rejected|overdue|writeoff|write off)\b'
+        )
+        _flag_status_cols = {'revolver_status', 'revolverstatus', 'marital_status', 'maritalstatus', 'employment_status', 'tax_status'}
+
+        def _cand_sort_key(col: str) -> Tuple[int, int, int]:
+            c_l = col.lower()
+            c_n = re.sub(r'[.\-\s]+', '_', c_l)
+            kw_rank = next((i for i, pt in enumerate(priority_targets) if pt in c_l or pt in c_n), 999)
+            if kw_rank < _generic_idx:
+                return (0, kw_rank, 0)
+            has_adv_val = 1
+            if not pd.api.types.is_numeric_dtype(df[col]):
+                s_samp = df[col].dropna().astype(str).head(250).str.lower().str.replace(r'[_\-/]+', ' ', regex=True)
+                if s_samp.str.contains(_adv_val_re, regex=True).any():
+                    has_adv_val = 0
+            is_flag = 1 if (c_l in _flag_status_cols or c_n in _flag_status_cols) else 0
+            return (1, is_flag * 10 + has_adv_val, kw_rank)
+
+        target_candidates.sort(key=_cand_sort_key)
         if target_candidates:
             target_col = target_candidates[0]
 
@@ -687,7 +708,7 @@ def resolve_canonical_target_and_cost(
 
     # Define unambiguous global adverse tokens (English, Spanish, Portuguese, French, German, Italian + ERP snake_case)
     unconditional_adverse = (
-        r'\b(?:bad|default|defaulted|charged off|delinquent|fraud|fraudulent|'
+        r'\b(?:bad|default|defaulted|charged off|chgoff|delinquent|fraud|fraudulent|'
         r'churn|churned|attrition|attrited|defect|defective|fail|failed|failure|'
         r'cancel|cancelled|canceled|delayed|delay|late|anomaly|substandard|poor|'
         r'low quality|malignant|dead|death|deceased|fatal|disease|stroke|diabetic|'
@@ -862,7 +883,7 @@ def resolve_canonical_target_and_cost(
     # -------------------------------------------------------------
     # Strict financial keywords representing physical currency ledgers
     cost_keywords = [
-        'loan_amount', 'loanamount', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'monthly_payment', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
+        'loan_amount', 'loanamount', 'gross_approval', 'grossapproval', 'guaranteed_approval', 'guaranteedapproval', 'loan_approval', 'disbursed_amount', 'funded_amount', 'sanctioned_amount', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'monthly_payment', 'amount', 'credit', 'price', 'cost', 'revenue', 'mrr', 'sales', 'balance',
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
         'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value',
         'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income',
@@ -932,7 +953,7 @@ def resolve_canonical_target_and_cost(
         cost_col = blueprint.get("cost_override")
     elif candidate_cost_cols:
         priority_cost = [
-            'loan_amount', 'loanamount', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'house_value', 'median_house_value', 'property_value',
+            'loan_amount', 'loanamount', 'gross_approval', 'grossapproval', 'loan_approval', 'disbursed_amount', 'funded_amount', 'sanctioned_amount', 'guaranteed_approval', 'guaranteedapproval', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'house_value', 'median_house_value', 'property_value',
             'invoiced_amount', 'net_billed', 'net_bill', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount', 'bill_value',
             'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'order_total', 'invoice_total', 'line_value', 'line_total', 'total_amount', 'total_sales', 'exact_total',
             'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',

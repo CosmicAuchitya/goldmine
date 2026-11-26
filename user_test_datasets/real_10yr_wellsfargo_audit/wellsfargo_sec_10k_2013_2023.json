@@ -1,0 +1,102 @@
+{
+  "entity": "WELLS        FARGO & COMPANY/MN",
+  "cik": "0000072971",
+  "years": [
+    {
+      "year": 2013,
+      "net_income": 21878000000.0,
+      "noninterest_expense": 48842000000.0,
+      "provision_credit_losses": 2309000000.0,
+      "assets": 1523502000000.0,
+      "deposits": 1079177000000.0
+    },
+    {
+      "year": 2014,
+      "net_income": 23057000000.0,
+      "noninterest_expense": 49037000000.0,
+      "provision_credit_losses": 1395000000.0,
+      "assets": 1687155000000.0,
+      "deposits": 1168310000000.0
+    },
+    {
+      "year": 2015,
+      "net_income": 22894000000.0,
+      "noninterest_expense": 49974000000.0,
+      "provision_credit_losses": 2442000000.0,
+      "assets": 1787632000000.0,
+      "deposits": 1223312000000.0
+    },
+    {
+      "year": 2016,
+      "net_income": 21938000000.0,
+      "noninterest_expense": 52377000000.0,
+      "provision_credit_losses": 3770000000.0,
+      "assets": 1930115000000.0,
+      "deposits": 1306079000000.0
+    },
+    {
+      "year": 2017,
+      "net_income": 22183000000.0,
+      "noninterest_expense": 58484000000.0,
+      "provision_credit_losses": 2528000000.0,
+      "assets": 1951757000000.0,
+      "deposits": 1335991000000.0
+    },
+    {
+      "year": 2018,
+      "net_income": 22393000000.0,
+      "noninterest_expense": 56126000000.0,
+      "provision_credit_losses": 1744000000.0,
+      "assets": 1895883000000.0,
+      "deposits": 1286170000000.0
+    },
+    {
+      "year": 2019,
+      "net_income": 19715000000.0,
+      "noninterest_expense": 58178000000.0,
+      "provision_credit_losses": 2687000000.0,
+      "assets": 1927555000000.0,
+      "deposits": 1322626000000.0
+    },
+    {
+      "year": 2020,
+      "net_income": 3377000000.0,
+      "noninterest_expense": 57630000000.0,
+      "provision_credit_losses": 14129000000.0,
+      "assets": 1952911000000.0,
+      "deposits": 1404381000000.0
+    },
+    {
+      "year": 2021,
+      "net_income": 22109000000.0,
+      "noninterest_expense": 53758000000.0,
+      "provision_credit_losses": -4155000000.0,
+      "assets": 1948068000000.0,
+      "deposits": 1482479000000.0
+    },
+    {
+      "year": 2022,
+      "net_income": 13677000000.0,
+      "noninterest_expense": 57205000000.0,
+      "provision_credit_losses": 1534000000.0,
+      "assets": 1881020000000.0,
+      "deposits": 1383985000000.0
+    },
+    {
+      "year": 2023,
+      "net_income": 19142000000.0,
+      "noninterest_expense": 55562000000.0,
+      "provision_credit_losses": 5399000000.0,
+      "assets": 1932468000000.0,
+      "deposits": 1358173000000.0
+    },
+    {
+      "year": 2024,
+      "net_income": 19722000000.0,
+      "noninterest_expense": 54598000000.0,
+      "provision_credit_losses": 4334000000.0,
+      "assets": 1929845000000.0,
+      "deposits": 1371804000000.0
+    }
+  ]
+}
