@@ -1,0 +1,94 @@
+{
+  "entity": "Ford Motor Co",
+  "cik": "0000037996",
+  "years": [
+    {
+      "year": 2014,
+      "revenues": 135782000000.0,
+      "cost_of_sales": 125025000000.0,
+      "net_income": 1231000000.0
+    },
+    {
+      "year": 2015,
+      "revenues": 140566000000.0,
+      "cost_of_sales": 124446000000.0,
+      "net_income": 7373000000.0,
+      "warranty_accrual_issued": 2046000000.0,
+      "warranty_payments": 2849000000.0
+    },
+    {
+      "year": 2016,
+      "revenues": 151800000000.0,
+      "cost_of_sales": 126195000000.0,
+      "warranty_accrual_issued": 2326000000.0,
+      "warranty_payments": 3286000000.0
+    },
+    {
+      "year": 2017,
+      "revenues": 156776000000.0,
+      "cost_of_sales": 131321000000.0,
+      "warranty_accrual_issued": 2260000000.0,
+      "warranty_payments": 3457000000.0
+    },
+    {
+      "year": 2018,
+      "revenues": 160338000000.0,
+      "cost_of_sales": 136269000000.0,
+      "warranty_accrual_issued": 2584000000.0,
+      "warranty_payments": 4360000000.0
+    },
+    {
+      "year": 2019,
+      "revenues": 155900000000.0,
+      "cost_of_sales": 134693000000.0,
+      "warranty_accrual_issued": 3182000000.0,
+      "warranty_payments": 4561000000.0
+    },
+    {
+      "year": 2020,
+      "revenues": 127144000000.0,
+      "cost_of_sales": 112752000000.0,
+      "warranty_accrual_issued": 3934000000.0,
+      "warranty_payments": 3923000000.0
+    },
+    {
+      "year": 2021,
+      "revenues": 136341000000.0,
+      "cost_of_sales": 114651000000.0,
+      "net_income": 17937000000.0,
+      "warranty_accrual_issued": 4102000000.0,
+      "warranty_payments": 3952000000.0
+    },
+    {
+      "year": 2022,
+      "revenues": 158057000000.0,
+      "cost_of_sales": 134397000000.0,
+      "net_income": -1981000000.0,
+      "warranty_accrual_issued": 4028000000.0,
+      "warranty_payments": 4166000000.0
+    },
+    {
+      "year": 2023,
+      "revenues": 176191000000.0,
+      "cost_of_sales": 150550000000.0,
+      "net_income": 4347000000.0,
+      "warranty_accrual_issued": 4743000000.0,
+      "warranty_payments": 4779000000.0
+    },
+    {
+      "year": 2024,
+      "revenues": 184992000000.0,
+      "cost_of_sales": 158434000000.0,
+      "net_income": 5879000000.0,
+      "warranty_accrual_issued": 6294000000.0,
+      "warranty_payments": 5831000000.0
+    },
+    {
+      "year": 2025,
+      "revenues": 187267000000.0,
+      "cost_of_sales": 174466000000.0,
+      "warranty_accrual_issued": 6707000000.0,
+      "warranty_payments": 5733000000.0
+    }
+  ]
+}

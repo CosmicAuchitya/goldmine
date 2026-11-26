@@ -1,7 +1,7 @@
 # 10+ साल की असली कंपनी पर Zero-Cheating 'बीच का डेटा' ब्लाइंड ऑडिट रिपोर्ट
 
 > **असली कंपनी:** `Wells Fargo Bank, N.A. (FDIC #03511 / NYSE: WFC)` (ऑडिट डेटा: आधिकारिक US SBA 7(a) + CFPB + SEC EDGAR 10-K)  
-> **ब्लाइंड टेस्ट स्कोर:** **`88.9%`** (`8/9` गेट पास) | **सील्ड फ़्यूचर ROC-AUC:** `0.6395` | **टॉप-20% रिस्क लिफ़्ट:** `3.94x` | **समय:** `36.86s`
+> **ब्लाइंड टेस्ट स्कोर:** **`88.9%`** (`8/9` गेट पास) | **सील्ड फ़्यूचर ROC-AUC:** `0.6395` | **टॉप-20% रिस्क लिफ़्ट:** `3.94x` | **समय:** `39.42s`
 
 ## 1. टेस्ट की बनावट (100% Zero-Cheating नियम)
 - **ऐप को क्या बताया गया?** **कुछ भी नहीं!** DataX-Ray को सिर्फ़ `blind_sample_data.csv` नाम की एक अनाम फ़ाइल (`FY2013–FY2015` के `11,921` परिपक्व लोन) दी गई।
@@ -35,7 +35,7 @@
 ---
 ## 3. DataX-Ray ने 'बीच के डेटा' (`FY2013–FY2015`) पर बिना कुछ जाने क्या पकड़ा?
 - **स्वतंत्र DuckDB सत्य बनाम DataX-Ray:** कुल रिकॉर्ड `11,921` (असली `11,921`) · डिफ़ॉल्ट `1,079` (असली `1,079`) · दर `9.05%` (असली `9.05%`) · खतरे में राशि `$168.74M`
-- **बिना हिंट ऑटो-डिटेक्टेड टारगेट व कॉस्ट:** टारगेट = `LoanStatus` | कॉस्ट = `GrossApproval` | स्पीड: Intent `128.6 ms`, पाइपलाइन `10.77 s`, हिंदी अनुवाद `0.64 s`
+- **बिना हिंट ऑटो-डिटेक्टेड टारगेट व कॉस्ट:** टारगेट = `LoanStatus` | कॉस्ट = `GrossApproval` | स्पीड: Intent `58.7 ms`, पाइपलाइन `12.1 s`, हिंदी अनुवाद `0.71 s`
 - **प्रमुख खोजे गए लीक / समस्याएँ (Blind Middle Window):**
   - `[CRITICAL]` **V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)** — असर: `$33.12M at risk (~437 loan accounts)`
   - `[HIGH]` **Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default** — असर: `$20.40M at risk (~94 loan accounts)`
@@ -80,15 +80,15 @@
 ## 6. सभी 9 इंडिपेंडेंट ब्लाइंड टेस्ट गेट्स (100% पारदर्शी स्कोरकार्ड)
 | टेस्ट गेट | स्थिति | सटीक परिणाम व माप |
 | :--- | :---: | :--- |
-| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | target=LoanStatus, cost=GrossApproval, sym=$, latency=128.6ms |
-| `2_Blind_DuckDB_GroundTruth` | ✅ PASS | rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=10.77s |
+| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | target=LoanStatus, cost=GrossApproval, sym=$, latency=58.7ms |
+| `2_Blind_DuckDB_GroundTruth` | ✅ PASS | rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=12.1s |
 | `3_SealedFuture_2016_2021_AUC_Lift` | ❌ FAIL | SealedAUC=0.6395, Top20=18.22% vs Bot20=4.62% (3.94x lift), CalGap=3.25pp, LossTop20=$18.31M vs Bot20=$39.21M |
 | `4_Blind_RootCause_Discovery` | ✅ PASS | LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)'; Exposure=$33.12M |
 | `5_BlindSolution_Proven_In_SealedFuture` | ✅ PASS | Fix='Cap InitialInterestRate at ≤ 6.25' | Pred: 11.74%->7.35% | Sealed 2016-21: Violated=11.64% ($71.38M lost) vs Followed=5.96% ($55.42M lost), p=2.51e-27, Avoidable≈$34.8M |
 | `6_Boardroom_Debate` | ✅ PASS | Verdict=BOTH_MATTER |
 | `7_Boardroom_MythCheck` | ✅ PASS | Verdict=REFUTED_BY_DATA |
 | `8_Boardroom_BudgetBlindSpot` | ✅ PASS | BudgetParsed=40000.0, BlindSpots=1 |
-| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.64s) |
+| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.71s) |
 
 ---
 ## 7. ऑडिट के दौरान क्या-क्या हुआ (पकड़े गए असली बग + साइंटिफ़िक चीटिंग-रोक जाँच)

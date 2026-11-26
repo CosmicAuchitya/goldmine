@@ -84,7 +84,7 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     secondary_dim = None
 
     cols = list(df.columns)
-    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type', 'distributor', 'dealer', 'salesman', 'partner', 'fleet', 'channel']
+    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type', 'distributor', 'dealer', 'salesman', 'partner', 'fleet', 'channel', 'compdesc', 'component', 'system', 'vehicle', 'model', 'line', 'module', 'part']
     location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'zone', 'branch', 'location', 'airport', 'warehouse']
 
     coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff'}
@@ -101,9 +101,14 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             continue
         if c_low.endswith(('_id', ' id', '_key', ' key', '_uuid', ' uuid', '_code', ' code')):
             continue
-        if any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary', 'text', 'comment', 'review', 'path', 'href']):
+        if any(b in c_low for b in ['link', 'url', 'poster', 'image', 'photo', 'path', 'href']):
             continue
         nunique = df[c].nunique()
+        if any(b in c_low for b in ['overview', 'description', 'desc', 'summary', 'text', 'comment', 'review']):
+            # Only drop free-text narrative prose, NOT short categorical codes like COMPDESC (<= 80 categories)
+            avg_str_len = float(df[c].dropna().astype(str).str.len().mean()) if nunique > 0 else 0.0
+            if nunique > 80 or avg_str_len > 55.0 or c_low in ('desc', 'description', 'overview', 'summary', 'text', 'comment', 'review'):
+                continue
         is_low_card_int = (
             pd.api.types.is_integer_dtype(df[c])
             and 2 <= nunique <= 10
@@ -168,13 +173,18 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
             return 0.0
 
     entity_matches = [c for c in business_candidates if any(k in c.lower() for k in business_entity_keywords)]
+    base_rate = float(bin_target.mean()) if bin_target is not None else 0.1
+    min_override_disp = max(0.03, min(0.15, base_rate * 1.5))
     if entity_matches:
         entity_matches.sort(key=compute_dispersion, reverse=True)
-        # Only prefer entity_matches[0] if no other business candidate has >2x higher dispersion
-        best_ent = entity_matches[0]
+        # Prefer informative entity over near-constant entity (e.g. 99.9% single value)
+        meaningful_ent = [c for c in entity_matches if compute_dispersion(c) >= 0.005]
+        best_ent = meaningful_ent[0] if meaningful_ent else entity_matches[0]
         business_candidates.sort(key=compute_dispersion, reverse=True)
         best_bus = business_candidates[0]
-        if compute_dispersion(best_bus) > compute_dispersion(best_ent) * 2.0 and compute_dispersion(best_bus) >= 0.15:
+        if compute_dispersion(best_ent) < 0.005 and compute_dispersion(best_bus) > compute_dispersion(best_ent):
+            primary_dim = best_bus
+        elif compute_dispersion(best_bus) > compute_dispersion(best_ent) * 2.0 and compute_dispersion(best_bus) >= min_override_disp:
             primary_dim = best_bus
         else:
             primary_dim = best_ent

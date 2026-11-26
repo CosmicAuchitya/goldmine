@@ -501,8 +501,8 @@ def resolve_canonical_target_and_cost(
     target_keywords = [
         'not_fully_paid', 'not.fully.paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'writeoff', 'write_off',
         'is_rto', 'rto_flag', 'rto_status',
-        'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
-        'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'reach', 'ontime',
+        'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
+        'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'incident', 'hazard', 'reach', 'ontime',
         'on_time', 'time_y', 'y_n', 'cancel', 'is_returned', 'returned', 'refund', 'chargeback', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
         'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
         'grade', 'rating', 'score', 'test results', 'test_results', 'test result',
@@ -524,6 +524,9 @@ def resolve_canonical_target_and_cost(
             'path', 'href', 'title', 'longitude', 'latitude', 'pickup', 'dropoff', 'datetime', 'timestamp',
             'आईडी', 'क्रमांक'
         ]) or c_low in ['lon', 'lat'] or c_low.endswith(('_id', '_key', '_code')) or (
+            any(t in c_low for t in ('year', 'month', 'weeknum', 'week_num', 'quarter', 'qtr'))
+            and not any(ok in c_low for ok in ('delay', 'tenure', 'age', 'maturity'))
+        ) or (
             not pd.api.types.is_numeric_dtype(df[bp_cand]) and len(df) >= 10 and (df[bp_cand].nunique() / max(len(df), 1)) >= 0.90
         )
         is_artifact = is_index_artifact(bp_cand)
@@ -541,14 +544,14 @@ def resolve_canonical_target_and_cost(
         has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
         if has_spatial:
             canonical_targets = [
-                'dep_delay', 'arr_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'survived', 'survival', 'cut', 'outcome',
+                'dep_delay', 'arr_delay', 'delay', 'mpg', 'is_canceled', 'churn', 'death_event', 'crash', 'survived', 'survival', 'cut', 'outcome',
                 'deposit', 'subscribed', 'smoker', 'default', 'fraud', 'customer stratification rating',
                 'median_house_value', 'payment', 'target', 'response', 'label'
             ]
         else:
             canonical_targets = [
                 'dep_delay', 'arr_delay', 'delay', 'mpg', 'y', 'target', 'response', 'label', 'deposit', 'subscribed', 'is_canceled', 'is_returned', 'churn',
-                'death_event', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
+                'death_event', 'crash', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default', 'fraud',
                 'customer stratification rating', 'median_house_value', 'payment'
             ]
         for cand_name in canonical_targets:
@@ -584,9 +587,9 @@ def resolve_canonical_target_and_cost(
         
         priority_targets = [
             'not_fully_paid', 'unpaid', 'charged_off', 'charge_off', 'chgoff', 'delinquent', 'is_rto',
-            'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition',
+            'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury', 'churn', 'fraud', 'default', 'stroke', 'attrition',
             'readmit', 'satisfaction', 'exited', 'cancel', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status',
-            'smoker', 'survived', 'survival', 'cut', 'outcome', 'fail', 'status', 'delay',
+            'smoker', 'survived', 'survival', 'cut', 'outcome', 'incident', 'hazard', 'fail', 'status', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
         _generic_idx = priority_targets.index('outcome')

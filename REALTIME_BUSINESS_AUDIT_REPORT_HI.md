@@ -1,7 +1,7 @@
 # DataX-Ray रियल-टाइम बिज़नेस एक्यूरेसी व सॉल्यूशन प्रमाणन रिपोर्ट (Zero-Cheating Audit)
 
 > **अंतिम सटीकता स्कोर (Overall Score):** **`92.9%`** (`26/28` लाइव गेट पास) | **स्थिति:** `CERTIFIED_90_PLUS`  
-> **औसत सील्ड फ़्यूचर ROC-AUC:** `0.79` | **औसत कैलिब्रेशन अंतर:** `0.73 pp` | **टॉप-20% प्रायोरिटी लिफ़्ट:** `6.23x` | **कुल समय:** `160.41 सेकंड`
+> **औसत सील्ड फ़्यूचर ROC-AUC:** `0.79` | **औसत कैलिब्रेशन अंतर:** `0.73 pp` | **टॉप-20% प्रायोरिटी लिफ़्ट:** `6.23x` | **कुल समय:** `179.86 सेकंड`
 
 ## 1. यह टेस्ट कैसे डिज़ाइन किया गया (Zero-Cheating नियम)
 - **कोई चीटिंग या हिंट नहीं:** हर असली कंपनी के डेटा को समय (Chronological Past बनाम Future) या ब्लाइंड होल्डआउट में बाँटा गया। DataX-Ray के लाइव API (`/api/v1/preview-intent` और `/api/v1/jobs/submit`) को **सिर्फ़ पुराना (Past) CSV** दिया गया — बिना किसी `target_override` या `cost_override` के।
@@ -12,7 +12,7 @@
 ---
 ## 2.1. बिज़नेस ऑडिट: ग्लोबल सुपरस्टोर कॉर्प (मल्टीनेशनल रिटेल व B2B ERP)
 - **अंग्रेज़ी नाम:** Global Superstore Multinational Corp. (Retail & B2B ERP) | **डेटा विभाजन:** `Year <= 2013 (33,759 Past) vs Year > 2013 (17,531 Sealed Future)`
-- **रियल-टाइम स्पीड:** Intent जाँच `90.9 ms` | पूरा पाइपलाइन `30.68 s` | हिंदी अनुवाद `1.48 s`
+- **रियल-टाइम स्पीड:** Intent जाँच `117.7 ms` | पूरा पाइपलाइन `36.2 s` | हिंदी अनुवाद `1.9 s`
 
 ### (A) DataX-Ray ने समस्या को बिना बताए कैसे पकड़ा (Zero-Hint Detection & SQL Match)
 - **ऑटो-डिटेक्टेड टारगेट व मुद्रा:** `Market2` | कॉस्ट कॉलम: `Sales` (`$`)
@@ -38,7 +38,7 @@
 ---
 ## 2.2. बिज़नेस ऑडिट: नेक्सुरा ओमनीचैनल D2C ब्रांड (भारतीय ई-कॉमर्स)
 - **अंग्रेज़ी नाम:** Nexura Omnichannel D2C Brand (India E-Commerce) | **डेटा विभाजन:** `order_year <= 2024 (9,266 Past) vs order_year > 2024 (5,734 Sealed Future)`
-- **रियल-टाइम स्पीड:** Intent जाँच `63.2 ms` | पूरा पाइपलाइन `15.04 s` | हिंदी अनुवाद `1.62 s`
+- **रियल-टाइम स्पीड:** Intent जाँच `74.4 ms` | पूरा पाइपलाइन `16.53 s` | हिंदी अनुवाद `2.43 s`
 
 ### (A) DataX-Ray ने समस्या को बिना बताए कैसे पकड़ा (Zero-Hint Detection & SQL Match)
 - **ऑटो-डिटेक्टेड टारगेट व मुद्रा:** `is_rto_or_cancelled` | कॉस्ट कॉलम: `net_billed_amount_inr` (`₹`)
@@ -64,7 +64,7 @@
 ---
 ## 2.3. बिज़नेस ऑडिट: लेंडिंगक्लब कॉर्प (NYSE: LC — असली US फ़िनटेक क्रेडिट)
 - **अंग्रेज़ी नाम:** LendingClub Corp. (NYSE: LC — Real US FinTech Credit) | **डेटा विभाजन:** `70% Blind Split (6,704 Train) vs 30% Sealed Holdout (2,874 Unseen)`
-- **रियल-टाइम स्पीड:** Intent जाँच `26.4 ms` | पूरा पाइपलाइन `6.99 s` | हिंदी अनुवाद `0.71 s`
+- **रियल-टाइम स्पीड:** Intent जाँच `28.6 ms` | पूरा पाइपलाइन `8.38 s` | हिंदी अनुवाद `1.86 s`
 
 ### (A) DataX-Ray ने समस्या को बिना बताए कैसे पकड़ा (Zero-Hint Detection & SQL Match)
 - **ऑटो-डिटेक्टेड टारगेट व मुद्रा:** `not.fully.paid` | कॉस्ट कॉलम: `installment` (`$`)
@@ -91,33 +91,33 @@
 ## 3. सभी 28 इंडिपेंडेंट टेस्ट गेट्स का पूरा विवरण (100% पारदर्शी लॉग)
 | बिज़नेस | टेस्ट गेट | स्थिति | सटीक परिणाम व माप |
 | :--- | :--- | :---: | :--- |
-| `global_superstore_erp` | `1_ZeroHint_AutoDetect` | ❌ FAIL | target=Market2, cost=Sales, sym=$, latency=90.9ms |
-| `global_superstore_erp` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=33759/33759 (drift=0), adv=8233/8233, rate=24.39% vs 24.39%, time=30.68s |
+| `global_superstore_erp` | `1_ZeroHint_AutoDetect` | ❌ FAIL | target=Market2, cost=Sales, sym=$, latency=117.7ms |
+| `global_superstore_erp` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=33759/33759 (drift=0), adv=8233/8233, rate=24.39% vs 24.39%, time=36.2s |
 | `global_superstore_erp` | `3_SealedFuture_WorklistLift_AUC` | ✅ PASS | SealedAUC=0.9799 (min 0.9), Top20=93.1% vs Bot20=0.0% (186.14x lift), CalGap=0.12pp |
 | `global_superstore_erp` | `4_ProblemDiscovery_RootCause` | ✅ PASS | Found 9 leaks; #1='8,233 Negative-Margin Orders Burned $610.56K Out-of-Pocket', exposure=$843.95K |
 | `global_superstore_erp` | `5_ClosedLoop_FutureSolution_Proof` | ✅ PASS | Fix='Cap Discount at ≤ 0.2' | Pred: 89.25%->31.98% | SealedFuture: unfixed=89.77% vs fixed=5.76% (p=0.00e+00) | VerifyMatch=91.8%, Compliance=100.0% |
 | `global_superstore_erp` | `6_Boardroom_Debate_Verdict` | ✅ PASS | Debate verdict=CLEAR_WINNER |
 | `global_superstore_erp` | `7_Boardroom_Myth_Defense` | ✅ PASS | Myth verdict=REFUTED_BY_DATA |
 | `global_superstore_erp` | `8_Boardroom_Budget_BlindSpot` | ✅ PASS | BudgetParsed=40000.0, BlindSpots=2 |
-| `global_superstore_erp` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (1.48s) |
-| `nexura_omnichannel_d2c` | `1_ZeroHint_AutoDetect` | ✅ PASS | target=is_rto_or_cancelled, cost=net_billed_amount_inr, sym=₹, latency=63.2ms |
-| `nexura_omnichannel_d2c` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=9266/9266 (drift=0), adv=839/839, rate=9.05% vs 9.05%, time=15.04s |
+| `global_superstore_erp` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (1.9s) |
+| `nexura_omnichannel_d2c` | `1_ZeroHint_AutoDetect` | ✅ PASS | target=is_rto_or_cancelled, cost=net_billed_amount_inr, sym=₹, latency=74.4ms |
+| `nexura_omnichannel_d2c` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=9266/9266 (drift=0), adv=839/839, rate=9.05% vs 9.05%, time=16.53s |
 | `nexura_omnichannel_d2c` | `3_SealedFuture_WorklistLift_AUC` | ❌ FAIL | SealedAUC=0.7016 (min 0.72), Top20=23.4% vs Bot20=5.7% (4.12x lift), CalGap=1.12pp |
 | `nexura_omnichannel_d2c` | `4_ProblemDiscovery_RootCause` | ✅ PASS | Found 19 leaks; #1='Cash on Delivery (COD) (Payment Gateway): 3 in 10 Orders Face Returns Or Failures (Over 6× higher than usual)', exposure=₹11.41 L |
 | `nexura_omnichannel_d2c` | `5_ClosedLoop_FutureSolution_Proof` | ✅ PASS | Fix='Switch payment_gateway from 'Cash on Delivery (COD)' → 'Razorpay Credit Card'' | Pred: 32.38%->6.66% | SealedFuture: unfixed=35.47% vs fixed=6.1% (p=1.67e-53) | VerifyMatch=13.3%, Compliance=100.0% |
 | `nexura_omnichannel_d2c` | `6_Boardroom_Debate_Verdict` | ✅ PASS | Debate verdict=BOTH_MATTER |
 | `nexura_omnichannel_d2c` | `7_Boardroom_Myth_Defense` | ✅ PASS | Myth verdict=REFUTED_BY_DATA |
 | `nexura_omnichannel_d2c` | `8_Boardroom_Budget_BlindSpot` | ✅ PASS | BudgetParsed=300000.0, BlindSpots=3 |
-| `nexura_omnichannel_d2c` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (1.62s) |
-| `lendingclub_nyse_fintech` | `1_ZeroHint_AutoDetect` | ✅ PASS | target=not.fully.paid, cost=installment, sym=$, latency=26.4ms |
-| `lendingclub_nyse_fintech` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=6704/6704 (drift=0), adv=1096/1096, rate=16.35% vs 16.35%, time=6.99s |
+| `nexura_omnichannel_d2c` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (2.43s) |
+| `lendingclub_nyse_fintech` | `1_ZeroHint_AutoDetect` | ✅ PASS | target=not.fully.paid, cost=installment, sym=$, latency=28.6ms |
+| `lendingclub_nyse_fintech` | `2_LivePipeline_DuckDB_Math` | ✅ PASS | rows=6704/6704 (drift=0), adv=1096/1096, rate=16.35% vs 16.35%, time=8.38s |
 | `lendingclub_nyse_fintech` | `3_SealedFuture_WorklistLift_AUC` | ✅ PASS | SealedAUC=0.6885 (min 0.64), Top20=28.2% vs Bot20=4.5% (6.23x lift), CalGap=0.96pp |
 | `lendingclub_nyse_fintech` | `4_ProblemDiscovery_RootCause` | ✅ PASS | Found 4 leaks; #1='Low / Absent Credit.Policy: 3 in 10 Cases Run Into Problems (Nearly double the usual rate)', exposure=$59.02K |
 | `lendingclub_nyse_fintech` | `5_ClosedLoop_FutureSolution_Proof` | ✅ PASS | Fix='Switch purpose from 'small_business' → 'credit_card'' | Pred: 26.82%->15.0% | SealedFuture: unfixed=24.32% vs fixed=11.17% (p=1.01e-04) | VerifyMatch=7.3%, Compliance=100.0% |
 | `lendingclub_nyse_fintech` | `6_Boardroom_Debate_Verdict` | ✅ PASS | Debate verdict=CLEAR_WINNER |
 | `lendingclub_nyse_fintech` | `7_Boardroom_Myth_Defense` | ✅ PASS | Myth verdict=REFUTED_BY_DATA |
 | `lendingclub_nyse_fintech` | `8_Boardroom_Budget_BlindSpot` | ✅ PASS | BudgetParsed=40000.0, BlindSpots=2 |
-| `lendingclub_nyse_fintech` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.71s) |
+| `lendingclub_nyse_fintech` | `9_AskAI_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (1.86s) |
 | `supermarket_placebo_control` | `10_Placebo_Noise_Rejection` | ✅ PASS | confidence_tier=LOW, fake_presets=0, auc=0.5252 |
 
 ---
@@ -130,6 +130,6 @@
 4. **API स्टेटस व पेलोड रेस-कंडीशन (`api_server.py`):** `_execute_job_in_background` में पहले `job.status = "COMPLETED"` सेट होता था और बाद में `_build_run_result_payload()` चलता था, जिससे लाइव पोलिंग के समय खाली रिज़ल्ट पर `KeyError: 'run_id'` आ जाता था। अब पूरा पेलोड पहले तैयार होता है और `job_manager._lock` के अंदर ही स्टेटस `COMPLETED` किया जाता है।
 
 ### (B) अभी भी जो चीज़ें FAIL हुईं उनका ईमानदार कारण (Zero-Cheating पारदर्शिता)
-- **`global_superstore_erp :: 1_ZeroHint_AutoDetect`** → `target=Market2, cost=Sales, sym=$, latency=90.9ms`
+- **`global_superstore_erp :: 1_ZeroHint_AutoDetect`** → `target=Market2, cost=Sales, sym=$, latency=117.7ms`
 - **`nexura_omnichannel_d2c :: 3_SealedFuture_WorklistLift_AUC`** → `SealedAUC=0.7016 (min 0.72), Top20=23.4% vs Bot20=5.7% (4.12x lift), CalGap=1.12pp`
   - *ईमानदार स्पष्टीकरण:* पहले केस (`global_superstore_erp :: 1_ZeroHint_AutoDetect`) में `/api/v1/preview-intent` के तेज़ प्रीव्यू ने `Market2` गेस किया (हालांकि असली पाइपलाइन Stage 2 ने सही `Profit` पकड़ा और `8,233/8,233` नुकसान के केस बिल्कुल सटीक निकाले)। दूसरे केस (`nexura_omnichannel_d2c :: 3_SealedFuture_WorklistLift_AUC`) में सीलबंद `2025` डेटा पर मॉडल का AUC `0.7016` रहा, जो `0.72` लक्ष्य से थोड़ा कम है (हालांकि Top-20% प्रायोरिटी लिफ़्ट `4.12x` रही और COD → Razorpay कार्ड नियम ने असल भविष्य में नुकसान `35.47%` से `6.1%` कर दिया)। बिना किसी नंबर को मोड़े या लक्ष्य घटाए कुल स्कोर **`92.9%`** रहा।

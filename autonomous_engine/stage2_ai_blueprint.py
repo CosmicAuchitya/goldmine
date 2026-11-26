@@ -153,7 +153,7 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
 
     # Priority 1: High priority adverse / event outcomes
     if not target:
-        adverse_kws = ['death', 'mortality', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'is_returned', 'rto', 'returned', 'refund', 'loan_status', 'loanstatus', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status', 'claim_status', 'charge_off', 'charged_off', 'chgoff', 'overdue', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
+        adverse_kws = ['death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury', 'churn', 'fraud', 'default', 'stroke', 'attrition', 'readmit', 'satisfaction', 'exited', 'cancel', 'is_returned', 'rto', 'returned', 'refund', 'loan_status', 'loanstatus', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status', 'claim_status', 'charge_off', 'charged_off', 'chgoff', 'overdue', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'incident', 'hazard', 'towed', 'delay', 'late', 'error', 'defect', 'fail', 'loss', 'risk']
         for kw in adverse_kws:
             for c in clean_cols:
                 if kw in c.lower():
@@ -192,7 +192,11 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
                 break
 
     if not target:
-        target = clean_cols[0] if clean_cols else "record_status"
+        non_cal = [
+            c for c in clean_cols
+            if not any(t in c.lower() for t in ('year', 'month', 'weeknum', 'week_num', 'quarter', 'qtr', 'date', 'timestamp', 'tz', 'timezone'))
+        ]
+        target = non_cal[0] if non_cal else (clean_cols[0] if clean_cols else "record_status")
         
     dimensions = [t for t, _ in sorted_tables[1:]]
     

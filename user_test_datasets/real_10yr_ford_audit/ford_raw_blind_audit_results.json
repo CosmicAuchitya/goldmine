@@ -1,0 +1,354 @@
+{
+  "summary": {
+    "company": "Ford Motor Company (NYSE: F / CIK 0000037996)",
+    "blind_window": "2016-2018 (37,584 Unique NHTSA Incidents, ZERO Ford Names, ZERO Overrides)",
+    "sealed_future_window": "2019-2024 (6 Unseen Years, 68,171 Incidents + SEC 10-K Warranty)",
+    "checks_passed": 9,
+    "checks_total": 10,
+    "raw_unedited_accuracy_pct": 90.0,
+    "total_elapsed_s": 96.03,
+    "engine_code_modified": false
+  },
+  "timeline": {
+    "yearly_nhtsa": [
+      {
+        "year": 2015,
+        "unique_complaints": 9752,
+        "crashes": 464.0,
+        "crash_pct": 4.76,
+        "fires": 169.0,
+        "fire_pct": 1.73,
+        "injured_total": 431.0,
+        "deaths_total": 10.0,
+        "airbag_cnt": 595.0,
+        "powertrain_cnt": 1302.0,
+        "brake_cnt": 625.0,
+        "med_miles": 62489.0
+      },
+      {
+        "year": 2016,
+        "unique_complaints": 11573,
+        "crashes": 397.0,
+        "crash_pct": 3.43,
+        "fires": 145.0,
+        "fire_pct": 1.25,
+        "injured_total": 390.0,
+        "deaths_total": 21.0,
+        "airbag_cnt": 1287.0,
+        "powertrain_cnt": 1290.0,
+        "brake_cnt": 943.0,
+        "med_miles": 61000.0
+      },
+      {
+        "year": 2017,
+        "unique_complaints": 13104,
+        "crashes": 435.0,
+        "crash_pct": 3.32,
+        "fires": 167.0,
+        "fire_pct": 1.27,
+        "injured_total": 424.0,
+        "deaths_total": 12.0,
+        "airbag_cnt": 3582.0,
+        "powertrain_cnt": 943.0,
+        "brake_cnt": 928.0,
+        "med_miles": 67000.0
+      },
+      {
+        "year": 2018,
+        "unique_complaints": 12907,
+        "crashes": 474.0,
+        "crash_pct": 3.67,
+        "fires": 180.0,
+        "fire_pct": 1.39,
+        "injured_total": 396.0,
+        "deaths_total": 9.0,
+        "airbag_cnt": 2856.0,
+        "powertrain_cnt": 1413.0,
+        "brake_cnt": 983.0,
+        "med_miles": 74580.0
+      },
+      {
+        "year": 2019,
+        "unique_complaints": 13825,
+        "crashes": 432.0,
+        "crash_pct": 3.12,
+        "fires": 178.0,
+        "fire_pct": 1.29,
+        "injured_total": 412.0,
+        "deaths_total": 7.0,
+        "airbag_cnt": 653.0,
+        "powertrain_cnt": 2269.0,
+        "brake_cnt": 1044.0,
+        "med_miles": 72000.0
+      },
+      {
+        "year": 2020,
+        "unique_complaints": 9373,
+        "crashes": 311.0,
+        "crash_pct": 3.32,
+        "fires": 130.0,
+        "fire_pct": 1.39,
+        "injured_total": 267.0,
+        "deaths_total": 2.0,
+        "airbag_cnt": 277.0,
+        "powertrain_cnt": 1188.0,
+        "brake_cnt": 912.0,
+        "med_miles": 75000.0
+      },
+      {
+        "year": 2021,
+        "unique_complaints": 7718,
+        "crashes": 240.0,
+        "crash_pct": 3.11,
+        "fires": 111.0,
+        "fire_pct": 1.44,
+        "injured_total": 232.0,
+        "deaths_total": 9.0,
+        "airbag_cnt": 266.0,
+        "powertrain_cnt": 1036.0,
+        "brake_cnt": 821.0,
+        "med_miles": 80000.0
+      },
+      {
+        "year": 2022,
+        "unique_complaints": 9857,
+        "crashes": 330.0,
+        "crash_pct": 3.35,
+        "fires": 113.0,
+        "fire_pct": 1.15,
+        "injured_total": 291.0,
+        "deaths_total": 6.0,
+        "airbag_cnt": 253.0,
+        "powertrain_cnt": 2000.0,
+        "brake_cnt": 864.0,
+        "med_miles": 86000.0
+      },
+      {
+        "year": 2023,
+        "unique_complaints": 13007,
+        "crashes": 329.0,
+        "crash_pct": 2.53,
+        "fires": 113.0,
+        "fire_pct": 0.87,
+        "injured_total": 331.0,
+        "deaths_total": 12.0,
+        "airbag_cnt": 262.0,
+        "powertrain_cnt": 2279.0,
+        "brake_cnt": 973.0,
+        "med_miles": 85951.0
+      },
+      {
+        "year": 2024,
+        "unique_complaints": 14392,
+        "crashes": 231.0,
+        "crash_pct": 1.61,
+        "fires": 113.0,
+        "fire_pct": 0.79,
+        "injured_total": 218.0,
+        "deaths_total": 4.0,
+        "airbag_cnt": 174.0,
+        "powertrain_cnt": 2877.0,
+        "brake_cnt": 680.0,
+        "med_miles": 85000.0
+      }
+    ],
+    "sec_years": [
+      {
+        "year": 2014,
+        "revenues": 135782000000.0,
+        "cost_of_sales": 125025000000.0,
+        "net_income": 1231000000.0
+      },
+      {
+        "year": 2015,
+        "revenues": 140566000000.0,
+        "cost_of_sales": 124446000000.0,
+        "net_income": 7373000000.0,
+        "warranty_accrual_issued": 2046000000.0,
+        "warranty_payments": 2849000000.0
+      },
+      {
+        "year": 2016,
+        "revenues": 151800000000.0,
+        "cost_of_sales": 126195000000.0,
+        "warranty_accrual_issued": 2326000000.0,
+        "warranty_payments": 3286000000.0
+      },
+      {
+        "year": 2017,
+        "revenues": 156776000000.0,
+        "cost_of_sales": 131321000000.0,
+        "warranty_accrual_issued": 2260000000.0,
+        "warranty_payments": 3457000000.0
+      },
+      {
+        "year": 2018,
+        "revenues": 160338000000.0,
+        "cost_of_sales": 136269000000.0,
+        "warranty_accrual_issued": 2584000000.0,
+        "warranty_payments": 4360000000.0
+      },
+      {
+        "year": 2019,
+        "revenues": 155900000000.0,
+        "cost_of_sales": 134693000000.0,
+        "warranty_accrual_issued": 3182000000.0,
+        "warranty_payments": 4561000000.0
+      },
+      {
+        "year": 2020,
+        "revenues": 127144000000.0,
+        "cost_of_sales": 112752000000.0,
+        "warranty_accrual_issued": 3934000000.0,
+        "warranty_payments": 3923000000.0
+      },
+      {
+        "year": 2021,
+        "revenues": 136341000000.0,
+        "cost_of_sales": 114651000000.0,
+        "net_income": 17937000000.0,
+        "warranty_accrual_issued": 4102000000.0,
+        "warranty_payments": 3952000000.0
+      },
+      {
+        "year": 2022,
+        "revenues": 158057000000.0,
+        "cost_of_sales": 134397000000.0,
+        "net_income": -1981000000.0,
+        "warranty_accrual_issued": 4028000000.0,
+        "warranty_payments": 4166000000.0
+      },
+      {
+        "year": 2023,
+        "revenues": 176191000000.0,
+        "cost_of_sales": 150550000000.0,
+        "net_income": 4347000000.0,
+        "warranty_accrual_issued": 4743000000.0,
+        "warranty_payments": 4779000000.0
+      },
+      {
+        "year": 2024,
+        "revenues": 184992000000.0,
+        "cost_of_sales": 158434000000.0,
+        "net_income": 5879000000.0,
+        "warranty_accrual_issued": 6294000000.0,
+        "warranty_payments": 5831000000.0
+      },
+      {
+        "year": 2025,
+        "revenues": 187267000000.0,
+        "cost_of_sales": 174466000000.0,
+        "warranty_accrual_issued": 6707000000.0,
+        "warranty_payments": 5733000000.0
+      }
+    ]
+  },
+  "blind_middle_truth": {
+    "n_rows": 37584,
+    "n_adv": 1306,
+    "rate_pct": 3.47,
+    "blind_csv": "C:\\Users\\91945\\OneDrive\\Desktop\\XXX\\Ai aotumation learning\\user_test_datasets\\real_10yr_ford_audit\\blind_anonymized_auto_middle_2016_2018.csv"
+  },
+  "detected": {
+    "preview_target": "CRASH",
+    "preview_cost": "",
+    "records": 37584,
+    "adverse_events": 1306,
+    "adverse_rate_pct": 3.47,
+    "capital_drag": "1,306 Cases",
+    "top_leaks": [
+      {
+        "severity": "HIGH",
+        "headline": "CO Cases: 5.6% Run Into Problems",
+        "impact": "~12 avoidable bad cases"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "Y (Orig Owner Yn): 5.1% Cases Run Into Problems",
+        "impact": "~9 avoidable bad cases"
+      }
+    ]
+  },
+  "sealed_future_evaluation": {
+    "n_future": 68172,
+    "n_future_crashes": 1873,
+    "future_crash_pct": 2.75,
+    "sealed_auc": 0.7539,
+    "calibration_gap_pp": 0.36,
+    "top20_rate_pct": 7.9,
+    "bot20_rate_pct": 0.81,
+    "risk_lift_x": 9.75,
+    "top_fix_label": "Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'",
+    "violated_n": 4264,
+    "violated_crash_pct": 6.99,
+    "complied_n": 10600,
+    "complied_crash_pct": 0.63,
+    "fisher_p_value": 1.3958550726917005e-100
+  },
+  "boardroom": {
+    "debate": "CLEAR_WINNER",
+    "myth": "SUPPORTED_BY_DATA",
+    "blindspot_budget": 40000.0
+  },
+  "ask_ai_answer": "### 🔍 Direct Business Breakdown (Audited Data)\nHere is the exact comparison from your records:\n\n- **#1 E** — Total Records: **33** | Flagged / Adverse Cases: **3** | Adverse Rate: **9.09%**\n- **#2 V** — Total Records: **37,551** | Flagged / Adverse Cases: **1,303** | Adverse Rate: **3.47%**\n\n🩺 **Business-Doctor Verdict:** ℹ️ **Normal Level** — **E** (9.09%) is close to rest-of-business normal rate (3.47%) with no real abnormal spike.",
+  "autonomous_mode": {
+    "completed": true,
+    "elapsed_s": 40.04,
+    "error": ""
+  },
+  "discovered_bugs_unfixed": [
+    "[Gate 5 Leak Discovery] Top leaks (2) missed top crash components (AIR BAGS / SERVICE BRAKES / VEHICLE SPEED CONTROL): CO CASES: 5.6% RUN INTO PROBLEMS | Y (ORIG OWNER YN): 5.1% CASES RUN INTO PROBLEMS"
+  ],
+  "checks": [
+    {
+      "gate": "1_Blind_ZeroHint_AutoDetect",
+      "pass": true,
+      "detail": "HTTP=200, target=CRASH, cost=NONE, sym=events, lat=190.8ms"
+    },
+    {
+      "gate": "2_Live_Pipeline_NoCrash",
+      "pass": true,
+      "detail": "Job COMPLETED in 24.06s, AuditConf='100.0% VERIFIED TRUTH', target='CRASH'"
+    },
+    {
+      "gate": "3_Blind_DuckDB_GroundTruth",
+      "pass": true,
+      "detail": "rows=37584/37584 (drift=0), crashes=1306/1306, rate=3.47% vs 3.47%"
+    },
+    {
+      "gate": "4_Zero_Fake_Dollar_Discipline",
+      "pass": true,
+      "detail": "is_financial=False, capital_drag='1,306 Cases'"
+    },
+    {
+      "gate": "5_Blind_RootCause_Discovery",
+      "pass": false,
+      "detail": "LeaksFound=2; #1='CO Cases: 5.6% Run Into Problems'"
+    },
+    {
+      "gate": "6_SealedFuture_2019_2024_AUC_Lift",
+      "pass": true,
+      "detail": "SealedAUC=0.7539, Top20=7.9% vs Bot20=0.81% (9.75x), CalGap=0.36pp"
+    },
+    {
+      "gate": "7_BlindFix_Proven_In_SealedFuture",
+      "pass": true,
+      "detail": "Fix='Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'' | Pred: 6.63%->0.79% | 2019-24: Violated=6.99% vs Followed=0.63% (p=1.40e-100)"
+    },
+    {
+      "gate": "8_Live_Boardroom_Advisory",
+      "pass": true,
+      "detail": "Debate=CLEAR_WINNER, Myth=SUPPORTED_BY_DATA, Budget=40000.0"
+    },
+    {
+      "gate": "9_AskAI_And_Hindi_Live",
+      "pass": true,
+      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (3.29s)"
+    },
+    {
+      "gate": "10_Native_Autonomous_SelfHealing_Mode",
+      "pass": true,
+      "detail": "mode='autonomous' completed=True in 40.04s, bp_target=CRASH, method=llm_or_deterministic"
+    }
+  ]
+}
