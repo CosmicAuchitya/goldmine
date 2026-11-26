@@ -1431,18 +1431,27 @@ def _execute_job_in_background(job_id: str) -> None:
             job_manager.persist_job(job)
             return
 
-        job.status = "COMPLETED"
-        job.current_stage = "COMPLETED"
-        job.progress_pct = 100
-        job.completed_at = time.time()
-        job.result_payload = _build_run_result_payload(
+        # Build the full result payload BEFORE flipping status to COMPLETED so no
+        # status poll or SSE stream can ever observe COMPLETED with an empty result.
+        job.current_stage = "Finalizing Certified Deliverables & Action Ledger"
+        job.progress_pct = 95
+        job_manager.persist_job(job)
+
+        completed_ts = time.time()
+        payload = _build_run_result_payload(
             run_id=job_id,
             tenant_id=job.tenant_id,
             staging_out=staging_out,
-            elapsed_sec=round(job.completed_at - job.started_at, 2),
+            elapsed_sec=round(completed_ts - (job.started_at or job.created_at), 2),
             audit_conf=audit_res.get("grounding_confidence", "100.0% VERIFIED TRUTH"),
             reconcile_ledger=True
         )
+        with job_manager._lock:
+            job.result_payload = payload
+            job.completed_at = completed_ts
+            job.progress_pct = 100
+            job.current_stage = "COMPLETED"
+            job.status = "COMPLETED"
         job_manager.persist_job(job)
     except Exception as exc:
         job.status = "FAILED"
@@ -1456,7 +1465,7 @@ class JobManager:
 
     def __init__(self, max_workers: int = 4, state_dir: Optional[Path] = None, database_url: Optional[str] = None):
         self._jobs: Dict[str, JobRecord] = {}
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="dataxray_worker")
         self._state_dir = (state_dir or (WORKSPACE_ROOT / "runs" / "state")).resolve()
         self._state_dir.mkdir(parents=True, exist_ok=True)
@@ -1914,7 +1923,8 @@ def get_job_status(job_id: str, request: Request) -> Dict[str, Any]:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Job '{job_id}' not found.")
 
     _enforce_tenant_access(request, job.tenant_id, run_id=job_id, allow_public_benchmark=False)
-    return job.to_dict()
+    with job_manager._lock:
+        return job.to_dict()
 
 
 @app.get("/api/v1/jobs/{job_id}/events", tags=["Job Queue & Events"])

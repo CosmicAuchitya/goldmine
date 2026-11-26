@@ -267,12 +267,15 @@ class MicroLevelForensicInquiryEngine:
                 qbins = pd.qcut(s_col, q=4, duplicates='drop')
                 temp = pd.DataFrame({'bin': qbins, 'target': self.target_series.loc[s_col.index]})
                 grp = temp.groupby('bin', observed=False)['target'].agg(['count', 'sum', 'mean']).reset_index()
-                if len(grp) < 2:
+                if len(grp[grp['count'] >= 5]) < 2:
                     qbins = pd.cut(s_col, bins=2)
                     temp = pd.DataFrame({'bin': qbins, 'target': self.target_series.loc[s_col.index]})
                     grp = temp.groupby('bin', observed=False)['target'].agg(['count', 'sum', 'mean']).reset_index()
-                    if len(grp) < 2:
-                        continue
+                grp = grp[grp['count'] >= 5].reset_index(drop=True)
+                if len(grp) < 2:
+                    continue
+                valid_bins = set(grp['bin'].tolist())
+                temp_valid = temp[temp['bin'].isin(valid_bins)]
                 rates = grp['mean'].tolist()
                 deltas = [abs(rates[i] - rates[i-1]) for i in range(1, len(rates))]
                 max_delta = max(deltas) if deltas else 0.0
@@ -280,10 +283,11 @@ class MicroLevelForensicInquiryEngine:
                 step_ratio = round(max_delta / max(mean_delta, 0.001), 2)
                 spread = (max(rates) - min(rates)) if rates else 0.0
                 
-                cont_table = pd.crosstab(temp['bin'], temp['target'])
+                cont_table = pd.crosstab(temp_valid['bin'], temp_valid['target'])
                 # Chi-Square must run whenever contingency table has at least 2 bins and 2 target states
                 if cont_table.shape[0] >= 2 and cont_table.shape[1] == 2:
-                    chi2, p_val, _, _ = chi2_contingency(cont_table)
+                    use_corr = bool(cont_table.shape[0] > 2)
+                    chi2, p_val, _, _ = chi2_contingency(cont_table, correction=use_corr)
                 else:
                     chi2, p_val = 0.0, 1.0
 

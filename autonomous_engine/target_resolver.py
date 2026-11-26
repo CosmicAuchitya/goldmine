@@ -641,11 +641,33 @@ def resolve_canonical_target_and_cost(
                 erp_credit_note_target = comb_ret.astype(int)
                 erp_credit_note_desc = f"ERP Return / Credit Note ({qty_col} < 0" + (f" or {inv_col} 'C' prefix)" if inv_col and inv_c.any() else ")")
 
+    # 1.5 Raw P&L Profit-Loss Auto-Detector (Negative Profit / Loss-Making Orders when no binary status column exists)
+    pnl_loss_target: Optional[pd.Series] = None
+    pnl_loss_desc: Optional[str] = None
+    if not target_col:
+        pnl_cols = [
+            c for c in cols
+            if not is_index_artifact(c) and not is_synthetic_column(c, blueprint)
+            and any(k in c.lower() for k in ('profit', 'net_margin', 'operating_margin', 'ebitda', 'net_income'))
+            and pd.api.types.is_numeric_dtype(df[c])
+        ]
+        for pc in pnl_cols:
+            p_num = pd.to_numeric(df[pc], errors='coerce').dropna()
+            if len(p_num) >= 20:
+                neg_mask = pd.to_numeric(df[pc], errors='coerce').fillna(0) < 0
+                loss_rate = float(neg_mask.mean())
+                if int(neg_mask.sum()) >= 5 and 0.01 <= loss_rate <= 0.48:
+                    target_col = pc
+                    pnl_loss_target = neg_mask.astype(int)
+                    pnl_loss_desc = f"{pc} < 0 (Money-Losing / Negative Profit Orders)"
+                    break
+
     # Fallback to last column if still none
     if not target_col:
         BAD_FALLBACK_TARGETS = [
             'tz', 'timezone', 'tzone', 'dst', 'longitude', 'latitude', 'lat', 'lon', 'coord',
-            'pickup', 'dropoff', 'datetime', 'timestamp', 'date', 'time', 'sched', 'arr_time', 'dep_time', 'hour', 'minute'
+            'pickup', 'dropoff', 'datetime', 'timestamp', 'date', 'time', 'sched', 'arr_time', 'dep_time', 'hour', 'minute',
+            'weeknum', 'week_num', 'week', 'year', 'month', 'quarter', 'qtr'
         ]
         valid_cols = [
             c for c in cols
@@ -693,6 +715,9 @@ def resolve_canonical_target_and_cost(
     if erp_credit_note_target is not None:
         binary_target = erp_credit_note_target
         target_desc = erp_credit_note_desc or f"{target_col} < 0 (ERP Return)"
+    elif pnl_loss_target is not None:
+        binary_target = pnl_loss_target
+        target_desc = pnl_loss_desc or f"{target_col} < 0 (Money-Losing Order)"
     elif not is_num:
         s_str = s_raw.astype(str).str.lower().str.strip()
         # Normalize ERP snake_case / kebab-case / slash codes (e.g. Delayed_SLA_Breach -> delayed sla breach)
@@ -812,10 +837,15 @@ def resolve_canonical_target_and_cost(
             binary_target = (s_clean <= thresh).astype(int)
             target_desc = f"{target_col} <= {thresh:.1f} mpg (Low Fuel Efficiency)"
         elif any(k in target_col.lower() for k in ['house_value', 'property_value', 'asset_value', 'stream', 'streams', 'sales', 'revenue', 'view', 'views', 'profit', 'yield', 'conversion']):
-            # For valuation/volume/yield metrics: bottom quartile is adverse underperformance / distressed valuation
-            thresh = float(s_clean.quantile(0.25)) if s_clean.quantile(0.25) > 0 else float(s_clean.median())
-            binary_target = (s_clean <= thresh).astype(int)
-            target_desc = f"{target_col} <= ${thresh:,.0f} (Distressed Asset Valuation)" if 'value' in target_col.lower() else f"{target_col} <= {thresh:.2f}"
+            # If profit/yield column contains real money-losing orders (< 0), classify Profit < 0 directly
+            if any(k in target_col.lower() for k in ['profit', 'margin', 'ebitda', 'net_income']) and 0.01 <= float((s_clean < 0).mean()) <= 0.48 and int((s_clean < 0).sum()) >= 5:
+                binary_target = (s_clean < 0).astype(int)
+                target_desc = f"{target_col} < 0 (Money-Losing / Negative Profit Orders)"
+            else:
+                # For valuation/volume/yield metrics: bottom quartile is adverse underperformance / distressed valuation
+                thresh = float(s_clean.quantile(0.25)) if s_clean.quantile(0.25) > 0 else float(s_clean.median())
+                binary_target = (s_clean <= thresh).astype(int)
+                target_desc = f"{target_col} <= ${thresh:,.0f} (Distressed Asset Valuation)" if 'value' in target_col.lower() else f"{target_col} <= {thresh:.2f}"
         else:
             # Default continuous target: if name denotes adverse, upper median is bad; else lower quartile is bad
             if col_denotes_adverse:

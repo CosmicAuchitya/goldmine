@@ -138,7 +138,7 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
         ]
     else:
         canonical_response = [
-            'dep_delay', 'delay', 'mpg', 'y', 'target', 'response', 'is_canceled', 'is_returned', 'is_rto_cancelled',
+            'dep_delay', 'delay', 'mpg', 'not.fully.paid', 'not_fully_paid', 'y', 'target', 'response', 'is_canceled', 'is_returned', 'is_rto_cancelled',
             'is_rto_or_cancelled', 'is_overdue_or_bad', 'is_payment_failed_or_refunded', 'churn', 'death_event', 'deposit',
             'subscribed', 'smoker', 'survived', 'survival', 'cut', 'outcome', 'default',
             'fraud', 'customer stratification rating', 'median_house_value', 'payment'
@@ -173,9 +173,16 @@ def build_deterministic_blueprint_from_topology(topology: dict) -> dict:
             if target:
                 break
                 
-    # Priority 3: Financial or volume metrics
+    # Priority 2.5: ERP Invoice Credit-Note / Negative-Quantity Ledger (Quantity when Invoice/Voucher exists)
     if not target:
-        fin_kws = ['revenue', 'sales', 'profit', 'yield', 'conversion', 'gross', 'amount']
+        has_inv = any(k in c.lower() for c in cols for k in ('invoiceno', 'invoice_no', 'voucherno', 'bill_no'))
+        qty_c = next((c for c in cols if c.lower().strip() in ('quantity', 'qty', 'billed_qty', 'order_qty')), None)
+        if has_inv and qty_c and 'profit' not in [c.lower() for c in cols]:
+            target = qty_c
+
+    # Priority 3: P&L Margin/Profitability metrics BEFORE pure revenue/sales volume
+    if not target:
+        fin_kws = ['profit', 'net_margin', 'operating_margin', 'ebitda', 'net_income', 'yield', 'conversion', 'revenue', 'sales', 'gross', 'amount']
         for kw in fin_kws:
             for c in clean_cols:
                 if kw in c.lower():
