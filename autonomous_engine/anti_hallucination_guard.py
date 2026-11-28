@@ -21,6 +21,7 @@ Checks:
 import sys
 import re
 import json
+import math
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import duckdb
@@ -71,6 +72,22 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
     ready_facts = [f for f in parquet_files if f.name == "bi_ready_fact.parquet"]
     fact_parquet = ready_facts[0] if ready_facts else parquet_files[0]
     con = duckdb.connect()
+    try:
+        return _run_anti_hallucination_audit_body(con, out_path, fact_parquet, output_dir, blueprint_path)
+    finally:
+        try:
+            con.close()
+        except Exception:
+            pass
+
+
+def _run_anti_hallucination_audit_body(
+    con: Any,
+    out_path: Path,
+    fact_parquet: Path,
+    output_dir: str,
+    blueprint_path: str = None,
+) -> Dict[str, Any]:
     con.execute(f"CREATE VIEW fact AS SELECT * FROM read_parquet('{fact_parquet.as_posix().replace("'", "''")}')")
 
     # 1. Fact Schema Inspection
@@ -944,7 +961,90 @@ def run_anti_hallucination_audit(output_dir: str, blueprint_path: str = None) ->
         except Exception as dbe:
             physics_violations.append(f"Bespoke Dashboard Audit Error: {dbe}")
 
-    con.close()
+    # -------------------------------------------------------------------------
+    # 12. V6.0 Category Intelligence Physical Truth & Zero Fake Currency Audit (Check 12)
+    # -------------------------------------------------------------------------
+    cat_intel_file = out_path / "category_intelligence_report.json"
+    if cat_intel_file.exists():
+        try:
+            cat_j = json.loads(cat_intel_file.read_text(encoding="utf-8"))
+            cat_rows = int(cat_j.get("audited_fact_records", -1))
+            if cat_rows >= 0 and cat_rows != total_records:
+                physics_violations.append(
+                    f"Category Intelligence Row Drift: audited_fact_records={cat_rows:,} != physical Parquet rows={total_records:,}!"
+                )
+            cat_is_fin = bool(cat_j.get("is_financial", False))
+            if not cat_is_fin:
+                for ck in cat_j.get("computed_kpis", []):
+                    fv = str(ck.get("formatted_value") or "")
+                    if any(sym_ch in fv for sym_ch in ("$", "₹", "€", "£")):
+                        physics_violations.append(
+                            f"Category Intelligence Fake Currency Leak: Non-monetary dataset emitted currency in KPI '{ck.get('id')}': '{fv}'!"
+                        )
+            for ck in cat_j.get("computed_kpis", []):
+                val_k = ck.get("value")
+                if val_k is None or not isinstance(val_k, (int, float)) or not math.isfinite(float(val_k)):
+                    physics_violations.append(
+                        f"Category Intelligence Non-Finite KPI: KPI '{ck.get('id')}' has invalid value '{val_k}'!"
+                    )
+        except Exception as cie_err:
+            physics_violations.append(f"Category Intelligence Audit Error: {cie_err}")
+
+    # -------------------------------------------------------------------------
+    # 13. V7.0 Proactive Anomaly Radar & Voice Brief Truth Audit (Check 13)
+    # -------------------------------------------------------------------------
+    radar_file = out_path / "proactive_anomaly_report.json"
+    if radar_file.exists():
+        try:
+            rad_j = json.loads(radar_file.read_text(encoding="utf-8"))
+            rad_rows = int(rad_j.get("audited_fact_records", -1))
+            if rad_rows >= 0 and rad_rows != total_records:
+                physics_violations.append(
+                    f"Proactive Anomaly Radar Row Drift: audited_fact_records={rad_rows:,} != physical Parquet rows={total_records:,}!"
+                )
+            rad_is_fin = bool(rad_j.get("is_financial", False))
+            if not rad_is_fin:
+                proj_r = rad_j.get("forward_risk_projection") or {}
+                for txt_fld in (rad_j.get("headline_en"), rad_j.get("headline_hi"), proj_r.get("formatted_range"), proj_r.get("note_en")):
+                    if txt_fld and any(sc in str(txt_fld) for sc in ("$", "₹", "€", "£")):
+                        physics_violations.append(
+                            f"Proactive Anomaly Radar Fake Currency Leak: Non-monetary dataset emitted currency in '{txt_fld}'!"
+                        )
+            for p_it in rad_j.get("period_series", []):
+                if not math.isfinite(float(p_it.get("modified_z", 0.0))) or not math.isfinite(float(p_it.get("adverse_rate_pct", 0.0))):
+                    physics_violations.append(
+                        f"Proactive Anomaly Radar Non-Finite Metric in period '{p_it.get('period')}'!"
+                    )
+            for c_it in rad_j.get("accelerating_cohorts", []):
+                if not math.isfinite(float(c_it.get("delta_pp", 0.0))) or not math.isfinite(float(c_it.get("fdr_q_value", 0.0))):
+                    physics_violations.append(
+                        f"Proactive Anomaly Radar Non-Finite Cohort Metric for '{c_it.get('segment')}'!"
+                    )
+        except Exception as rad_err:
+            physics_violations.append(f"Proactive Anomaly Radar Audit Error: {rad_err}")
+
+    vb_file = out_path / "voice_brief_script.json"
+    if vb_file.exists():
+        try:
+            vb_j = json.loads(vb_file.read_text(encoding="utf-8"))
+            vb_rows = int(vb_j.get("audited_fact_records", -1))
+            if vb_rows >= 0 and vb_rows != total_records:
+                physics_violations.append(
+                    f"Voice Brief Row Drift: audited_fact_records={vb_rows:,} != physical Parquet rows={total_records:,}!"
+                )
+            if not bool(vb_j.get("pii_scrubbed", False)):
+                physics_violations.append("Voice Brief PII Guard Breach: pii_scrubbed flag is not True!")
+            if not bool(vb_j.get("is_financial", False)):
+                for fld in ("full_script_en", "full_script_hi", "whatsapp_share_en", "whatsapp_share_hi"):
+                    val_s = str(vb_j.get(fld) or "")
+                    if any(sc in val_s for sc in ("$", "₹", "€", "£")):
+                        physics_violations.append(
+                            f"Voice Brief Fake Currency Leak: Non-monetary dataset emitted currency in '{fld}'!"
+                        )
+        except Exception as vb_err:
+            physics_violations.append(f"Voice Brief Audit Error: {vb_err}")
+
+    # DuckDB connection is deterministically closed in outer run_anti_hallucination_audit() finally block.
 
     # Compute Hallucination Score
     is_hallucination_detected = len(hallucinated_columns) > 0 or len(physics_violations) > 0

@@ -109,7 +109,7 @@ def _compute_ece_pct(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 10) -
 
 
 def _find_brier_optimal_weights(y: np.ndarray, probs_list: List[np.ndarray]) -> Tuple[float, ...]:
-    """Finds Brier-score-optimal convex blend weights across 1-3 model families on OOF predictions."""
+    """Finds Brier-score-optimal convex blend weights across 1-3 model families while defending ranking AUC."""
     k = len(probs_list)
     if k == 1:
         return (1.0,)
@@ -124,17 +124,57 @@ def _find_brier_optimal_weights(y: np.ndarray, probs_list: List[np.ndarray]) -> 
             if b < best_brier - 1e-6:
                 best_brier = b
                 best_w = (round(w0, 2), round(w1, 2))
-        return best_w
-    p0, p1, p2 = probs_list[0], probs_list[1], probs_list[2]
-    for i in range(21):
-        w0 = i / 20.0
-        for j in range(21 - i):
-            w1 = j / 20.0
-            w2 = max(0.0, 1.0 - w0 - w1)
-            b = float(brier_score_loss(y, np.clip(w0 * p0 + w1 * p1 + w2 * p2, 0.001, 0.999)))
-            if b < best_brier - 1e-6:
-                best_brier = b
-                best_w = (round(w0, 2), round(w1, 2), round(w2, 2))
+    else:
+        p0, p1, p2 = probs_list[0], probs_list[1], probs_list[2]
+        for i in range(21):
+            w0 = i / 20.0
+            for j in range(21 - i):
+                w1 = j / 20.0
+                w2 = max(0.0, 1.0 - w0 - w1)
+                b = float(brier_score_loss(y, np.clip(w0 * p0 + w1 * p1 + w2 * p2, 0.001, 0.999)))
+                if b < best_brier - 1e-6:
+                    best_brier = b
+                    best_w = (round(w0, 2), round(w1, 2), round(w2, 2))
+
+    # Pareto AUC-preservation guard: on rare-event imbalance (<5% positives) or catastrophic AUC collapse (>2.5pp),
+    # pure Brier minimization can let a flat conservative family dilute the best ranker's separation.
+    try:
+        indiv_aucs = [float(roc_auc_score(y, p)) for p in probs_list]
+        best_single_idx = int(np.argmax(indiv_aucs))
+        best_single_auc = indiv_aucs[best_single_idx]
+        blend_init = np.clip(sum(w * p for w, p in zip(best_w, probs_list)), 0.001, 0.999)
+        blend_auc = float(roc_auc_score(y, blend_init))
+        is_rare_imbalance = float(np.mean(y)) < 0.05
+        max_allowed_drop = 0.008 if is_rare_imbalance else 0.025
+        if blend_auc < best_single_auc - max_allowed_drop:
+            cand_w: Tuple[float, ...] = tuple(1.0 if idx == best_single_idx else 0.0 for idx in range(k))
+            cand_brier = float(brier_score_loss(y, probs_list[best_single_idx]))
+            auc_floor = best_single_auc - 0.004
+            if k == 2:
+                for i in range(11):
+                    w0 = i / 10.0
+                    w1 = round(1.0 - w0, 2)
+                    bp = np.clip(w0 * probs_list[0] + w1 * probs_list[1], 0.001, 0.999)
+                    if float(roc_auc_score(y, bp)) >= auc_floor:
+                        bb = float(brier_score_loss(y, bp))
+                        if bb < cand_brier - 1e-6:
+                            cand_brier = bb
+                            cand_w = (round(w0, 2), round(w1, 2))
+            else:
+                for i in range(11):
+                    w0 = i / 10.0
+                    for j in range(11 - i):
+                        w1 = j / 10.0
+                        w2 = round(max(0.0, 1.0 - w0 - w1), 2)
+                        bp = np.clip(w0 * probs_list[0] + w1 * probs_list[1] + w2 * probs_list[2], 0.001, 0.999)
+                        if float(roc_auc_score(y, bp)) >= auc_floor:
+                            bb = float(brier_score_loss(y, bp))
+                            if bb < cand_brier - 1e-6:
+                                cand_brier = bb
+                                cand_w = (round(w0, 2), round(w1, 2), w2)
+            return cand_w
+    except Exception:
+        pass
     return best_w
 
 
@@ -574,7 +614,10 @@ class PredictiveDecisionEngine:
             )
             if is_redundant_tier or (is_synthetic_column(col, blueprint) and not is_raw_biz_pct):
                 continue
-            if is_sensitive_column_name(col) or is_demographic_attribute(col):
+            is_age_num = pd.api.types.is_numeric_dtype(self.df_full[col]) and bool(
+                re.match(r"^(?:customer_|borrower_|patient_|member_|user_|emp_|employee_|client_|applicant_)?age(?:_years|_yrs)?$", c_low)
+            )
+            if is_sensitive_column_name(col) or (is_demographic_attribute(col) and not is_age_num):
                 continue
             if is_pseudo_numeric_identifier(col, self.df_full[col]):
                 continue
@@ -599,7 +642,7 @@ class PredictiveDecisionEngine:
 
             if _is_pseudo_categorical_code_column(ser, col):
                 self.categorical_features.append(col)
-                top_vals = ser.fillna("Missing").astype(str).value_counts().head(65).index.tolist()
+                top_vals = ser.fillna("Missing").astype(str).str.strip().value_counts().head(160).index.tolist()
                 self._top_cat_maps[col] = top_vals
             elif pd.api.types.is_numeric_dtype(ser):
                 self.numeric_features.append(col)
@@ -609,7 +652,7 @@ class PredictiveDecisionEngine:
                     continue
                 if nunq >= 2:
                     self.categorical_features.append(col)
-                    top_vals = ser.fillna("Missing").astype(str).value_counts().head(65).index.tolist()
+                    top_vals = ser.fillna("Missing").astype(str).str.strip().value_counts().head(160).index.tolist()
                     self._top_cat_maps[col] = top_vals
 
         self.all_features = self.numeric_features + self.categorical_features
@@ -617,11 +660,21 @@ class PredictiveDecisionEngine:
     def _prepare_feature_matrix(self, df_in: pd.DataFrame) -> pd.DataFrame:
         X = pd.DataFrame(index=df_in.index)
         for c in self.numeric_features:
-            X[c] = pd.to_numeric(df_in[c], errors="coerce").astype(float)
+            if c in df_in.columns:
+                X[c] = pd.to_numeric(df_in[c], errors="coerce").astype(float)
+            else:
+                X[c] = np.nan
         for c in self.categorical_features:
-            allowed = set(self._top_cat_maps.get(c, []))
-            s = df_in[c].fillna("Missing").astype(str)
-            X[c] = s.where(s.isin(allowed), "Other")
+            allowed_list = self._top_cat_maps.get(c, [])
+            norm_map = {str(v).strip().lower(): str(v) for v in allowed_list}
+            if c in df_in.columns:
+                s = df_in[c].fillna("Missing").astype(str).str.strip()
+                s = s.replace({"nan": "Missing", "NaN": "Missing", "None": "Missing", "NONE": "Missing", "UNKNOWN": "Missing", "unknown": "Missing", "NULL": "Missing", "null": "Missing", "": "Missing"})
+                s_low = s.str.lower()
+                mapped = s_low.map(norm_map)
+                X[c] = mapped.where(mapped.notna(), "Other")
+            else:
+                X[c] = "Other"
         return X
 
     def _build_hgb_pipeline(self, n_train: int, seed: int) -> Pipeline:
@@ -1085,44 +1138,78 @@ class PredictiveDecisionEngine:
         ]
         actionable_nums = [c for c in all_num_ranked if not _is_non_actionable_attribute(c)]
 
-        # 1. Best Statistically Significant & Controllable Categorical Replacement Preset
-        for c_col in actionable_cats:
-            grp = df.groupby(c_col, dropna=False)["_dx_y_bin"].agg(["count", "sum", "mean"])
-            valid = grp[grp["count"] >= max(15, int(len(df) * 0.02))].sort_values("mean", ascending=False)
-            # Exclude >=95% purity risk-tag / forfeited-deposit buckets (reverse-causality trap!)
-            if base_rate < 0.65:
-                valid = valid[~((valid["mean"] >= 0.95) & (valid["count"] >= 40))]
-            if len(valid) >= 2:
-                worst_val = str(valid.index[0])
-                best_val = str(valid.index[-1])
-                worst_r = float(valid.iloc[0]["mean"])
-                best_r = float(valid.iloc[-1]["mean"])
-                pval = _two_prop_p_value(
-                    int(valid.iloc[0]["sum"]), int(valid.iloc[0]["count"]),
-                    int(valid.iloc[-1]["sum"]), int(valid.iloc[-1]["count"]),
-                )
-                min_gap = 0.08 if is_low_signal_model else 0.03
-                if worst_r > best_r + min_gap and pval < p_thresh:
-                    presets.append({
-                        "preset_id": f"replace_{c_col}",
-                        "icon": "🔄",
-                        "title_en": f"Replace '{worst_val}' with '{best_val}' ({c_col.replace('_', ' ').title()})",
-                        "title_hi": f"'{worst_val}' को हटाकर '{best_val}' से बदल दें ({c_col.replace('_', ' ')})",
-                        "subtitle_en": f"Shifts {int(valid.iloc[0]['count']):,} records from {worst_r*100:.1f}% risk cohort to {best_r*100:.1f}% best performer.",
-                        "subtitle_hi": f"{int(valid.iloc[0]['count']):,} रिकॉर्ड्स को {worst_r*100:.1f}% रिस्क से {best_r*100:.1f}% सुरक्षित स्तर पर शिफ्ट करें।",
-                        "decision": {
+        # 1. Best Statistically Significant & Controllable Categorical Replacement Presets
+        # Tiered by structural stability: Tier 1 (<=20 cats), Tier 2 (21-150 taxonomy), Tier 3 (>150 brittle SKUs only as fallback)
+        m0 = self.fold_models[0] if self.fold_models else None
+        tier12_cats = [c for c in actionable_cats if df[c].nunique(dropna=True) <= 20] + [
+            c for c in actionable_cats if 20 < df[c].nunique(dropna=True) <= 150
+        ]
+        tier3_cats = [c for c in actionable_cats if df[c].nunique(dropna=True) > 150]
+
+        def _has_cat_positive_lift(c_col: str, worst_val: str, best_val: str) -> bool:
+            if m0 is None:
+                return True
+            s_c = df[c_col].fillna("Missing").astype(str)
+            m_aff = s_c == str(worst_val)
+            if int(m_aff.sum()) < 10:
+                return False
+            sub_before = df.loc[m_aff].head(400)
+            sub_after = sub_before.copy()
+            sub_after[c_col] = str(best_val)
+            xb = self._prepare_feature_matrix(sub_before)
+            xa = self._prepare_feature_matrix(sub_after)
+            pb = m0.predict_proba(xb)[:, 1]
+            pa = m0.predict_proba(xa)[:, 1]
+            return float((pb - pa).mean()) >= 0.008
+
+        def _try_cat_replace_presets(col_list: List[str], max_presets: int, require_ml_lift: bool = True) -> None:
+            for c_col in col_list:
+                is_high_card = df[c_col].nunique(dropna=True) > 25
+                min_cnt = max(25, int(len(df) * (0.04 if is_high_card else 0.02)))
+                grp = df.groupby(c_col, dropna=False)["_dx_y_bin"].agg(["count", "sum", "mean"])
+                valid = grp[grp["count"] >= min_cnt].sort_values("mean", ascending=False)
+                # Exclude >=95% purity risk-tag / forfeited-deposit buckets (reverse-causality trap!)
+                if base_rate < 0.65:
+                    valid = valid[~((valid["mean"] >= 0.95) & (valid["count"] >= 40))]
+                if len(valid) >= 2:
+                    worst_val = str(valid.index[0])
+                    best_val = str(valid.index[-1])
+                    worst_r = float(valid.iloc[0]["mean"])
+                    best_r = float(valid.iloc[-1]["mean"])
+                    pval = _two_prop_p_value(
+                        int(valid.iloc[0]["sum"]), int(valid.iloc[0]["count"]),
+                        int(valid.iloc[-1]["sum"]), int(valid.iloc[-1]["count"]),
+                    )
+                    min_gap = 0.08 if is_low_signal_model else 0.03
+                    if worst_r > best_r + min_gap and pval < p_thresh:
+                        if require_ml_lift and not _has_cat_positive_lift(c_col, worst_val, best_val):
+                            continue
+                        dec_cand = {
                             "action_type": "replace_category",
                             "column": c_col,
                             "from_value": worst_val,
                             "to_value": best_val,
                             "description": f"Switch {c_col} from {worst_val} to {best_val}",
-                        },
-                    })
-                    if len(presets) >= 1:
-                        break
+                        }
+                        presets.append({
+                            "preset_id": f"replace_{c_col}",
+                            "icon": "🔄",
+                            "title_en": f"Replace '{worst_val}' with '{best_val}' ({c_col.replace('_', ' ').title()})",
+                            "title_hi": f"'{worst_val}' को हटाकर '{best_val}' से बदल दें ({c_col.replace('_', ' ')})",
+                            "subtitle_en": f"Shifts {int(valid.iloc[0]['count']):,} records from {worst_r*100:.1f}% risk cohort to {best_r*100:.1f}% best performer.",
+                            "subtitle_hi": f"{int(valid.iloc[0]['count']):,} रिकॉर्ड्स को {worst_r*100:.1f}% रिस्क से {best_r*100:.1f}% सुरक्षित स्तर पर शिफ्ट करें।",
+                            "decision": dec_cand,
+                        })
+                        if len(presets) >= max_presets:
+                            break
+
+        _try_cat_replace_presets(tier12_cats, max_presets=2, require_ml_lift=True)
+        if not presets:
+            _try_cat_replace_presets(tier12_cats, max_presets=1, require_ml_lift=False)
+        if not presets:
+            _try_cat_replace_presets(tier3_cats, max_presets=1, require_ml_lift=True)
 
         # Helper: fast single-fold counterfactual risk-reduction check so we NEVER emit a 0-impact or backfire preset!
-        m0 = self.fold_models[0] if self.fold_models else None
 
         def _has_positive_ml_lift(col_name: str, action: str, thresh_val: float) -> bool:
             if m0 is None:

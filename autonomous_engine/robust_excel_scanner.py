@@ -68,11 +68,17 @@ def clean_accounting_series(s: pd.Series) -> pd.Series:
             dec_part = eu_match.group(2)
             cleaned = f"{int_part}.{dec_part}"
         else:
-            # Remove global currency symbols (₹, $, £, €, ¥, ￥, ₩, ₽, ₺, ₪, ₫, ฿, R$), ISO codes, commas, Dr/Cr, parens
-            cleaned = re.sub(r'(?i)R\$', '', v_str)
+            # Remove outer parentheses (already tracked in is_paren_neg), global currency symbols, Indian Rs./- markers, ISO codes, commas, Dr/Cr
+            cleaned = v_str.strip()
+            if is_paren_neg:
+                cleaned = cleaned[1:-1].strip()
+            cleaned = re.sub(r'(?i)R\$', '', cleaned)
+            cleaned = re.sub(r'/\-\s*$', '', cleaned)
+            cleaned = re.sub(r'(?i)^\s*(?:rs\.?|inr|usd|eur|gbp|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)\b\.?\s*', '', cleaned)
             cleaned = re.sub(r'[₹\$£€¥￥₩₽₺₪₫฿\s,]', '', cleaned)
-            cleaned = re.sub(r'(?i)^(eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)', '', cleaned)
-            cleaned = re.sub(r'(?i)(dr|cr|eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)$', '', cleaned).strip('()')
+            cleaned = re.sub(r'/\-$', '', cleaned)
+            cleaned = re.sub(r'(?i)^(rs\.?|eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)', '', cleaned)
+            cleaned = re.sub(r'(?i)(dr|cr|rs\.?|eur|usd|gbp|inr|jpy|cny|rmb|cad|aud|sgd|chf|aed|sar|krw|brl|mxn|zar|hkd|nzd)$', '', cleaned).strip('()')
 
         try:
             num = float(cleaned)
@@ -101,19 +107,25 @@ def strip_accounting_summary_rows(df: pd.DataFrame) -> pd.DataFrame:
     if len(df) <= 2:
         return df
 
-    summary_pattern = re.compile(
-        r'^(?:total|grand\s*total|sub\s*total|subtotal|closing\s*balance|balance\s*c/f|balance\s*b/f)\b',
-        re.IGNORECASE
+    explicit_summary_pattern = re.compile(
+        r'^(?:grand\s*total|sub[\s-]*total|net\s*total|closing\s*balance|opening\s*balance|'
+        r'balance\s*[cb]/f|total\s+(?:amount|value|sales|revenue|qty|quantity|sum|inr|usd|eur|gbp|payable|receivable|outstanding|due|balance|cost|price|count))\b',
+        re.IGNORECASE,
     )
+    standalone_total_pattern = re.compile(r'^total\s*:?\s*$', re.IGNORECASE)
 
-    # Check bottom 10 rows
+    # Check bottom 10 rows without falsely dropping real entity names like "Total Energies" or "Total Logistics"
     rows_to_drop = []
     tail_len = min(10, len(df))
     tail_indices = df.index[-tail_len:]
 
     for idx in tail_indices:
         row_str_vals = [str(x).strip() for x in df.loc[idx] if pd.notna(x) and str(x).strip() != "" and str(x).strip().lower() not in ("nan", "none")]
-        if not row_str_vals or any(summary_pattern.match(v) for v in row_str_vals[:4]):
+        if not row_str_vals:
+            rows_to_drop.append(idx)
+            continue
+        head_cells = row_str_vals[:4]
+        if any(explicit_summary_pattern.match(v) or standalone_total_pattern.match(v) for v in head_cells):
             rows_to_drop.append(idx)
 
     if rows_to_drop:
@@ -168,9 +180,16 @@ def detect_optimal_header_row(file_path: Path, max_scan_rows: int = 15, sheet_na
 
 def smart_read_tabular(file_path: str, **kwargs) -> pd.DataFrame:
     p = Path(file_path)
-    header_idx = detect_optimal_header_row(p)
     ext = p.suffix.lower()
-    
+
+    if ext == '.pdf':
+        try:
+            from .tally_pdf_ingestion import extract_table_from_pdf
+        except ImportError:
+            from tally_pdf_ingestion import extract_table_from_pdf
+        return extract_table_from_pdf(p)
+
+    header_idx = detect_optimal_header_row(p)
     if ext in ['.xlsx', '.xls']:
         df = pd.read_excel(p, header=header_idx, **kwargs)
     elif ext == '.csv':
@@ -182,6 +201,15 @@ def smart_read_tabular(file_path: str, **kwargs) -> pd.DataFrame:
         
     # Clean column names (strip whitespace, normalize)
     df.columns = [str(c).strip() for c in df.columns]
+    # Flatten hierarchical Tally/Marg grouped ledgers & remove mid-sheet subtotals
+    try:
+        try:
+            from .tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        except ImportError:
+            from tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        df, _ = flatten_grouped_accounting_ledger(df)
+    except Exception:
+        pass
     # Strip summary/total rows (e.g. from Tally/Indian accounting exports)
     df = strip_accounting_summary_rows(df)
     # Clean accounting formatted columns (Dr/Cr, currency symbols, Indian commas)

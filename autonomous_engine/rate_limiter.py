@@ -38,14 +38,15 @@ load_dotenv()
 _LOGGED_POOL_BANNER = False
 _DEAD_GEMINI_MODELS = set()
 
-# Official Gemini API per-1M-token USD pricing table (Input / Output) for live cost telemetry
+# Official Google Gemini API 2026 per-1M-token USD pricing table (Input / Output incl. thinking)
 _MODEL_PRICING_PER_1M_USD = {
-    "gemini-2.5-flash": (0.15, 0.60),
-    "gemini-3.5-flash-lite": (0.10, 0.40),
-    "gemini-3.5-flash": (0.15, 0.60),
-    "gemini-3.8-flash": (0.15, 0.60),
+    "gemini-3.5-flash-lite": (0.30, 2.50),
+    "gemini-3.5-flash": (0.30, 2.50),
+    "gemini-3.8-flash": (0.75, 3.75),
+    "gemini-2.5-flash": (0.30, 2.50),
     "gemini-2.5-pro": (1.25, 10.00),
 }
+_DEFAULT_MODEL_PRICING_USD = (0.30, 2.50)
 _USD_TO_INR_RATE = 85.0
 _USAGE_LOCK = threading.Lock()
 _GLOBAL_TOKEN_LEDGER = {
@@ -92,7 +93,7 @@ def _record_usage_metadata(model: str, resp, latency_sec: float) -> None:
     c_tok = int(getattr(um, "candidates_token_count", 0) or 0) if um else 0
     t_tok = int(getattr(um, "thoughts_token_count", 0) or 0) if um else 0
     tot_tok = int(getattr(um, "total_token_count", 0) or (p_tok + c_tok + t_tok)) if um else 0
-    in_rate, out_rate = _MODEL_PRICING_PER_1M_USD.get(model, (0.15, 0.60))
+    in_rate, out_rate = _MODEL_PRICING_PER_1M_USD.get(model, _DEFAULT_MODEL_PRICING_USD)
     cost_usd = (p_tok / 1_000_000.0) * in_rate + ((c_tok + t_tok) / 1_000_000.0) * out_rate
     cost_inr = cost_usd * _USD_TO_INR_RATE
     with _USAGE_LOCK:
@@ -115,8 +116,27 @@ def _record_usage_metadata(model: str, resp, latency_sec: float) -> None:
         })
 
 
+def _resolve_default_rpm(explicit_rpm=None) -> int:
+    """
+    Resolves per-key RPM limit cleanly:
+      - Uses explicit_rpm when caller specifies a positive integer.
+      - Otherwise reads GEMINI_MAX_RPM from environment (default: 14 for Free Tier keys).
+    """
+    if explicit_rpm is not None:
+        return max(1, int(explicit_rpm))
+    raw_env = str(os.getenv("GEMINI_MAX_RPM", "") or "").strip()
+    if raw_env:
+        try:
+            parsed = int(raw_env)
+            if parsed >= 1:
+                return parsed
+        except ValueError:
+            pass
+    return 14
+
+
 class PacedGeminiClient:
-    def __init__(self, api_key: str = None, max_calls_per_minute: int = 14, model: str = "gemini-3.5-flash-lite", quiet: bool = False):
+    def __init__(self, api_key: str = None, max_calls_per_minute: int = None, model: str = "gemini-3.5-flash-lite", quiet: bool = False):
         # 1. Discover all configured API keys
         keys = []
         if api_key:
@@ -147,13 +167,19 @@ class PacedGeminiClient:
             for k in self.api_keys
         ]
         
+        eff_rpm = _resolve_default_rpm(max_calls_per_minute)
         self.model = model
-        self.max_calls_per_key = max_calls_per_minute
-        self.total_max_calls = max_calls_per_minute * self.num_keys
+        self.max_calls_per_key = eff_rpm
+        self.total_max_calls = eff_rpm * self.num_keys
         self.window_seconds = 60.0
         self.total_calls_made = 0
         self._lock = threading.Lock()
-        
+        self._thread_local = threading.local()
+        try:
+            self.max_queue_wait_seconds = max(5.0, float(os.getenv("GEMINI_MAX_QUEUE_WAIT_SEC", "90.0")))
+        except ValueError:
+            self.max_queue_wait_seconds = 90.0
+
         # Cross-process shared rate-limit ledger (anchored to workspace root)
         self.db_dir = (_WORKSPACE_ROOT / "runs").resolve()
         self.db_dir.mkdir(parents=True, exist_ok=True)
@@ -164,6 +190,22 @@ class PacedGeminiClient:
         if not quiet and not _LOGGED_POOL_BANNER:
             print(f"[*] [Rate Limiter] Initialized Multi-Key Pool with {self.num_keys} Key(s) (Total Capacity: {self.total_max_calls} RPM, Model: {self.model})")
             _LOGGED_POOL_BANNER = True
+
+    @property
+    def _override_models(self):
+        """Thread-local model override list so concurrent FastAPI requests never bleed tiers."""
+        if not hasattr(self._thread_local, "override_models"):
+            raise AttributeError("_override_models")
+        return self._thread_local.override_models
+
+    @_override_models.setter
+    def _override_models(self, models) -> None:
+        self._thread_local.override_models = list(models) if models is not None else None
+
+    @_override_models.deleter
+    def _override_models(self) -> None:
+        if hasattr(self._thread_local, "override_models"):
+            delattr(self._thread_local, "override_models")
 
     def _init_shared_db(self):
         try:
@@ -185,8 +227,10 @@ class PacedGeminiClient:
     def _wait_for_slot(self, preferred_key_idx: int = None) -> int:
         """
         Enforces sliding-window rate limit across all keys and processes.
-        Returns the index of the key client with an immediately available slot.
+        Returns the index of the key client with an immediately available slot,
+        or raises TimeoutError if the bounded queue wait ceiling is exceeded.
         """
+        deadline = time.monotonic() + float(getattr(self, "max_queue_wait_seconds", 90.0))
         while True:
             min_sleep_needed = float('inf')
             with self._lock:
@@ -232,13 +276,21 @@ class PacedGeminiClient:
                     self.total_calls_made += 1
                     return idx_fallback
 
-            # If all keys in the pool are at capacity, sleep until the earliest key clears a slot
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(
+                    f"Gemini rate-limit queue wait exceeded {self.max_queue_wait_seconds:.1f}s "
+                    f"({self.num_keys} key(s), {self.total_max_calls} RPM cap). "
+                    "Set GEMINI_MAX_RPM for paid API keys or retry shortly."
+                )
+
+            # If all keys in the pool are at capacity, sleep until the earliest key clears a slot (bounded by deadline)
+            sleep_for = min_sleep_needed if (min_sleep_needed < float('inf') and min_sleep_needed > 0) else 1.0
+            sleep_for = min(sleep_for, max(0.1, remaining))
             if min_sleep_needed < float('inf') and min_sleep_needed > 0:
                 print(f"\n[RATE-LIMIT PACER] All {self.num_keys} API keys at capacity ({self.total_max_calls} RPM).", flush=True)
-                print(f"[RATE-LIMIT PACER] Sleeping {min_sleep_needed:.1f}s for next available slot...", flush=True)
-                time.sleep(min_sleep_needed)
-            else:
-                time.sleep(1.0)
+                print(f"[RATE-LIMIT PACER] Sleeping {sleep_for:.1f}s for next available slot...", flush=True)
+            time.sleep(sleep_for)
 
     def generate_content(self, contents, system_instruction: str = None, max_retries: int = 5) -> str:
         """
@@ -246,14 +298,15 @@ class PacedGeminiClient:
         """
         last_error = None
         preferred_idx = self.total_calls_made % self.num_keys
+        preferred_models = getattr(self, "_override_models", None) or [
+            self.model,
+            "gemini-2.5-flash",
+            "gemini-3.5-flash-lite",
+            "gemini-3.8-flash",
+            "gemini-3.5-flash",
+        ]
         candidate_models = [
-            m for m in dict.fromkeys([
-                self.model,
-                "gemini-2.5-flash",
-                "gemini-3.5-flash-lite",
-                "gemini-3.8-flash",
-                "gemini-3.5-flash",
-            ])
+            m for m in dict.fromkeys(preferred_models)
             if m not in _DEAD_GEMINI_MODELS
         ] or ["gemini-2.5-flash"]
         
@@ -329,6 +382,20 @@ class PacedGeminiClient:
                 print(f"[X] OpenRouter failover notice: {ore}", flush=True)
 
         raise RuntimeError(f"Failed to complete Gemini API call after {max_retries} attempts. Last error: {last_error}")
+
+    def generate_content_tiered(self, contents, system_instruction: str = None, tier: str = "fast", max_retries: int = 5) -> str:
+        """
+        Cost-smart tiered routing:
+          - tier='fast': uses low-cost Hydrogen/Flash models for routine tasks & Attempt 1 fixes.
+          - tier='reasoning': escalates to Carbon/Pro deep-reasoning model when fast retries fail.
+        """
+        if str(tier).lower() == "reasoning":
+            self._override_models = ["gemini-2.5-pro", "gemini-3.5-flash", "gemini-2.5-flash"]
+        try:
+            return self.generate_content(contents=contents, system_instruction=system_instruction, max_retries=max_retries)
+        finally:
+            if hasattr(self, "_override_models"):
+                delattr(self, "_override_models")
 
     def generate_text(self, prompt: str = "", system_instruction: str = None, max_retries: int = 3, **kwargs) -> str:
         """Convenience alias used by Q&A and Bespoke Dashboard engines."""

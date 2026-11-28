@@ -39,6 +39,10 @@ try:
     from .templated_dag_runner import execute_templated_pipeline
     from .loop_fix_engine import LoopFixVerifier
     from .common_utils import quote_sql_ident
+    from .self_healing_supervisor import (
+        audit_and_heal_logical_structural,
+        write_self_healing_report,
+    )
 except ImportError:
     from stage1_topology_profiler import profile_raw_directory
     from stage2_ai_blueprint import generate_relational_blueprint
@@ -50,6 +54,10 @@ except ImportError:
     from run_manager import RunManager
     from templated_dag_runner import execute_templated_pipeline
     from loop_fix_engine import LoopFixVerifier
+    from self_healing_supervisor import (
+        audit_and_heal_logical_structural,
+        write_self_healing_report,
+    )
     try:
         from common_utils import quote_sql_ident
     except ImportError:
@@ -84,12 +92,16 @@ def _compute_exact_raw_fact_rows(data_path: Path, profile: dict, blueprint: dict
             delim = fact_meta.get("delimiter", ",")
             enc = fact_meta.get("encoding", "utf-8")
             try:
-                from .robust_excel_scanner import strip_accounting_summary_rows
+                from .robust_excel_scanner import detect_optimal_header_row, strip_accounting_summary_rows
+                from .tally_pdf_ingestion import flatten_grouped_accounting_ledger
             except ImportError:
-                from robust_excel_scanner import strip_accounting_summary_rows
-            df_col0 = pd.read_csv(raw_file, sep=delim, encoding=enc, usecols=[0], low_memory=False)
-            df_col0 = strip_accounting_summary_rows(df_col0)
-            return int(len(df_col0))
+                from robust_excel_scanner import detect_optimal_header_row, strip_accounting_summary_rows
+                from tally_pdf_ingestion import flatten_grouped_accounting_ledger
+            h_row = int(detect_optimal_header_row(raw_file) or 0)
+            df_raw_cnt = pd.read_csv(raw_file, sep=delim, encoding=enc, header=h_row, low_memory=False)
+            df_raw_cnt, _ = flatten_grouped_accounting_ledger(df_raw_cnt)
+            df_raw_cnt = strip_accounting_summary_rows(df_raw_cnt)
+            return int(len(df_raw_cnt))
     except Exception:
         pass
     return int(fact_meta.get("estimated_rows", fallback_rows))
@@ -97,6 +109,7 @@ def _compute_exact_raw_fact_rows(data_path: Path, profile: dict, blueprint: dict
 
 def _compute_fact_duplicate_keys(fact_parquet: Path, primary_id_col: str) -> int:
     """Queries DuckDB on the output Parquet to count exact primary key collisions."""
+    con = None
     try:
         import duckdb
         con = duckdb.connect()
@@ -114,10 +127,15 @@ def _compute_fact_duplicate_keys(fact_parquet: Path, primary_id_col: str) -> int
         elif "fact_surrogate_id" in cols:
             q_surr = quote_sql_ident("fact_surrogate_id")
             dupes = int(con.execute(f"SELECT COUNT(*) - COUNT(DISTINCT {q_surr}) FROM v_fact;").fetchone()[0])
-        con.close()
         return dupes
     except Exception:
         return 0
+    finally:
+        if con is not None:
+            try:
+                con.close()
+            except Exception:
+                pass
 
 
 def run_master_pipeline(
@@ -127,7 +145,9 @@ def run_master_pipeline(
     mode: str = "ai",
     target_override: Optional[str] = None,
     cost_override: Optional[str] = None,
-    region_profile: Optional[str] = None
+    region_profile: Optional[str] = None,
+    business_category: Optional[str] = "auto",
+    business_sub_category: Optional[str] = None,
 ) -> bool:
     start_total = time.time()
     data_path = Path(data_dir).resolve()
@@ -205,7 +225,17 @@ def run_master_pipeline(
             blueprint_json,
             use_llm=(mode.lower() not in ("dag", "templated", "deterministic"))
         )
-        if target_override or cost_override or region_profile:
+        try:
+            try:
+                from .business_category_registry import validate_category_id, validate_sub_category_id
+            except ImportError:
+                from business_category_registry import validate_category_id, validate_sub_category_id
+            safe_cat = validate_category_id(business_category)
+            safe_sub = validate_sub_category_id(safe_cat, business_sub_category)
+        except Exception:
+            safe_cat, safe_sub = "auto", None
+
+        if target_override or cost_override or region_profile or (safe_cat and safe_cat != "auto") or safe_sub:
             import json as json_lib
             if target_override:
                 blueprint["target_override"] = target_override
@@ -214,6 +244,10 @@ def run_master_pipeline(
                 blueprint["cost_override"] = cost_override
             if region_profile:
                 blueprint["region_profile"] = region_profile
+            if safe_cat and safe_cat != "auto":
+                blueprint["business_category"] = safe_cat
+            if safe_sub:
+                blueprint["business_sub_category"] = safe_sub
             with open(blueprint_json, "w", encoding="utf-8") as bf:
                 json_lib.dump(blueprint, bf, indent=2)
 
@@ -234,6 +268,7 @@ def run_master_pipeline(
     # STAGE 3 & 4: Execution (Mode: DAG or AI)
     # -------------------------------------------------------------------------
     # 'templated' / 'deterministic' are accepted aliases used by the Streamlit portal and FastAPI server
+    stage4_fell_back = False
     if mode.lower() in ("dag", "templated", "deterministic"):
         print("\n[STEP 3 & 4/7] Executing Deterministic Out-of-Core Relational DAG...", flush=True)
         t0 = time.time()
@@ -265,15 +300,25 @@ def run_master_pipeline(
             print(f"[X] Stage 3 Failed: {e}", flush=True)
             return False
 
-        # STAGE 4: Sandbox Execution with AST Security Gate, Timeout & Self-Healing
+        # STAGE 4: Sandbox Execution with AST Security Gate, Timeout & Multi-Tier Self-Healing
         print("\n[STEP 4/7] Executing Stage 4: Sandbox Execution & Autonomous Self-Healing...", flush=True)
         t0 = time.time()
+        stage4_fell_back = False
+        expected_raw_rows = _compute_exact_raw_fact_rows(data_path, profile, blueprint, fallback_rows=0)
         try:
             success = execute_with_self_healing(
-                etl_script, max_retries=3, timeout_sec=300, output_dir=str(out_path), blueprint_path=blueprint_json
+                etl_script,
+                max_retries=3,
+                timeout_sec=300,
+                output_dir=str(out_path),
+                blueprint_path=blueprint_json,
+                expected_initial_rows=expected_raw_rows,
+                topology_path=topology_json,
+                expected_pk=blueprint.get("primary_id_column"),
             )
             dur4 = round(time.time() - t0, 2)
             if not success:
+                stage4_fell_back = True
                 print("\n[!] AI Code Execution retry budget exhausted. Activating Autonomous Deterministic DAG Fallback...", flush=True)
                 t_dag = time.time()
                 dag_res = execute_templated_pipeline(blueprint_json, str(data_path), str(out_path), str(cache_path))
@@ -285,6 +330,7 @@ def run_master_pipeline(
                 run_mgr.log_stage_telemetry(4, "Sandbox Execution", dur4, "SUCCESS")
                 print(f"[+] Stage 4 Completed in {dur4}s! (All assertion gates verified)", flush=True)
         except Exception as e:
+            stage4_fell_back = True
             print(f"[!] Sandbox notice: {e}. Activating Autonomous Deterministic DAG Fallback...", flush=True)
             try:
                 t_dag = time.time()
@@ -372,6 +418,69 @@ def run_master_pipeline(
         try:
             bp_file = out_path / "execution_blueprint.json"
             audit_res = run_anti_hallucination_audit(str(out_path), str(bp_file) if bp_file.exists() else None)
+
+            # Closed-Loop Logical & Structural Self-Healing Supervisor (0 extra LLM tokens)
+            def _resynthesize_downstream(target_out_dir: str, _active_bp: str) -> None:
+                synthesize_deliverables(target_out_dir)
+                synthesize_semantic_and_viz(target_out_dir)
+                synthesize_bespoke_dashboard(target_out_dir, use_llm=False)
+
+            heal_res = audit_and_heal_logical_structural(
+                data_dir=str(data_path),
+                out_dir=str(out_path),
+                cache_dir=str(cache_path),
+                blueprint_path=blueprint_json,
+                mode=mode,
+                expected_initial_rows=initial_rows,
+                expected_pk=blueprint.get("primary_id_column", ""),
+                run_anti_hallucination_fn=run_anti_hallucination_audit,
+                resynthesize_downstream_fn=_resynthesize_downstream,
+                audit_res=audit_res,
+                cartesian_drift=cartesian_drift,
+                dup_ids=dup_ids,
+            )
+            audit_res = heal_res.get("audit_res") or audit_res
+
+            if heal_res.get("healed"):
+                print("[+] [Self-Healing Supervisor] Logical/Structural fault automatically repaired & re-certified (100% Verified Truth)!", flush=True)
+                ready_parquets = list(out_path.glob("bi_ready_fact.parquet"))
+                parquet_files = ready_parquets if ready_parquets else list(out_path.glob("*.parquet"))
+                if parquet_files:
+                    import pyarrow.parquet as pq
+                    fact_count = int(pq.read_metadata(parquet_files[0]).num_rows)
+                    dup_ids = _compute_fact_duplicate_keys(parquet_files[0], blueprint.get("primary_id_column", ""))
+                    cartesian_drift = fact_count - initial_rows
+
+            # Merge logical/structural healing telemetry into self_healing_report.json
+            sh_report_path = out_path / "self_healing_report.json"
+            existing_sh = {}
+            if sh_report_path.exists():
+                try:
+                    import json as _json_sh
+                    existing_sh = _json_sh.loads(sh_report_path.read_text(encoding="utf-8"))
+                except Exception:
+                    existing_sh = {}
+            existing_sh["logical_structural_audit"] = {
+                "structural_issues": heal_res.get("structural_issues", []),
+                "logical_issues": heal_res.get("logical_issues", []),
+                "healed": bool(heal_res.get("healed")),
+                "healing_actions": heal_res.get("healing_actions", []),
+            }
+            if stage4_fell_back:
+                existing_sh["stage4_status"] = "ESCALATED_FALLBACK"
+            else:
+                existing_sh.setdefault(
+                    "stage4_status",
+                    "DAG_MODE" if mode.lower() in ("dag", "templated", "deterministic") else "HEALTHY_FIRST_PASS",
+                )
+            if existing_sh.get("stage4_status") == "ESCALATED_FALLBACK":
+                existing_sh["overall_status"] = "ESCALATED_FALLBACK"
+            elif heal_res.get("healed") or existing_sh.get("runtime_healing_events"):
+                existing_sh["overall_status"] = "SELF_HEALED"
+            else:
+                existing_sh["overall_status"] = "HEALTHY_FIRST_PASS"
+            write_self_healing_report(str(out_path), existing_sh)
+
             if audit_res.get("grounding_confidence") != "100.0% VERIFIED TRUTH":
                 print(f"[!] Critical Error: Anti-hallucination audit failed truth gate! Violations: {audit_res.get('physics_invariant_violations')}")
                 run_mgr.finalize_run(

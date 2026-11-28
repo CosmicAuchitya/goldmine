@@ -15,10 +15,10 @@ RUN groupadd -g 1001 dataxray && \
 
 WORKDIR /app
 
-# 3. Install Python dependencies
-COPY requirements.txt /app/
+# 3. Install Python dependencies (core + PDF + Phase C horizontal cloud scale drivers)
+COPY requirements.txt requirements-cloud.txt /app/
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt -r requirements-cloud.txt
 
 # 4. Copy source code, domain ontologies, and benchmark assets
 COPY autonomous_engine/ /app/autonomous_engine/

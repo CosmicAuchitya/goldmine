@@ -29,10 +29,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run 360-Degree Release Gate & Database Fortress Suite
+      - name: Run 360-Degree Release Gate, Frontend Parity & Cloud Preflight
         run: |
+          python -m autonomous_engine.build_web_client --check
+          python -m autonomous_engine.cloud_preflight_verifier
           python -m pytest tests/test_release_gate_360.py tests/test_db_fortress_and_p0_hardening.py -v
 
-      - name: Run Core Regression Suites (Stages 7-9, Security, Auth, i18n)
+      - name: Run Core Regression, Security, Self-Healing & 6-Workstream Suites
         run: |
-          python -m pytest tests/test_stage9_boardroom_judge.py tests/test_stage8_decision_prediction.py tests/test_global_i18n_43_languages.py tests/test_security_and_hardening.py tests/test_target_resolver.py tests/test_round5_global_hardening.py -q
+          python -m pytest tests/test_audit11_all_fixes.py tests/test_weakness1_sales_stock_engine.py tests/test_weakness2_tally_and_pdf.py tests/test_weakness3_askai_cache_hinglish.py tests/test_weakness4_large_scale_streaming.py tests/test_weakness5_cloud_preflight.py tests/test_weakness6_modular_architecture.py tests/test_weakness_redteam_fixes.py tests/test_batch1_critical_hardening.py tests/test_batch2_high_hardening.py tests/test_batch3_proactive_and_ford_fix.py tests/test_self_healing_supervisor.py tests/test_p0_global_launch_hardening.py tests/test_business_product_layer.py tests/test_stage7_bespoke_dashboard.py tests/test_stage9_boardroom_judge.py tests/test_stage8_decision_prediction.py tests/test_global_i18n_43_languages.py tests/test_security_and_hardening.py tests/test_target_resolver.py tests/test_round5_global_hardening.py -q

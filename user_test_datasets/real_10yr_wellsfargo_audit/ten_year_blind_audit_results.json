@@ -6,12 +6,12 @@
     "checks_passed": 8,
     "checks_total": 9,
     "overall_accuracy_pct": 88.9,
-    "total_elapsed_s": 36.86,
-    "sealed_auc": 0.6395,
-    "sealed_lift_x": 3.94,
-    "lat_intent_ms": 128.6,
-    "lat_pipeline_s": 10.77,
-    "lat_hindi_s": 0.64
+    "total_elapsed_s": 48.02,
+    "sealed_auc": 0.6412,
+    "sealed_lift_x": 3.82,
+    "lat_intent_ms": 100.0,
+    "lat_pipeline_s": 13.89,
+    "lat_hindi_s": 3.63
   },
   "timeline": {
     "yearly_sba": [
@@ -588,33 +588,33 @@
     "top_leaks": [
       {
         "severity": "CRITICAL",
-        "headline": "V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)",
+        "headline": "V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Over 48232000× higher than usual)",
         "impact": "$33.12M at risk (~437 loan accounts)"
       },
       {
-        "severity": "HIGH",
-        "headline": "Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default",
+        "severity": "CRITICAL",
+        "headline": "New, Less than 1 Year old (Businessage): 1 in 10 Loan Accounts Fall Into Default (Over 46384200× higher than usual)",
+        "impact": "$32.31M at risk (~186 loan accounts)"
+      },
+      {
+        "severity": "CRITICAL",
+        "headline": "Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default (Over 57662000× higher than usual)",
         "impact": "$20.40M at risk (~94 loan accounts)"
       },
       {
-        "severity": "HIGH",
-        "headline": "Startup, Loan Funds will Open Business (Businessage): 1 in 10 Loan Accounts Fall Into Default",
-        "impact": "$15.92M at risk (~37 loan accounts)"
-      },
-      {
-        "severity": "HIGH",
-        "headline": "N (Collateralind): 1 in 10 Loan Accounts Fall Into Default",
+        "severity": "CRITICAL",
+        "headline": "N (Collateralind): 1 in 10 Loan Accounts Fall Into Default (Over 24455900× higher than usual)",
         "impact": "$15.16M at risk (~292 loan accounts)"
       },
       {
-        "severity": "HIGH",
-        "headline": "SBA Express Program (Processingmethod): 1 in 10 Loan Accounts Fall Into Default",
+        "severity": "CRITICAL",
+        "headline": "SBA Express Program (Processingmethod): 1 in 10 Loan Accounts Fall Into Default (Over 14519500× higher than usual)",
         "impact": "$8.87M at risk (~282 loan accounts)"
       },
       {
-        "severity": "HIGH",
-        "headline": "INDIVIDUAL (Businesstype): 1 in 10 Loan Accounts Fall Into Default",
-        "impact": "$7.56M at risk (~84 loan accounts)"
+        "severity": "CRITICAL",
+        "headline": "True Root Cause: 'INDIVIDUAL' Is Safe at 2.0% Without 'V' — 2×2 Combo Spikes to 14.9%",
+        "impact": "14.9% vs 2.0% safe (0 fails)"
       }
     ]
   },
@@ -624,108 +624,119 @@
     "future_default_rate_pct": 10.38,
     "future_approved_musd": 3420.9,
     "future_actual_chargeoff_musd": 126.8,
-    "sealed_auc": 0.6395,
-    "calibration_gap_pp": 3.25,
-    "top20_rate_pct": 18.22,
-    "bot20_rate_pct": 4.62,
-    "risk_lift_x": 3.94,
-    "loss_top20_musd": 18.31,
-    "loss_bot20_musd": 39.21,
-    "top_fix_label": "Cap InitialInterestRate at ≤ 6.25",
+    "sealed_auc": 0.6412,
+    "calibration_gap_pp": 3.07,
+    "top20_rate_pct": 18.44,
+    "bot20_rate_pct": 4.82,
+    "risk_lift_x": 3.82,
+    "loss_top20_musd": 18.53,
+    "loss_bot20_musd": 39.04,
+    "top_fix_label": "Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years'",
     "top_fix_spec": {
-      "action_type": "cap_numeric",
-      "column": "InitialInterestRate",
-      "value": 6.25,
-      "description": "Cap InitialInterestRate at maximum 6.25"
+      "action_type": "replace_category",
+      "column": "BusinessAge",
+      "from_value": "Startup, Loan Funds will Open Business",
+      "to_value": "Existing, 5 or more years",
+      "description": "Switch BusinessAge from Startup, Loan Funds will Open Business to Existing, 5 or more years"
     },
-    "pred_before_pct": 11.74,
-    "pred_after_pct": 7.35,
-    "pred_net": "$4,507,271.03",
-    "violated_n": 13715,
-    "violated_default_pct": 11.64,
-    "violated_approved_musd": 748.35,
-    "violated_chargeoff_musd": 71.38,
-    "violated_loss_pct": 9.54,
-    "complied_n": 3908,
-    "complied_default_pct": 5.96,
-    "complied_approved_musd": 2672.55,
-    "complied_chargeoff_musd": 55.42,
-    "complied_loss_pct": 2.07,
-    "fisher_p_value": 2.5061282537515662e-27,
-    "est_avoidable_defaults": 778,
-    "est_avoidable_loss_musd": 34.8,
+    "pred_before_pct": 10.26,
+    "pred_after_pct": 6.4,
+    "pred_net": "$15,819,468.82",
+    "violated_n": 1080,
+    "violated_default_pct": 14.17,
+    "violated_approved_musd": 551.4,
+    "violated_chargeoff_musd": 37.91,
+    "violated_loss_pct": 6.88,
+    "complied_n": 2357,
+    "complied_default_pct": 5.81,
+    "complied_approved_musd": 1317.84,
+    "complied_chargeoff_musd": 26.28,
+    "complied_loss_pct": 1.99,
+    "fisher_p_value": 3.5582457425469965e-15,
+    "est_avoidable_defaults": 90,
+    "est_avoidable_loss_musd": 22.3,
     "mgmt_yearly": [
       {
         "fy": 2016,
         "settled_n": 6668,
-        "violating_n": 4841,
-        "violating_share_pct": 72.6,
-        "violating_default_pct": 10.0,
-        "compliant_default_pct": 6.19,
-        "violating_chargeoff_musd": 16.2,
+        "violating_n": 439,
+        "violating_share_pct": 6.6,
+        "violating_default_pct": 10.93,
+        "compliant_default_pct": 6.01,
+        "violating_chargeoff_musd": 11.9,
         "total_chargeoff_musd": 41.83
       },
       {
         "fy": 2017,
         "settled_n": 4197,
-        "violating_n": 3017,
-        "violating_share_pct": 71.9,
-        "violating_default_pct": 10.21,
-        "compliant_default_pct": 6.53,
-        "violating_chargeoff_musd": 21.74,
+        "violating_n": 290,
+        "violating_share_pct": 6.9,
+        "violating_default_pct": 15.86,
+        "compliant_default_pct": 5.9,
+        "violating_chargeoff_musd": 12.14,
         "total_chargeoff_musd": 38.86
       },
       {
         "fy": 2018,
         "settled_n": 2869,
-        "violating_n": 2388,
-        "violating_share_pct": 83.2,
-        "violating_default_pct": 11.89,
-        "compliant_default_pct": 4.37,
-        "violating_chargeoff_musd": 16.55,
+        "violating_n": 173,
+        "violating_share_pct": 6.0,
+        "violating_default_pct": 16.76,
+        "compliant_default_pct": 3.47,
+        "violating_chargeoff_musd": 6.55,
         "total_chargeoff_musd": 24.22
       },
       {
         "fy": 2019,
         "settled_n": 2066,
-        "violating_n": 1915,
-        "violating_share_pct": 92.7,
-        "violating_default_pct": 14.41,
-        "compliant_default_pct": 1.32,
-        "violating_chargeoff_musd": 13.79,
+        "violating_n": 99,
+        "violating_share_pct": 4.8,
+        "violating_default_pct": 19.19,
+        "compliant_default_pct": null,
+        "violating_chargeoff_musd": 4.57,
         "total_chargeoff_musd": 13.89
       },
       {
         "fy": 2020,
         "settled_n": 1032,
-        "violating_n": 861,
-        "violating_share_pct": 83.4,
-        "violating_default_pct": 13.47,
-        "compliant_default_pct": 9.36,
-        "violating_chargeoff_musd": 2.02,
+        "violating_n": 58,
+        "violating_share_pct": 5.6,
+        "violating_default_pct": 17.24,
+        "compliant_default_pct": null,
+        "violating_chargeoff_musd": 2.73,
         "total_chargeoff_musd": 6.07
       },
       {
         "fy": 2021,
         "settled_n": 791,
-        "violating_n": 693,
-        "violating_share_pct": 87.6,
-        "violating_default_pct": 18.47,
-        "compliant_default_pct": 4.08,
-        "violating_chargeoff_musd": 1.08,
+        "violating_n": 21,
+        "violating_share_pct": 2.7,
+        "violating_default_pct": 4.76,
+        "compliant_default_pct": null,
+        "violating_chargeoff_musd": 0.01,
         "total_chargeoff_musd": 1.93
       }
     ],
     "all_presets_future_check": [
       {
-        "label": "Switch RevolverStatus from 'Y' → 'N'",
+        "label": "Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years'",
         "action_type": "replace_category",
-        "violate_n": 13262,
-        "comply_n": 4361,
-        "violate_default_pct": 10.99,
-        "comply_default_pct": 8.51,
-        "p_value": 2.2759559190819045e-06,
-        "violate_loss_musd": 18.05
+        "violate_n": 1080,
+        "comply_n": 2357,
+        "violate_default_pct": 14.17,
+        "comply_default_pct": 5.81,
+        "p_value": 3.5582457425469965e-15,
+        "violate_loss_musd": 37.91
+      },
+      {
+        "label": "Switch FixedorVariableInterestInd from 'V' → 'F'",
+        "action_type": "replace_category",
+        "violate_n": 13876,
+        "comply_n": 3747,
+        "violate_default_pct": 11.23,
+        "comply_default_pct": 7.23,
+        "p_value": 1.8856342897217902e-13,
+        "violate_loss_musd": 38.92
       },
       {
         "label": "Cap InitialInterestRate at ≤ 6.25",
@@ -751,7 +762,7 @@
   },
   "boardroom": {
     "debate_verdict": "BOTH_MATTER",
-    "debate_headline": "Both Processingmethod (0%) and Collateralind (0%) drive real risk. Run a combined low-cost 14-day pilot addressing both instead of picking only one side.",
+    "debate_headline": "Both Collateralind (0%) and Processingmethod (0%) drive real risk. Run a combined low-cost 14-day pilot addressing both instead of picking only one side.",
     "myth_verdict": "REFUTED_BY_DATA",
     "myth_headline": "Your data shows Jobssupported is statistically flat (random noise, not a true root cause). Save your money — focus instead on your real #1 driver (Initialinterestrate).",
     "blindspot_budget": 40000.0,
@@ -762,27 +773,27 @@
     {
       "gate": "1_Blind_ZeroHint_AutoDetect",
       "pass": true,
-      "detail": "target=LoanStatus, cost=GrossApproval, sym=$, latency=128.6ms"
+      "detail": "target=LoanStatus, cost=GrossApproval, sym=$, latency=100.0ms"
     },
     {
       "gate": "2_Blind_DuckDB_GroundTruth",
       "pass": true,
-      "detail": "rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=10.77s"
+      "detail": "rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=13.89s"
     },
     {
       "gate": "3_SealedFuture_2016_2021_AUC_Lift",
       "pass": false,
-      "detail": "SealedAUC=0.6395, Top20=18.22% vs Bot20=4.62% (3.94x lift), CalGap=3.25pp, LossTop20=$18.31M vs Bot20=$39.21M"
+      "detail": "SealedAUC=0.6412, Top20=18.44% vs Bot20=4.82% (3.82x lift), CalGap=3.07pp, LossTop20=$18.53M vs Bot20=$39.04M"
     },
     {
       "gate": "4_Blind_RootCause_Discovery",
       "pass": true,
-      "detail": "LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)'; Exposure=$33.12M"
+      "detail": "LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Over 48232000× higher than usual)'; Exposure=$33.12M"
     },
     {
       "gate": "5_BlindSolution_Proven_In_SealedFuture",
       "pass": true,
-      "detail": "Fix='Cap InitialInterestRate at ≤ 6.25' | Pred: 11.74%->7.35% | Sealed 2016-21: Violated=11.64% ($71.38M lost) vs Followed=5.96% ($55.42M lost), p=2.51e-27, Avoidable≈$34.8M"
+      "detail": "Fix='Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years'' | Pred: 10.26%->6.4% | Sealed 2016-21: Violated=14.17% ($37.91M lost) vs Followed=5.81% ($26.28M lost), p=3.56e-15, Avoidable≈$22.3M"
     },
     {
       "gate": "6_Boardroom_Debate",
@@ -802,7 +813,7 @@
     {
       "gate": "9_AskAI_And_Hindi_Live",
       "pass": true,
-      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.64s)"
+      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (3.63s)"
     }
   ]
 }

@@ -1,0 +1,1808 @@
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Sticky Header (< 960px only) -->
+  <header class="mobile-topbar">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMobileSidebar()" aria-label="Menu">☰</button>
+      <div class="brand-mark" style="width: 30px; height: 30px; font-size: 13px;">DX</div>
+      <strong style="font-size: 15px;">DataX-Ray</strong>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" onclick="toggleOnboardingPanel()">📤 Upload CSV</button>
+  </header>
+
+  <div class="app-shell">
+    <!-- FLOATING GLASS TOP-NAV EXECUTIVE BAR (V9 AURORA BENTO · ZERO LEFT SIDEBAR) -->
+    <aside id="appSidebar" class="app-sidebar">
+      <div class="sidebar-section">
+        <div class="brand-cluster" style="padding: 0 2px;">
+          <div class="brand-mark" style="width: 34px; height: 34px; border-radius: 10px; font-size: 13.5px; background: var(--cta-grad); box-shadow: 0 6px 18px -4px rgba(99, 102, 241, 0.55);">DX</div>
+          <div>
+            <div class="brand-title" style="font-size: 15.5px; font-weight: 700; letter-spacing: -0.025em;">DataX-Ray</div>
+            <span class="brand-subtitle" data-i18n="brandSubtitle" style="font-size: 10.5px;">AI Executive Suite</span>
+          </div>
+        </div>
+
+        <div class="sidebar-label" data-i18n="navMenuLabel">WORKSPACE</div>
+        <nav aria-label="Primary Workspace Navigation" class="topnav-pills">
+          <button type="button" class="sidebar-nav-btn main-tab-btn active" data-tab="overview" onclick="switchWorkspaceTab('overview', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <span data-i18n="tabOverview">Business Health</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="actions" onclick="switchWorkspaceTab('actions', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            <span data-i18n="tabActions">Call List</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="calculator" onclick="switchWorkspaceTab('calculator', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+            <span data-i18n="tabCalculator">Calculator</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="ask" onclick="switchWorkspaceTab('ask', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span data-i18n="tabAsk">Ask AI</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="predict" onclick="switchWorkspaceTab('predict', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><path d="M4.93 19.07l2.83-2.83"></path><path d="M16.24 7.76l2.83-2.83"></path></svg>
+            <span data-i18n="tabPredict">Decision Lab</span>
+          </button>
+          <button type="button" class="sidebar-nav-btn main-tab-btn" data-tab="boardroom" onclick="switchWorkspaceTab('boardroom', this)">
+            <svg class="svg-ico" viewBox="0 0 24 24"><path d="M12 3v18"></path><path d="M5 7h14"></path><path d="M3 14l2-7 2 7a3 3 0 0 1-4 0z"></path><path d="M17 14l2-7 2 7a3 3 0 0 1-4 0z"></path><path d="M8 21h8"></path></svg>
+            <span data-i18n="tabBoardroom">Boardroom</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Right Floating Utility Cluster: 6 Luxury Theme Swatches + 4 Icon Tools + Sign In -->
+      <div class="sidebar-footer">
+        <div class="sidebar-theme-palette" title="Switch Luxury Theme">
+          <button type="button" class="app-swatch-dot active" data-app-theme="dark" style="background:linear-gradient(135deg,#6366f1,#14b8a6);" title="Midnight Sapphire Aurora (Default)" onclick="setAppStudioTheme('dark')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="stripe_alabaster" style="background:linear-gradient(135deg,#10b981,#f59e0b);" title="Emerald Private Wealth" onclick="setAppStudioTheme('stripe_alabaster')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="nordic_frost" style="background:linear-gradient(135deg,#e0f2fe,#2563eb);" title="Arctic Frost Glass (Light)" onclick="setAppStudioTheme('nordic_frost')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="royal_gold" style="background:linear-gradient(135deg,#eab308,#78350f);" title="Royal Champagne Obsidian" onclick="setAppStudioTheme('royal_gold')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="sunset_coral" style="background:linear-gradient(135deg,#f97316,#ec4899);" title="Neon Plum &amp; Sunset Coral" onclick="setAppStudioTheme('sunset_coral')"></button>
+          <button type="button" class="app-swatch-dot" data-app-theme="light" style="background:#f8fafc;" title="Pure Apple Daylight" onclick="setAppStudioTheme('light')"></button>
+        </div>
+
+        <div class="sidebar-icon-dock">
+          <button type="button" class="sidebar-util-btn" onclick="openLiveErpModal()" title="Connect Tally / Live ERP" aria-label="Connect Tally / Live ERP">
+            <svg class="svg-ico" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </button>
+          <button id="btnWorkspaceHub" type="button" class="sidebar-util-btn" onclick="openWorkspaceHubModal('oauth')" title="OAuth, Digests &amp; Team" aria-label="OAuth, Digests &amp; Team">
+            <svg class="svg-ico" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </button>
+          <button id="btnThemeToggle" type="button" class="sidebar-util-btn" onclick="toggleTheme()" title="Toggle Dark / Light Mode" aria-label="Toggle Theme">
+            <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+          <button id="btnSettingsModal" type="button" class="sidebar-util-btn" onclick="openSettingsModal()" title="Settings" aria-label="Settings">
+            <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </button>
+        </div>
+
+        <button id="btnAuthModal" type="button" class="sidebar-util-btn" onclick="openAuthModal()">
+          <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span id="authBtnLabel" data-i18n="btnSignIn">Sign In</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="workspace-shell">
+      <!-- RAZOR-THIN SINGLE-ROW STICKY TOPBAR (52px · REPORT + 43 LANGUAGES + UPLOAD CTA) -->
+      <header class="top-command-bar">
+        <div class="top-command-left">
+          <select id="timeMachineSelect" class="sidebar-report-select" aria-label="Switch Report" onchange="onTimeMachineChange(this.value)">
+            <option value="">Loading reports...</option>
+          </select>
+          <div class="truth-seal" style="padding: 4px 9px; font-size: 11px;">
+            <span class="pulse-dot"></span>
+            <span data-i18n="sealVerified">100% Verified</span>
+          </div>
+        </div>
+
+        <div class="top-command-right">
+          <div class="topbar-lang-dock" title="Switch Language (43 World Languages + Automatic RTL)">
+            <svg class="svg-ico" style="width: 13px; height: 13px; color: var(--text-muted); margin-left: 2px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <button id="btnGlobalEn" type="button" class="lang-btn active" onclick="setGlobalLanguage('en')">EN</button>
+            <button id="btnGlobalHi" type="button" class="lang-btn" onclick="setGlobalLanguage('hi')">HI</button>
+            <select id="globalLanguageSelect" class="global-lang-select" aria-label="Choose World Language" onchange="setGlobalLanguage(this.value)">
+              <option value="en">English (Global)</option>
+              <option value="hi">हिन्दी / Hinglish</option>
+              <option value="es">Español (Spanish)</option>
+              <option value="fr">Français (French)</option>
+              <option value="de">Deutsch (German)</option>
+              <option value="ar">العربية (Arabic · RTL)</option>
+              <option value="zh-CN">中文 (简体)</option>
+              <option value="ja">日本語 (Japanese)</option>
+              <option value="pt">Português (Portuguese)</option>
+              <option value="ru">Русский (Russian)</option>
+              <option value="gu">ગુજરાતી (Gujarati)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="mr">मराठी (Marathi)</option>
+            </select>
+            <span id="globalLangBadge" class="topbar-lang-badge">EN</span>
+            <span id="globalLangStatus" class="hidden"><span>43 Languages</span></span>
+          </div>
+
+          <button id="btnTopNewUpload" type="button" class="btn-cockpit-primary" onclick="toggleOnboardingPanel()">
+            <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span data-i18n="btnNewUpload">Upload Data</span>
+          </button>
+        </div>
+      </header>
+
+    <!-- Floating Upload & Sample Business Overlay (Opens on top of screen from ANY scroll position!) -->
+    <div id="onboardingSection" class="upload-drawer-backdrop hidden" onclick="if(event.target===this) closeOnboardingPanel()">
+      <div class="upload-drawer-shell">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding: 0 4px;">
+          <div>
+            <div class="section-eyebrow" style="margin-bottom: 2px;">ADD OR SWITCH YOUR BUSINESS DATA</div>
+            <h2 style="font-size: 19px; font-weight: 800;">Upload CSV / Excel, Connect Tally, or Try a Sample Business</h2>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeOnboardingPanel()">✕ Close</button>
+        </div>
+        <section class="onboarding-grid" style="margin-bottom: 0;">
+      <!-- Left: Simple Upload Card -->
+      <div class="panel-card">
+        <div class="section-eyebrow">
+          <span data-i18n="eyebrowUpload">STEP 1 · CONNECT YOUR BUSINESS FILE</span>
+          <span>EXCEL · CSV · GOOGLE SHEETS</span>
+        </div>
+        <h1 class="hero-heading" data-i18n="heroHeading">Find where your business is leaking money — in 30 seconds.</h1>
+        <p class="hero-lead" data-i18n="heroLead">
+          Upload your Sales, Orders, Invoices, or Customer Excel/CSV sheet. No coding or formulas needed — see your #1 problem area, today's customer call list, and exact money you can save.
+        </p>
+
+        <div class="upload-cat-bar">
+          <label for="uploadCategorySelect" class="upload-cat-label" data-i18n="lblUploadCategory">Business Type (Optional — Auto-Detected):</label>
+          <select id="uploadCategorySelect" class="upload-cat-select" aria-label="Business Category">
+            <option value="auto">✨ Auto-Detect / General Business (Recommended)</option>
+          </select>
+        </div>
+
+        <div id="dropzone" class="dropzone-box" onclick="document.getElementById('fileInput').click()">
+          <input id="fileInput" type="file" multiple accept=".csv,.tsv,.xlsx,.xls,.parquet,.pdf,.zip" class="hidden" onchange="handleFileSelection(event)" />
+          <div class="dropzone-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+          </div>
+          <div class="dropzone-title" data-i18n="dropTitle">Drop your Excel or CSV file here, or click to pick</div>
+          <div class="dropzone-sub" data-i18n="dropSub">Supports single files or multiple linked sheets (Orders + Customers). 100% private.</div>
+          <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+            <span data-i18n="btnPickFile">Choose File from Computer</span>
+          </button>
+        </div>
+
+        <div class="simple-benefits">
+          <div class="benefit-pill">
+            <strong data-i18n="ben1Title">100% Real Numbers</strong>
+            <span data-i18n="ben1Sub">Every rupee/dollar is counted directly from your sheet. Zero guesswork.</span>
+          </div>
+          <div class="benefit-pill">
+            <strong data-i18n="ben2Title">Plain Language</strong>
+            <span data-i18n="ben2Sub">Understand everything clearly in simple English or Hinglish.</span>
+          </div>
+          <div class="benefit-pill">
+            <strong data-i18n="ben3Title">Daily Action List</strong>
+            <span data-i18n="ben3Sub">Get a ready-made list of customers &amp; orders to fix today.</span>
+          </div>
+        </div>
+
+        <!-- Live Google Sheets + Labeled Interactive ERP Demo Samples -->
+        <div class="connector-box">
+          <div class="section-eyebrow" style="margin-bottom: 6px;">
+            <span data-i18n="eyebrowConnect">LIVE GOOGLE SHEETS LINK (REAL DATA)</span>
+            <span style="color: var(--accent-emerald); font-weight: 700;">LIVE SYNC</span>
+          </div>
+          <div class="url-sync-row" style="margin-top: 0; margin-bottom: 10px;">
+            <input id="remoteSheetUrlInput" type="url" placeholder="Paste Google Sheets share link or direct HTTPS CSV/JSON URL..." />
+            <button id="btnSyncUrl" type="button" class="btn btn-sky btn-sm" onclick="ingestRemoteUrl()">
+              <span data-i18n="btnLoadSheet">Load Sheet</span>
+            </button>
+          </div>
+          <div style="margin-bottom: 14px;">
+            <button id="btnOpenLiveErpSync" type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;" onclick="openLiveErpModal()">
+              ⚡ Connect Live ERP / Accounting (Tally Prime XML · Shopify · WooCommerce · Razorpay · Stripe · Zoho Books)
+            </button>
+          </div>
+
+          <div class="section-eyebrow">
+            <span data-i18n="eyebrowDemoConnectors">OR TRY 1-CLICK ERP SAMPLE DATA (INTERACTIVE DEMO)</span>
+            <span style="background: var(--accent-amber-bg); color: var(--accent-amber); border: 1px solid var(--accent-amber-border); padding: 1px 7px; border-radius: 999px; font-size: 10px;">SAMPLE DEMO</span>
+          </div>
+          <div id="connectorGrid" class="connector-grid">
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('shopify_global_orders', 'US')">
+              <span>🛒 Shopify Global Orders</span>
+              <small style="color: var(--accent-amber);">$ USD · Demo</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('quickbooks_ar_invoices', 'EU')">
+              <span>📒 QuickBooks / Xero AR</span>
+              <small style="color: var(--accent-amber);">€ EUR · Demo</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('stripe_saas_churn', 'US')">
+              <span>⚡ Stripe SaaS Renewals</span>
+              <small style="color: var(--accent-amber);">$ USD · Demo</small>
+            </button>
+            <button type="button" class="connector-chip" onclick="ingestLiveConnector('shopify_orders_live', 'IN')">
+              <span>📦 Shopify India (COD &amp; RTO)</span>
+              <small style="color: var(--accent-amber);">₹ INR · Demo</small>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Ready-Made Business Examples -->
+      <div class="panel-card">
+        <div class="section-eyebrow">
+          <span data-i18n="eyebrowExamples">SEE HOW IT WORKS FIRST</span>
+          <span style="color: var(--accent-emerald);">INSTANT DEMO</span>
+        </div>
+        <h2 style="font-size: 19px; font-weight: 800; margin-bottom: 6px;" data-i18n="examplesTitle">Try Real Business Examples (1-Click)</h2>
+        <p style="font-size: 13.5px; color: var(--text-secondary);" data-i18n="examplesLead">
+          Want to explore before uploading your own data? Click any business example below to see the complete report immediately:
+        </p>
+
+        <div id="benchmarkList" class="benchmark-list">
+          <button type="button" class="benchmark-item" data-bench="nexura_lifestyle_brand" onclick="loadCertifiedBenchmark('nexura_lifestyle_brand', true)">
+            <div class="benchmark-meta-left">
+              <h4>📦 Nexura 3-Year D2C Brand (2023–2025)</h4>
+              <p>See why COD orders fail during delays and how to recover ₹25.51 L in lost orders.</p>
+            </div>
+            <span class="benchmark-badge">15,000 Orders · ₹ INR</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="hotel_booking_cancellation" onclick="loadCertifiedBenchmark('hotel_booking_cancellation', true)">
+            <div class="benchmark-meta-left">
+              <h4>🏨 Hotel Bookings &amp; Cancellations</h4>
+              <p>See why guests cancel bookings and how advance timing affects lost revenue.</p>
+            </div>
+            <span class="benchmark-badge">119,390 Orders</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="supermarket_retail_operations" onclick="loadCertifiedBenchmark('supermarket_retail_operations', true)">
+            <div class="benchmark-meta-left">
+              <h4>🛒 Supermarket Store Sales &amp; Ratings</h4>
+              <p>Check branch performance, customer ratings, and basket profitability.</p>
+            </div>
+            <span class="benchmark-badge">1,000 Bills</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="credit_card_loan_default" onclick="loadCertifiedBenchmark('credit_card_loan_default', true)">
+            <div class="benchmark-meta-left">
+              <h4>💳 Credit &amp; Loan Payment Defaults</h4>
+              <p>Spot which borrower accounts are slipping into unpaid dues first.</p>
+            </div>
+            <span class="benchmark-badge">30,000 Accounts</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="airline_flight_delays_operations" onclick="loadCertifiedBenchmark('airline_flight_delays_operations', true)">
+            <div class="benchmark-meta-left">
+              <h4>✈️ Airline Flight Delays</h4>
+              <p>Discover which evening hours and carriers cause ripple flight delays.</p>
+            </div>
+            <span class="benchmark-badge">300,000 Flights</span>
+          </button>
+
+          <button type="button" class="benchmark-item" data-bench="california_housing_real_estate" onclick="loadCertifiedBenchmark('california_housing_real_estate', true)">
+            <div class="benchmark-meta-left">
+              <h4>🏠 Real Estate Property Prices</h4>
+              <p>Compare income neighborhoods and location premiums across regions.</p>
+            </div>
+            <span class="benchmark-badge">20,640 Areas</span>
+          </button>
+        </div>
+      </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Step 2: Simple Confirmation Before Processing (PRE-FLIGHT SCHEMA &amp; INTENT HANDSHAKE) -->
+    <section id="intentHandshakeCard" class="intent-drawer hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky);" data-i18n="eyebrowCheck">QUICK CHECK BEFORE STARTING</div>
+          <h3 id="intentFileTitle" style="font-size: 18px; font-weight: 800;">File Scanned</h3>
+          <p id="intentQuestionSubtitle" style="font-size: 13.5px; color: var(--text-secondary); margin-top: 3px;"></p>
+          <div id="intentSanityBanner" class="hidden" style="margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600;"></div>
+          <div id="intentCategoryWarningBanner" class="hidden" style="margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.45); color: var(--accent-amber);"></div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="cancelIntentHandshake()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="executeConfirmedPipeline()">
+            ✅ Start Analysis Now
+          </button>
+        </div>
+      </div>
+
+      <div class="intent-grid intent-grid-v6">
+        <div class="form-field">
+          <label for="confirmCategorySelect">
+            <span data-i18n="lblConfirmCat">1. Business Category</span>
+            <span id="intentCategoryBadge" class="topbar-lang-badge" style="margin-left: 6px;">Auto</span>
+          </label>
+          <select id="confirmCategorySelect" onchange="onConfirmCategoryChange()"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmSubCategorySelect" data-i18n="lblConfirmSubCat">2. Sub-Category / Focus</label>
+          <select id="confirmSubCategorySelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmTargetSelect" data-i18n="lblConfirmTarget">3. Problem / Return / Cancel Column</label>
+          <select id="confirmTargetSelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmCostSelect" data-i18n="lblConfirmCost">4. Bill / Amount / Money Column</label>
+          <select id="confirmCostSelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmLangSelect" data-i18n="lblConfirmLang">5. Summary Language</label>
+          <select id="confirmLangSelect">
+            <option value="bilingual">Both (Plain English + Simple Hinglish)</option>
+            <option value="en">Plain English Only</option>
+            <option value="hi">Simple Hinglish Only</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Friendly Progress Bar -->
+    <section id="jobProgressSection" class="telemetry-bar hidden">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <span class="section-eyebrow" style="color: var(--accent-emerald);">ANALYZING YOUR BUSINESS DATA</span>
+          <h3 id="progressStageName" style="font-size: 16px; font-weight: 700;">Checking your spreadsheet...</h3>
+        </div>
+        <span id="progressPctLabel" class="tabular-nums" style="font-size: 18px; font-weight: 800; color: var(--accent-emerald);">15%</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressBarFill" class="progress-fill"></div>
+      </div>
+      <p id="progressDetailText" style="font-size: 13px; color: var(--text-muted);">
+        Calculating profit leaks, bottlenecks, and your team's daily action list...
+      </p>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MAIN BUSINESS WORKSPACE (4 CALM, CLEAR TABS — NOTHING LEFT OUT)      -->
+    <!-- =================================================================== -->
+    <div id="executiveConsole" class="hidden">
+
+      <!-- Single-Row Matte Glass Telemetry Strip (Zero Cluttered Multi-Row Headers) -->
+      <div class="executive-header-box" style="padding: 11px 16px; margin-bottom: 16px;">
+        <div class="context-ribbon" style="padding-bottom: 0; border-bottom: none; gap: 10px;">
+          <div class="context-ribbon-left" style="gap: 12px;">
+            <span id="activeRunBadge" class="run-tag" style="font-size: 11px; padding: 3px 8px;">REPORT</span>
+            <span class="meta-stat" style="font-size: 12.5px;"><span data-i18n="lblRows">Records:</span> <strong id="metaTotalRecords" class="tabular-nums">0</strong></span>
+            <span class="meta-stat" style="font-size: 12.5px;"><span data-i18n="lblIssues">Issues:</span> <strong id="metaAdverseCount" class="tabular-nums">0</strong> (<strong id="metaAdverseRate" class="tabular-nums">0%</strong>)</span>
+            <span class="meta-stat" style="font-size: 12.5px;"><span data-i18n="lblRiskMoney">At Risk:</span> <strong id="metaCapitalDrag" class="tabular-nums" style="color: var(--accent-crimson);">$0</strong></span>
+          </div>
+
+          <div class="exec-action-strip">
+            <button type="button" class="btn btn-sm" onclick="openMorningDigestModal()">
+              <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+              <span data-i18n="btnWhatsAppBrief">Brief</span>
+            </button>
+            <a id="openPrintableCertLink" href="#" target="_blank" class="btn btn-sm">
+              <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span data-i18n="btnPrintPdf">PDF</span>
+            </a>
+            <a id="openFullDashboardLink" href="#" target="_blank" class="btn btn-sm">
+              <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span data-i18n="btnFullVisual">Charts</span>
+            </a>
+            <button type="button" class="btn btn-sm btn-proof-accent" onclick="openProofDrawer()">
+              <svg class="svg-ico" style="width: 13px; height: 13px;" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              <span data-i18n="btnProof">Proof</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 1: BUSINESS OVERVIEW (Owner Visual Hero + Live Charts + 4 Cards + Health Check) -->
+      <div id="tabPanel-overview" class="tab-panel">
+        <!-- V8 OWNER VISUAL HERO SPOTLIGHT (UNDERSTAND YOUR ENTIRE BUSINESS IN 2 SECONDS) -->
+        <section id="ownerHeroStage" class="owner-hero-stage">
+          <div class="owner-hero-gauge-wrap">
+            <div class="owner-gauge-box">
+              <svg class="owner-gauge-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border-subtle)" stroke-width="10"></circle>
+                <circle id="ownerHealthRingArc" cx="60" cy="60" r="50" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="100" style="transition: stroke-dashoffset 550ms ease, stroke 300ms ease;"></circle>
+              </svg>
+              <div class="owner-gauge-center">
+                <span id="ownerHealthScoreNum" class="owner-gauge-num">--</span>
+                <span class="owner-gauge-lbl" data-i18n="lblHealthScore">HEALTH / 100</span>
+              </div>
+            </div>
+            <span id="ownerHealthStatusPill" class="owner-status-pill">Checking...</span>
+          </div>
+
+          <div>
+            <div class="owner-hero-title-row">
+              <span id="ownerBizNameTag" class="owner-biz-tag">Business Overview</span>
+              <span id="ownerCheckedSubTag" style="font-size: 12px; color: var(--text-muted);" class="tabular-nums">0 records checked</span>
+            </div>
+            <h1 id="ownerHeroHeadline" class="owner-hero-big">Loading your business snapshot...</h1>
+            <p id="ownerHeroActionLine" class="owner-hero-sub">Scanning your highest-impact savings opportunity and priority action list.</p>
+            <div class="owner-hero-actions">
+              <button type="button" class="owner-cta-emerald" onclick="switchWorkspaceTab('actions', document.querySelector('[data-tab=&quot;actions&quot;]'))">
+                <span data-i18n="ctaFixToday">Open Today's Action List</span>
+                <span>→</span>
+              </button>
+              <button type="button" class="owner-cta-glass" onclick="switchWorkspaceTab('predict', document.querySelector('[data-tab=&quot;predict&quot;]'))">
+                <span data-i18n="ctaTestIdea">Test a Business Idea</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="owner-hero-kpis">
+            <div class="owner-kpi-mini">
+              <span data-i18n="kpiHealthyRate">Running Smoothly</span>
+              <strong id="ownerKpiHealthyPct" style="color: var(--accent-emerald);">--%</strong>
+            </div>
+            <div class="owner-kpi-mini">
+              <span data-i18n="kpiProblemRate">Problem Rate</span>
+              <strong id="ownerKpiProblemPct" style="color: var(--accent-crimson);">--%</strong>
+            </div>
+            <div class="owner-kpi-mini">
+              <span id="ownerKpiSaveLbl" data-i18n="kpiQuickSavings">Quick Savings</span>
+              <strong id="ownerKpiQuickSaveVal" style="color: var(--accent-sky);">--</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- V7.0 1-CLICK EXECUTIVE QUICK BRIEF & SHARE BAR (ZERO ROBOTIC AUDIO) -->
+        <section id="v7VoiceShareBar" class="v7-voice-bar hidden" aria-label="Executive Quick Summary and Share Actions">
+          <div class="v7-voice-left">
+            <button id="btnV7ScriptToggle" type="button" class="btn btn-primary btn-sm" onclick="toggleV7VoiceTranscript()">
+              📝 4-Point Executive Brief ▾
+            </button>
+            <span id="v7VoiceStatusPill" class="v7-voice-status">100% DuckDB-Verified · Ready to Share</span>
+          </div>
+          <div class="v7-voice-right">
+            <button id="btnV7ShareCardPng" type="button" class="btn btn-secondary btn-sm" onclick="exportWhatsAppStoryCardPng()">
+              📲 Share Card PNG
+            </button>
+            <button id="btnV7CopyWhatsApp" type="button" class="btn btn-secondary btn-sm" onclick="copyWhatsAppShareText()">
+              📋 WhatsApp Text
+            </button>
+            <a id="openV7BoardroomPdfLink" href="#" target="_blank" class="btn btn-secondary btn-sm">
+              📄 2-Page PDF
+            </a>
+          </div>
+        </section>
+
+        <section id="v7VoiceBeatsPanel" class="v7-beats-panel hidden">
+          <div id="v7VoiceBeatsGrid" class="v7-beats-grid"></div>
+        </section>
+
+        <!-- V7.0 PROACTIVE EARLY-WARNING ANOMALY & VELOCITY RADAR -->
+        <section id="v7AnomalyRadarSection" class="v7-radar-card hidden">
+          <div class="v7-radar-head">
+            <div style="flex: 1 1 320px; min-width: 0;">
+              <div class="section-eyebrow" style="margin-bottom: 4px;">
+                <span id="v7RadarEyebrow">PROACTIVE EARLY-WARNING RADAR</span>
+                <span id="v7RadarMetaTag" class="tabular-nums">EWMA · MAD · BH-FDR</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span id="v7RadarLevelBadge" class="v7-level-pill">ALL CLEAR</span>
+                <h3 id="v7RadarHeadline" style="font-size: 15.5px; font-weight: 800; margin: 0; color: var(--text-primary);">Scanning time-series velocity...</h3>
+              </div>
+            </div>
+            <div id="v7RadarSparkline" class="v7-sparkline-box" aria-label="Time-series adverse rate trend"></div>
+          </div>
+          <div id="v7RadarCohortsGrid" class="v7-cohort-grid hidden"></div>
+          <div id="v7RadarProjectionBar" class="v7-projection-bar hidden"></div>
+        </section>
+
+        <!-- V7.0 CLOSED-LOOP BEFORE-VS-AFTER IMPACT VERIFIER -->
+        <section id="v7ImpactVerifierBanner" class="v7-impact-banner hidden">
+          <span id="v7ImpactVerdictBadge" class="v7-level-pill">VERIFIED</span>
+          <span id="v7ImpactHeadline" style="font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1 1 240px;"></span>
+          <span id="v7ImpactMeta" style="font-size: 12px; color: var(--text-muted);" class="tabular-nums"></span>
+        </section>
+
+        <!-- V8 LIVE VISUAL CHARTS ROW (AT-A-GLANCE BARS + QUICK ACTION ROADMAP) -->
+        <section id="ownerChartsGrid" class="owner-charts-grid">
+          <div class="owner-chart-card">
+            <div class="owner-chart-head">
+              <div>
+                <h3 id="ownerBarChartTitle" data-i18n="chartLeaksTitle">Where Problems Happen Most</h3>
+                <span id="ownerBarChartSub" class="owner-chart-sub">Comparing each group against your business average</span>
+              </div>
+              <span id="ownerBarAvgBadge" class="topbar-lang-badge">Avg: --%</span>
+            </div>
+            <div id="ownerVisualBarsList" class="viz-bar-list"></div>
+          </div>
+
+          <div class="owner-chart-card">
+            <div class="owner-chart-head">
+              <div>
+                <h3 data-i18n="chartRoadmapTitle">Fastest Ways to Improve</h3>
+                <span class="owner-chart-sub" data-i18n="chartRoadmapSub">Click any option to see exact profit in the calculator</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px;">
+                <span style="color:var(--accent-emerald);font-weight:600;" id="ownerSplitOkLabel">Healthy: --%</span>
+                <span style="color:var(--accent-crimson);font-weight:600;" id="ownerSplitRiskLabel">At Risk: --%</span>
+              </div>
+              <div class="viz-split-bar">
+                <div id="ownerSplitOkBar" class="viz-split-ok" style="width: 65%;"></div>
+                <div id="ownerSplitRiskBar" class="viz-split-risk" style="width: 35%;"></div>
+              </div>
+            </div>
+            <div id="ownerQuickPlansList" class="viz-quick-plan-list"></div>
+          </div>
+        </section>
+
+        <!-- Period-over-Period Comparison Banner (Auto-hidden on single baseline to keep page clean!) -->
+        <div id="driftRadarBanner" class="drift-banner hidden">
+          <div>
+            <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;" data-i18n="eyebrowTrend">TREND COMPARED TO PREVIOUS REPORT</div>
+            <h3 id="driftHeadline" style="font-size: 15.5px; font-weight: 700;">Baseline Snapshot Recorded</h3>
+            <p id="driftNarrative" style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;"></p>
+          </div>
+          <div class="drift-deltas">
+            <div class="delta-pill">
+              <span data-i18n="lblRateChange">Problem Rate Change</span>
+              <strong id="driftRateDelta" class="tabular-nums">0.00 pp</strong>
+            </div>
+            <div class="delta-pill">
+              <span data-i18n="lblMoneyChange">Avg Order Change</span>
+              <strong id="driftExposureDelta" class="tabular-nums">$0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Crystal-Clear Health Cards -->
+        <section class="pulse-grid">
+          <article class="pulse-card moat">
+            <div>
+              <div class="pulse-card-header">
+                <span class="pulse-label" data-i18n="card1Title">01 · Your Safe Strength</span>
+                <span id="pulseMoatBadge" class="pulse-badge">--</span>
+              </div>
+              <h3 id="pulseMoatHeadline" class="pulse-headline">--</h3>
+              <p id="pulseMoatDetail" class="pulse-detail">--</p>
+            </div>
+            <div class="pulse-footer">
+              <span data-i18n="card1Foot">KEEP DOING THIS</span>
+              <span id="pulseMoatFooter">Verified</span>
+            </div>
+          </article>
+
+          <article class="pulse-card bottleneck">
+            <div>
+              <div class="pulse-card-header">
+                <span class="pulse-label" data-i18n="card2Title">02 · Biggest Money Leak</span>
+                <span id="pulseBottleneckBadge" class="pulse-badge">--</span>
+              </div>
+              <h3 id="pulseBottleneckHeadline" class="pulse-headline">--</h3>
+              <p id="pulseBottleneckDetail" class="pulse-detail">--</p>
+            </div>
+            <div class="pulse-footer">
+              <span data-i18n="card2Foot">FIX THIS FIRST</span>
+              <span id="pulseBottleneckFooter">Main Problem</span>
+            </div>
+          </article>
+
+          <article class="pulse-card redline">
+            <div>
+              <div class="pulse-card-header">
+                <span class="pulse-label" data-i18n="card3Title">03 · Danger Limit</span>
+                <span id="pulseRedlineBadge" class="pulse-badge">--</span>
+              </div>
+              <h3 id="pulseRedlineHeadline" class="pulse-headline">--</h3>
+              <p id="pulseRedlineDetail" class="pulse-detail">--</p>
+            </div>
+            <div class="pulse-footer">
+              <span data-i18n="card3Foot">AVOID CROSSING THIS</span>
+              <span id="pulseRedlineFooter">Red-Line Rule</span>
+            </div>
+          </article>
+
+          <article class="pulse-card recovery">
+            <div>
+              <div class="pulse-card-header">
+                <span class="pulse-label" data-i18n="card4Title">04 · Money You Can Save</span>
+                <span id="pulseRecoveryBadge" class="pulse-badge">--</span>
+              </div>
+              <h3 id="pulseRecoveryHeadline" class="pulse-headline">--</h3>
+              <p id="pulseRecoveryDetail" class="pulse-detail">--</p>
+            </div>
+            <div class="pulse-footer">
+              <span data-i18n="card4Foot">30-DAY OPPORTUNITY</span>
+              <span id="pulseRecoveryFooter">Ready to Recover</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- V6.0 CATEGORY-AWARE ECONOMICS & STATISTICS INTELLIGENCE PANEL -->
+        <section id="categoryIntelSection" class="exception-console hidden" style="margin-bottom: 18px; border-color: var(--accent-sky-border);">
+          <div class="exc-header">
+            <div>
+              <div id="catIntelEyebrow" class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">CATEGORY ECONOMICS &amp; STATISTICS PACK</div>
+              <h2 id="catIntelTitle" class="exc-title">Industry-Tailored Business Metrics</h2>
+              <p id="catIntelSubtitle" class="exc-subtitle"></p>
+            </div>
+            <span id="catIntelModeBadge" class="exc-status-pill" style="background: var(--accent-sky-bg); color: var(--accent-sky); border-color: var(--accent-sky-border);">Auto-Detected</span>
+          </div>
+          <div id="catIntelWarningBox" class="hidden" style="margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: var(--accent-amber-bg); border: 1px solid var(--accent-amber-border); color: var(--accent-amber); font-size: 12.5px; font-weight: 600;"></div>
+          <div id="catIntelPacksRow" class="cat-pill-row"></div>
+          <div id="catIntelKpiGrid" class="cat-intel-grid"></div>
+          <div id="catIntelUnlockRow" class="cat-unlock-strip hidden"></div>
+        </section>
+
+        <!-- WORKSTREAM 1: SALES, PROFIT, 30-DAY DEMAND FORECAST & STOCK REORDER CONSOLE -->
+        <section id="growthInventorySection" class="exception-console hidden" style="margin-bottom: 18px; border-color: var(--accent-emerald-border);">
+          <div class="exc-header">
+            <div>
+              <div id="giEyebrow" class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">SALES · PROFIT · DEMAND FORECAST · STOCK REORDER</div>
+              <h2 id="giHeadline" class="exc-title">Sales, Margin &amp; 30-Day Stock Plan</h2>
+              <p id="giSubtitle" class="exc-subtitle"></p>
+            </div>
+            <span id="giModeBadge" class="exc-status-pill" style="background: var(--accent-emerald-bg); color: var(--accent-emerald); border-color: var(--accent-emerald-border);">Commercial Mode</span>
+          </div>
+          <div id="giKpiStrip" class="pulse-grid" style="margin-top: 12px; margin-bottom: 12px;"></div>
+          <div id="giActionGrid" class="exc-grid"></div>
+        </section>
+
+        <!-- SIGNATURE DIFFERENTIATION ANCHOR: AUTONOMOUS EXCEPTION COMMAND CONSOLE -->
+        <section id="rankedLeaksSection" class="exception-console hidden">
+          <div class="exc-header">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-crimson); margin-bottom: 2px;">BUSINESS HEALTH CHECK · REAL PROBLEMS ONLY</div>
+              <h2 id="rankedLeaksTitle" class="exc-title">Where Your Business Is Losing Money</h2>
+              <p id="rankedVerdictLine" class="exc-subtitle"></p>
+            </div>
+            <div class="exc-actions">
+              <span id="rankedLeaksBadge" class="exc-status-pill">Scanning...</span>
+              <button id="btnQuickWhatsappAlert" type="button" class="btn btn-secondary btn-sm" onclick="dispatchQuickLeakAlert('whatsapp')">📲 WhatsApp Alert</button>
+              <button id="btnQuickEmailAlert" type="button" class="btn btn-secondary btn-sm" onclick="dispatchQuickLeakAlert('email')">✉️ Email Alert</button>
+            </div>
+          </div>
+
+          <div class="exc-filter-bar">
+            <div id="rankedSeverityFilters" class="exc-filter-pills"></div>
+            <div id="rankedCountMeta" style="font-size: 12px; color: var(--text-muted); font-weight: 600;"></div>
+          </div>
+
+          <div id="rankedHeroSpotlight"></div>
+          <div id="rankedLeaksList" class="exc-grid"></div>
+          <div id="rankedShowAllWrap" class="exc-show-more-wrap hidden"></div>
+
+          <details id="healthyChecksDetails" class="exc-healthy-bar">
+            <summary id="healthyChecksSummary">✅ Healthy Checks Auto-Hidden</summary>
+            <div id="healthyChecksList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 12px;"></div>
+          </details>
+
+          <div class="exc-footer-split">
+            <div id="rankedShieldsBox" class="exc-subpanel" style="border-left: 3px solid var(--accent-emerald);"></div>
+            <div id="rankedOppsBox" class="exc-subpanel" style="border-left: 3px solid var(--accent-sky);"></div>
+          </div>
+          <div id="rankedUnlockStrip" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-subtle); font-size: 12px; color: var(--text-secondary);"></div>
+        </section>
+
+        <!-- Plain Summary + 3 Honest Options -->
+        <section class="two-col-grid">
+          <!-- Left: 3 Practical Action Plans -->
+          <div class="panel-card">
+            <div class="section-eyebrow">
+              <span data-i18n="eyebrowPlans">YOUR 3 OPTIONS TO FIX THIS</span>
+              <span style="color: var(--accent-emerald);" data-i18n="clickSimulate">CLICK ONE TO ESTIMATE</span>
+            </div>
+            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;" data-i18n="plansTitle">Choose Your Improvement Plan</h2>
+            <p style="font-size: 13px; color: var(--text-secondary);" data-i18n="plansLead">
+              We never force one decision. Pick any plan below to test how much money it saves in the calculator:
+            </p>
+            <div id="pathwayStack" class="pathway-stack"></div>
+          </div>
+
+          <!-- Right: Zero-Jargon Plain Summary -->
+          <div class="panel-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+              <div>
+                <div class="section-eyebrow" style="margin-bottom: 2px;" data-i18n="eyebrowStory">FULL BUSINESS SUMMARY</div>
+                <h2 style="font-size: 18px; font-weight: 800;" data-i18n="storyTitle">Simple Story of Your Numbers</h2>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div class="lang-switch">
+                  <button id="btnBriefEn" type="button" class="lang-btn active" onclick="setGlobalLanguage('en')">🇬🇧 English</button>
+                  <button id="btnBriefHi" type="button" class="lang-btn" onclick="setGlobalLanguage('hi')">🇮🇳 Hinglish</button>
+                </div>
+                <select id="briefLanguageSelect" class="global-lang-select" style="width:auto;min-width:165px;padding:5px 10px;" aria-label="Translate Report Language" onchange="setGlobalLanguage(this.value)">
+                  <option value="en">🌐 More Languages (43)...</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="briefReaderBox" class="brief-reader"></div>
+
+            <div id="artifactDownloadStrip" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle);"></div>
+          </div>
+        </section>
+
+        <!-- COLLAPSIBLE DEEP AUDIT DRAWER (360 OMNI-SCAN + ALL 200 BACKGROUND QUESTIONS) -->
+        <details id="deepAuditDrawer" style="margin-top: 16px; background: var(--bg-panel); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px 16px;">
+          <summary style="cursor: pointer; font-weight: 800; font-size: 14.5px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; list-style: none;">
+            <span>🔬 Deep Forensic Audit &amp; Search All 200 Background Business Checks (Q001–Q200)</span>
+            <span id="deepAuditToggleLabel" style="font-size: 12px; font-weight: 600; color: var(--accent-sky);">Click to Expand ▾</span>
+          </summary>
+
+        <!-- 360-DEGREE A-TO-Z HIDDEN LEAKAGE & PROFIT FORENSICS PANEL -->
+        <section id="omniLeakSection" class="glass-panel hidden" style="margin-top: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-amber);">360° A-TO-Z DEEP FORENSIC SCAN</div>
+              <h2 id="omniLeakTitle" style="font-size: 18px; font-weight: 800;">Complete Hidden Profit Leaks, Operational Bottlenecks &amp; Customer Insights</h2>
+            </div>
+            <span id="omniLeakBadge" class="badge-pill" style="background: var(--accent-emerald-soft); color: var(--accent-emerald); font-weight: 700;">100% Columns Scanned</span>
+          </div>
+          <div id="omniLeakCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px;"></div>
+        </section>
+
+        <!-- UNIVERSAL 200-QUESTION BUSINESS INTELLIGENCE MATRIX (15 PILLARS · Q001-Q200) -->
+        <section id="questions200Section" class="glass-panel hidden" style="margin-top: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-sky);">UNIVERSAL 200 BUSINESS QUESTIONS · 15 PILLARS (Q001–Q200)</div>
+              <h2 id="q200Title" style="font-size: 18px; font-weight: 800;">100% Complete A-to-Z Business Intelligence Answers</h2>
+            </div>
+            <span id="q200SummaryBadge" class="badge-pill" style="background: var(--accent-emerald-soft); color: var(--accent-emerald); font-weight: 700;">Loading 200 Questions...</span>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+            <input id="q200SearchInput" type="text" class="search-input" style="flex: 1; min-width: 240px;" placeholder="Search Q001–Q200, e.g. Q049, RFM, Benford, coupon, RTO..." oninput="render200QuestionsPanel()" />
+            <select id="q200StatusFilter" class="form-control" style="width: auto; min-width: 220px;" onchange="render200QuestionsPanel()">
+              <option value="DATA_BACKED" selected>✅ Data-Backed Only (Direct + Proxy)</option>
+              <option value="DIRECT_ANSWERED">✅ Direct Data Answers Only</option>
+              <option value="PROXY_ANSWERED">🟡 Smart Proxy Estimates Only</option>
+              <option value="ALL">All 200 (Include Missing Columns)</option>
+              <option value="COLUMN_MISSING_EXPLAINED">⚪ Needs Extra Sheet/Column</option>
+            </select>
+          </div>
+
+          <div id="q200PillarPills" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;"></div>
+          <div id="q200CardsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 10px; max-height: 620px; overflow-y: auto; padding-right: 4px;"></div>
+        </section>
+        </details>
+      </div>
+
+      <!-- TAB 2: TODAY'S ACTION LIST & SAVED MONEY TRACKER -->
+      <div id="tabPanel-actions" class="tab-panel hidden">
+        <!-- Realized Savings Banner -->
+        <div class="roi-highlight-card">
+          <div>
+            <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="eyebrowRoi">YOUR SAVED MONEY TRACKER</div>
+            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+              <div id="roiSavedCapitalValue" class="tabular-nums" style="font-size: 30px; font-weight: 800; color: var(--accent-emerald);">$0</div>
+              <span style="font-size: 13.5px; color: var(--text-secondary);">
+                <span data-i18n="lblActionsDone">Actions Taken:</span> <strong id="roiActionsCount" style="color: var(--text-primary);">0</strong> ·
+                <span data-i18n="lblRoiMult">Return on Plan:</span> <strong id="roiMultiplierBadge" style="color: var(--accent-emerald);">0.0x</strong>
+              </span>
+            </div>
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;" data-i18n="roiHelpText">
+              Click "Take Action" on any customer/order below when your team calls or fixes it — your savings automatically update here.
+            </p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="downloadWorklistCsv()">
+            ⬇️ <span data-i18n="btnDownloadList">Download Excel/CSV List</span>
+          </button>
+        </div>
+
+        <!-- Actionable Priority Table -->
+        <section class="worklist-panel">
+          <div class="worklist-toolbar">
+            <div>
+              <div class="section-eyebrow" style="margin-bottom: 2px;" data-i18n="eyebrowQueue">TEAM DAILY WORKLIST</div>
+              <h2 style="font-size: 18px; font-weight: 800;">
+                <span data-i18n="worklistTitle">Priority Customers &amp; Orders to Act On Today</span>
+                <span id="worklistCountBadge" class="tabular-nums" style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-left: 8px;"></span>
+              </h2>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <div class="filter-tabs">
+                <button type="button" class="filter-tab active" data-queue="all" onclick="setWorklistQueueFilter('all', this)" data-i18n="fltAll">All Cases</button>
+                <button type="button" class="filter-tab" data-queue="Preventive" onclick="setWorklistQueueFilter('Preventive', this)" data-i18n="fltPrev">🟡 Save Before Loss</button>
+                <button type="button" class="filter-tab" data-queue="Recovery" onclick="setWorklistQueueFilter('Recovery', this)" data-i18n="fltRec">🔴 Recover Lost Money</button>
+              </div>
+              <input id="worklistSearchInput" type="text" class="search-input" placeholder="Search ID or reason..." oninput="renderWorklistTable()" />
+            </div>
+          </div>
+
+          <div class="table-scroll worklist-table-scroll">
+            <table class="data-table worklist-mobile-cards">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th id="thPrimaryId">ID</th>
+                  <th data-i18n="colPriority">Urgency</th>
+                  <th data-i18n="colChance">Risk %</th>
+                  <th data-i18n="colMoney">Amount at Risk</th>
+                  <th data-i18n="colWhy">Why It Is Risky</th>
+                  <th data-i18n="colDo">What to Do Next</th>
+                  <th style="text-align: right;" data-i18n="colBtn">Action</th>
+                </tr>
+              </thead>
+              <tbody id="worklistTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 3: SAVINGS CALCULATOR & SEGMENT BREAKDOWN -->
+      <div id="tabPanel-calculator" class="tab-panel hidden">
+        <!-- Interactive What-If Profit Simulator -->
+        <div class="panel-card" style="margin-bottom: 22px;">
+          <div class="section-eyebrow">
+            <span data-i18n="eyebrowSim">WHAT-IF SAVINGS CALCULATOR</span>
+            <span id="simBasisLabel" class="tabular-nums">BASED ON REAL DATA</span>
+          </div>
+          <h2 style="font-size: 19px; font-weight: 800; margin-bottom: 4px;" data-i18n="simTitle">Calculate How Much Profit You Can Recover</h2>
+          <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 18px;" data-i18n="simLead">
+            Move the sliders below to test: "If we reduce our main problem by X% and spend Y budget, how much net profit stays in our pocket?"
+          </p>
+
+          <div class="two-col-grid" style="margin-bottom: 0; align-items: center;">
+            <div>
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span style="font-weight: 600;" data-i18n="simSlider1">How much of the problem can we reduce?</span>
+                  <strong id="simReductionLabel" class="tabular-nums" style="color: var(--accent-emerald);">25% Containment</strong>
+                </div>
+                <input id="simReductionSlider" type="range" min="5" max="60" step="5" value="25" oninput="recalculateSimulator()" />
+              </div>
+
+              <div class="slider-group" style="margin-bottom: 0;">
+                <div class="slider-header">
+                  <span style="font-weight: 600;" data-i18n="simSlider2">Monthly Team / Fix Cost</span>
+                  <strong id="simCostLabel" class="tabular-nums" style="color: var(--text-primary);">$2,500</strong>
+                </div>
+                <input id="simCostSlider" type="range" min="0" max="50000" step="500" value="2500" oninput="recalculateSimulator()" />
+              </div>
+            </div>
+
+            <div class="sim-output-grid" style="margin-top: 0;">
+              <div class="sim-kpi">
+                <span id="simGrossTitle">Money Saved</span>
+                <strong id="simGrossValue" style="color: var(--accent-emerald);">$0</strong>
+              </div>
+              <div class="sim-kpi">
+                <span data-i18n="simNetLbl">Net Profit Kept</span>
+                <strong id="simNetValue" style="color: var(--accent-sky);">$0</strong>
+              </div>
+              <div class="sim-kpi">
+                <span data-i18n="simNewRateLbl">New Problem Rate</span>
+                <strong id="simNewRateValue" style="color: var(--accent-amber);">0.0%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Segment & Department Risk Breakdown -->
+        <section id="cohortExplorerSection" class="worklist-panel hidden">
+          <div class="worklist-toolbar">
+            <div>
+              <div class="section-eyebrow" style="margin-bottom: 2px;" data-i18n="eyebrowBreak">CATEGORY &amp; GROUP BREAKDOWN</div>
+              <h2 style="font-size: 18px; font-weight: 800;">
+                <span data-i18n="breakTitle">Where Are Losses Happening Most?</span>
+                <span id="cohortDimensionBadge" class="tabular-nums" style="font-size: 13px; font-weight: 600; color: var(--accent-sky); margin-left: 8px;"></span>
+              </h2>
+            </div>
+            <div id="cohortDimensionTabs" class="filter-tabs"></div>
+          </div>
+
+          <div class="table-scroll" style="max-height: 400px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="brkColGroup">Group / Segment</th>
+                  <th data-i18n="brkColVol">Total Orders</th>
+                  <th data-i18n="brkColFail">Failed Cases</th>
+                  <th data-i18n="brkColRate">Problem Rate %</th>
+                  <th data-i18n="brkColShare">Share of All Problems</th>
+                  <th data-i18n="brkColMoney">Money Lost / At Risk</th>
+                  <th data-i18n="brkColHealth">Health</th>
+                  <th style="text-align: right;" data-i18n="brkColWhy">Check Why</th>
+                </tr>
+              </thead>
+              <tbody id="cohortBreakdownTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 4: ASK QUESTIONS IN PLAIN LANGUAGE -->
+      <div id="tabPanel-ask" class="tab-panel hidden">
+        <section class="panel-card">
+          <div class="section-eyebrow">
+            <span data-i18n="eyebrowAsk">ASK IN PLAIN ENGLISH OR HINGLISH</span>
+            <span>100% VERIFIED AGAINST YOUR FILE</span>
+          </div>
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" data-i18n="askTitle">Ask Any Question About Your Business</h2>
+          <p style="font-size: 13.5px; color: var(--text-secondary);" data-i18n="askLead">
+            Type your question below just like texting a business analyst — or click one of the ready-made questions:
+          </p>
+
+          <div id="copilotQuickChips" class="copilot-chips">
+            <button type="button" class="copilot-chip" onclick="askPresetQuestion('What are the top 5 highest risk segments and their total exposure?')">
+              🔴 Top 5 biggest loss areas
+            </button>
+            <button type="button" class="copilot-chip" onclick="askPresetQuestion('Sabse zyada loss kis segment mein ho raha hai aur kyun?')">
+              🇮🇳 Sabse zyada loss kahan aur kyun ho raha hai?
+            </button>
+            <button type="button" class="copilot-chip" onclick="askPresetQuestion('Compare average exposure between adverse events and normal records')">
+              💰 Compare failed vs normal order value
+            </button>
+            <button type="button" class="copilot-chip" onclick="askPresetQuestion('Show summary statistics and total records count')">
+              📊 Overall numbers summary
+            </button>
+          </div>
+
+          <div class="copilot-input-row">
+            <input id="copilotQuestionInput" type="text" placeholder="Example: Which group has the highest cancellations and how much money is at risk?" onkeydown="if(event.key==='Enter') submitCopilotQuestion()" />
+            <select id="copilotLangSelect" style="background: var(--bg-subtle); border: 1px solid var(--border-strong); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 13.5px;">
+              <option value="en">🇬🇧 English</option>
+              <option value="hi">🇮🇳 Hinglish</option>
+            </select>
+            <button id="copilotAskBtn" type="button" class="btn btn-primary" onclick="submitCopilotQuestion()">
+              <span data-i18n="btnGetAnswer">Get Verified Answer</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="resetCopilotChat()" title="Clear follow-up filters & start a fresh question">
+              🧹 New Chat
+            </button>
+          </div>
+          <div id="copilotContextBar" class="hidden" style="margin-top: 8px; font-size: 12px; color: var(--accent-sky); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"></div>
+
+          <div id="copilotResultContainer" class="qa-response-card hidden">
+            <div id="copilotAnswerMarkdown" class="brief-reader" style="max-height: none; background: transparent; border: none; padding: 0;"></div>
+            <div id="copilotTableWrapper" class="table-scroll" style="margin-top: 14px; max-height: 280px;"></div>
+            <details style="margin-top: 12px;">
+              <summary style="cursor: pointer; font-size: 12px; color: var(--text-muted); font-weight: 600;">
+                Show Technical Verification Query (For Data Analysts)
+              </summary>
+              <pre id="copilotSqlCode" class="sql-code-block"></pre>
+            </details>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 5: STAGE 8 — AI DECISION PREDICTOR & SIMULATOR ("DECISION LAB") -->
+      <div id="tabPanel-predict" class="tab-panel hidden">
+        <section class="panel-card">
+          <div class="predict-header-row">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 3px;" data-i18n="eyebrowPredict">
+                WHAT-IF DECISION SIMULATOR · TEST BEFORE SPENDING
+              </div>
+              <h2 style="font-size: 21px; font-weight: 800; margin-bottom: 4px;" data-i18n="predictTitle">
+                Test Your Business Decision Before You Take Action
+              </h2>
+              <p style="font-size: 13.5px; color: var(--text-secondary); max-width: 680px;" data-i18n="predictLead">
+                Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won't help, and why loss could happen.
+              </p>
+            </div>
+            <div id="predictModelHonestyPill" class="predict-honesty-pill">
+              🧠 Analyzing business patterns...
+            </div>
+          </div>
+
+          <!-- Step 1A: 4 Friendly 1-Click Business Decision Presets -->
+          <div id="predictPresetsGrid" class="predict-presets-grid">
+            <div style="grid-column: 1 / -1; padding: 18px; text-align: center; color: var(--text-muted); font-size: 13px;">
+              Loading smart decision scenarios from your data...
+            </div>
+          </div>
+
+          <!-- Step 1B: Plain English / Hinglish Decision Box + Optional Rollout Budget -->
+          <div class="predict-input-row">
+            <input
+              id="predictDecisionInput"
+              type="text"
+              placeholder="Example: What if we replace Vendor A with Vendor B? OR Cap discount at 15% in Kanpur..."
+              onkeydown="if(event.key==='Enter') runPredictFromText()"
+            />
+            <label class="predict-cost-chip" title="Optional: Subtract one-time rollout or setup cost to see true net ROI">
+              <span data-i18n="lblRolloutCost">💰 Rollout Cost:</span>
+              <input id="predictRolloutCostInput" type="number" min="0" step="any" placeholder="0" />
+            </label>
+            <button id="btnPredictRun" type="button" class="btn btn-primary" onclick="runPredictFromText()">
+              <span>🔮</span>
+              <span data-i18n="btnPredictNow">Predict Outcome</span>
+            </button>
+          </div>
+
+          <!-- Step 1C: Clean Collapsible Custom Visual Decision Builder -->
+          <details id="predictCustomBuilder" class="predict-custom-builder">
+            <summary>
+              <span data-i18n="predictCustomToggle">🎛️ Or Build a Custom Decision (Choose Any Business Factor &amp; Change)</span>
+              <span id="predictCustomToggleLabel" style="font-size: 11.5px; color: var(--text-muted);">Expand ▾</span>
+            </summary>
+            <div class="predict-custom-grid">
+              <div class="form-field">
+                <label for="predictColSelect" data-i18n="lblPredictCol">1. What do you want to change?</label>
+                <select id="predictColSelect" onchange="onPredictBuilderColChange()"></select>
+              </div>
+              <div class="form-field">
+                <label for="predictActionSelect" data-i18n="lblPredictAct">2. Type of change</label>
+                <select id="predictActionSelect" onchange="onPredictBuilderActionChange()"></select>
+              </div>
+              <div id="predictFromWrap" class="form-field">
+                <label for="predictFromSelect" data-i18n="lblPredictFrom">3. Current value</label>
+                <select id="predictFromSelect"></select>
+              </div>
+              <div id="predictToWrap" class="form-field">
+                <label for="predictToSelect" data-i18n="lblPredictTo">4. Change to</label>
+                <select id="predictToSelect"></select>
+              </div>
+              <div id="predictNumWrap" class="form-field hidden">
+                <label for="predictNumInput" id="predictNumLabel">3. Target limit / %</label>
+                <input id="predictNumInput" type="number" step="any" placeholder="e.g. 15" />
+              </div>
+              <div class="form-field">
+                <label for="predictScopeSelect" data-i18n="lblPredictScope">Optional: Only in specific store/group</label>
+                <select id="predictScopeSelect">
+                  <option value="">Entire Business (All Rows)</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-primary" style="flex: 1;" onclick="runPredictFromBuilder()">
+                  ▶ <span data-i18n="btnTestCustom">Test Change</span>
+                </button>
+                <button id="btnAddToCombo" type="button" class="btn btn-sky" title="Queue 2–4 levers to simulate together with zero double-counting" onclick="addCurrentBuilderToCombo()">
+                  ➕ <span data-i18n="btnAddCombo">Combo</span>
+                </button>
+              </div>
+            </div>
+            <!-- Multi-Lever Combo Queue Bar (Hidden until >= 1 lever queued) -->
+            <div id="predictComboQueueBox" class="predict-combo-bar hidden">
+              <div id="predictComboChips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;"></div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button id="btnRunPredictCombo" type="button" class="btn btn-primary btn-sm" onclick="runPredictCombo()">
+                  ⚡ <span data-i18n="btnRunCombo">Simulate Combo</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearComboQueue()">✕</button>
+              </div>
+            </div>
+          </details>
+
+          <!-- Loading Indicator while simulating -->
+          <div id="predictLoadingBox" class="hidden" style="margin-top: 16px; padding: 18px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-subtle); text-align: center; font-size: 13.5px; color: var(--text-secondary);">
+            ⏳ Testing your decision against historical business patterns...
+          </div>
+
+          <!-- Step 2 & 3: Visual Verdict Ring + 3 Plain-Language Explanation Cards -->
+          <div id="predictResultStage" class="hidden">
+            <div id="predictVerdictHero" class="predict-verdict-hero">
+              <div class="predict-gauge-wrap">
+                <svg width="138" height="138" viewBox="0 0 138 138" aria-label="Probability of Benefit Gauge">
+                  <circle cx="69" cy="69" r="56" fill="none" stroke="var(--bg-elevated)" stroke-width="12"></circle>
+                  <circle
+                    id="predictGaugeCircle"
+                    cx="69" cy="69" r="56" fill="none"
+                    stroke="var(--accent-emerald)" stroke-width="12"
+                    stroke-linecap="round"
+                    stroke-dasharray="351.86"
+                    stroke-dashoffset="351.86"
+                    transform="rotate(-90 69 69)"
+                    style="transition: stroke-dashoffset 650ms cubic-bezier(0.22, 1, 0.36, 1), stroke 300ms ease;"
+                  ></circle>
+                  <text id="predictGaugePctText" x="69" y="65" text-anchor="middle" fill="var(--text-primary)" font-size="27" font-weight="800" font-family="var(--font-mono)">--%</text>
+                  <text id="predictGaugeSubText" x="69" y="85" text-anchor="middle" fill="var(--text-muted)" font-size="10.5" font-weight="700">BENEFIT CHANCE</text>
+                </svg>
+                <span id="predictLossRiskPill" style="font-size: 11.5px; font-weight: 700; color: var(--text-secondary); background: var(--bg-subtle); border: 1px solid var(--border-subtle); padding: 3px 10px; border-radius: 999px;">
+                  Loss Risk: --%
+                </span>
+              </div>
+
+              <div>
+                <span id="predictVerdictBadge" class="predict-verdict-badge STRONG_GO">STRONG GO</span>
+                <h3 id="predictVerdictHeadline" style="font-size: 19px; font-weight: 800; line-height: 1.3; color: var(--text-primary);">--</h3>
+                <p id="predictDecisionAppliedLine" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;"></p>
+
+                <!-- 4-Pillar Visual Simulation Confidence Score Meter (0-100) -->
+                <div id="predictConfidenceMeterBox" class="predict-conf-box">
+                  <div class="predict-conf-top">
+                    <span id="predictConfTitle" style="color: var(--text-primary);">🛡️ Simulation Confidence Score</span>
+                    <span id="predictConfScorePill" style="font-family: var(--font-mono); color: var(--accent-emerald);">-- / 100</span>
+                  </div>
+                  <div class="predict-conf-track">
+                    <div id="predictConfBarFill" class="predict-conf-fill" style="width: 0%; background: var(--accent-emerald);"></div>
+                  </div>
+                  <div id="predictConfPillars" class="predict-conf-pillars"></div>
+                </div>
+
+                <div class="predict-kpi-row">
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiNetLabel">Expected Net Impact</span>
+                    <strong id="predictKpiNetVal">--</strong>
+                    <small id="predictKpiCiVal">95% Range: --</small>
+                  </div>
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiRateLabel">Risk Rate (Before → After)</span>
+                    <strong id="predictKpiRateVal">--</strong>
+                    <small id="predictKpiEventsVal">--</small>
+                  </div>
+                  <div class="predict-kpi-box">
+                    <span id="predictKpiCompLabel">Profit vs Trade-Off Split</span>
+                    <strong id="predictKpiCompVal">--</strong>
+                    <small id="predictKpiCompNote">--</small>
+                  </div>
+                </div>
+
+                <!-- 1-Click Boardroom Actions: Commit & Track · WhatsApp Memo · Print Board PDF -->
+                <div id="predictActionStrip" class="predict-action-strip">
+                  <button id="btnCommitDecision" type="button" class="btn btn-emerald btn-sm" onclick="commitCurrentDecision()">
+                    📌 <span data-i18n="btnCommitTrack">Commit &amp; Track Reality</span>
+                  </button>
+                  <button id="btnDecisionWhatsAppMemo" type="button" class="btn btn-amber btn-sm" onclick="shareDecisionWhatsAppMemo()">
+                    📲 <span data-i18n="btnWaMemo">WhatsApp Memo</span>
+                  </button>
+                  <button id="btnDecisionPrintMemo" type="button" class="btn btn-secondary btn-sm" onclick="printExecutiveBoardMemo()">
+                    🖨️ <span data-i18n="btnPrintMemo">Print Board PDF</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Crystal-Clear Explanation Cards -->
+            <div class="predict-explain-grid">
+              <div class="predict-explain-card helps">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="predHelpsEye">WHERE IT HELPS MOST</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predHelpsTitle">✅ Where You Win</h4>
+                </div>
+                <div id="predictHelpsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+
+              <div class="predict-explain-card nohelp">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 2px;" data-i18n="predNoHelpEye">WHERE IT WON'T HELP MUCH</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predNoHelpTitle">⚠️ Low / Zero-Benefit Zones</h4>
+                </div>
+                <div id="predictNoHelpList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+
+              <div class="predict-explain-card risks">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-crimson); margin-bottom: 2px;" data-i18n="predRisksEye">HONEST DOWNSIDE CHECK</div>
+                  <h4 style="font-size: 15px; font-weight: 800;" data-i18n="predRisksTitle">🔍 Why Loss Could Happen</h4>
+                </div>
+                <ul id="predictRisksList" style="margin: 0 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12.8px; color: var(--text-secondary); line-height: 1.5;"></ul>
+              </div>
+            </div>
+
+            <!-- Auto Side-by-Side Decision Comparison Table (Boardroom Scorecard) -->
+            <div id="predictCompareCard" class="predict-compare-card hidden">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+                <div>
+                  <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;" data-i18n="predCmpEye">SIDE-BY-SIDE DECISION SCORECARD</div>
+                  <h4 style="font-size: 15.5px; font-weight: 800;" data-i18n="predCmpTitle">⚖️ Compare Your Tested Decisions</h4>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearPredictComparison()">🧹 Clear</button>
+              </div>
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="cmpColDec">Decision Tested</th>
+                      <th data-i18n="cmpColVer">Verdict</th>
+                      <th data-i18n="cmpColProb">Benefit %</th>
+                      <th data-i18n="cmpColConf">Trust Score</th>
+                      <th data-i18n="cmpColNet">Net Impact</th>
+                      <th data-i18n="cmpColCi">95% Honest Range</th>
+                    </tr>
+                  </thead>
+                  <tbody id="predictCompareTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Predicted vs Actual Decision Accountability Tracker (Auto-shown when commitments exist) -->
+          <div id="predictCommitmentsCard" class="predict-compare-card hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+              <div>
+                <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="predTrackEye">PREDICTED VS ACTUAL ACCOUNTABILITY LOG</div>
+                <h4 style="font-size: 15.5px; font-weight: 800;" data-i18n="predTrackTitle">🎯 Did Our Predictions Come True?</h4>
+              </div>
+              <span id="predictTrackSummaryPill" class="predict-honesty-pill" style="font-size: 11.5px;">0 Tracked</span>
+            </div>
+            <div id="predictCommitmentsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+          </div>
+
+          <!-- Model Drivers & Leakage Guard Transparency Strip -->
+          <div id="predictDriversStrip" class="predict-drivers-strip">
+            <span>🔍 Top AI risk drivers will appear here once the model finishes calibrating.</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 6: STAGE 9 — AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA WAR-ROOM) -->
+      <div id="tabPanel-boardroom" class="tab-panel hidden">
+        <section class="panel-card">
+          <div class="predict-header-row" style="margin-bottom: 10px;">
+            <div>
+              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="boardroomEyebrow">AI BUSINESS ADVISOR · DEBATE &amp; VERIFY DECISIONS</div>
+              <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" data-i18n="boardroomTitle">Discuss Your Team Debate or Business Idea Against Real Data</h2>
+              <p style="font-size: 13.2px; color: var(--text-secondary);" data-i18n="boardroomLead">
+                Type or speak any real business dilemma, budget proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.
+              </p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span id="boardroomStatusPill" class="predict-honesty-pill">🛡️ Zero-Flattery Data Judge Ready</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="clearBoardroomThread()">🧹 Clear</button>
+            </div>
+          </div>
+
+          <div id="boardroomStartersGrid" class="boardroom-starters-grid"></div>
+
+          <div id="boardroomFeed" class="boardroom-feed"></div>
+
+          <div class="boardroom-composer">
+            <textarea id="boardroomInput" class="boardroom-textarea" placeholder="Example: My supervisor wants ₹2,00,000 for a chiller upgrade, while QA says pH acidity is the real cause — who is right according to my data?"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span style="font-size:11.5px;color:var(--text-muted);" data-i18n="boardroomHint">Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates &amp; all 43 world languages.</span>
+              </div>
+              <button id="btnBoardroomSubmit" type="button" class="btn btn-primary" onclick="sendBoardroomDiscussion()">
+                ⚖️ <span data-i18n="btnBoardroomAsk">Ask the Boardroom Judge</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- Settings Modal (Keeps Topbar Clean while keeping Workspace, Region, Compare & API Key 1-click away) -->
+  <div id="settingsModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeSettingsModal()">
+    <div class="modal-card" style="max-width: 500px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div>
+          <div class="section-eyebrow" style="margin-bottom: 2px;">WORKSPACE PREFERENCES</div>
+          <h3 style="font-size: 18px; font-weight: 800;">⚙️ Business Workspace Settings</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeSettingsModal()">✕</button>
+      </div>
+
+      <div class="form-field" style="margin-bottom: 14px;">
+        <label for="tenantInput">Workspace Name</label>
+        <input id="tenantInput" type="text" value="founder_workspace" />
+      </div>
+
+      <div class="form-field" style="margin-bottom: 16px;">
+        <label for="regionSelect">Region &amp; Currency Format</label>
+        <select id="regionSelect" onchange="applyRegionAdaptation(this.value)">
+          <option value="US">US / Global ($ USD)</option>
+          <option value="IN">India (₹ INR · Lakh/Crore)</option>
+          <option value="EU">Europe (€ EUR · Semicolon &amp; Comma Decimals)</option>
+          <option value="GB">UK (£ GBP)</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--border-subtle);">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeSettingsModal(); openRunCompareModal();">
+          ⚖️ Compare Two Reports
+        </button>
+        <button id="btnApiKeyConfig" type="button" class="btn btn-secondary btn-sm" onclick="closeSettingsModal(); openApiKeyModal();" title="Configure Enterprise X-API-Key token when enabled">
+          🔑 API Access Key
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeSettingsModal(); refreshTimeMachineRuns();">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frontline Intervention & Outreach Modal -->
+  <div id="interventionModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeInterventionModal()">
+    <div class="modal-card">
+      <div class="section-eyebrow" style="color: var(--accent-emerald);">TAKE ACTION &amp; TRACK SAVINGS</div>
+      <h3 id="modalEntityTitle" style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Take Action</h3>
+      <p id="modalEntitySubtitle" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;"></p>
+
+      <div class="form-field" style="margin-bottom: 12px;">
+        <label for="modalActionStatus">Action Status</label>
+        <select id="modalActionStatus">
+          <option value="retained">Saved / Problem Resolved (Add to Saved Money Tracker)</option>
+          <option value="contacted">Customer Contacted / Follow-up Sent</option>
+          <option value="escalated">Assigned to Operations Manager</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="modalOutreachText">Ready-to-Send WhatsApp / Note</label>
+        <textarea id="modalOutreachText" rows="4"></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openWhatsAppDeepLink()">
+          💬 Send on WhatsApp ↗
+        </button>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeInterventionModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="commitWorklistIntervention()">
+            Save &amp; Update Tracker
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Morning Munim-Ji Executive Digest & Webhook Modal -->
+  <div id="morningDigestModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeMorningDigestModal()">
+    <div class="modal-card" style="max-width: 640px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 2px;">60-SECOND WHATSAPP BRIEF</div>
+          <h3 style="font-size: 18px; font-weight: 800;">📲 "Morning Munim-Ji" Daily Summary</h3>
+        </div>
+        <div class="lang-switch">
+          <button id="btnDigestEn" type="button" class="lang-btn" onclick="switchDigestLang('en')">🇬🇧 English</button>
+          <button id="btnDigestHi" type="button" class="lang-btn active" onclick="switchDigestLang('hi')">🇮🇳 Hinglish</button>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
+        Forward this 1-minute summary to your partners or operations team on WhatsApp or Slack every morning.
+      </p>
+
+      <textarea id="digestMessagePreview" rows="10" readonly style="width: 100%; box-sizing: border-box; resize: vertical; font-family: var(--font-mono); font-size: 12px;"></textarea>
+
+      <div class="form-field" style="margin-top: 10px;">
+        <label for="digestWebhookUrlInput">Optional: Send directly to Slack / Teams Webhook URL</label>
+        <div style="display: flex; gap: 8px;">
+          <input id="digestWebhookUrlInput" type="url" placeholder="https://hooks.slack.com/services/..." />
+          <button type="button" class="btn btn-sky btn-sm" onclick="dispatchDigestWebhook()">
+            Send
+          </button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="copyDigestText()">
+            📋 Copy Summary
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="shareDigestOnWhatsApp()">
+            💬 Send on WhatsApp ↗
+          </button>
+          <button type="button" class="btn btn-amber btn-sm" onclick="closeMorningDigestModal(); openWorkspaceHubModal('schedules');">
+            ⏰ Schedule Weekly
+          </button>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeMorningDigestModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase B Workspace Hub Modal: 1-Click OAuth Connectors · Scheduled Digests · Team RBAC · Billing -->
+  <div id="workspaceHubModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeWorkspaceHubModal()">
+    <div class="modal-card" style="max-width: 760px; max-height: 88vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">AUTOMATION &amp; GOVERNANCE HUB</div>
+          <h3 style="font-size: 18px; font-weight: 800;">🔌 1-Click OAuth, Morning Digests, Team RBAC &amp; Billing</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeWorkspaceHubModal()">✕</button>
+      </div>
+
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-bottom: 14px;">
+        <button id="hubTabOauth" type="button" class="btn btn-primary btn-sm" onclick="switchWorkspaceHubTab('oauth')">🔌 1-Click OAuth</button>
+        <button id="hubTabSchedules" type="button" class="btn btn-secondary btn-sm" onclick="switchWorkspaceHubTab('schedules')">⏰ Morning Digests</button>
+        <button id="hubTabTeam" type="button" class="btn btn-secondary btn-sm" onclick="switchWorkspaceHubTab('team')">👥 Team &amp; RBAC</button>
+        <button id="hubTabBilling" type="button" class="btn btn-secondary btn-sm" onclick="switchWorkspaceHubTab('billing')">💳 Plan &amp; Billing</button>
+      </div>
+
+      <!-- Tab 1: 1-Click OAuth Connectors -->
+      <div id="hubPaneOauth">
+        <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 10px;">
+          Connect Shopify, QuickBooks Online, Stripe Connect, or Zoho Books once — tokens are encrypted at rest with AES-256-GCM per workspace.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <input id="oauthShopDomainInput" type="text" placeholder="Shopify store (e.g. my-store.myshopify.com)" />
+          <input id="oauthZohoOrgInput" type="text" placeholder="Zoho Books Organization ID (optional)" />
+        </div>
+        <div id="hubOauthProvidersList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+      </div>
+
+      <!-- Tab 2: Scheduled Morning Digests -->
+      <div id="hubPaneSchedules" class="hidden">
+        <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 10px;">
+          Automatically email or WhatsApp your top cash leaks and priority calls every morning or Monday at 8:00 AM.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+          <input id="schedNameInput" type="text" value="Monday Morning Founder Digest" placeholder="Schedule name" />
+          <select id="schedFreqSelect">
+            <option value="weekly_monday">Every Monday (08:00 UTC)</option>
+            <option value="daily">Every Morning Daily (08:00 UTC)</option>
+            <option value="weekly_friday">Every Friday Review (08:00 UTC)</option>
+          </select>
+          <select id="schedChannelSelect">
+            <option value="email">📧 Email (SMTP)</option>
+            <option value="whatsapp">💬 WhatsApp Alert</option>
+            <option value="webhook">🔔 Slack / Teams Webhook</option>
+          </select>
+          <select id="schedLangSelect">
+            <option value="hi">🇮🇳 Hinglish + English</option>
+            <option value="en">🇬🇧 English</option>
+          </select>
+          <input id="schedRecipientInput" type="text" placeholder="founder@company.com, +9198..., or https://hooks..." style="grid-column: span 2;" />
+        </div>
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="createScheduledDigestFromUI()">+ Save Digest Schedule</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="runDueSchedulesNow()">▶ Sweep Due Now</button>
+        </div>
+        <div id="hubSchedulesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- Tab 3: Team RBAC -->
+      <div id="hubPaneTeam" class="hidden">
+        <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 10px;">
+          Role-Based Access Control: <strong>Owner</strong> (billing, OAuth, team) · <strong>Analyst</strong> (uploads, syncs, schedules) · <strong>Viewer</strong> (read-only reports &amp; Q&amp;A).
+        </p>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+          <input id="teamInviteEmailInput" type="email" placeholder="teammate@company.com" style="flex: 1; min-width: 200px;" />
+          <select id="teamInviteRoleSelect" style="width: 140px;">
+            <option value="analyst">Analyst</option>
+            <option value="viewer">Viewer (Read-Only)</option>
+            <option value="owner">Co-Owner</option>
+          </select>
+          <button type="button" class="btn btn-primary btn-sm" onclick="inviteTeamMemberFromUI()">+ Invite</button>
+        </div>
+        <div id="teamInviteTokenBox" class="hidden" style="padding: 10px; border-radius: 8px; background: var(--bg-soft); border: 1px solid var(--border-subtle); font-size: 12px; margin-bottom: 10px;"></div>
+        <div id="hubTeamMembersList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- Tab 4: Plan & Billing -->
+      <div id="hubPaneBilling" class="hidden">
+        <div id="hubBillingSummary" style="padding: 12px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--border-subtle); margin-bottom: 12px;"></div>
+        <div id="hubBillingPlansGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live ERP / Tally Prime XML / Payment Gateway Sync Modal -->
+  <div id="liveErpSyncModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeLiveErpModal()">
+    <div class="modal-card" style="max-width: 620px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">REAL READ-ONLY LIVE SYNC</div>
+          <h3 style="font-size: 18px; font-weight: 800;">⚡ Connect Tally Prime XML / Live ERP API</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeLiveErpModal()">✕</button>
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px;">
+        Credentials stay strictly in memory (never written to disk). Choose your live data source:
+      </p>
+      <div class="form-field" style="margin-bottom: 10px;">
+        <label for="liveErpProviderSelect">Data Source Provider</label>
+        <select id="liveErpProviderSelect" onchange="updateLiveErpFields()">
+          <option value="tally_xml">📒 Tally Prime / ERP 9 DayBook XML</option>
+          <option value="shopify">🛒 Shopify Admin REST API</option>
+          <option value="woocommerce">🛍️ WooCommerce REST API v3</option>
+          <option value="razorpay">🇮🇳 Razorpay Payments REST API</option>
+          <option value="stripe">💳 Stripe Charges REST API</option>
+          <option value="zoho_books">📊 Zoho Books Invoices API</option>
+        </select>
+      </div>
+      <div id="liveErpCredFields" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+        <div class="form-field">
+          <label for="liveTallyXmlInput">Paste Tally Prime DayBook / Sales Register XML</label>
+          <textarea id="liveTallyXmlInput" rows="6" style="width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 11.5px;" placeholder="<ENVELOPE><BODY><DATA><TALLYMESSAGE><VOUCHER>...</VOUCHER></TALLYMESSAGE></DATA></BODY></ENVELOPE>"></textarea>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeLiveErpModal()">Cancel</button>
+        <button id="btnSubmitLiveErpSync" type="button" class="btn btn-primary btn-sm" onclick="submitLiveErpSync()">⚡ Sync &amp; Audit Live Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Layer-3 Mathematical Proof & 12-Gate Audit Drawer Modal -->
+  <div id="proofDrawerModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeProofDrawer()">
+    <div class="drawer-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald);">
+            <span>ACCOUNTANT &amp; DATA AUDIT PROOF</span>
+            <span id="proofConfidenceBadge" style="color: var(--accent-emerald);">100.0% VERIFIED</span>
+          </div>
+          <h2 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
+            🛡️ 12-Step Mathematical Verification Proof
+          </h2>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">
+            Proof that every number on your dashboard is counted directly from your raw data with zero made-up estimates.
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeProofDrawer()">✕ Close</button>
+      </div>
+
+      <div class="wilson-ci-box">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">
+              95% Confidence Range (Statistical Reliability)
+            </span>
+            <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-top: 2px;">
+              Actual Problem Rate: <strong id="proofObservedRate" style="color: var(--accent-sky);">--%</strong>
+              <span style="font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-left: 8px;">
+                Reliable Range: [<strong id="proofCiLower" style="color: var(--accent-emerald);">--%</strong> to <strong id="proofCiUpper" style="color: var(--accent-emerald);">--%</strong>]
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wilson-track">
+          <div id="proofWilsonBar" class="wilson-range-bar" style="left: 20%; width: 30%;"></div>
+          <div id="proofWilsonNeedle" class="wilson-needle" style="left: 35%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+          <span>0%</span>
+          <span>50%</span>
+          <span>100%</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 18px;">
+        <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 6px;">12 VERIFICATION CHECKS</div>
+        <div id="proofGatesList" class="gates-grid"></div>
+      </div>
+
+      <div style="margin-top: 18px;">
+        <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 6px;">
+          EXACT AUDIT QUERIES (FOR CHARTERED ACCOUNTANTS &amp; ANALYSTS)
+        </div>
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span>01 · Total Rows Verification Query</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('volume')">📋 Copy</button>
+          </summary>
+          <pre id="proofSqlVolume" class="sql-code-block"></pre>
+        </details>
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span>02 · Problem Events &amp; Rate Query</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('target')">📋 Copy</button>
+          </summary>
+          <pre id="proofSqlTarget" class="sql-code-block"></pre>
+        </details>
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span>03 · Money at Risk Verification Query</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('drag')">📋 Copy</button>
+          </summary>
+          <pre id="proofSqlDrag" class="sql-code-block"></pre>
+        </details>
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span>04 · Main Bottleneck Breakdown Query</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); copyProofSql('bottleneck')">📋 Copy</button>
+          </summary>
+          <pre id="proofSqlBottleneck" class="sql-code-block"></pre>
+        </details>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn btn-secondary" onclick="closeProofDrawer()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Two Reports Modal -->
+  <div id="runCompareModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeRunCompareModal()">
+    <div class="modal-card" style="max-width: 660px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">MONTH-OVER-MONTH TRACKER</div>
+          <h3 style="font-size: 18px; font-weight: 800;">⚖️ Compare Two Business Reports</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeRunCompareModal()">✕</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+        Select an older report and a newer report to see whether business leaks improved or got worse.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <div class="form-field">
+          <label for="compareRunA">Older Report (Before)</label>
+          <select id="compareRunA"></select>
+        </div>
+        <div class="form-field">
+          <label for="compareRunB">Newer Report (After)</label>
+          <select id="compareRunB"></select>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+        <button type="button" class="btn btn-primary" onclick="executeRunComparison()">
+          Compare Now
+        </button>
+      </div>
+
+      <div id="compareResultContainer" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="section-eyebrow" style="color: var(--accent-emerald); margin: 0;">COMPARISON RESULT</span>
+          <span id="compareStatusBadge" class="run-tag">--</span>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-card">
+            <div class="compare-card-title">Total Records</div>
+            <div class="compare-card-vals">
+              <span id="compareVolumeVals" class="compare-side-val">--</span>
+              <span id="compareVolumeDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-title">Problem Rate %</div>
+            <div class="compare-card-vals">
+              <span id="compareRateVals" class="compare-side-val">--%</span>
+              <span id="compareRateDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+          <div class="compare-card">
+            <div class="compare-card-title">Money at Risk</div>
+            <div class="compare-card-vals">
+              <span id="compareDragVals" class="compare-side-val">--</span>
+              <span id="compareDragDelta" class="compare-delta-badge">--</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 12px;">
+          <div style="font-size: 11.5px; font-weight: 700; color: var(--text-muted);">SUMMARY</div>
+          <p id="compareNotesEn" style="font-size: 13px; color: var(--text-primary); margin-top: 4px;"></p>
+          <p id="compareNotesHi" style="font-size: 13px; color: var(--accent-sky); margin-top: 4px; font-style: italic;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-File Linked Sheet Confirmation Modal -->
+  <div id="starSchemaModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeStarSchemaModal()">
+    <div class="modal-card" style="max-width: 720px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">MULTIPLE FILES LINKED</div>
+          <h3 style="font-size: 18px; font-weight: 800;">🌐 Connected Sheets Detected</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeStarSchemaModal()">✕</button>
+      </div>
+
+      <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 14px;">
+        We found multiple files and automatically matched how they link together without duplicating any orders.
+      </p>
+
+      <div class="star-schema-canvas">
+        <div id="starFactCard" class="schema-fact-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 11px; color: var(--accent-emerald); font-weight: 700;">⭐ MAIN TRANSACTIONS SHEET</span>
+              <h4 id="starFactName" style="font-size: 16px; font-weight: 800; color: var(--text-primary); margin-top: 2px;">fact_table</h4>
+            </div>
+            <span id="starFactRowsBadge" class="run-tag">-- rows</span>
+          </div>
+          <div id="starFactGoalDetail" style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;"></div>
+        </div>
+
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 6px;">SUPPORTING SHEETS</div>
+          <div id="starDimGrid" class="schema-dim-grid"></div>
+        </div>
+
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-amber); margin-bottom: 6px;">MATCHED LINKS</div>
+          <div id="starJoinsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-field">
+            <label for="starTargetSelect">Problem / Outcome Column</label>
+            <select id="starTargetSelect"></select>
+          </div>
+          <div class="form-field">
+            <label for="starCostSelect">Money / Amount Column</label>
+            <select id="starCostSelect"></select>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 12px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary" onclick="closeStarSchemaModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="confirmMultiTableIngestion()">
+          🚀 Combine &amp; Analyze Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enterprise API Key Authentication Modal -->
+  <div id="apiKeyModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeApiKeyModal()">
+    <div class="modal-card" style="max-width: 460px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">ACCESS SECURITY</div>
+          <h3 style="font-size: 18px; font-weight: 800;">🔑 Enter Access Key</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeApiKeyModal()">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+        If your workspace requires a private password/key, enter it below.
+      </p>
+      <div class="form-field">
+        <label for="apiKeyTokenInput">API Key Token</label>
+        <input id="apiKeyTokenInput" type="password" placeholder="Enter access key..." />
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="clearSavedApiKey()">Clear Key</button>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="closeApiKeyModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveApiKeyToken()">Save &amp; Connect</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Tenant Account Sign-In / Sign-Up Modal -->
+  <div id="authModal" class="modal-backdrop hidden" onclick="if(event.target===this) closeAuthModal()">
+    <div class="modal-card" style="max-width: 460px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">PRIVATE WORKSPACE ISOLATION</div>
+          <h3 id="authModalTitle" style="font-size: 18px; font-weight: 800;">🔐 Sign In to Your Workspace</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeAuthModal()">✕</button>
+      </div>
+
+      <div id="authLoggedInBox" class="hidden" style="background: var(--accent-emerald-bg); border: 1px solid var(--accent-emerald-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--accent-emerald);">SIGNED IN SECURELY</div>
+        <div id="authSignedInEmail" style="font-size: 14.5px; font-weight: 700; margin-top: 2px;"></div>
+        <div id="authSignedInTenant" style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;"></div>
+        <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="logoutAccount()">Sign Out</button>
+        </div>
+      </div>
+
+      <div id="authFormContainer">
+        <div class="filter-tabs" style="margin-bottom: 14px;">
+          <button id="authTabLogin" type="button" class="filter-tab active" onclick="switchAuthMode('login')">Sign In</button>
+          <button id="authTabRegister" type="button" class="filter-tab" onclick="switchAuthMode('register')">Create Free Account</button>
+        </div>
+
+        <div id="authWorkspaceField" class="form-field hidden" style="margin-bottom: 12px;">
+          <label for="authWorkspaceInput">Company / Workspace Name</label>
+          <input id="authWorkspaceInput" type="text" placeholder="e.g. Acme Retail GmbH" />
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="authEmailInput">Business Email</label>
+          <input id="authEmailInput" type="email" placeholder="founder@company.com" />
+        </div>
+
+        <div class="form-field" style="margin-bottom: 16px;">
+          <label for="authPasswordInput">Password (min 8 chars)</label>
+          <input id="authPasswordInput" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') submitAuthForm()" />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAuthModal()">Cancel</button>
+          <button id="authSubmitBtn" type="button" class="btn btn-primary" onclick="submitAuthForm()">Sign In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non-Blocking Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script>

@@ -153,9 +153,12 @@ def _extract_budget_from_text(text: str, unit_sym: str) -> Optional[float]:
 
 def _is_debate_prompt(text: str) -> bool:
     low = str(text or "").lower()
+    if any(m in low for m in ("zero difference", "no difference", "equal", "ignore them", "useless", "myth")):
+        return False
     return bool(re.search(
-        r"\b(?:vs\.?|versus|or\s+should|instead\s+of|who\s+is\s+right|which\s+is\s+better|between|"
-        r"ya\s+phir|ya\s+fir|kiski\s+baat|banam|बनाम|किसकी\s+बात|या\s+फिर|पहले\s+क्या)\b",
+        r"\b(?:vs\.?|versus|or\s+should|instead\s+of|who\s+is\s+right|which\s+is\s+better|which\s+one|"
+        r"which\s+should|between|ya\s+phir|ya\s+fir|kiski\s+baat|banam|बनाम|किसकी\s+बात|या\s+फिर|पहले\s+क्या)\b|"
+        r"\b(?:prioritiz\w*|prefer|focus\s+on|choose|pick|compare)\b[\s\S]{0,80}\bor\b",
         low,
     ))
 
@@ -290,7 +293,7 @@ class BoardroomDecisionJudge:
     def _match_mentioned_columns_and_segments(self, text: str) -> Tuple[List[str], List[Tuple[str, str]]]:
         """Maps free-form owner words (English, Hindi, synonyms) onto actual schema columns & segment values."""
         low = str(text or "").lower()
-        low_clean = re.sub(r"[^a-z0-9\u0900-\u097f\s_\-]+", " ", low)
+        low_clean = re.sub(r"[^a-z0-9\u0900-\u097f]+", " ", low).strip()
 
         matched_cols: List[str] = []
         matched_segs: List[Tuple[str, str]] = []
@@ -321,14 +324,15 @@ class BoardroomDecisionJudge:
                         if col not in matched_cols:
                             matched_cols.append(col)
 
-        # 3. Direct category value match across categorical columns (e.g. "Faridabad", "Amul", "City Hotel", "SlowRoad")
+        # 3. Direct category value match across categorical columns (e.g. "Faridabad", "HEALTH PROFESSIONAL", "City Hotel")
         for col in self.engine.categorical_features:
             vals = self.engine._top_cat_maps.get(col) or []
             for v in vals:
                 v_s = str(v).strip()
-                if len(v_s) < 2 or v_s.lower() in ("no", "yes", "0", "1", "0.0", "1.0", "other", "missing", "true", "false"):
+                v_norm = re.sub(r"[^a-z0-9\u0900-\u097f]+", " ", v_s.lower()).strip()
+                if len(v_norm) < 2 or v_norm in ("no", "yes", "0", "1", "0 0", "1 0", "other", "missing", "true", "false"):
                     continue
-                if re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(v_s.lower())}(?![a-z0-9\u0900-\u097f])", low_clean):
+                if re.search(rf"(?<![a-z0-9\u0900-\u097f]){re.escape(v_norm)}(?![a-z0-9\u0900-\u097f])", low_clean):
                     if (col, v_s) not in matched_segs:
                         matched_segs.append((col, v_s))
                     if col not in matched_cols:
@@ -767,6 +771,32 @@ class BoardroomDecisionJudge:
             blind_spots_hi.append(
                 f"इस फ़ाइल में रुपये/कीमत का कॉलम नहीं है (सिर्फ़ क्वालिटी/बैच डेटा है) — इसलिए अपने {_fmt_money(budget, '₹', True)} बजट की वापसी जाँचने के लिए बचाए गए {ent_hi} को प्रति-बैच कीमत से गुणा करके देखें।"
             )
+        # V6.0 Category-Specific Real-World Blind Spots (from category_intelligence_report.json or registry)
+        if len(blind_spots_en) < 2:
+            try:
+                _cat_bs_en, _cat_bs_hi = [], []
+                _cat_rep_f = self.out_dir / "category_intelligence_report.json" if hasattr(self, "out_dir") and self.out_dir else None
+                if _cat_rep_f and _cat_rep_f.exists():
+                    _cj = json.loads(_cat_rep_f.read_text(encoding="utf-8"))
+                    _cat_bs_en = list(_cj.get("boardroom_blind_spots_en") or [])
+                    _cat_bs_hi = list(_cj.get("boardroom_blind_spots_hi") or [])
+                else:
+                    try:
+                        from .business_category_registry import detect_business_category, get_category_spec
+                    except ImportError:
+                        from business_category_registry import detect_business_category, get_category_spec
+                    _det_b = detect_business_category(list(self.df.columns), sample_df=self.df.head(50))
+                    if _det_b.get("detected_category") and _det_b["detected_category"] != "auto":
+                        _sp_b = get_category_spec(_det_b["detected_category"])
+                        _cat_bs_en = list(_sp_b.get("boardroom_blind_spots_en") or [])
+                        _cat_bs_hi = list(_sp_b.get("boardroom_blind_spots_hi") or [])
+                for _be, _bh in zip(_cat_bs_en[:2], _cat_bs_hi[:2]):
+                    if _be not in blind_spots_en:
+                        blind_spots_en.append(_be)
+                        blind_spots_hi.append(_bh)
+            except Exception:
+                pass
+
         if not blind_spots_en:
             blind_spots_en.append(
                 "External real-world factors (competitor discounts, staff discipline, vendor reliability, and sudden seasonal demand shifts) are not stored in this sheet — combine this data verdict with your ground-level judgment."

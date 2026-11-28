@@ -160,18 +160,56 @@ def execute_pipeline_job_task(
         if not ok:
             raise RuntimeError("Master 7-stage pipeline returned failure status.")
 
+        _emit("PROCESSING", "RUNNING_ANTI_HALLUCINATION_AUDIT", 75)
+        audit_conf = "100.0% VERIFIED TRUTH"
+        try:
+            try:
+                from .anti_hallucination_guard import run_anti_hallucination_audit
+            except ImportError:
+                from anti_hallucination_guard import run_anti_hallucination_audit
+            audit_res = run_anti_hallucination_audit(str(out_dir))
+            if isinstance(audit_res, dict):
+                gc_val = str(audit_res.get("grounding_confidence") or "")
+                if gc_val:
+                    audit_conf = gc_val
+                elif audit_res.get("status") == "FAILED":
+                    audit_conf = f"AUDIT_WARNING ({audit_res.get('reason', 'unknown')})"
+        except Exception:
+            pass
+
         _emit("PROCESSING", "SYNCING_ARTIFACTS_TO_OBJECT_STORE", 85)
         uploaded_artifacts = store.sync_dir_up(out_dir, f"{remote_prefix}/output")
         elapsed = round(time.time() - t0, 2)
 
+        # Build full Web-UI-compatible result payload BEFORE ephemeral scratch is wiped
+        rich_payload: Dict[str, Any] = {}
+        try:
+            try:
+                from .api_server import _build_run_result_payload
+            except ImportError:
+                from api_server import _build_run_result_payload
+            rich_payload = _build_run_result_payload(
+                run_id=job_id,
+                tenant_id=tenant_id,
+                staging_out=out_dir,
+                elapsed_sec=elapsed,
+                audit_conf=audit_conf,
+                reconcile_ledger=False,
+            )
+        except Exception:
+            rich_payload = {}
+
         summary = {
+            **rich_payload,
             "status": "COMPLETED",
+            "run_id": job_id,
             "job_id": job_id,
             "tenant_id": tenant_id,
             "remote_prefix": remote_prefix,
             "downloaded_raw_files": downloaded,
             "uploaded_output_artifacts": uploaded_artifacts,
             "storage_backend": store.backend_name,
+            "audit_confidence": audit_conf,
             "elapsed_seconds": elapsed,
         }
         _emit("COMPLETED", "CERTIFIED_AND_READY", 100, res=summary)

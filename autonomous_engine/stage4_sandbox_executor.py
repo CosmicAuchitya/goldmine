@@ -19,7 +19,7 @@ import subprocess
 import time
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional
 from dotenv import load_dotenv
 
 if sys.platform == "win32":
@@ -27,12 +27,26 @@ if sys.platform == "win32":
 
 # Robust imports supporting both package and direct script execution
 try:
-    from .rate_limiter import PacedGeminiClient
+    from .rate_limiter import PacedGeminiClient, get_token_usage_summary
     from .domain_invariant_audit import audit_dataset_invariants
     from .pii_scrubber import scrub_text
+    from .self_healing_supervisor import (
+        apply_tier0_deterministic_etl_fix,
+        build_grounded_repair_prompt,
+        classify_failure_signature,
+        record_playbook_pattern,
+        write_self_healing_report,
+    )
 except ImportError:
-    from rate_limiter import PacedGeminiClient
+    from rate_limiter import PacedGeminiClient, get_token_usage_summary
     from domain_invariant_audit import audit_dataset_invariants
+    from self_healing_supervisor import (
+        apply_tier0_deterministic_etl_fix,
+        build_grounded_repair_prompt,
+        classify_failure_signature,
+        record_playbook_pattern,
+        write_self_healing_report,
+    )
     try:
         from pii_scrubber import scrub_text
     except ImportError:
@@ -72,7 +86,7 @@ def get_pacer() -> Optional[PacedGeminiClient]:
     global _pacer_singleton
     if _pacer_singleton is None:
         try:
-            _pacer_singleton = PacedGeminiClient(max_calls_per_minute=14)
+            _pacer_singleton = PacedGeminiClient()
         except Exception as e:
             print(f"[!] Warning: Unable to initialize PacedGeminiClient for self-healing: {e}")
             return None
@@ -85,7 +99,10 @@ def execute_with_self_healing(
     timeout_sec: int = 300,
     output_dir: str = "output",
     pacer: Optional[PacedGeminiClient] = None,
-    blueprint_path: Optional[str] = None
+    blueprint_path: Optional[str] = None,
+    expected_initial_rows: Optional[int] = None,
+    topology_path: Optional[str] = None,
+    expected_pk: Optional[str] = None,
 ) -> bool:
     script = Path(script_path).resolve()
     if not script.exists():
@@ -93,15 +110,38 @@ def execute_with_self_healing(
 
     # Anchor working directory to repo/workspace root
     repo_root = Path.cwd().resolve()
+    out_p_resolved = Path(output_dir).resolve() if Path(output_dir).is_absolute() else (repo_root / output_dir).resolve()
     # Preserve original script permanently before any modifications
     original_backup = script.with_suffix(".original.bak")
     if not original_backup.exists():
         shutil.copy2(script, original_backup)
 
     sanitized_env = build_sanitized_subprocess_env()
+    attempt_history: List[Dict[str, Any]] = []
+    healing_events: List[Dict[str, Any]] = []
+    last_llm_sig_hash: Optional[str] = None
+    llm_repair_count = 0
+    tier0_bonus_used = 0
+    last_applied_tier = "initial"
 
-    for attempt in range(1, max_retries + 1):
-        print(f"\n[>>>] [Stage 4 Sandbox] Execution Attempt {attempt}/{max_retries} for: {script.name} (Timeout: {timeout_sec}s)")
+    def _emit_report(final_status: str, succeeded: bool) -> None:
+        if out_p_resolved.exists():
+            write_self_healing_report(
+                str(out_p_resolved),
+                {
+                    "stage4_status": final_status,
+                    "succeeded": succeeded,
+                    "expected_initial_rows": expected_initial_rows,
+                    "attempt_history": attempt_history,
+                    "runtime_healing_events": healing_events,
+                },
+            )
+
+    attempt = 0
+    effective_max_attempts = max(1, int(max_retries))
+    while attempt < effective_max_attempts:
+        attempt += 1
+        print(f"\n[>>>] [Stage 4 Sandbox] Execution Attempt {attempt}/{effective_max_attempts} for: {script.name} (Timeout: {timeout_sec}s)")
         t0 = time.time()
         err_output = ""
 
@@ -141,7 +181,7 @@ def execute_with_self_healing(
                 safe_stderr = scrub_text(proc.stderr or "")
 
                 if proc.returncode == 0:
-                    out_p = Path(output_dir).resolve() if Path(output_dir).is_absolute() else (repo_root / output_dir).resolve()
+                    out_p = out_p_resolved
                     if not out_p.exists() or not list(out_p.glob("*.parquet")):
                         if list(script.parent.glob("*.parquet")):
                             out_p = script.parent.resolve()
@@ -170,7 +210,16 @@ def execute_with_self_healing(
                             import pandas as pd
                             import json
                             df_check = pd.read_parquet(fact_file)
-                            inv_audit = audit_dataset_invariants(df_check, initial_count=len(df_check))
+                            true_init_cnt = (
+                                int(expected_initial_rows)
+                                if expected_initial_rows and int(expected_initial_rows) > 0
+                                else len(df_check)
+                            )
+                            inv_audit = audit_dataset_invariants(
+                                df_check,
+                                initial_count=true_init_cnt,
+                                id_col=expected_pk or "id",
+                            )
                             if inv_audit["status"] != "PASSED":
                                 violations.extend(inv_audit["violations"])
 
@@ -194,10 +243,11 @@ def execute_with_self_healing(
                             print(f"[!] {err_output}")
                         else:
                             print("[+] Domain Invariant & Target Metric Gate: 100% PASSED (0 physical/financial drifts).")
+                            _emit_report("SELF_HEALED" if healing_events else "HEALTHY_FIRST_PASS", True)
                             return True
 
                 else:
-                    err_output = safe_stderr.strip()
+                    err_output = safe_stderr.strip() or f"Process exited with non-zero code {proc.returncode} and empty stderr."
                     print(f"[!] Execution FAILED in {elapsed}s with return code {proc.returncode}!")
                     print("--- STDERR TRACEBACK (PII SCRUBBED) ---")
                     print(err_output[:2500])
@@ -208,8 +258,18 @@ def execute_with_self_healing(
                 err_output = f"Execution TIMEOUT EXPIRED after {elapsed}s: Subprocess was terminated to prevent system freeze."
                 print(f"[!] {err_output}")
 
-        if attempt == max_retries:
+        sig_info = classify_failure_signature(err_output)
+        attempt_history.append({
+            "attempt": attempt,
+            "tier": last_applied_tier,
+            "category": sig_info["category"],
+            "signature_hash": sig_info["signature_hash"],
+            "excerpt": sig_info["excerpt"],
+        })
+
+        if attempt >= effective_max_attempts:
             print("[X] Maximum self-healing attempts reached. Execution halted.")
+            _emit_report("ESCALATED_FALLBACK", False)
             return False
 
         # Non-destructive backup before patch
@@ -217,40 +277,86 @@ def execute_with_self_healing(
         shutil.copy2(script, backup_path)
         print(f"[*] Non-destructive backup created: {backup_path.name}")
 
-        print("[*] Initiating Autonomous Self-Healing via PacedGeminiClient...")
         failing_code = scrub_text(script.read_text(encoding='utf-8'))
         scrubbed_err = scrub_text(err_output[:3000])
 
-        repair_prompt = f"""
-The following Python ETL script failed during execution with this exact error:
------------------
-{scrubbed_err}
------------------
+        # TIER 0: Zero-Token Deterministic Micro-Healer BEFORE ever invoking an LLM
+        if sig_info["category"] != "AST_SECURITY_BLOCK":
+            t0_patch = apply_tier0_deterministic_etl_fix(
+                script_code,
+                scrubbed_err,
+                topology_path=topology_path,
+                blueprint_path=blueprint_path,
+                output_dir=str(out_p_resolved),
+            )
+            if t0_patch is not None:
+                patched_code, fix_desc = t0_patch
+                with open(script, 'w', encoding='utf-8') as f:
+                    f.write(patched_code)
+                healing_events.append({
+                    "attempt": attempt,
+                    "tier": "tier0_deterministic",
+                    "category": sig_info["category"],
+                    "signature_hash": sig_info["signature_hash"],
+                    "fix_summary": fix_desc,
+                    "tokens_spent": 0,
+                })
+                last_applied_tier = "tier0_deterministic"
+                # Grant 1 zero-token bonus attempt so Tier-0 micro-fixes never starve Tier-2 Pro escalation
+                if tier0_bonus_used < 1:
+                    effective_max_attempts += 1
+                    tier0_bonus_used += 1
+                record_playbook_pattern(sig_info, f"tier0:{fix_desc}")
+                print(f"[+] [Tier-0 Zero-Token Self-Healer] {fix_desc} (0 LLM tokens). Retrying...")
+                continue
 
-Here is the failing script:
------------------
-{failing_code}
------------------
+        # Stuck-Loop Fail-Fast Breaker: never waste another LLM call on the exact same repeating failure
+        if last_llm_sig_hash and sig_info["signature_hash"] == last_llm_sig_hash:
+            print(f"[!] [Stuck-Loop Breaker] Repeated identical failure signature ({sig_info['category']}:{last_llm_sig_hash}). Fail-fast to Deterministic DAG.")
+            healing_events.append({
+                "attempt": attempt,
+                "tier": "stuck_loop_breaker",
+                "category": sig_info["category"],
+                "signature_hash": sig_info["signature_hash"],
+                "fix_summary": "Aborted redundant retry -> Deterministic DAG fallback",
+                "tokens_spent": 0,
+            })
+            _emit_report("ESCALATED_FALLBACK", False)
+            return False
 
-Fix the bug. Preserve all assertion gates, calculations, and parquet/csv exports.
-CRITICAL RULES:
-1. FACT ROW INTEGRITY: You MUST NEVER resolve row count or key assertion failures by deleting, dropping duplicates, or filtering rows from the fact table!
-2. If natural keys are duplicated, generate a unique surrogate ID: df['fact_surrogate_id'] = (df.index + 1).astype(str).
-3. The final fact table MUST strictly conserve 100% of rows: len(final_fact) == initial_fact_count.
-4. ZERO DUMMY/MOCK DATA: NEVER generate fake dummy rows or 1-row mock DataFrames! You MUST load and process the real physical raw CSV/Parquet files from the disk.
-5. If column .str accessor fails, cast to string first: df[col] = df[col].astype(str).str.strip().
-6. STRICT SANDBOX SECURITY: NEVER import subprocess, socket, requests, urllib, http, pickle, ctypes, or dotenv; NEVER call eval, exec, os.system, os.remove, or shutil.rmtree; NEVER access '.env'.
-Return ONLY the corrected, 100% executable Python code wrapped in ```python ... ```.
-"""
+        llm_repair_count += 1
+        use_tier = "reasoning" if llm_repair_count >= 2 else "fast"
+        print(f"[*] Initiating Autonomous Self-Healing via PacedGeminiClient (tier='{use_tier}')...")
+
+        repair_prompt = build_grounded_repair_prompt(
+            failing_code=failing_code,
+            err_output=scrubbed_err,
+            attempt_history=attempt_history,
+            topology_path=topology_path,
+            blueprint_path=blueprint_path,
+            expected_initial_rows=expected_initial_rows,
+            expected_pk=expected_pk,
+        )
         active_pacer = pacer or get_pacer()
         if not active_pacer:
             print("[X] Self-Healing aborted: PacedGeminiClient unavailable (check GEMINI_API_KEY).")
+            _emit_report("ESCALATED_FALLBACK", False)
             return False
 
-        fixed_text = active_pacer.generate_content(
-            contents=repair_prompt,
-            system_instruction="You are an Elite Python Debugger. Return 100% executable, sandbox-compliant code with no conversational preamble."
-        )
+        tok_before = int((get_token_usage_summary() or {}).get("total_tokens", 0))
+        if hasattr(active_pacer, "generate_content_tiered"):
+            fixed_text = active_pacer.generate_content_tiered(
+                contents=repair_prompt,
+                system_instruction="You are an Elite Python Debugger. Return 100% executable, sandbox-compliant code with no conversational preamble.",
+                tier=use_tier,
+            )
+        else:
+            fixed_text = active_pacer.generate_content(
+                contents=repair_prompt,
+                system_instruction="You are an Elite Python Debugger. Return 100% executable, sandbox-compliant code with no conversational preamble."
+            )
+        tok_delta = max(0, int((get_token_usage_summary() or {}).get("total_tokens", 0)) - tok_before)
+        last_llm_sig_hash = sig_info["signature_hash"]
 
         fixed_code = extract_python_code_robust(fixed_text)
 
@@ -260,17 +366,40 @@ Return ONLY the corrected, 100% executable Python code wrapped in ```python ... 
             patch_violations = validate_etl_ast_security(fixed_code)
             if patch_violations:
                 print(f"[!] Self-Healing patch rejected by AST Security Gate: {patch_violations[0]}. Reverting...")
+                healing_events.append({
+                    "attempt": attempt,
+                    "tier": f"llm_{use_tier}_rejected_ast",
+                    "category": sig_info["category"],
+                    "tokens_spent": tok_delta,
+                })
                 continue
             print("[+] Self-Healing Patch compiled & passed AST Security Gate (0 errors).")
         except SyntaxError as se:
             print(f"[!] Self-Healing returned syntax error ({se}). Reverting to backup...")
+            healing_events.append({
+                "attempt": attempt,
+                "tier": f"llm_{use_tier}_syntax_error",
+                "category": sig_info["category"],
+                "tokens_spent": tok_delta,
+            })
             continue
 
         with open(script, 'w', encoding='utf-8') as f:
             f.write(fixed_code)
 
-        print(f"[+] Autonomous Patch applied to {script.name}. Retrying execution...")
+        healing_events.append({
+            "attempt": attempt,
+            "tier": f"llm_{use_tier}",
+            "category": sig_info["category"],
+            "signature_hash": sig_info["signature_hash"],
+            "fix_summary": f"Patched via grounded {use_tier} repair prompt",
+            "tokens_spent": tok_delta,
+        })
+        last_applied_tier = f"llm_{use_tier}"
+        record_playbook_pattern(sig_info, f"llm_{use_tier}")
+        print(f"[+] Autonomous Patch applied to {script.name} (tier={use_tier}, tokens={tok_delta}). Retrying execution...")
 
+    _emit_report("ESCALATED_FALLBACK", False)
     return False
 
 

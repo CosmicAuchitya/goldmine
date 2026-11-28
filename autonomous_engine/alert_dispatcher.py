@@ -232,9 +232,109 @@ def dispatch_webhook_alert(webhook_url: str, message_text: str, run_id: str) -> 
     return {"channel": "webhook", "status": "sent" if ok else "error", "delivered": ok}
 
 
+# =============================================================================
+# V7.0 PROACTIVE EARLY-WARNING ALERT ROUTER + 24H ANTI-FATIGUE COOLDOWN GUARD
+# =============================================================================
+import threading
+import time
+from pathlib import Path
+
+_COOLDOWN_LOCK = threading.Lock()
+_DEFAULT_COOLDOWN_PATH = Path("runs/state/proactive_alert_cooldowns.json")
+
+
+def check_and_record_alert_cooldown(
+    tenant_id: str,
+    alert_signature: str,
+    cooldown_hours: float = 24.0,
+    state_path: Optional[Path] = None,
+    record_if_allowed: bool = True,
+) -> Dict[str, Any]:
+    """
+    Red-Team Guard R2 (Anti-Alert-Fatigue):
+    Prevents dispatching duplicate proactive alerts for the same tenant &
+    anomaly signature within `cooldown_hours` (default 24h).
+    """
+    p = Path(state_path) if state_path is not None else _DEFAULT_COOLDOWN_PATH
+    key = f"{str(tenant_id or 'default').strip()}::{str(alert_signature or 'generic').strip()}"
+    now_ts = time.time()
+    ttl_sec = max(60.0, float(cooldown_hours) * 3600.0)
+
+    with _COOLDOWN_LOCK:
+        store: Dict[str, float] = {}
+        if p.exists():
+            try:
+                loaded = json.loads(p.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    store = {str(k): float(v) for k, v in loaded.items()}
+            except Exception:
+                store = {}
+
+        last_sent = store.get(key)
+        if last_sent is not None and (now_ts - last_sent) < ttl_sec:
+            remaining_min = round((ttl_sec - (now_ts - last_sent)) / 60.0, 1)
+            return {
+                "allowed": False,
+                "reason": f"Suppressed by {cooldown_hours:.0f}h anti-fatigue cooldown ({remaining_min} min remaining).",
+                "remaining_minutes": remaining_min,
+            }
+
+        if record_if_allowed:
+            store[key] = now_ts
+            # Prune expired entries (> 7 days old)
+            store = {k: v for k, v in store.items() if (now_ts - v) < 7 * 86400}
+            try:
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(store, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+
+    return {"allowed": True, "reason": "Cooldown clear — eligible for dispatch.", "remaining_minutes": 0.0}
+
+
+def format_proactive_anomaly_alert(
+    radar_report: Dict[str, Any],
+    run_id: str,
+    lang: str = "hi",
+) -> Dict[str, Any]:
+    """Formats a verified V7.0 Proactive Anomaly Alert strictly gated on CRITICAL/WATCH severity."""
+    is_hi = str(lang or "hi").lower().startswith("hi")
+    level = str((radar_report or {}).get("overall_alert_level") or "NO_TIME_AXIS")
+    if level not in ("CRITICAL", "WATCH"):
+        return {
+            "eligible": False,
+            "severity": level,
+            "subject": "",
+            "plain_text": "",
+        }
+    hl = radar_report.get("headline_hi") if is_hi else radar_report.get("headline_en")
+    proj = radar_report.get("forward_risk_projection") or {}
+    proj_txt = (proj.get("note_hi") if is_hi else proj.get("note_en")) if proj else ""
+    cohorts = (radar_report.get("accelerating_cohorts") or [])[:3]
+    lines = [
+        f"📡 *DataX-Ray Early Warning [{level}] — {run_id}*",
+        "",
+        str(hl or ""),
+    ]
+    if proj_txt:
+        lines.append(f"⏱️ {proj_txt}")
+    for c in cohorts:
+        lines.append(f"• {c.get('headline_hi') if is_hi else c.get('headline_en')}")
+        lines.append(f"  → {c.get('action_hi') if is_hi else c.get('action_en')}")
+    return {
+        "eligible": True,
+        "severity": level,
+        "signature": f"{run_id}:{level}:{(cohorts[0].get('segment') if cohorts else 'period')}",
+        "subject": f"DataX-Ray Early Warning [{level}] ({run_id})",
+        "plain_text": "\n".join(lines),
+    }
+
+
 __all__ = [
     "format_ranked_leaks_alert",
     "dispatch_email_smtp",
     "dispatch_whatsapp_alert",
     "dispatch_webhook_alert",
+    "check_and_record_alert_cooldown",
+    "format_proactive_anomaly_alert",
 ]

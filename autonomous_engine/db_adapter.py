@@ -512,6 +512,7 @@ CREATE TABLE IF NOT EXISTS tenant_subscriptions (
     provider TEXT NOT NULL DEFAULT 'none',
     external_customer_id TEXT,
     external_subscription_id TEXT,
+    current_period_end DOUBLE PRECISION,
     updated_at DOUBLE PRECISION NOT NULL
 );
 

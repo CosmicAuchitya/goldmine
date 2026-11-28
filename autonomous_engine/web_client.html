@@ -41,9 +41,9 @@
       --accent-crimson-bg: rgba(251, 113, 133, 0.13);
       --accent-crimson-border: rgba(251, 113, 133, 0.32);
       --accent-crimson-soft: rgba(251, 113, 133, 0.12);
-      --accent-sky: #818cf8;
-      --accent-sky-bg: rgba(129, 140, 248, 0.14);
-      --accent-sky-border: rgba(129, 140, 248, 0.32);
+      --accent-sky: #a5b4fc;
+      --accent-sky-bg: rgba(165, 180, 252, 0.14);
+      --accent-sky-border: rgba(165, 180, 252, 0.34);
       --accent-sky-soft: rgba(56, 189, 248, 0.14);
       --aurora-1: rgba(99, 102, 241, 0.24);
       --aurora-2: rgba(20, 184, 166, 0.18);
@@ -437,8 +437,8 @@
 
     .sidebar-report-select {
       width: auto;
-      min-width: 195px;
-      max-width: 260px;
+      min-width: 185px;
+      max-width: 228px;
       height: 34px;
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
@@ -523,8 +523,8 @@
 
     .topbar-lang-dock .global-lang-select {
       width: auto;
-      min-width: 124px;
-      max-width: 175px;
+      min-width: 118px;
+      max-width: 158px;
       padding: 2px 6px;
       font-size: 12px;
       font-weight: 500;
@@ -535,6 +535,9 @@
       color: var(--text-primary);
       outline: none;
       cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .topbar-lang-dock .global-lang-select option,
@@ -626,18 +629,94 @@
       font-weight: 600;
     }
 
-    @media (max-width: 1160px) {
+    @media (max-width: 1360px) {
       .app-sidebar {
-        flex-wrap: wrap;
-        justify-content: center;
+        padding: 8px 10px;
+        gap: 8px;
+      }
+      .sidebar-section {
+        gap: 9px;
       }
       .topnav-pills {
-        overflow-x: auto;
+        gap: 2px;
+        padding: 3px;
+      }
+      .sidebar-nav-btn,
+      .app-sidebar .sidebar-nav-btn.main-tab-btn {
+        padding: 6px 8px;
+        gap: 5px;
+        font-size: 12px;
+      }
+      .sidebar-theme-palette {
+        gap: 4px;
+        padding: 3px 6px;
+      }
+      .app-swatch-dot {
+        width: 12px;
+        height: 12px;
+      }
+      .sidebar-footer {
+        gap: 5px;
+      }
+      .sidebar-util-btn {
+        height: 30px;
+        padding: 0 8px;
+        font-size: 11.5px;
+      }
+      .sidebar-icon-dock .sidebar-util-btn {
+        width: 30px;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .app-sidebar {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        row-gap: 8px;
+      }
+      .sidebar-section {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .topnav-pills {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        overflow-x: visible;
         max-width: 100%;
+      }
+      .sidebar-nav-btn,
+      .app-sidebar .sidebar-nav-btn.main-tab-btn {
+        padding: 6px 9px;
+        font-size: 12px;
       }
     }
 
     @media (max-width: 960px) {
+      #btnTopNewUpload {
+        display: none !important;
+      }
+      .top-command-bar {
+        gap: 8px;
+      }
+      .top-command-left,
+      .top-command-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .sidebar-report-select {
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .topbar-lang-dock {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .topbar-lang-dock .global-lang-select {
+        flex: 1;
+        min-width: 0;
+        max-width: none;
+      }
       .app-sidebar {
         position: fixed;
         left: 0;
@@ -735,8 +814,10 @@
     .brand-cluster {
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 2px 4px 6px;
+      gap: 10px;
+      padding: 2px 4px 2px;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
 
     .brand-mark {
@@ -761,6 +842,7 @@
       letter-spacing: -0.015em;
       color: var(--rail-text);
       line-height: 1.15;
+      white-space: nowrap;
     }
 
     .brand-subtitle {
@@ -768,6 +850,7 @@
       color: var(--rail-muted);
       display: block;
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .truth-seal {
@@ -1087,9 +1170,10 @@
 
     .benchmark-item {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px 12px;
       padding: 13px 15px;
       background: var(--bg-subtle);
       border: 1px solid var(--border-subtle);
@@ -1098,6 +1182,11 @@
       transition: all var(--transition-fast);
       text-align: left;
       width: 100%;
+    }
+
+    .benchmark-meta-left {
+      flex: 1 1 210px;
+      min-width: 0;
     }
 
     .benchmark-item:hover,
@@ -1732,6 +1821,8 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .viz-quick-plan-btn {
@@ -1740,6 +1831,10 @@
       justify-content: space-between;
       gap: 10px;
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow: hidden;
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid var(--border-subtle);
@@ -1749,6 +1844,20 @@
       cursor: pointer;
       font-family: var(--font-sans);
       transition: all var(--transition-fast);
+    }
+
+    @media (max-width: 520px) {
+      .viz-quick-plan-btn {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .viz-quick-plan-btn > div {
+        max-width: 100%;
+      }
+      .viz-quick-plan-btn div {
+        white-space: normal !important;
+        word-break: break-word;
+      }
     }
 
     .viz-quick-plan-btn:hover {
@@ -2418,9 +2527,14 @@
     /* Stage 9: AI Boardroom Decision Judge War-Room Styles */
     .boardroom-starters-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       margin: 14px 0 18px;
+    }
+    @media (max-width: 720px) {
+      .boardroom-starters-grid {
+        grid-template-columns: 1fr;
+      }
     }
     .boardroom-starter-btn {
       text-align: left;
@@ -2569,11 +2683,18 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 18px 20px;
-      max-height: 440px;
+      max-height: 540px;
       overflow-y: auto;
       font-size: 14px;
       line-height: 1.65;
       color: var(--text-secondary);
+    }
+
+    @media (max-width: 960px) {
+      .brief-reader {
+        max-height: none;
+        overflow-y: visible;
+      }
     }
 
     .brief-reader h1, .brief-reader h2, .brief-reader h3 {
@@ -2760,6 +2881,98 @@
       background: var(--bg-subtle);
     }
 
+    /* Mobile Stacked Action Cards for Call List (Zero horizontal clipping on 390px screens) */
+    @media (max-width: 768px) {
+      .worklist-panel {
+        padding: 14px;
+      }
+      .search-input {
+        min-width: 0;
+        width: 100%;
+      }
+      .worklist-table-scroll {
+        overflow-x: visible;
+        max-height: none;
+        border: none;
+        border-radius: 0;
+      }
+      table.worklist-mobile-cards,
+      table.worklist-mobile-cards tbody {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+      table.worklist-mobile-cards thead {
+        display: none;
+      }
+      table.worklist-mobile-cards tbody tr {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px 10px;
+        align-items: center;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow-card);
+      }
+      table.worklist-mobile-cards tbody td {
+        display: block;
+        padding: 0;
+        border: none;
+        max-width: none !important;
+        text-align: left !important;
+        word-break: break-word;
+      }
+      table.worklist-mobile-cards tbody td.wl-rank {
+        font-size: 12px;
+        font-weight: 700;
+      }
+      table.worklist-mobile-cards tbody td.wl-id {
+        font-size: 14.5px;
+      }
+      table.worklist-mobile-cards tbody td.wl-urgency {
+        justify-self: end;
+      }
+      table.worklist-mobile-cards tbody td.wl-risk {
+        grid-column: 1 / 2;
+        font-size: 13.5px;
+      }
+      table.worklist-mobile-cards tbody td.wl-risk::before {
+        content: "Risk: ";
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+      table.worklist-mobile-cards tbody td.wl-amount {
+        grid-column: 2 / -1;
+        justify-self: end;
+        font-size: 14px;
+      }
+      table.worklist-mobile-cards tbody td.wl-reason,
+      table.worklist-mobile-cards tbody td.wl-step {
+        grid-column: 1 / -1;
+        font-size: 12.8px;
+        line-height: 1.5;
+        padding-top: 6px;
+        border-top: 1px dashed var(--border-subtle);
+      }
+      table.worklist-mobile-cards tbody td.wl-reason::before,
+      table.worklist-mobile-cards tbody td.wl-step::before {
+        content: attr(data-label) ": ";
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      table.worklist-mobile-cards tbody td.wl-action {
+        grid-column: 1 / -1;
+        padding-top: 6px;
+      }
+      table.worklist-mobile-cards tbody td.wl-action .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
     .queue-badge {
       display: inline-flex;
       align-items: center;
@@ -2816,6 +3029,7 @@
 
     .copilot-input-row {
       display: flex;
+      align-items: stretch;
       gap: 10px;
       margin-top: 12px;
       flex-wrap: wrap;
@@ -2828,9 +3042,303 @@
       border: 1px solid var(--border-strong);
       color: var(--text-primary);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      padding: 11px 14px;
       font-size: 14px;
       outline: none;
+    }
+
+    .copilot-input-row select {
+      height: 44px;
+      min-height: 44px;
+      padding: 10px 12px;
+      line-height: 22px;
+      box-sizing: border-box;
+      vertical-align: middle;
+    }
+
+    /* V6.0 Category-Aware Upload Bar & Economics/Statistics Intelligence Panel */
+    .upload-cat-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+    .upload-cat-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .upload-cat-select {
+      flex: 1;
+      min-width: 210px;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+    .intent-grid-v6 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .cat-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+    .cat-pack-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    .cat-pack-pill.econ {
+      border-color: var(--accent-emerald-border);
+      color: var(--accent-emerald);
+      background: var(--accent-emerald-bg);
+    }
+    .cat-pack-pill.stat {
+      border-color: var(--accent-sky-border);
+      color: var(--accent-sky);
+      background: var(--accent-sky-bg);
+    }
+    .cat-intel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+      gap: 12px;
+    }
+    .cat-kpi-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 13px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .cat-kpi-card.tone-danger { border-left: 3px solid var(--accent-crimson); }
+    .cat-kpi-card.tone-warn { border-left: 3px solid var(--accent-amber); }
+    .cat-kpi-card.tone-good { border-left: 3px solid var(--accent-emerald); }
+    .cat-kpi-card.tone-neutral { border-left: 3px solid var(--accent-sky); }
+    .cat-kpi-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .cat-kpi-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .cat-kpi-kind {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .cat-kpi-value {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+    .cat-kpi-insight {
+      font-size: 12.2px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+    .cat-unlock-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* V7.0 CEO Voice Brief, Proactive Anomaly Radar & 1-Click Share Styles */
+    .v7-voice-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .v7-voice-left, .v7-voice-right {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .v7-voice-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .v7-beats-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-sky-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .v7-beats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+    .v7-beat-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 11px 13px;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+    .v7-beat-card.speaking {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 0 2px var(--accent-emerald-bg);
+    }
+    .v7-beat-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-sky);
+      margin-bottom: 5px;
+    }
+    .v7-beat-text {
+      font-size: 12.5px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .v7-radar-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--accent-emerald);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .v7-radar-card.level-critical { border-left-color: var(--accent-crimson); }
+    .v7-radar-card.level-watch { border-left-color: var(--accent-amber); }
+    .v7-radar-card.level-all_clear { border-left-color: var(--accent-emerald); }
+    .v7-radar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+    }
+    .v7-level-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: var(--accent-emerald-bg);
+      color: var(--accent-emerald);
+      border: 1px solid var(--accent-emerald-border);
+      white-space: nowrap;
+    }
+    .v7-level-pill.critical {
+      background: var(--accent-crimson-bg);
+      color: var(--accent-crimson);
+      border-color: var(--accent-crimson-border);
+    }
+    .v7-level-pill.watch {
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border-color: var(--accent-amber-border);
+    }
+    .v7-sparkline-box {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 6px 10px;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .v7-cohort-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .v7-cohort-pill-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--accent-amber);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.2px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+    .v7-cohort-pill-card.critical { border-left-color: var(--accent-crimson); }
+    .v7-projection-bar {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      border: 1px dashed var(--border-strong);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .v7-impact-banner {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 11px 14px;
+      margin-bottom: 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-emerald-border);
+    }
+    @media (max-width: 720px) {
+      .v7-voice-bar { padding: 10px; }
+      .v7-voice-left, .v7-voice-right { width: 100%; }
+      .v7-voice-left .btn, .v7-voice-right .btn { flex: 1 1 auto; justify-content: center; }
     }
 
     .qa-response-card {
@@ -3047,13 +3555,14 @@
 
     .toast-item {
       pointer-events: auto;
-      background: var(--rail-bg);
-      border: 1px solid var(--rail-border);
+      background: #0f172a;
+      border: 1px solid rgba(148, 163, 184, 0.28);
       border-left: 4px solid var(--rail-accent);
       border-radius: 12px;
       padding: 11px 14px;
       font-size: 13px;
-      color: #f5f7fa;
+      font-weight: 500;
+      color: #f8fafc;
       box-shadow: var(--shadow-modal);
       display: flex;
       align-items: center;
@@ -3624,8 +4133,15 @@
           Upload your Sales, Orders, Invoices, or Customer Excel/CSV sheet. No coding or formulas needed — see your #1 problem area, today's customer call list, and exact money you can save.
         </p>
 
+        <div class="upload-cat-bar">
+          <label for="uploadCategorySelect" class="upload-cat-label" data-i18n="lblUploadCategory">Business Type (Optional — Auto-Detected):</label>
+          <select id="uploadCategorySelect" class="upload-cat-select" aria-label="Business Category">
+            <option value="auto">✨ Auto-Detect / General Business (Recommended)</option>
+          </select>
+        </div>
+
         <div id="dropzone" class="dropzone-box" onclick="document.getElementById('fileInput').click()">
-          <input id="fileInput" type="file" multiple accept=".csv,.tsv,.xlsx,.xls,.parquet,.zip" class="hidden" onchange="handleFileSelection(event)" />
+          <input id="fileInput" type="file" multiple accept=".csv,.tsv,.xlsx,.xls,.parquet,.pdf,.zip" class="hidden" onchange="handleFileSelection(event)" />
           <div class="dropzone-icon">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -3708,15 +4224,15 @@
         </p>
 
         <div id="benchmarkList" class="benchmark-list">
-          <button type="button" class="benchmark-item" data-bench="nexura_omnichannel_3yr" onclick="onTimeMachineChange('nexura_omnichannel_3yr'); document.getElementById('onboardingSection').classList.add('hidden');">
+          <button type="button" class="benchmark-item" data-bench="nexura_lifestyle_brand" onclick="loadCertifiedBenchmark('nexura_lifestyle_brand', true)">
             <div class="benchmark-meta-left">
               <h4>📦 Nexura 3-Year D2C Brand (2023–2025)</h4>
-              <p>See why COD orders fail during delays and how to recover ₹25.5L in lost orders.</p>
+              <p>See why COD orders fail during delays and how to recover ₹25.51 L in lost orders.</p>
             </div>
             <span class="benchmark-badge">15,000 Orders · ₹ INR</span>
           </button>
 
-          <button type="button" class="benchmark-item" data-bench="hotel_booking_cancellation" onclick="loadCertifiedBenchmark('hotel_booking_cancellation')">
+          <button type="button" class="benchmark-item" data-bench="hotel_booking_cancellation" onclick="loadCertifiedBenchmark('hotel_booking_cancellation', true)">
             <div class="benchmark-meta-left">
               <h4>🏨 Hotel Bookings &amp; Cancellations</h4>
               <p>See why guests cancel bookings and how advance timing affects lost revenue.</p>
@@ -3724,7 +4240,7 @@
             <span class="benchmark-badge">119,390 Orders</span>
           </button>
 
-          <button type="button" class="benchmark-item" data-bench="supermarket_retail_operations" onclick="loadCertifiedBenchmark('supermarket_retail_operations')">
+          <button type="button" class="benchmark-item" data-bench="supermarket_retail_operations" onclick="loadCertifiedBenchmark('supermarket_retail_operations', true)">
             <div class="benchmark-meta-left">
               <h4>🛒 Supermarket Store Sales &amp; Ratings</h4>
               <p>Check branch performance, customer ratings, and basket profitability.</p>
@@ -3732,7 +4248,7 @@
             <span class="benchmark-badge">1,000 Bills</span>
           </button>
 
-          <button type="button" class="benchmark-item" data-bench="credit_card_loan_default" onclick="loadCertifiedBenchmark('credit_card_loan_default')">
+          <button type="button" class="benchmark-item" data-bench="credit_card_loan_default" onclick="loadCertifiedBenchmark('credit_card_loan_default', true)">
             <div class="benchmark-meta-left">
               <h4>💳 Credit &amp; Loan Payment Defaults</h4>
               <p>Spot which borrower accounts are slipping into unpaid dues first.</p>
@@ -3740,7 +4256,7 @@
             <span class="benchmark-badge">30,000 Accounts</span>
           </button>
 
-          <button type="button" class="benchmark-item" data-bench="airline_flight_delays_operations" onclick="loadCertifiedBenchmark('airline_flight_delays_operations')">
+          <button type="button" class="benchmark-item" data-bench="airline_flight_delays_operations" onclick="loadCertifiedBenchmark('airline_flight_delays_operations', true)">
             <div class="benchmark-meta-left">
               <h4>✈️ Airline Flight Delays</h4>
               <p>Discover which evening hours and carriers cause ripple flight delays.</p>
@@ -3748,7 +4264,7 @@
             <span class="benchmark-badge">300,000 Flights</span>
           </button>
 
-          <button type="button" class="benchmark-item" data-bench="california_housing_real_estate" onclick="loadCertifiedBenchmark('california_housing_real_estate')">
+          <button type="button" class="benchmark-item" data-bench="california_housing_real_estate" onclick="loadCertifiedBenchmark('california_housing_real_estate', true)">
             <div class="benchmark-meta-left">
               <h4>🏠 Real Estate Property Prices</h4>
               <p>Compare income neighborhoods and location premiums across regions.</p>
@@ -3769,6 +4285,7 @@
           <h3 id="intentFileTitle" style="font-size: 18px; font-weight: 800;">File Scanned</h3>
           <p id="intentQuestionSubtitle" style="font-size: 13.5px; color: var(--text-secondary); margin-top: 3px;"></p>
           <div id="intentSanityBanner" class="hidden" style="margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600;"></div>
+          <div id="intentCategoryWarningBanner" class="hidden" style="margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.45); color: var(--accent-amber);"></div>
         </div>
         <div style="display: flex; gap: 10px;">
           <button type="button" class="btn btn-secondary" onclick="cancelIntentHandshake()">Cancel</button>
@@ -3778,17 +4295,28 @@
         </div>
       </div>
 
-      <div class="intent-grid">
+      <div class="intent-grid intent-grid-v6">
         <div class="form-field">
-          <label for="confirmTargetSelect">1. Which column marks a Problem / Return / Cancel?</label>
+          <label for="confirmCategorySelect">
+            <span data-i18n="lblConfirmCat">1. Business Category</span>
+            <span id="intentCategoryBadge" class="topbar-lang-badge" style="margin-left: 6px;">Auto</span>
+          </label>
+          <select id="confirmCategorySelect" onchange="onConfirmCategoryChange()"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmSubCategorySelect" data-i18n="lblConfirmSubCat">2. Sub-Category / Focus</label>
+          <select id="confirmSubCategorySelect"></select>
+        </div>
+        <div class="form-field">
+          <label for="confirmTargetSelect" data-i18n="lblConfirmTarget">3. Problem / Return / Cancel Column</label>
           <select id="confirmTargetSelect"></select>
         </div>
         <div class="form-field">
-          <label for="confirmCostSelect">2. Which column has the Bill / Amount / Money?</label>
+          <label for="confirmCostSelect" data-i18n="lblConfirmCost">4. Bill / Amount / Money Column</label>
           <select id="confirmCostSelect"></select>
         </div>
         <div class="form-field">
-          <label for="confirmLangSelect">3. Summary Language</label>
+          <label for="confirmLangSelect" data-i18n="lblConfirmLang">5. Summary Language</label>
           <select id="confirmLangSelect">
             <option value="bilingual">Both (Plain English + Simple Hinglish)</option>
             <option value="en">Plain English Only</option>
@@ -3902,6 +4430,57 @@
               <strong id="ownerKpiQuickSaveVal" style="color: var(--accent-sky);">--</strong>
             </div>
           </div>
+        </section>
+
+        <!-- V7.0 1-CLICK EXECUTIVE QUICK BRIEF & SHARE BAR (ZERO ROBOTIC AUDIO) -->
+        <section id="v7VoiceShareBar" class="v7-voice-bar hidden" aria-label="Executive Quick Summary and Share Actions">
+          <div class="v7-voice-left">
+            <button id="btnV7ScriptToggle" type="button" class="btn btn-primary btn-sm" onclick="toggleV7VoiceTranscript()">
+              📝 4-Point Executive Brief ▾
+            </button>
+            <span id="v7VoiceStatusPill" class="v7-voice-status">100% DuckDB-Verified · Ready to Share</span>
+          </div>
+          <div class="v7-voice-right">
+            <button id="btnV7ShareCardPng" type="button" class="btn btn-secondary btn-sm" onclick="exportWhatsAppStoryCardPng()">
+              📲 Share Card PNG
+            </button>
+            <button id="btnV7CopyWhatsApp" type="button" class="btn btn-secondary btn-sm" onclick="copyWhatsAppShareText()">
+              📋 WhatsApp Text
+            </button>
+            <a id="openV7BoardroomPdfLink" href="#" target="_blank" class="btn btn-secondary btn-sm">
+              📄 2-Page PDF
+            </a>
+          </div>
+        </section>
+
+        <section id="v7VoiceBeatsPanel" class="v7-beats-panel hidden">
+          <div id="v7VoiceBeatsGrid" class="v7-beats-grid"></div>
+        </section>
+
+        <!-- V7.0 PROACTIVE EARLY-WARNING ANOMALY & VELOCITY RADAR -->
+        <section id="v7AnomalyRadarSection" class="v7-radar-card hidden">
+          <div class="v7-radar-head">
+            <div style="flex: 1 1 320px; min-width: 0;">
+              <div class="section-eyebrow" style="margin-bottom: 4px;">
+                <span id="v7RadarEyebrow">PROACTIVE EARLY-WARNING RADAR</span>
+                <span id="v7RadarMetaTag" class="tabular-nums">EWMA · MAD · BH-FDR</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span id="v7RadarLevelBadge" class="v7-level-pill">ALL CLEAR</span>
+                <h3 id="v7RadarHeadline" style="font-size: 15.5px; font-weight: 800; margin: 0; color: var(--text-primary);">Scanning time-series velocity...</h3>
+              </div>
+            </div>
+            <div id="v7RadarSparkline" class="v7-sparkline-box" aria-label="Time-series adverse rate trend"></div>
+          </div>
+          <div id="v7RadarCohortsGrid" class="v7-cohort-grid hidden"></div>
+          <div id="v7RadarProjectionBar" class="v7-projection-bar hidden"></div>
+        </section>
+
+        <!-- V7.0 CLOSED-LOOP BEFORE-VS-AFTER IMPACT VERIFIER -->
+        <section id="v7ImpactVerifierBanner" class="v7-impact-banner hidden">
+          <span id="v7ImpactVerdictBadge" class="v7-level-pill">VERIFIED</span>
+          <span id="v7ImpactHeadline" style="font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1 1 240px;"></span>
+          <span id="v7ImpactMeta" style="font-size: 12px; color: var(--text-muted);" class="tabular-nums"></span>
         </section>
 
         <!-- V8 LIVE VISUAL CHARTS ROW (AT-A-GLANCE BARS + QUICK ACTION ROADMAP) -->
@@ -4020,6 +4599,36 @@
           </article>
         </section>
 
+        <!-- V6.0 CATEGORY-AWARE ECONOMICS & STATISTICS INTELLIGENCE PANEL -->
+        <section id="categoryIntelSection" class="exception-console hidden" style="margin-bottom: 18px; border-color: var(--accent-sky-border);">
+          <div class="exc-header">
+            <div>
+              <div id="catIntelEyebrow" class="section-eyebrow" style="color: var(--accent-sky); margin-bottom: 2px;">CATEGORY ECONOMICS &amp; STATISTICS PACK</div>
+              <h2 id="catIntelTitle" class="exc-title">Industry-Tailored Business Metrics</h2>
+              <p id="catIntelSubtitle" class="exc-subtitle"></p>
+            </div>
+            <span id="catIntelModeBadge" class="exc-status-pill" style="background: var(--accent-sky-bg); color: var(--accent-sky); border-color: var(--accent-sky-border);">Auto-Detected</span>
+          </div>
+          <div id="catIntelWarningBox" class="hidden" style="margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: var(--accent-amber-bg); border: 1px solid var(--accent-amber-border); color: var(--accent-amber); font-size: 12.5px; font-weight: 600;"></div>
+          <div id="catIntelPacksRow" class="cat-pill-row"></div>
+          <div id="catIntelKpiGrid" class="cat-intel-grid"></div>
+          <div id="catIntelUnlockRow" class="cat-unlock-strip hidden"></div>
+        </section>
+
+        <!-- WORKSTREAM 1: SALES, PROFIT, 30-DAY DEMAND FORECAST & STOCK REORDER CONSOLE -->
+        <section id="growthInventorySection" class="exception-console hidden" style="margin-bottom: 18px; border-color: var(--accent-emerald-border);">
+          <div class="exc-header">
+            <div>
+              <div id="giEyebrow" class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;">SALES · PROFIT · DEMAND FORECAST · STOCK REORDER</div>
+              <h2 id="giHeadline" class="exc-title">Sales, Margin &amp; 30-Day Stock Plan</h2>
+              <p id="giSubtitle" class="exc-subtitle"></p>
+            </div>
+            <span id="giModeBadge" class="exc-status-pill" style="background: var(--accent-emerald-bg); color: var(--accent-emerald); border-color: var(--accent-emerald-border);">Commercial Mode</span>
+          </div>
+          <div id="giKpiStrip" class="pulse-grid" style="margin-top: 12px; margin-bottom: 12px;"></div>
+          <div id="giActionGrid" class="exc-grid"></div>
+        </section>
+
         <!-- SIGNATURE DIFFERENTIATION ANCHOR: AUTONOMOUS EXCEPTION COMMAND CONSOLE -->
         <section id="rankedLeaksSection" class="exception-console hidden">
           <div class="exc-header">
@@ -4099,7 +4708,7 @@
         <details id="deepAuditDrawer" style="margin-top: 16px; background: var(--bg-panel); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px 16px;">
           <summary style="cursor: pointer; font-weight: 800; font-size: 14.5px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; list-style: none;">
             <span>🔬 Deep Forensic Audit &amp; Search All 200 Background Business Checks (Q001–Q200)</span>
-            <span style="font-size: 12px; font-weight: 600; color: var(--accent-sky);">Click to Expand ▾</span>
+            <span id="deepAuditToggleLabel" style="font-size: 12px; font-weight: 600; color: var(--accent-sky);">Click to Expand ▾</span>
           </summary>
 
         <!-- 360-DEGREE A-TO-Z HIDDEN LEAKAGE & PROFIT FORENSICS PANEL -->
@@ -4184,8 +4793,8 @@
             </div>
           </div>
 
-          <div class="table-scroll">
-            <table class="data-table">
+          <div class="table-scroll worklist-table-scroll">
+            <table class="data-table worklist-mobile-cards">
               <thead>
                 <tr>
                   <th>#</th>
@@ -4315,7 +4924,7 @@
 
           <div class="copilot-input-row">
             <input id="copilotQuestionInput" type="text" placeholder="Example: Which group has the highest cancellations and how much money is at risk?" onkeydown="if(event.key==='Enter') submitCopilotQuestion()" />
-            <select id="copilotLangSelect" style="background: var(--bg-subtle); border: 1px solid var(--border-strong); color: var(--text-primary); border-radius: var(--radius-sm); padding: 0 12px; font-size: 13.5px;">
+            <select id="copilotLangSelect" style="background: var(--bg-subtle); border: 1px solid var(--border-strong); color: var(--text-primary); border-radius: var(--radius-sm); font-size: 13.5px;">
               <option value="en">🇬🇧 English</option>
               <option value="hi">🇮🇳 Hinglish</option>
             </select>
@@ -4347,7 +4956,7 @@
           <div class="predict-header-row">
             <div>
               <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 3px;" data-i18n="eyebrowPredict">
-                STAGE 8 · AI DECISION PREDICTOR (ML + MONTE CARLO)
+                WHAT-IF DECISION SIMULATOR · TEST BEFORE SPENDING
               </div>
               <h2 style="font-size: 21px; font-weight: 800; margin-bottom: 4px;" data-i18n="predictTitle">
                 Test Your Business Decision Before You Take Action
@@ -4357,7 +4966,7 @@
               </p>
             </div>
             <div id="predictModelHonestyPill" class="predict-honesty-pill">
-              🧠 Training calibrated ML model...
+              🧠 Analyzing business patterns...
             </div>
           </div>
 
@@ -4387,10 +4996,10 @@
           </div>
 
           <!-- Step 1C: Clean Collapsible Custom Visual Decision Builder -->
-          <details class="predict-custom-builder">
+          <details id="predictCustomBuilder" class="predict-custom-builder">
             <summary>
-              <span data-i18n="predictCustomToggle">🎛️ Or Build a Custom Decision (Choose Any Column &amp; Action)</span>
-              <span style="font-size: 11.5px; color: var(--text-muted);">Expand ▾</span>
+              <span data-i18n="predictCustomToggle">🎛️ Or Build a Custom Decision (Choose Any Business Factor &amp; Change)</span>
+              <span id="predictCustomToggleLabel" style="font-size: 11.5px; color: var(--text-muted);">Expand ▾</span>
             </summary>
             <div class="predict-custom-grid">
               <div class="form-field">
@@ -4442,7 +5051,7 @@
 
           <!-- Loading Indicator while simulating -->
           <div id="predictLoadingBox" class="hidden" style="margin-top: 16px; padding: 18px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-subtle); text-align: center; font-size: 13.5px; color: var(--text-secondary);">
-            ⏳ Running calibrated ML model &amp; 500 Monte Carlo risk simulations...
+            ⏳ Testing your decision against historical business patterns...
           </div>
 
           <!-- Step 2 & 3: Visual Verdict Ring + 3 Plain-Language Explanation Cards -->
@@ -4597,10 +5206,10 @@
         <section class="panel-card">
           <div class="predict-header-row" style="margin-bottom: 10px;">
             <div>
-              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="boardroomEyebrow">STAGE 9 · AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA)</div>
+              <div class="section-eyebrow" style="color: var(--accent-emerald); margin-bottom: 2px;" data-i18n="boardroomEyebrow">AI BUSINESS ADVISOR · DEBATE &amp; VERIFY DECISIONS</div>
               <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;" data-i18n="boardroomTitle">Discuss Your Team Debate or Business Idea Against Real Data</h2>
               <p style="font-size: 13.2px; color: var(--text-secondary);" data-i18n="boardroomLead">
-                Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.
+                Type or speak any real business dilemma, budget proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.
               </p>
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -4617,7 +5226,6 @@
             <textarea id="boardroomInput" class="boardroom-textarea" placeholder="Example: My supervisor wants ₹2,00,000 for a chiller upgrade, while QA says pH acidity is the real cause — who is right according to my data?"></textarea>
             <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                <button id="btnBoardroomMic" type="button" class="btn btn-secondary btn-sm" onclick="startBoardroomVoice()" title="Speak your thought directly">🎙️ Speak</button>
                 <span style="font-size:11.5px;color:var(--text-muted);" data-i18n="boardroomHint">Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates &amp; all 43 world languages.</span>
               </div>
               <button id="btnBoardroomSubmit" type="button" class="btn btn-primary" onclick="sendBoardroomDiscussion()">
@@ -5219,12 +5827,14 @@
       predictCommitmentsData: null,
       boardroomHistory: [],
       boardroomStartersRunId: null,
-      boardroomStarters: []
+      boardroomStarters: [],
+      businessCategories: [],
+      detectedCategoryMeta: null
     };
 
     const i18nDict = {
       en: {
-        brandSubtitle: 'AI Business Cockpit',
+        brandSubtitle: 'AI Executive Suite',
         lblReport: 'SWITCH REPORT',
         btnNewUpload: 'Upload Data',
         btnSettings: 'Settings',
@@ -5254,15 +5864,15 @@
         btnPrintPdf: 'PDF',
         btnFullVisual: 'Charts',
         btnProof: 'Proof',
-        tabOverview: 'Health',
+        tabOverview: 'Business Health',
         tabActions: 'Call List',
         tabCalculator: 'Calculator',
         tabAsk: 'Ask AI',
         tabPredict: 'Decision Lab',
         tabBoardroom: 'Boardroom',
-        boardroomEyebrow: 'STAGE 9 · AI BOARDROOM DECISION JUDGE (PERSONAL DATA SCIENTIST + CA)',
+        boardroomEyebrow: 'AI BUSINESS ADVISOR · DEBATE & VERIFY DECISIONS',
         boardroomTitle: 'Discuss Your Team Debate or Business Idea Against Real Data',
-        boardroomLead: 'Type or speak any real business dilemma, CapEx proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.',
+        boardroomLead: 'Type or speak any real business dilemma, budget proposal, or team argument in plain language — get a brutally honest verdict showing what your data proves TRUE, what is WRONG/risky, and what the data cannot see.',
         boardroomHint: 'Supports multi-turn follow-ups, ₹/$ budgets, team Option A vs B debates & all 43 world languages.',
         btnBoardroomAsk: 'Ask the Boardroom Judge',
         boardroomProvenTitle: 'Proven True by Your Data',
@@ -5271,11 +5881,11 @@
         boardroomPlanTitle: 'Recommended 14-Day Safe Action Plan',
         boardroomCopyMemo: 'Copy WhatsApp Memo',
         eyebrowCheck: 'QUICK CHECK BEFORE STARTING',
-        eyebrowPredict: 'STAGE 8 · DATA-BACKED DECISION SIMULATOR (ESTIMATE + MONTE CARLO)',
+        eyebrowPredict: 'WHAT-IF DECISION SIMULATOR · TEST BEFORE SPENDING',
         predictTitle: 'Test Your Business Decision Before You Take Action',
         predictLead: 'Pick a 1-click idea below or type your own change in plain English/Hinglish — see the honest % chance of profit, where it wins, where it won\'t help, and why loss could happen.',
         btnPredictNow: 'Predict Outcome',
-        predictCustomToggle: '🎛️ Or Build a Custom Decision (Choose Any Column & Action)',
+        predictCustomToggle: '🎛️ Or Build a Custom Decision (Choose Any Business Factor & Change)',
         lblPredictCol: '1. What do you want to change?',
         lblPredictAct: '2. Type of change',
         lblPredictFrom: '3. Current value',
@@ -5389,7 +5999,7 @@
         lblProvenTag: 'Proven',
         lblNoiseTag: 'Noise / Flat',
         lblEntireBusiness: 'Entire Business (All Rows)',
-        lblModelTraining: 'Training calibrated ML model...',
+        lblModelTraining: 'Analyzing business patterns...',
         lblLoadingScenarios: 'Loading smart 1-click decision scenarios from your data...',
         lblLiveJudgeReady: 'Live Data Judge Ready',
         lblWorldLangs: '43 World Languages',
@@ -5416,46 +6026,56 @@
         lblAvgPrefix: 'Avg:',
         lblHealthyShort: 'Healthy:',
         lblAtRiskShort: 'At Risk:',
-        lblSimulateShort: 'Simulate →'
+        lblSimulateShort: 'Simulate →',
+        lblUploadCategory: 'Business Category (Optional — Auto-Detected):',
+        lblConfirmCat: '1. Business Category',
+        lblConfirmSubCat: '2. Sub-Category / Focus',
+        lblConfirmTarget: '3. Problem / Return / Cancel Column',
+        lblConfirmCost: '4. Bill / Amount / Money Column',
+        lblConfirmLang: '5. Summary Language',
+        simGrossLbl: 'Money Saved',
+        simBasedOnPrefix: 'BASED ON:',
+        simAtRiskSuffix: 'AT RISK',
+        simReductionWord: 'Reduction'
       },
       hi: {
-        brandSubtitle: 'Aasan Business Doctor',
-        lblReport: 'REPORT BADLEIN',
-        btnNewUpload: 'CSV / Excel Upload Karein',
-        btnSettings: 'Settings',
-        sealVerified: '100% Asli Data Verified',
-        eyebrowUpload: 'STEP 1 · APNI BUSINESS FILE JODEIN',
-        heroHeading: '30 second mein pakdein aapka business paisa kahan lose kar raha hai.',
-        heroLead: 'Apni Sales, Orders, Invoices ya Customers ki Excel/CSV file daalein. Koi coding ya formula nahi chahiye — seedha dekhein sabse bada nuksaan, aaj ka kaam aur kitna paisa bach sakta hai.',
-        dropTitle: 'Apni Excel ya CSV file yahan drop karein, ya click karke chunein',
-        dropSub: 'Ek sheet ya multiple sheets (Orders + Customers) dono chalengi. 100% safe aur private.',
-        btnPickFile: 'Computer Se File Chunein',
-        ben1Title: '100% Asli Hisaab',
-        ben1Sub: 'Har rupaya aapki sheet se directly gina jata hai. Koi andaza nahi.',
-        ben2Title: 'Seedhi Bhasha',
-        ben2Sub: 'Saari baatein simple Hinglish ya English mein aasani se samjhein.',
-        ben3Title: 'Aaj Ka Kaam Ready',
-        ben3Sub: 'Subah team ko dene ke liye priority customer list turant milti hai.',
-        eyebrowConnect: 'YA 1 CLICK MEIN DIRECT CONNECT KAREIN',
-        eyebrowDemoConnectors: 'LIVE SYNC YA INTERACTIVE SAMPLE DEMOS',
-        btnLoadSheet: 'Sheet Load Karein',
-        eyebrowExamples: 'PEHLE DEMO DEKHNA CHAHTE HAIN?',
-        examplesTitle: 'Asli Business Examples Try Karein (1-Click)',
-        examplesLead: 'Apna data daalne se pehle dekhna hai ki report kaisi dikhti hai? Neeche kisi bhi example par click karein:',
-        lblRows: 'Kul Records:',
-        lblIssues: 'Nuksaan / Problem Cases:',
-        lblRiskMoney: 'Khatre Mein Paisa:',
+        brandSubtitle: 'आसान बिज़नेस डॉक्टर',
+        lblReport: 'रिपोर्ट बदलें',
+        btnNewUpload: 'डेटा अपलोड',
+        btnSettings: 'सेटिंग्स',
+        sealVerified: '100% असली डेटा वेरिफ़ाइड',
+        eyebrowUpload: 'स्टेप 1 · अपनी बिज़नेस फ़ाइल जोड़ें',
+        heroHeading: '30 सेकंड में पकड़ें आपका बिज़नेस पैसा कहाँ खो रहा है।',
+        heroLead: 'अपनी Sales, Orders, Invoices या Customers की Excel/CSV फ़ाइल डालें। कोई कोडिंग या फ़ॉर्मूला नहीं चाहिए — सीधे देखें सबसे बड़ा नुकसान, आज की कॉल लिस्ट और कितनी बचत हो सकती है।',
+        dropTitle: 'अपनी Excel या CSV फ़ाइल यहाँ छोड़ें, या क्लिक करके चुनें',
+        dropSub: 'एक शीट या आपस में जुड़ी कई शीट्स (Orders + Customers) दोनों चलेंगी। 100% सुरक्षित और निजी।',
+        btnPickFile: 'कंप्यूटर से फ़ाइल चुनें',
+        ben1Title: '100% असली हिसाब',
+        ben1Sub: 'हर रुपया सीधे आपकी शीट से गिना जाता है। कोई अंदाज़ा नहीं।',
+        ben2Title: 'सीधी सरल भाषा',
+        ben2Sub: 'पूरी रिपोर्ट आसान हिन्दी या अंग्रेज़ी में समझें।',
+        ben3Title: 'आज का काम तैयार',
+        ben3Sub: 'टीम को देने के लिए प्रायोरिटी ग्राहक लिस्ट तुरंत मिलती है।',
+        eyebrowConnect: 'या 1 क्लिक में सीधे कनेक्ट करें',
+        eyebrowDemoConnectors: 'लाइव सिंक या सैंपल डेमो आज़माएँ',
+        btnLoadSheet: 'शीट लोड करें',
+        eyebrowExamples: 'पहले डेमो देखना चाहते हैं?',
+        examplesTitle: 'असली बिज़नेस उदाहरण आज़माएँ (1-क्लिक)',
+        examplesLead: 'अपना डेटा डालने से पहले देखना है कि रिपोर्ट कैसी दिखती है? नीचे किसी भी उदाहरण पर क्लिक करें:',
+        lblRows: 'कुल रिकॉर्ड:',
+        lblIssues: 'समस्या के केस:',
+        lblRiskMoney: 'खतरे में पैसा:',
         btnWhatsAppBrief: 'संक्षेप',
         btnPrintPdf: 'PDF',
         btnFullVisual: 'चार्ट',
         btnProof: 'सबूत',
-        tabOverview: 'Business Health',
-        tabActions: 'Aaj Ki Call List',
-        tabCalculator: 'Bachat Calculator',
-        tabAsk: 'Koi Bhi Sawal Poochein',
-        tabPredict: 'Faisla Jaanchein (AI)',
-        tabBoardroom: 'AI Boardroom (बहस व फ़ैसला)',
-        boardroomEyebrow: 'STAGE 9 · AI बोर्डरूम डिसीजन जज (पर्सनल डेटा साइंटिस्ट + CA)',
+        tabOverview: 'बिज़नेस हेल्थ',
+        tabActions: 'कॉल लिस्ट',
+        tabCalculator: 'बचत कैलकुलेटर',
+        tabAsk: 'AI से पूछें',
+        tabPredict: 'फ़ैसला जाँचें',
+        tabBoardroom: 'बोर्डरूम जज',
+        boardroomEyebrow: 'AI बिज़नेस सलाहकार · टीम की बहस और फ़ैसले की जाँच',
         boardroomTitle: 'अपनी मन की बात या टीम की बहस को असली डेटा से जज करवाएँ',
         boardroomLead: 'कोई भी बिज़नेस आइडिया, बजट प्रस्ताव या टीम की बहस सीधी भाषा में लिखें या बोलें — डेटा से साफ़ जानें क्या सच है, क्या गलत/ख़तरनाक है, और क्या डेटा में दर्ज नहीं है।',
         boardroomHint: 'लगातार सवाल-जवाब, ₹/$ बजट चेक, Option A बनाम B बहस और सभी 43 भाषाओं में काम करता है।',
@@ -5466,93 +6086,93 @@
         boardroomPlanTitle: 'अगले 14 दिन का सुरक्षित एक्शन प्लान',
         boardroomCopyMemo: 'WhatsApp मेमो कॉपी करें',
         eyebrowCheck: 'शुरू करने से पहले एक नज़र',
-        eyebrowPredict: 'STAGE 8 · डेटा-आधारित फ़ैसला सिमुलेटर (अनुमान + MONTE CARLO)',
-        predictTitle: 'Koi Bhi Faisla Lene Se Pehle Uska Asar Check Karein',
-        predictLead: 'Neeche 1-click idea chunein ya seedhi Hindi/English mein apna badlav likhein — jaanein munafe ka kitna % chance hai, kahan fayda hoga, kahan nahi hoga aur nuksaan kyun ho sakta hai.',
-        btnPredictNow: 'Asar Jaanchein',
-        predictCustomToggle: '🎛️ Ya Khud Apna Custom Badlav Banayein (Koi Bhi Column Chunein)',
-        lblPredictCol: '1. Kya badalna chahte hain?',
-        lblPredictAct: '2. Badlav ka tareeqa',
-        lblPredictFrom: '3. Abhi ki value',
-        lblPredictTo: '4. Kisme badalna hai',
-        lblPredictScope: 'Optional: Sirf kisi khas store/group par',
-        btnTestCustom: 'Is Badlav Ko Test Karein',
-        predHelpsEye: 'KAHAN SABSE ZYADA FAYDA HOGA',
-        predHelpsTitle: '✅ Yahan Jeet Hogi',
-        predNoHelpEye: 'KAHAN ZYADA ASAR NAHI HOGA',
-        predNoHelpTitle: '⚠️ Kam / Zero Fayde Wale Hisse',
-        predRisksEye: 'IMAANDAR RISK CHECK',
-        predRisksTitle: '🔍 Nuksaan Hua Toh Kyun Hoga?',
-        lblRolloutCost: '💰 Kharch (Optional):',
-        predCmpEye: 'AAJ TEST KIYE GAYE FAISLON KI TULNA',
-        predCmpTitle: '⚖️ Sabhi Faislon Ka Side-by-Side Scorecard',
-        cmpColDec: 'Test Kiya Faisla',
-        cmpColVer: 'Verdict',
-        cmpColProb: 'Fayda %',
-        cmpColConf: 'Trust Score',
-        cmpColNet: 'Shuddh Asar',
-        cmpColCi: '95% Imaandar Range',
-        btnAddCombo: 'Combo Jodein',
-        btnRunCombo: 'Combo Test Karein',
-        btnCommitTrack: 'Commit & Track Karein',
-        btnWaMemo: 'WhatsApp Memo',
-        btnPrintMemo: 'Board PDF Print',
-        predTrackEye: 'ANUMAAN BANAAM ASLI RESULT TRACKER',
-        predTrackTitle: '🎯 Kya Hamara Anumaan Asal Zindagi Mein Sach Nikla?',
-        eyebrowTrend: 'PICHLI REPORT KE MUQABLE BADLAV',
-        lblRateChange: 'Problem Rate Badlav',
-        lblMoneyChange: 'Avg Order Badlav',
-        card1Title: '01 · Aapka Sabse Mazboot Hissa',
-        card1Foot: 'ISKO CHHEDNA NAHI HAI',
-        card2Title: '02 · Sabse Bada Nuksaan (Leak)',
-        card2Foot: 'SABSE PEHLE ISE THEEK KAREIN',
-        card3Title: '03 · Khatre Ki Laal Rekha',
-        card3Foot: 'IS LIMIT SE BACHEIN',
-        card4Title: '04 · Agle 30 Din Ki Bachat',
-        card4Foot: 'RECOVERY KA MAUKA',
-        eyebrowPlans: 'THEEK KARNE KE 3 IMANDAR RASTE',
-        clickSimulate: 'CLICK KARKE BACHAT DEKHEIN',
-        plansTitle: 'Apni Pasand Ka Plan Chunein',
-        plansLead: 'Hum koi faisla zabardasti nahi thopte. Kisi bhi plan par click karke neeche bachat check karein:',
-        eyebrowStory: 'POORE BUSINESS KI KAHANI',
-        storyTitle: 'Aasan Bhasha Mein Summary',
-        eyebrowRoi: 'AAPKI BACHAYI HUI RAKAM (SAVINGS)',
-        lblActionsDone: 'Actions Liye Gaye:',
-        lblRoiMult: 'Plan Return:',
-        roiHelpText: 'Jab aapki team kisi customer se baat kar le, toh neeche "Take Action" dabayein — bachat yahan judti jayegi.',
-        btnDownloadList: 'Excel/CSV List Download Karein',
-        eyebrowQueue: 'TEAM KE LIYE AAJ KI SOOCHI',
-        worklistTitle: 'Aaj In Customers / Orders Par Turant Kaam Karein',
-        fltAll: 'Sabhi Cases',
-        fltPrev: '🟡 Nuksaan Se Pehle Bachayein',
-        fltRec: '🔴 Dooba Paisa Wapas Laayein',
-        colPriority: 'Zarurat',
-        colChance: 'Khatra %',
-        colMoney: 'Risk Amount',
-        colWhy: 'Khatra Kyun Hai',
-        colDo: 'Kya Karna Hai',
-        colBtn: 'Kaam Karein',
-        eyebrowSim: 'BACHAT CALCULATOR (WHAT-IF)',
-        simTitle: 'Andaza Lagayein Kitna Munafa Wapas Aayega',
-        simLead: 'Sliders ghumakar check karein: "Agar hum problem X% kam karein aur Y kharch karein, toh jeb mein kitna shuddh fayda bachega?"',
-        simSlider1: 'Problem kitne % kam karni hai?',
-        simSlider2: 'Mahine Ka Team / Fix Kharch',
-        simNetLbl: 'Shuddh Munafa (Net)',
-        simNewRateLbl: 'Naya Problem Rate',
-        eyebrowBreak: 'GROUP & CATEGORY HISAB',
-        breakTitle: 'Kis Category / City Mein Sabse Zyada Nuksaan Hai?',
-        brkColGroup: 'Group / Category',
-        brkColVol: 'Kul Orders',
-        brkColFail: 'Failed Cases',
-        brkColRate: 'Problem Rate %',
-        brkColShare: 'Kul Nuksaan Mein Hissa',
-        brkColMoney: 'Khatre Mein Paisa',
-        brkColHealth: 'Halat',
-        brkColWhy: 'Wajah Dekhein',
-        eyebrowAsk: 'APNI BHASHA MEIN SAWAL POOCHEIN',
-        askTitle: 'Business Se Juda Koi Bhi Sawal Poochein',
-        askLead: 'Neeche apna sawal type karein ya ready-made button dabayein — jawab aapke asli data se milega:',
-        btnGetAnswer: 'Jawab Dekhein',
+        eyebrowPredict: 'फ़ैसला सिमुलेटर · खर्च करने से पहले असर जाँचें',
+        predictTitle: 'कोई भी फ़ैसला लेने से पहले उसका असर जाँचें',
+        predictLead: 'नीचे 1-क्लिक विकल्प चुनें या सीधी हिन्दी/अंग्रेज़ी में अपना बदलाव लिखें — जानें फ़ायदे की कितनी % संभावना है, कहाँ जीत होगी, कहाँ असर नहीं होगा और नुकसान क्यों हो सकता है।',
+        btnPredictNow: 'असर जाँचें',
+        predictCustomToggle: '🎛️ या खुद अपना बदलाव चुनें (कोई भी बिज़नेस फ़ैक्टर और असर टेस्ट करें)',
+        lblPredictCol: '1. क्या बदलना चाहते हैं?',
+        lblPredictAct: '2. बदलाव का तरीका',
+        lblPredictFrom: '3. अभी का मान',
+        lblPredictTo: '4. किसमें बदलना है',
+        lblPredictScope: 'वैकल्पिक: सिर्फ़ किसी खास स्टोर/ग्रुप पर',
+        btnTestCustom: 'इस बदलाव को टेस्ट करें',
+        predHelpsEye: 'कहाँ सबसे ज़्यादा फ़ायदा होगा',
+        predHelpsTitle: '✅ यहाँ जीत होगी',
+        predNoHelpEye: 'कहाँ ज़्यादा असर नहीं होगा',
+        predNoHelpTitle: '⚠️ कम / शून्य फ़ायदे वाले हिस्से',
+        predRisksEye: 'ईमानदार रिस्क जाँच',
+        predRisksTitle: '🔍 नुकसान हुआ तो क्यों होगा?',
+        lblRolloutCost: '💰 खर्च (वैकल्पिक):',
+        predCmpEye: 'टेस्ट किए गए फ़ैसलों की तुलना',
+        predCmpTitle: '⚖️ सभी फ़ैसलों का तुलनात्मक स्कोरकार्ड',
+        cmpColDec: 'टेस्ट किया फ़ैसला',
+        cmpColVer: 'निष्कर्ष',
+        cmpColProb: 'फ़ायदा %',
+        cmpColConf: 'भरोसा स्कोर',
+        cmpColNet: 'शुद्ध असर',
+        cmpColCi: '95% ईमानदार रेंज',
+        btnAddCombo: 'कॉम्बो जोड़ें',
+        btnRunCombo: 'कॉम्बो टेस्ट करें',
+        btnCommitTrack: 'कमिट व ट्रैक करें',
+        btnWaMemo: 'WhatsApp मेमो',
+        btnPrintMemo: 'बोर्ड PDF प्रिंट',
+        predTrackEye: 'अनुमान बनाम असली परिणाम ट्रैकर',
+        predTrackTitle: '🎯 क्या हमारा अनुमान असल में सच निकला?',
+        eyebrowTrend: 'पिछली रिपोर्ट के मुकाबले बदलाव',
+        lblRateChange: 'समस्या दर में बदलाव',
+        lblMoneyChange: 'औसत ऑर्डर बदलाव',
+        card1Title: '01 · आपका सबसे मज़बूत हिस्सा',
+        card1Foot: 'इसे बिल्कुल न बदलें',
+        card2Title: '02 · सबसे बड़ा आर्थिक नुकसान',
+        card2Foot: 'सबसे पहले इसे ठीक करें',
+        card3Title: '03 · खतरे की लाल सीमा',
+        card3Foot: 'इस सीमा से बचें',
+        card4Title: '04 · अगले 30 दिन की बचत',
+        card4Foot: 'रिकवरी का मौका',
+        eyebrowPlans: 'ठीक करने के 3 ईमानदार रास्ते',
+        clickSimulate: 'क्लिक करके बचत देखें',
+        plansTitle: 'अपनी पसंद का सुधार प्लान चुनें',
+        plansLead: 'हम कोई एक फ़ैसला ज़बरदस्ती नहीं थोपते। किसी भी प्लान पर क्लिक करके कैलकुलेटर में सटीक बचत देखें:',
+        eyebrowStory: 'पूरे बिज़नेस की कहानी',
+        storyTitle: 'आसान भाषा में पूरी रिपोर्ट',
+        eyebrowRoi: 'आपकी बचाई हुई रकम',
+        lblActionsDone: 'किए गए एक्शन:',
+        lblRoiMult: 'प्लान रिटर्न:',
+        roiHelpText: 'जब आपकी टीम किसी ग्राहक से बात कर ले, तो नीचे "कॉल/एक्शन लें" दबाएँ — आपकी बचत यहाँ जुड़ती जाएगी।',
+        btnDownloadList: 'Excel/CSV लिस्ट डाउनलोड करें',
+        eyebrowQueue: 'टीम के लिए आज की सूची',
+        worklistTitle: 'आज इन ग्राहकों / ऑर्डर्स पर तुरंत काम करें',
+        fltAll: 'सभी केस',
+        fltPrev: '🟡 नुकसान से पहले बचाएँ',
+        fltRec: '🔴 डूबा पैसा वापस लाएँ',
+        colPriority: 'ज़रूरत',
+        colChance: 'खतरा %',
+        colMoney: 'खतरे में रकम',
+        colWhy: 'खतरा क्यों है',
+        colDo: 'अगला कदम',
+        colBtn: 'एक्शन',
+        eyebrowSim: 'बचत कैलकुलेटर (WHAT-IF)',
+        simTitle: 'अंदाज़ा लगाएँ कितना मुनाफ़ा वापस आएगा',
+        simLead: 'स्लाइडर घुमाकर जाँचें: "अगर हम मुख्य समस्या X% कम करें और Y बजट खर्च करें, तो जेब में कितना शुद्ध मुनाफ़ा बचेगा?"',
+        simSlider1: 'समस्या कितने % कम करनी है?',
+        simSlider2: 'महीने का टीम / सुधार खर्च',
+        simNetLbl: 'शुद्ध मुनाफ़ा (Net)',
+        simNewRateLbl: 'नई समस्या दर',
+        eyebrowBreak: 'ग्रुप और कैटेगरी हिसाब',
+        breakTitle: 'किस कैटेगरी / शहर में सबसे ज़्यादा नुकसान है?',
+        brkColGroup: 'ग्रुप / कैटेगरी',
+        brkColVol: 'कुल ऑर्डर',
+        brkColFail: 'खराब केस',
+        brkColRate: 'समस्या दर %',
+        brkColShare: 'कुल नुकसान में हिस्सा',
+        brkColMoney: 'खतरे में पैसा',
+        brkColHealth: 'हालत',
+        brkColWhy: 'वजह देखें',
+        eyebrowAsk: 'अपनी भाषा में सवाल पूछें',
+        askTitle: 'बिज़नेस से जुड़ा कोई भी सवाल पूछें',
+        askLead: 'नीचे अपना सवाल लिखें या तैयार बटन दबाएँ — जवाब आपके असली डेटा से तुरंत मिलेगा:',
+        btnGetAnswer: 'सत्यापित जवाब देखें',
         navMenuLabel: 'वर्कस्पेस',
         navConnectLabel: 'कनेक्ट करें',
         btnLiveErp: 'Tally / Live ERP जोड़ें',
@@ -5584,7 +6204,7 @@
         lblProvenTag: 'साबित',
         lblNoiseTag: 'असर नहीं',
         lblEntireBusiness: 'पूरा बिज़नेस (सभी रिकॉर्ड्स)',
-        lblModelTraining: 'आपके डेटा पर ML मॉडल ट्रेन हो रहा है...',
+        lblModelTraining: 'आपके डेटा पैटर्न का विश्लेषण हो रहा है...',
         lblLoadingScenarios: 'डेटा से स्मार्ट निर्णय विकल्प तैयार हो रहे हैं...',
         lblLiveJudgeReady: 'लाइव डेटा जज तैयार',
         lblWorldLangs: '43 वैश्विक भाषाएँ',
@@ -5611,7 +6231,17 @@
         lblAvgPrefix: 'औसत:',
         lblHealthyShort: 'सुरक्षित:',
         lblAtRiskShort: 'खतरे में:',
-        lblSimulateShort: 'बचत देखें →'
+        lblSimulateShort: 'बचत देखें →',
+        lblUploadCategory: 'बिज़नेस कैटेगरी (वैकल्पिक — ऑटो-डिटेक्ट होगी):',
+        lblConfirmCat: '1. बिज़नेस कैटेगरी',
+        lblConfirmSubCat: '2. सब-कैटेगरी / प्रकार',
+        lblConfirmTarget: '3. समस्या / रिटर्न / कैंसल कॉलम',
+        lblConfirmCost: '4. बिल / राशि / पैसा कॉलम',
+        lblConfirmLang: '5. रिपोर्ट की भाषा',
+        simGrossLbl: 'अनुमानित बचत',
+        simBasedOnPrefix: 'आधार:',
+        simAtRiskSuffix: 'खतरे में',
+        simReductionWord: 'कमी'
       }
     };
 
@@ -5683,7 +6313,16 @@
         const buildOptions = () => regions.map(r => {
           const opts = byRegion[r].map(l => {
             const rtlTag = l.dir === 'rtl' ? ' · RTL' : '';
-            const label = l.code === 'en' ? `${l.native} (Global)` : `${l.native} (${l.name}${rtlTag})`;
+            let label;
+            if (l.code === 'en') {
+              label = `${l.native} (Global)`;
+            } else if (l.code === 'hi') {
+              label = 'हिन्दी / Hinglish';
+            } else if (String(l.native || '').toLowerCase() === String(l.name || '').toLowerCase()) {
+              label = `${l.native}${rtlTag}`;
+            } else {
+              label = `${l.native} (${l.name}${rtlTag})`;
+            }
             return `<option value="${escapeHtml(l.code)}">${escapeHtml(label)}</option>`;
           }).join('');
           return `<optgroup label="${escapeHtml(r)}">${opts}</optgroup>`;
@@ -5710,6 +6349,52 @@
       } catch (e) {
         // Fallback options already embedded in HTML
       }
+    }
+
+    async function initBusinessCategories() {
+      try {
+        const res = await fetch('/api/v1/categories');
+        if (!res.ok) return;
+        const data = await res.json();
+        const cats = data.categories || [];
+        if (!cats.length) return;
+        appState.businessCategories = cats;
+        populateCategoryDropdowns();
+      } catch (e) {}
+    }
+
+    function populateCategoryDropdowns(selectedCat = null, selectedSub = null) {
+      const cats = appState.businessCategories || [];
+      if (!cats.length) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const buildCatOpts = (cur) => cats.map(c => {
+        const lbl = `${c.icon || ''} ${isHi ? (c.name_hi || c.name_en) : c.name_en}`;
+        return `<option value="${escapeHtml(c.id)}" ${c.id === cur ? 'selected' : ''}>${escapeHtml(lbl)}</option>`;
+      }).join('');
+
+      const upSel = document.getElementById('uploadCategorySelect');
+      if (upSel) {
+        const prev = upSel.value || 'auto';
+        upSel.innerHTML = buildCatOpts(prev);
+      }
+      const cfSel = document.getElementById('confirmCategorySelect');
+      if (cfSel) {
+        const targetVal = selectedCat || cfSel.value || 'auto';
+        cfSel.innerHTML = buildCatOpts(targetVal);
+        populateSubCategoryDropdown(targetVal, selectedSub);
+      }
+    }
+
+    function populateSubCategoryDropdown(catId, selectedSub = null) {
+      const subSel = document.getElementById('confirmSubCategorySelect');
+      if (!subSel) return;
+      const isHi = appState.briefLanguage === 'hi';
+      const found = (appState.businessCategories || []).find(c => c.id === catId) || (appState.businessCategories || [])[0];
+      const subs = (found && found.sub_categories) || [{ id: 'general', name_en: 'General Operations', name_hi: 'सामान्य संचालन' }];
+      subSel.innerHTML = subs.map(s => {
+        const lbl = isHi ? (s.name_hi || s.name_en) : s.name_en;
+        return `<option value="${escapeHtml(s.id)}" ${s.id === selectedSub ? 'selected' : ''}>${escapeHtml(lbl)}</option>`;
+      }).join('');
     }
 
     async function setGlobalLanguage(lang) {
@@ -6192,12 +6877,20 @@
         .replace(/'/g, '&#39;');
     }
 
+    function formatNumberForCurrency(val, sym = '$') {
+      const num = Number(val);
+      if (!Number.isFinite(num)) return '0';
+      return num.toLocaleString(sym === '₹' ? 'en-IN' : 'en-US');
+    }
+
     function formatCurrencyValue(val, sym = '$') {
       const num = Number(val);
       if (!Number.isFinite(num)) return `${sym}0`;
       if (sym === '₹') {
         if (Math.abs(num) >= 10_000_000) return `${sym}${(num / 10_000_000).toFixed(2)} Cr`;
         if (Math.abs(num) >= 100_000) return `${sym}${(num / 100_000).toFixed(2)} L`;
+        if (Math.abs(num) >= 1_000) return `${sym}${Math.round(num).toLocaleString('en-IN')}`;
+        return `${sym}${num.toFixed(num % 1 === 0 ? 0 : 2)}`;
       }
       if (Math.abs(num) >= 1_000_000) {
         return `${sym}${(num / 1_000_000).toFixed(2)}M`;
@@ -6208,9 +6901,25 @@
       return `${sym}${num.toFixed(num % 1 === 0 ? 0 : 2)}`;
     }
 
+    function normalizeIndianRupeesInText(str) {
+      if (!str || typeof str !== 'string') return str;
+      return str.replace(/₹(\d{1,3}(?:,\d{3})+(?:\.\d+)?)(?![0-9.]|\s*(?:L|Cr|K|M)\b)/g, (full, numPart) => {
+        const val = parseFloat(numPart.replace(/,/g, ''));
+        if (!Number.isFinite(val)) return full;
+        if (Math.abs(val) >= 100_000) {
+          return `${formatCurrencyValue(val, '₹')} (₹${Math.round(val).toLocaleString('en-IN')})`;
+        }
+        return `₹${Math.round(val).toLocaleString('en-IN')}`;
+      });
+    }
+
     function renderMarkdownHtml(mdText) {
       if (!mdText) return '<p>No summary available.</p>';
-      const lines = mdText.split('\n');
+      let normalizedMd = normalizeIndianRupeesInText(String(mdText));
+      if (typeof humanizeBusinessText === 'function') {
+        normalizedMd = humanizeBusinessText(normalizedMd, appState.briefLanguage === 'hi' ? 'hi' : 'en');
+      }
+      const lines = normalizedMd.split('\n');
       let html = '';
       let inList = false;
 
@@ -6406,9 +7115,11 @@
     async function triggerIntentHandshake(file) {
       appState.selectedFile = file;
       const region = document.getElementById('regionSelect').value || 'US';
+      const preCat = (document.getElementById('uploadCategorySelect') && document.getElementById('uploadCategorySelect').value) || 'auto';
       const fd = new FormData();
       fd.append('file', file);
       fd.append('region_profile', region);
+      if (preCat && preCat !== 'auto') fd.append('business_category', preCat);
 
       showToast(`Scanning ${file.name}...`, 'info');
       try {
@@ -6420,6 +7131,35 @@
         const data = await res.json();
         const card = document.getElementById('intentHandshakeCard');
         card.classList.remove('hidden');
+
+        // Hydrate V6.0 Auto-Detected Business Category + Sub-Category + Soft Mismatch Warning
+        appState.detectedCategoryMeta = data.detected_category || null;
+        const detCat = (data.detected_category && data.detected_category.detected_category) || 'auto';
+        const detSub = (data.detected_category && data.detected_category.detected_sub_category) || null;
+        const chosenInitCat = (preCat && preCat !== 'auto') ? preCat : detCat;
+        if (typeof populateCategoryDropdowns === 'function') {
+          populateCategoryDropdowns(chosenInitCat, detSub);
+        }
+        const catBadge = document.getElementById('intentCategoryBadge');
+        if (catBadge && data.detected_category) {
+          const cPct = Number(data.detected_category.confidence_pct || 0);
+          catBadge.textContent = data.detected_category.is_confident
+            ? (appState.briefLanguage === 'hi' ? `ऑटो ${cPct}% मिलान` : `Auto ${cPct}% Match`)
+            : (appState.briefLanguage === 'hi' ? 'सामान्य (बदलें)' : 'General (Optional)');
+        }
+        const catWarn = document.getElementById('intentCategoryWarningBanner');
+        if (catWarn) {
+          const mw = appState.briefLanguage === 'hi'
+            ? (data.detected_category && data.detected_category.mismatch_warning_hi)
+            : (data.detected_category && data.detected_category.mismatch_warning_en);
+          if (mw) {
+            catWarn.textContent = `⚠️ ${mw}`;
+            catWarn.classList.remove('hidden');
+          } else {
+            catWarn.classList.add('hidden');
+            catWarn.textContent = '';
+          }
+        }
 
         document.getElementById('intentFileTitle').textContent =
           `${data.filename} — ${data.columns_count} Columns Ready`;
@@ -6479,10 +7219,34 @@
           costSelect.appendChild(opt);
         });
 
+        // Auto-close upload onboarding modal so the 1-Second Intent Handshake card is immediately visible
+        if (typeof closeOnboardingPanel === 'function') {
+          closeOnboardingPanel();
+        }
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
         showToast('File ready! Click "Start Analysis Now".', 'success');
       } catch (e) {
         showToast(`Could not read file: ${e.message}`, 'error');
+      }
+    }
+
+    function onConfirmCategoryChange() {
+      const cfSel = document.getElementById('confirmCategorySelect');
+      const chosen = cfSel ? cfSel.value : 'auto';
+      if (typeof populateSubCategoryDropdown === 'function') {
+        populateSubCategoryDropdown(chosen, null);
+      }
+      const catWarn = document.getElementById('intentCategoryWarningBanner');
+      const det = appState.detectedCategoryMeta;
+      if (catWarn && det && det.is_confident && det.detected_category && det.detected_category !== 'auto' && chosen !== 'auto' && chosen !== det.detected_category) {
+        const isHi = appState.briefLanguage === 'hi';
+        catWarn.textContent = isHi
+          ? `⚠️ आपकी फ़ाइल के कॉलम '${det.category_name_hi}' (${det.confidence_pct}% मिलान) से ज़्यादा मेल खाते हैं — सेफ़्टी गेट सक्रिय है, कोई नकली KPI नहीं बनेगा।`
+          : `⚠️ Your file columns strongly resemble '${det.category_name_en}' (${det.confidence_pct}% match) — Safety Gate active: missing category KPIs will never be fabricated.`;
+        catWarn.classList.remove('hidden');
+      } else if (catWarn) {
+        catWarn.classList.add('hidden');
+        catWarn.textContent = '';
       }
     }
 
@@ -6500,6 +7264,8 @@
       const region = document.getElementById('regionSelect').value || 'US';
       const targetOverride = document.getElementById('confirmTargetSelect').value || '';
       const costOverride = document.getElementById('confirmCostSelect').value || '__NONE__';
+      const bizCat = (document.getElementById('confirmCategorySelect') && document.getElementById('confirmCategorySelect').value) || 'auto';
+      const bizSub = (document.getElementById('confirmSubCategorySelect') && document.getElementById('confirmSubCategorySelect').value) || '';
       const chosenLang = document.getElementById('confirmLangSelect').value || 'bilingual';
       if (chosenLang === 'hi') setGlobalLanguage('hi');
       else if (chosenLang === 'en') setGlobalLanguage('en');
@@ -6514,6 +7280,8 @@
       fd.append('region_profile', region);
       if (targetOverride) fd.append('target_override', targetOverride);
       if (costOverride) fd.append('cost_override', costOverride);
+      if (bizCat) fd.append('business_category', bizCat);
+      if (bizSub) fd.append('business_sub_category', bizSub);
 
       try {
         const submitRes = await apiFetch('/api/v1/jobs/submit', { method: 'POST', body: fd });
@@ -6569,6 +7337,9 @@
       appState.englishSummaryMd = result.english_summary_markdown || result.plain_summary_markdown || '';
       appState.hinglishSummaryMd = result.hinglish_summary_markdown || result.plain_summary_markdown || '';
       appState.executivePulse = result.executive_pulse || {};
+      appState.proactiveAnomaly = result.proactive_anomaly || (appState.executivePulse && appState.executivePulse.proactive_anomaly) || null;
+      appState.voiceBrief = result.voice_brief || (appState.executivePulse && appState.executivePulse.voice_brief) || null;
+      appState.impactVerifier = result.impact_verifier || null;
       appState.omniLeakReport = result.omni_leak_report || (appState.executivePulse && appState.executivePulse.omni_leak_report) || null;
       appState.historicalDrift = result.historical_drift || {};
       appState.worklistRows = result.worklist_preview || [];
@@ -6579,7 +7350,11 @@
       appState.questions200Pillar = 'ALL';
       appState.rankedLeaks = result.ranked_leaks || null;
       appState.rankedLeaksRaw = result.ranked_leaks || null;
-      appState.copilotHistory = [];
+      if (typeof resetCopilotChat === 'function') {
+        resetCopilotChat(true);
+      } else {
+        appState.copilotHistory = [];
+      }
 
       document.getElementById('executiveConsole').classList.remove('hidden');
 
@@ -6589,13 +7364,13 @@
       // Top Summary Ribbon (Humanized business name instead of ugly raw snake_case ID)
       const prettyBizName = humanizeRunTitle(result.run_id);
       document.getElementById('activeRunBadge').textContent = prettyBizName;
-      document.getElementById('metaTotalRecords').textContent = Number(pulse.total_records || 0).toLocaleString('en-US');
-      document.getElementById('metaAdverseCount').textContent = Number(pulse.total_adverse_events || 0).toLocaleString('en-US');
+      document.getElementById('metaTotalRecords').textContent = formatNumberForCurrency(pulse.total_records || 0, sym);
+      document.getElementById('metaAdverseCount').textContent = formatNumberForCurrency(pulse.total_adverse_events || 0, sym);
       document.getElementById('metaAdverseRate').textContent = `${Number(pulse.overall_adverse_rate_pct || 0).toFixed(2)}%`;
       document.getElementById('metaCapitalDrag').textContent =
         pulse.is_financial && pulse.total_capital_drag > 0
           ? pulse.formatted_capital_drag
-          : `${Number(pulse.total_adverse_events || 0).toLocaleString('en-US')} Cases`;
+          : `${formatNumberForCurrency(pulse.total_adverse_events || 0, sym)} Cases`;
 
       const dashLink = document.getElementById('openFullDashboardLink');
       dashLink.href = appendApiKeyToUrl(
@@ -6748,6 +7523,8 @@
         renderStrategicPathways(pulse.pathways || []);
       }
       renderOwnerVisualCockpit(friendly);
+      renderCategoryIntelligencePanel(pulse.category_intelligence || null, lang);
+      renderGrowthInventoryPanel(pulse.growth_inventory || null, lang);
       renderOmniLeakPanel(pulse.omni_leak_report || appState.omniLeakReport || null);
       if (appState.activeRunId) {
         loadAndRenderRankedLeaks(appState.activeRunId, appState.rankedLeaks);
@@ -6756,7 +7533,29 @@
     }
 
     function humanizeRunTitle(runId) {
-      const raw = String(runId || 'Business Report').replace(/^job_\d+_[a-z0-9]+$/i, 'Uploaded Business Data');
+      const id = String(runId || '').trim();
+      const friendlyTitles = {
+        nexura_lifestyle_brand: 'Nexura 3-Year D2C Brand',
+        nexura_omnichannel_3yr: 'Nexura 3-Year D2C Brand',
+        v2_indian_retail_mall: 'Indian Retail Mall Operations',
+        reliance_retail_jiomart: 'Omnichannel Retail Logistics',
+        hotel_booking_cancellation: 'Hotel Bookings & Cancellations',
+        supermarket_retail_operations: 'Supermarket Store Sales',
+        credit_card_loan_default: 'Credit & Loan Defaults',
+        airline_flight_delays_operations: 'Airline Flight Delays',
+        california_housing_real_estate: 'Real Estate Valuation',
+        real_opensource_shopkeeper: 'Wholesale Shopkeeper POS'
+      };
+      if (friendlyTitles[id]) return friendlyTitles[id];
+      if (/^job_\d+_[a-f0-9]{6,16}$/i.test(id)) return 'Uploaded Business Data';
+      if (/^upload_\d+_[a-f0-9]{6,16}$/i.test(id)) return 'Uploaded Spreadsheet';
+      const mConn = id.match(/^conn_(.+?)_[a-f0-9]{6,16}$/i);
+      if (mConn) {
+        return mConn[1].replace(/[_-]+/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase()).trim();
+      }
+      const raw = (id || 'Business Report')
+        .replace(/_[a-f0-9]{8,16}$/i, '')
+        .replace(/^(?:job|run)_\d+_/i, '');
       return raw
         .replace(/[_-]+/g, ' ')
         .replace(/\b\w/g, ch => ch.toUpperCase())
@@ -6796,14 +7595,15 @@
       const chkTag = document.getElementById('ownerCheckedSubTag');
       const heroBig = document.getElementById('ownerHeroHeadline');
       const heroSub = document.getElementById('ownerHeroActionLine');
+      const symHero = pulse.unit_symbol || '$';
       if (bizTag) bizTag.textContent = humanizeRunTitle(appState.activeRunId);
-      if (chkTag) chkTag.textContent = `${totalRec.toLocaleString('en-US')} ${tUi('lblRecordsChecked', 'records checked')}`;
+      if (chkTag) chkTag.textContent = `${formatNumberForCurrency(totalRec, symHero)} ${tUi('lblRecordsChecked', 'records checked')}`;
 
       if (heroBig) {
         if (isFin) {
-          heroBig.innerHTML = `<span class="hero-accent-money">${escapeHtml(pulse.formatted_capital_drag || '$0')}</span> ${escapeHtml(tUi('lblAtRiskAcross', 'at risk across'))} <span class="tabular-nums">${totalAdv.toLocaleString('en-US')}</span> ${escapeHtml(tUi('lblCasesWord', 'cases'))}`;
+          heroBig.innerHTML = `<span class="hero-accent-money">${escapeHtml(pulse.formatted_capital_drag || '$0')}</span> ${escapeHtml(tUi('lblAtRiskAcross', 'at risk across'))} <span class="tabular-nums">${formatNumberForCurrency(totalAdv, symHero)}</span> ${escapeHtml(tUi('lblCasesWord', 'cases'))}`;
         } else {
-          heroBig.innerHTML = `<span class="hero-accent-money">${totalAdv.toLocaleString('en-US')}</span> ${escapeHtml(tUi('lblProblemCasesFound', 'problem cases found'))} <span class="tabular-nums">(${advRate.toFixed(1)}%)</span>`;
+          heroBig.innerHTML = `<span class="hero-accent-money">${formatNumberForCurrency(totalAdv, symHero)}</span> ${escapeHtml(tUi('lblProblemCasesFound', 'problem cases found'))} <span class="tabular-nums">(${advRate.toFixed(1)}%)</span>`;
         }
       }
 
@@ -6830,7 +7630,10 @@
           ? tUi('kpiQuickSavings', 'Quick Savings')
           : tUi('kpiFixableCases', 'Fixable Cases');
       }
-      if (saveValEl) saveValEl.textContent = String(quickSaveBadge).replace(/^Save\s+/i, '');
+      if (saveValEl) {
+        const cleanSave = normalizeIndianRupeesInText(String(quickSaveBadge).replace(/^Save\s+/i, ''));
+        saveValEl.textContent = cleanSave.replace(/\s*\(₹[^)]+\)/g, '');
+      }
 
       // 4. Live Visual Horizontal Bar Chart (Top 5 Problem Groups vs Business Avg)
       const barsEl = document.getElementById('ownerVisualBarsList');
@@ -6862,7 +7665,10 @@
               ? 'linear-gradient(90deg, #be123c, #fb7185)'
               : (rate < advRate - 1.5 ? 'linear-gradient(90deg, #059669, #10b981)' : 'linear-gradient(90deg, #d97706, #fbbf24)');
             const valColor = isAboveAvg ? 'var(--accent-crimson)' : (rate < advRate - 1.5 ? 'var(--accent-emerald)' : 'var(--accent-amber)');
-            const extraMeta = (isFin && r.total_liability && r.total_liability !== '--') ? ` · ${r.total_liability}` : ` · ${r.adverse_events || 0}`;
+            const cleanLiab = (isFin && r.total_liability && r.total_liability !== '--')
+              ? normalizeIndianRupeesInText(String(r.total_liability)).replace(/\s*\(₹[^)]+\)/g, '')
+              : '';
+            const extraMeta = cleanLiab ? ` · ${cleanLiab}` : ` · ${formatNumberForCurrency(r.adverse_events || 0, symHero)}`;
             return `
               <div class="viz-bar-row">
                 <div class="viz-bar-meta">
@@ -6899,13 +7705,13 @@
         } else {
           plansEl.innerHTML = plans.map((p, idx) => {
             const pTitle = p.title || p.name || `Plan ${idx + 1}`;
-            const pBadge = p.badge || p.roi_range || '';
+            const pBadge = normalizeIndianRupeesInText(String(p.badge || p.roi_range || '')).replace(/\s*\(₹[^)]+\)/g, '');
             const pEffort = p.effort || p.target || '';
             return `
               <button type="button" class="viz-quick-plan-btn" onclick="openOwnerQuickPlan(${idx})">
-                <div style="min-width:0;">
-                  <div style="font-size:12.8px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pTitle)}</div>
-                  <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pEffort)}</div>
+                <div style="min-width:0;text-align:left;">
+                  <div style="font-size:12.8px;font-weight:600;color:var(--text-primary);white-space:normal;line-height:1.35;">${escapeHtml(pTitle)}</div>
+                  <div style="font-size:11px;color:var(--text-muted);white-space:normal;line-height:1.3;">${escapeHtml(pEffort)}</div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;">
                   <div class="tabular-nums" style="font-size:12px;font-weight:700;color:var(--accent-emerald);">${escapeHtml(pBadge)}</div>
@@ -6974,9 +7780,11 @@
 
       const ops = omni.operational_sla_and_delay_findings || [];
       if (ops.length > 0) {
-        const opItems = ops.slice(0, 3).map(o =>
-          `<li>${renderMarkdownHtml(lang === 'hi' ? (o.headline_hi || o.headline_en) : o.headline_en).replace(/<\/?p>/g, '')}</li>`
-        ).join('');
+        const opItems = ops.slice(0, 3).map(o => {
+          const rawHl = lang === 'hi' ? (o.headline_hi || o.headline_en) : o.headline_en;
+          const cleanHl = typeof humanizeBusinessText === 'function' ? humanizeBusinessText(rawHl, lang) : rawHl;
+          return `<li>${renderMarkdownHtml(cleanHl).replace(/<\/?p>/g, '')}</li>`;
+        }).join('');
         cards.push({
           tag: lang === 'hi' ? '2. वेयरहाउस व कूरियर SLA देरी' : '2. Warehouse & Courier SLA Bottlenecks',
           color: 'var(--accent-amber)',
@@ -7039,10 +7847,13 @@
             `</div>`;
         }
         if (seas.has_quarterly_regime_shift) {
+          const ddVal = seas.peak_quarter_dispatch_delay;
+          const ddUnit = (ddVal !== null && ddVal !== undefined && Number(ddVal) > 15) ? (lang === 'hi' ? ' घंटे' : ' hrs') : (lang === 'hi' ? ' दिन' : 'd');
+          const ddTxt = ddVal !== null && ddVal !== undefined ? `${ddVal}${ddUnit}` : '--';
           eHtml += `<div style="font-size:12.5px;margin-top:6px;color:var(--text-secondary);">` +
             (lang === 'hi'
-              ? `📅 <strong>${escapeHtml(seas.peak_quarter)} फेस्टिव लोड अलर्ट</strong>: फेलियर ${seas.rest_of_year_failure_pct}% → <strong>${seas.peak_quarter_failure_pct}%</strong>, SLA ब्रीच <strong>${seas.peak_quarter_sla_breach_pct ?? '--'}%</strong>, डिस्पैच देरी <strong>${seas.peak_quarter_dispatch_delay ?? '--'}d</strong>।`
-              : `📅 <strong>${escapeHtml(seas.peak_quarter)} Seasonal Surge</strong>: Failure rate jumps ${seas.rest_of_year_failure_pct}% → <strong>${seas.peak_quarter_failure_pct}%</strong>, SLA breach hits <strong>${seas.peak_quarter_sla_breach_pct ?? '--'}%</strong>, dispatch delay <strong>${seas.peak_quarter_dispatch_delay ?? '--'}d</strong>.`) +
+              ? `📅 <strong>${escapeHtml(seas.peak_quarter)} फेस्टिव लोड अलर्ट</strong>: फेलियर ${seas.rest_of_year_failure_pct}% → <strong>${seas.peak_quarter_failure_pct}%</strong>, SLA ब्रीच <strong>${seas.peak_quarter_sla_breach_pct ?? '--'}%</strong>, डिस्पैच देरी <strong>${ddTxt}</strong>।`
+              : `📅 <strong>${escapeHtml(seas.peak_quarter)} Seasonal Surge</strong>: Failure rate jumps ${seas.rest_of_year_failure_pct}% → <strong>${seas.peak_quarter_failure_pct}%</strong>, SLA breach hits <strong>${seas.peak_quarter_sla_breach_pct ?? '--'}%</strong>, dispatch delay <strong>${ddTxt}</strong>.`) +
             `</div>`;
         }
         cards.push({
@@ -7058,6 +7869,498 @@
           ${c.html}
         </div>
       `).join('');
+    }
+
+    function renderCategoryIntelligencePanel(catIntel, lang) {
+      const sec = document.getElementById('categoryIntelSection');
+      if (!sec) return;
+      const isHi = String(lang || appState.briefLanguage || 'en').toLowerCase().startsWith('hi');
+      if (!catIntel || !catIntel.category_id) {
+        sec.classList.add('hidden');
+        return;
+      }
+      const kpis = catIntel.computed_kpis || [];
+      const unlocks = catIntel.missing_column_unlocks || [];
+      if (!kpis.length && !unlocks.length) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+
+      const eye = document.getElementById('catIntelEyebrow');
+      const ttl = document.getElementById('catIntelTitle');
+      const sub = document.getElementById('catIntelSubtitle');
+      const bdg = document.getElementById('catIntelModeBadge');
+      const warnBox = document.getElementById('catIntelWarningBox');
+      const packsRow = document.getElementById('catIntelPacksRow');
+      const kpiGrid = document.getElementById('catIntelKpiGrid');
+      const unlockRow = document.getElementById('catIntelUnlockRow');
+
+      const catName = isHi ? (catIntel.category_name_hi || catIntel.category_name_en) : catIntel.category_name_en;
+      const icon = catIntel.icon || '✨';
+      if (eye) eye.textContent = isHi ? 'कैटेगरी इकोनॉमिक्स व स्टैटिस्टिक्स पैक' : 'CATEGORY ECONOMICS & STATISTICS PACK';
+      if (ttl) ttl.textContent = `${icon} ${catName}`;
+      if (sub) {
+        sub.textContent = isHi
+          ? 'इस बिज़नेस कैटेगरी के लिए 100% सत्यापित इकोनॉमिक्स व स्टैटिस्टिक्स (सिर्फ़ मौजूद कॉलम्स से)।'
+          : '100% physically verified Economics & Statistics tailored to this business category (zero fabricated metrics).';
+      }
+      if (bdg) {
+        const mode = catIntel.selection_mode || 'auto_detected';
+        const cPct = Number((catIntel.detection && catIntel.detection.confidence_pct) || 0);
+        if (mode === 'user_selected') {
+          bdg.textContent = isHi ? 'यूज़र द्वारा चुनी गई' : 'User Selected';
+        } else if (mode === 'auto_detected') {
+          bdg.textContent = isHi ? `ऑटो-डिटेक्ट (${cPct}%)` : `Auto-Detected (${cPct}%)`;
+        } else {
+          bdg.textContent = isHi ? 'सामान्य यूनिवर्सल मोड' : 'Universal Safe Mode';
+        }
+      }
+
+      if (warnBox) {
+        const wMsg = (isHi ? catIntel.mismatch_warning_hi : catIntel.mismatch_warning_en)
+          || (isHi ? catIntel.circuit_breaker_advisory_hi : catIntel.circuit_breaker_advisory_en);
+        if (wMsg) {
+          warnBox.textContent = `⚠️ ${wMsg}`;
+          warnBox.classList.remove('hidden');
+        } else {
+          warnBox.classList.add('hidden');
+          warnBox.textContent = '';
+        }
+      }
+
+      if (packsRow) {
+        const ePacks = (isHi ? catIntel.economics_pack_hi : catIntel.economics_pack_en) || [];
+        const sPacks = (isHi ? catIntel.statistics_pack_hi : catIntel.statistics_pack_en) || [];
+        packsRow.innerHTML = [
+          ...ePacks.slice(0, 3).map(t => `<span class="cat-pack-pill econ">💰 ${escapeHtml(t)}</span>`),
+          ...sPacks.slice(0, 3).map(t => `<span class="cat-pack-pill stat">📐 ${escapeHtml(t)}</span>`),
+        ].join('');
+      }
+
+      if (kpiGrid) {
+        kpiGrid.innerHTML = kpis.map(k => {
+          const lbl = isHi ? (k.label_hi || k.label_en) : k.label_en;
+          const ins = isHi ? (k.insight_hi || k.insight_en) : k.insight_en;
+          const kindTxt = k.kind === 'economics'
+            ? (isHi ? 'इकोनॉमिक्स' : 'ECONOMICS')
+            : (isHi ? 'स्टैटिस्टिक्स' : 'STATISTICS');
+          const toneCls = `tone-${k.tone || 'neutral'}`;
+          return `
+            <article class="cat-kpi-card ${toneCls}" title="${escapeHtml(k.formula_proof || '')}">
+              <div class="cat-kpi-top">
+                <span class="cat-kpi-label">${escapeHtml(lbl)}</span>
+                <span class="cat-kpi-kind">${escapeHtml(kindTxt)}</span>
+              </div>
+              <div class="cat-kpi-value tabular-nums">${escapeHtml(
+                isHi
+                  ? String(k.formatted_value || '').replace(/\bdays\b/gi, 'दिन').replace(/\bhours\b/gi, 'घंटे')
+                  : String(k.formatted_value || '')
+              )}</div>
+              <div class="cat-kpi-insight">${escapeHtml(ins)}</div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      if (unlockRow) {
+        if (unlocks.length) {
+          unlockRow.classList.remove('hidden');
+          const lead = isHi ? '🔓 अतिरिक्त कॉलम जोड़कर और कैटेगरी KPI अनलॉक करें:' : '🔓 Add columns to unlock more category KPIs:';
+          unlockRow.innerHTML = `<strong style="color:var(--text-primary);">${escapeHtml(lead)}</strong> ` + unlocks.slice(0, 3).map(u => {
+            const ul = isHi ? (u.label_hi || u.label_en) : u.label_en;
+            const uc = isHi ? (u.needed_columns_hi || u.needed_columns_en) : u.needed_columns_en;
+            return `<span class="cat-pack-pill">+ ${escapeHtml(ul)} (${escapeHtml(uc)})</span>`;
+          }).join('');
+        } else {
+          unlockRow.classList.add('hidden');
+          unlockRow.innerHTML = '';
+        }
+      }
+
+      // Dynamically tailor Ask AI Quick Chips to active Business Category!
+      const chipsWrap = document.getElementById('copilotQuickChips');
+      const presets = isHi ? (catIntel.qa_presets_hi || []) : (catIntel.qa_presets_en || []);
+      if (chipsWrap && presets.length) {
+        const icons = ['🔴', '💰', '📊', '🔍'];
+        chipsWrap.innerHTML = presets.slice(0, 4).map((q, i) => `
+          <button type="button" class="copilot-chip" onclick="askPresetQuestion(${JSON.stringify(q).replace(/"/g, '&quot;')})">
+            ${icons[i % icons.length]} ${escapeHtml(q)}
+          </button>
+        `).join('');
+      }
+    }
+
+    function renderGrowthInventoryPanel(gi, lang) {
+      const sec = document.getElementById('growthInventorySection');
+      if (!sec) return;
+      if (!gi || !gi.is_applicable) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+      const isHi = String(lang || appState.briefLanguage || appState.language || 'en').toLowerCase().startsWith('hi');
+      const kpis = gi.kpis || {};
+      const fc = gi.demand_forecast || {};
+      const abc = gi.abc_summary || {};
+      const nar = (gi.narratives && (isHi ? gi.narratives.hi : gi.narratives.en)) || {};
+
+      const eyebrow = document.getElementById('giEyebrow');
+      const headline = document.getElementById('giHeadline');
+      const sub = document.getElementById('giSubtitle');
+      const badge = document.getElementById('giModeBadge');
+      if (eyebrow) eyebrow.textContent = isHi ? 'बिक्री · मुनाफ़ा · 30-दिन अनुमान · स्टॉक री-ऑर्डर' : 'SALES · PROFIT · 30-DAY FORECAST · STOCK REORDER';
+      if (headline) headline.textContent = nar.headline || (isHi ? 'बिक्री, मुनाफ़ा और स्टॉक योजना' : 'Sales, Margin & 30-Day Stock Plan');
+      if (sub) {
+        sub.textContent = isHi
+          ? (gi.is_pure_sales_ledger ? 'शुद्ध बिक्री/स्टॉक रजिस्टर मोड सक्रिय — हर आँकड़ा असली डेटा पर आधारित है।' : 'बिक्री वृद्धि, मार्जिन और स्टॉक योजना का अतिरिक्त विश्लेषण।')
+          : (gi.is_pure_sales_ledger ? 'Pure Sales & Stock Register mode active — every forecast and reorder number is physically grounded.' : 'Companion commercial growth, profit margin, and inventory reorder intelligence.');
+      }
+      if (badge) {
+        badge.textContent = gi.is_pure_sales_ledger
+          ? (isHi ? 'शुद्ध सेल्स मोड' : 'Pure Sales Mode')
+          : (isHi ? 'सेल्स + स्टॉक रडार' : 'Sales + Stock Radar');
+      }
+
+      const kpiStrip = document.getElementById('giKpiStrip');
+      if (kpiStrip) {
+        const cards = [
+          {
+            lbl: isHi ? 'कुल बिक्री' : 'Total Sales',
+            val: kpis.total_revenue_fmt || '--',
+            foot: isHi ? `${Number(kpis.total_orders || 0).toLocaleString('en-IN')} बिल · औसत ${kpis.avg_order_value_fmt || '--'}` : `${Number(kpis.total_orders || 0).toLocaleString('en-US')} bills · Avg ${kpis.avg_order_value_fmt || '--'}`
+          },
+          {
+            lbl: isHi ? 'कुल मुनाफ़ा व मार्जिन' : 'Gross Profit & Margin',
+            val: kpis.has_profit ? `${kpis.gross_profit_fmt} (${kpis.gross_margin_pct}%)` : (isHi ? 'लागत कॉलम नहीं' : 'No Cost Column'),
+            foot: kpis.has_profit
+              ? (isHi ? `${(gi.negative_margin_items || []).length} कम/नेगेटिव मार्जिन आइटम` : `${(gi.negative_margin_items || []).length} low/negative margin SKUs`)
+              : (isHi ? 'मुनाफ़ा देखने को Cost Price जोड़ें' : 'Add Cost Price to unlock margin audit')
+          },
+          {
+            lbl: isHi ? 'अगले 30 दिन का अनुमान' : 'Next 30-Day Forecast',
+            val: fc.forecast_available ? fc.next_30d_revenue_fmt : (isHi ? 'कम इतिहास' : 'Need More Dates'),
+            foot: fc.forecast_available
+              ? (isHi ? `रेंज: ${fc.next_30d_revenue_low95_fmt} – ${fc.next_30d_revenue_high95_fmt}` : `95% CI: ${fc.next_30d_revenue_low95_fmt} – ${fc.next_30d_revenue_high95_fmt}`)
+              : (isHi ? 'कम से कम 3 महीने/10 दिन का डेटा चाहिए' : 'Needs >=3 months or >=10 sales days')
+          },
+          {
+            lbl: isHi ? 'स्टॉक व ABC (80/20)' : 'Stock & ABC Pareto',
+            val: (gi.reorder_alerts || []).length > 0
+              ? (isHi ? `${gi.reorder_alerts.length} आइटम कम स्टॉक` : `${gi.reorder_alerts.length} Reorder Alerts`)
+              : (abc.class_a_skus ? (isHi ? `टॉप ${abc.class_a_skus} आइटम = ${abc.class_a_revenue_share_pct}%` : `Top ${abc.class_a_skus} SKUs = ${abc.class_a_revenue_share_pct}%`) : '--'),
+            foot: (gi.dead_stock_items || []).length > 0
+              ? (isHi ? `${gi.dead_stock_items.length} फँसा हुआ माल (Dead Stock)` : `${gi.dead_stock_items.length} overstock / slow-moving SKUs`)
+              : (isHi ? `कुल ${abc.total_skus || 0} आइटम जाँचे गए` : `${abc.total_skus || 0} SKUs audited`)
+          }
+        ];
+        kpiStrip.innerHTML = cards.map(c => `
+          <article class="pulse-card" style="padding:14px;">
+            <div>
+              <div class="pulse-label" style="margin-bottom:6px;">${escapeHtml(c.lbl)}</div>
+              <h3 class="pulse-headline" style="font-size:18px;margin:0 0 6px 0;">${escapeHtml(c.val)}</h3>
+            </div>
+            <div class="pulse-footer"><span>${escapeHtml(c.foot)}</span></div>
+          </article>
+        `).join('');
+      }
+
+      const actionGrid = document.getElementById('giActionGrid');
+      if (actionGrid) {
+        const acts = nar.actions || [];
+        actionGrid.innerHTML = acts.slice(0, 6).map(txt => `
+          <div class="pulse-card" style="padding:12px 14px;font-size:13px;line-height:1.5;color:var(--text-primary);">
+            ${escapeHtml(txt)}
+          </div>
+        `).join('');
+      }
+    }
+
+    // =========================================================================
+    // V7.0 EXECUTIVE QUICK BRIEF, PROACTIVE ANOMALY RADAR & 1-CLICK SHARE PACK
+    // =========================================================================
+    const v7VoiceState = {
+      transcriptOpen: false,
+    };
+
+    function renderV7VoiceRadarAndImpact(lang) {
+      const isHi = String(lang || appState.briefLanguage || appState.language || 'en').toLowerCase().startsWith('hi');
+      const vb = appState.voiceBrief || (appState.executivePulse && appState.executivePulse.voice_brief) || null;
+      const radar = appState.proactiveAnomaly || (appState.executivePulse && appState.executivePulse.proactive_anomaly) || null;
+      const impact = appState.impactVerifier || null;
+
+      // 1. 1-Click Executive Quick Brief & Share Action Bar (Zero Robotic Audio)
+      const vBar = document.getElementById('v7VoiceShareBar');
+      const scriptBtn = document.getElementById('btnV7ScriptToggle');
+      const statusPill = document.getElementById('v7VoiceStatusPill');
+      const pngBtn = document.getElementById('btnV7ShareCardPng');
+      const waBtn = document.getElementById('btnV7CopyWhatsApp');
+      const pdfLink = document.getElementById('openV7BoardroomPdfLink');
+
+      if (vBar) {
+        if (vb && Array.isArray(vb.beats) && vb.beats.length) {
+          vBar.classList.remove('hidden');
+          if (scriptBtn) {
+            scriptBtn.textContent = v7VoiceState.transcriptOpen
+              ? (isHi ? '📝 4-पॉइंट ब्रीफ़ बंद करें ▴' : '📝 4-Point Executive Brief ▴')
+              : (isHi ? '📝 4-पॉइंट ब्रीफ़ पढ़ें ▾' : '📝 4-Point Executive Brief ▾');
+          }
+          if (statusPill) {
+            statusPill.textContent = isHi
+              ? '100% DuckDB-Verified · शेयर करने के लिए तैयार'
+              : '100% DuckDB-Verified · Ready to Share';
+          }
+          if (pngBtn) pngBtn.textContent = isHi ? '📲 शेयर कार्ड PNG' : '📲 Share Card PNG';
+          if (waBtn) waBtn.textContent = isHi ? '📋 WhatsApp कॉपी' : '📋 WhatsApp Text';
+          if (pdfLink && appState.activeRunId) {
+            pdfLink.href = appendApiKeyToUrl(
+              `/api/v1/report/${encodeURIComponent(appState.activeRunId)}/boardroom-brief?lang=${isHi ? 'hi' : 'en'}`
+            );
+            pdfLink.textContent = isHi ? '📄 2-पेज PDF' : '📄 2-Page PDF';
+          }
+          const beatsGrid = document.getElementById('v7VoiceBeatsGrid');
+          if (beatsGrid) {
+            beatsGrid.innerHTML = vb.beats.map((b, idx) => `
+              <div class="v7-beat-card" data-beat-idx="${idx}">
+                <div class="v7-beat-title">${idx + 1}. ${escapeHtml(isHi ? (b.title_hi || b.title_en) : b.title_en)}</div>
+                <div class="v7-beat-text">${escapeHtml(isHi ? (b.speech_hi || b.speech_en) : b.speech_en)}</div>
+              </div>
+            `).join('');
+          }
+        } else {
+          vBar.classList.add('hidden');
+        }
+      }
+
+      // 2. Proactive Early-Warning Anomaly Radar (Guard R1: auto-hidden if no date axis!)
+      const radSec = document.getElementById('v7AnomalyRadarSection');
+      if (radSec) {
+        if (!radar || !radar.is_applicable) {
+          radSec.classList.add('hidden');
+        } else {
+          radSec.classList.remove('hidden');
+          const lvl = String(radar.overall_alert_level || 'ALL_CLEAR').toUpperCase();
+          radSec.className = `v7-radar-card level-${lvl.toLowerCase()}`;
+
+          const eb = document.getElementById('v7RadarEyebrow');
+          const mt = document.getElementById('v7RadarMetaTag');
+          const badge = document.getElementById('v7RadarLevelBadge');
+          const hl = document.getElementById('v7RadarHeadline');
+          if (eb) eb.textContent = isHi ? 'प्रोएक्टिव अर्ली-वॉर्निंग रडार (आने वाला ख़तरा पहले पकड़ें)' : 'PROACTIVE EARLY-WARNING ANOMALY RADAR';
+          if (mt) mt.textContent = `${radar.periods_analyzed || 0} ${radar.bucket_granularity || 'periods'} · ${radar.date_column || ''}`;
+          if (badge) {
+            badge.className = `v7-level-pill ${lvl === 'CRITICAL' ? 'critical' : (lvl === 'WATCH' ? 'watch' : '')}`;
+            badge.textContent = lvl === 'CRITICAL'
+              ? (isHi ? '🔴 तुरंत अलर्ट' : '🔴 CRITICAL SPIKE')
+              : (lvl === 'WATCH' ? (isHi ? '🟠 निगरानी अलर्ट' : '🟠 WATCH TREND') : (isHi ? '🟢 स्थिति स्थिर' : '🟢 ALL CLEAR'));
+          }
+          if (hl) hl.textContent = isHi ? (radar.headline_hi || radar.headline_en) : radar.headline_en;
+
+          // Inline Zero-CDN SVG Sparkline
+          const spBox = document.getElementById('v7RadarSparkline');
+          const series = radar.period_series || [];
+          if (spBox && series.length >= 2) {
+            const W = 210, H = 48, pad = 6;
+            const vals = series.map(p => Number(p.adverse_rate_pct || 0));
+            const minV = Math.min(...vals, 0);
+            const maxV = Math.max(...vals, minV + 1);
+            const pts = series.map((p, idx) => {
+              const x = pad + (idx / Math.max(series.length - 1, 1)) * (W - pad * 2);
+              const y = H - pad - ((Number(p.adverse_rate_pct || 0) - minV) / Math.max(maxV - minV, 0.01)) * (H - pad * 2);
+              return { x, y, spike: !!p.is_spike, lbl: p.period, r: p.adverse_rate_pct };
+            });
+            const poly = pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+            const strokeCol = lvl === 'CRITICAL' ? '#ef4444' : (lvl === 'WATCH' ? '#f59e0b' : '#10b981');
+            const dots = pts.filter(p => p.spike).map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="#ef4444"></circle>`).join('');
+            const lastP = pts[pts.length - 1];
+            spBox.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trend sparkline">
+              <polyline fill="none" stroke="${strokeCol}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${poly}"></polyline>
+              ${dots}
+              <circle cx="${lastP.x.toFixed(1)}" cy="${lastP.y.toFixed(1)}" r="3" fill="${strokeCol}"></circle>
+            </svg>`;
+          } else if (spBox) {
+            spBox.innerHTML = '';
+          }
+
+          // Accelerating Cohort Cards
+          const cGrid = document.getElementById('v7RadarCohortsGrid');
+          const cohorts = radar.accelerating_cohorts || [];
+          if (cGrid) {
+            if (cohorts.length) {
+              cGrid.classList.remove('hidden');
+              cGrid.innerHTML = cohorts.slice(0, 3).map(c => `
+                <div class="v7-cohort-pill-card ${c.severity === 'CRITICAL' ? 'critical' : ''}">
+                  <div style="font-weight:800;color:var(--text-primary);margin-bottom:3px;">
+                    ${escapeHtml(c.dimension_label || c.dimension)}: ${escapeHtml(c.segment)}
+                    <span style="color:var(--accent-crimson);margin-left:6px;">+${Number(c.delta_pp || 0).toFixed(1)} pp</span>
+                  </div>
+                  <div>${escapeHtml(isHi ? (c.headline_hi || c.headline_en) : c.headline_en)}</div>
+                </div>
+              `).join('');
+            } else {
+              cGrid.classList.add('hidden');
+              cGrid.innerHTML = '';
+            }
+          }
+
+          // Bounded 30-Day Forward Risk Outlook
+          const pBar = document.getElementById('v7RadarProjectionBar');
+          const proj = radar.forward_risk_projection || null;
+          if (pBar) {
+            if (proj && (proj.note_en || proj.note_hi)) {
+              pBar.classList.remove('hidden');
+              pBar.textContent = `⏱️ ${isHi ? (proj.note_hi || proj.note_en) : proj.note_en}`;
+            } else {
+              pBar.classList.add('hidden');
+              pBar.textContent = '';
+            }
+          }
+        }
+      }
+
+      // 3. Closed-Loop Before-vs-After Impact Verifier
+      const impBan = document.getElementById('v7ImpactVerifierBanner');
+      if (impBan) {
+        if (impact && impact.has_comparison) {
+          impBan.classList.remove('hidden');
+          const vbBadge = document.getElementById('v7ImpactVerdictBadge');
+          const impHl = document.getElementById('v7ImpactHeadline');
+          const impMeta = document.getElementById('v7ImpactMeta');
+          if (vbBadge) {
+            const v = impact.verdict || 'NO_STATISTICAL_CHANGE';
+            vbBadge.className = `v7-level-pill ${v === 'WORSENED' ? 'critical' : (v === 'NO_STATISTICAL_CHANGE' ? 'watch' : '')}`;
+            vbBadge.textContent = v === 'VERIFIED_IMPROVEMENT'
+              ? (isHi ? '✅ प्लान कामयाब' : '✅ FIX VERIFIED')
+              : (v === 'WORSENED' ? (isHi ? '🔴 गिरावट' : '🔴 WORSENED') : (isHi ? '📊 स्थिर' : '📊 FLAT'));
+          }
+          if (impHl) impHl.textContent = isHi ? (impact.headline_hi || impact.headline_en) : impact.headline_en;
+          if (impMeta) impMeta.textContent = `p=${Number(impact.p_value || 1).toFixed(4)} · ${impact.actions_logged || 0} actions`;
+        } else {
+          impBan.classList.add('hidden');
+        }
+      }
+    }
+
+    function toggleV7VoiceTranscript() {
+      v7VoiceState.transcriptOpen = !v7VoiceState.transcriptOpen;
+      const panel = document.getElementById('v7VoiceBeatsPanel');
+      if (panel) panel.classList.toggle('hidden', !v7VoiceState.transcriptOpen);
+      renderV7VoiceRadarAndImpact(appState.briefLanguage || 'en');
+    }
+
+    async function copyWhatsAppShareText() {
+      const vb = appState.voiceBrief || (appState.executivePulse && appState.executivePulse.voice_brief) || null;
+      if (!vb) return;
+      const isHi = String(appState.briefLanguage || 'en').toLowerCase().startsWith('hi');
+      const txt = isHi ? (vb.whatsapp_share_hi || vb.whatsapp_share_en) : (vb.whatsapp_share_en || '');
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(txt);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = txt;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        showToast(isHi ? 'WhatsApp ब्रीफ़ कॉपी हो गया! अब सीधे ग्रुप में पेस्ट करें।' : 'PII-free WhatsApp brief copied! Paste directly into team chat.', 'success');
+      } catch (_e) {
+        showToast('Could not copy automatically — open Brief modal to copy.', 'warn');
+      }
+    }
+
+    function exportWhatsAppStoryCardPng() {
+      const vb = appState.voiceBrief || (appState.executivePulse && appState.executivePulse.voice_brief) || null;
+      const sc = vb && vb.story_card;
+      if (!sc) return;
+      const isHi = String(appState.briefLanguage || 'en').toLowerCase().startsWith('hi');
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 630;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Sleek Obsidian Executive Card (Zero CDN, Zero PII!)
+      const grad = ctx.createLinearGradient(0, 0, 1200, 630);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1200, 630);
+
+      // Accent top bar
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(0, 0, 1200, 8);
+
+      // Eyebrow & Title
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 18px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`DATAX-RAY V7.0 · ${(isHi ? sc.category_hi : sc.category_en).toUpperCase()} · 100% VERIFIED TRUTH`, 56, 62);
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 38px system-ui, -apple-system, sans-serif';
+      ctx.fillText(String(sc.title || 'Executive Brief').slice(0, 42), 56, 114);
+
+      // 3 KPI Tiles
+      const tiles = [
+        { lbl: isHi ? 'कुल रिकॉर्ड' : 'VERIFIED RECORDS', val: sc.records_formatted, col: '#38bdf8' },
+        { lbl: isHi ? 'समस्या दर' : 'PROBLEM RATE', val: sc.adverse_rate_formatted, col: '#f59e0b' },
+        { lbl: sc.is_financial ? (isHi ? 'खतरे में रकम' : 'AT-RISK EXPOSURE') : (isHi ? 'प्रभावित केस' : 'ADVERSE CASES'), val: sc.at_risk_formatted, col: '#ef4444' },
+      ];
+      tiles.forEach((t, i) => {
+        const x = 56 + i * 372;
+        ctx.fillStyle = 'rgba(255,255,255,0.06)';
+        ctx.fillRect(x, 148, 344, 112);
+        ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x, 148, 344, 112);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '700 15px system-ui, sans-serif';
+        ctx.fillText(t.lbl, x + 20, 182);
+        ctx.fillStyle = t.col;
+        ctx.font = '800 34px system-ui, sans-serif';
+        ctx.fillText(String(t.val || '--').slice(0, 18), x + 20, 234);
+      });
+
+      // #1 Leak & Today's Action Box
+      ctx.fillStyle = 'rgba(239,68,68,0.12)';
+      ctx.fillRect(56, 286, 1088, 114);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(56, 286, 6, 114);
+      ctx.fillStyle = '#fca5a5';
+      ctx.font = '700 15px system-ui, sans-serif';
+      ctx.fillText(isHi ? '#1 सबसे बड़ा नुकसान' : '#1 TOP PRIORITY LEAK', 80, 318);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '700 23px system-ui, sans-serif';
+      ctx.fillText(String(isHi ? sc.leak_headline_hi : sc.leak_headline_en).slice(0, 74), 80, 356);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(String(isHi ? sc.top_kpi_hi : sc.top_kpi_en).slice(0, 88), 80, 386);
+
+      ctx.fillStyle = 'rgba(16,185,129,0.12)';
+      ctx.fillRect(56, 422, 1088, 116);
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(56, 422, 6, 116);
+      ctx.fillStyle = '#6ee7b7';
+      ctx.font = '700 15px system-ui, sans-serif';
+      ctx.fillText(isHi ? 'आज का #1 एक्शन और अर्ली-वॉर्निंग स्टेटस' : "TODAY'S #1 ACTION & EARLY-WARNING RADAR", 80, 454);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '700 22px system-ui, sans-serif';
+      ctx.fillText(String(isHi ? sc.action_hi : sc.action_en).slice(0, 78), 80, 492);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.fillText(`📡 ${String(isHi ? sc.radar_note_hi : sc.radar_note_en).slice(0, 92)}`, 80, 522);
+
+      // Footer
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 15px system-ui, sans-serif';
+      ctx.fillText('Generated deterministically by DataX-Ray · Zero Hallucination · PII-Free Share Card', 56, 590);
+
+      const link = document.createElement('a');
+      link.download = `DataXRay_Brief_${(appState.activeRunId || 'report').replace(/[^A-Za-z0-9_-]/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast(isHi ? 'शेयर कार्ड PNG डाउनलोड हो गया!' : 'PII-free Share Card PNG downloaded!', 'success');
     }
 
     async function loadAndRenderRankedLeaks(runId, inlineData = null) {
@@ -7165,6 +8468,63 @@
             : 'Here: Over half of orders are clustered in a single starting price bracket';
         }
       }
+      // Fix legacy unit mismatch on hour-based delay columns (e.g. "**32.32 days** avg `dispatch_delay_hours`")
+      if (/hours?\b|_hr\b|_hrs\b/i.test(s)) {
+        s = s
+          .replace(/(\d+(?:\.\d+)?)\s*days(\**\s+avg\s+(?:`?[A-Za-z0-9_]*hour[A-Za-z0-9_]*`?|Dispatch Delay \(Hours\)))/gi, '$1 hours$2')
+          .replace(/(\d+(?:\.\d+)?)\s*days(\**\s+avg\b)/gi, '$1 hours$2')
+          .replace(/than\s+(\d+(?:\.\d+)?)\s*days\b/gi, 'than $1 hours')
+          .replace(/(\d+(?:\.\d+)?)\s*दिन(\**\s*(?:से|है|औसत))/gi, '$1 घंटे$2');
+      }
+      // Fix seasonal dispatch delay unit when numeric delay > 15 (hours wrongly tagged 'd')
+      s = s.replace(/(dispatch delay[^.\n]{0,45}?)(\d{2,}(?:\.\d+)?)d\b/gi, (m, pre, num) => {
+        return parseFloat(num) >= 15 ? `${pre}${num} hrs` : m;
+      });
+      s = s.replace(/(to\s+)(\d{2,}(?:\.\d+)?)d\b/gi, (m, pre, num) => {
+        return parseFloat(num) >= 15 ? `${pre}${num} hrs` : m;
+      });
+      // Convert mathematical half-open intervals like (29.1, 94.2] into readable ranges
+      s = s.replace(/[\(\[]\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*[\)\]]/g, (_, loStr, hiStr) => {
+        const loNum = parseFloat(loStr);
+        const hiNum = parseFloat(hiStr);
+        const loClean = (loNum < 0 && Math.abs(loNum) < 0.05) ? '0' : String(Number(loNum.toFixed(1)));
+        const hiClean = String(Number(hiNum.toFixed(1)));
+        return lang === 'hi' ? `${loClean} से ${hiClean}` : `${loClean} to ${hiClean}`;
+      });
+      // Normalize large Western-comma ₹ figures (e.g. ₹1,749,280.47 -> ₹17.49 L) without partial backtracking
+      s = s.replace(/₹(\d{1,3}(?:,\d{3})+(?:\.\d+)?)(?![0-9.]|\s*(?:L|Cr|K|M)\b)/g, (full, numPart) => {
+        const val = parseFloat(numPart.replace(/,/g, ''));
+        if (!Number.isFinite(val)) return full;
+        return formatCurrencyValue(val, '₹');
+      });
+      // Humanize raw snake_case database column identifiers for business owners
+      const colAliases = [
+        [/`?courier_partner`?/gi, lang === 'hi' ? 'डिलीवरी पार्टनर' : 'Delivery Partner'],
+        [/`?fulfillment_partner`?/gi, lang === 'hi' ? 'डिलीवरी पार्टनर' : 'Delivery Partner'],
+        [/`?fulfillment_hub`?/gi, lang === 'hi' ? 'वेयरहाउस हब' : 'Warehouse Hub'],
+        [/`?fulfillment_warehouse`?/gi, lang === 'hi' ? 'वेयरहाउस' : 'Warehouse Hub'],
+        [/`?dispatch_delay_hours`?/gi, lang === 'hi' ? 'डिस्पैच देरी (घंटे)' : 'Dispatch Delay (Hours)'],
+        [/`?dispatch_delay_days`?/gi, lang === 'hi' ? 'डिस्पैच देरी (दिन)' : 'Dispatch Delay (Days)'],
+        [/`?packaging_box_color`?/gi, lang === 'hi' ? 'पैकेजिंग बॉक्स रंग' : 'Packaging Box Color'],
+        [/`?packaging_box_theme`?/gi, lang === 'hi' ? 'पैकेजिंग स्टाइल' : 'Packaging Style'],
+        [/`?payment_mode`?/gi, lang === 'hi' ? 'पेमेंट का तरीका' : 'Payment Method'],
+        [/`?payment_gateway`?/gi, lang === 'hi' ? 'पेमेंट गेटवे' : 'Payment Method'],
+        [/`?retail_format`?/gi, lang === 'hi' ? 'स्टोर फ़ॉर्मेट' : 'Store Format'],
+        [/`?customer_state`?/gi, lang === 'hi' ? 'ग्राहक राज्य' : 'Customer State'],
+        [/`?city_tier`?/gi, lang === 'hi' ? 'शहर टियर' : 'City Tier'],
+        [/`?hub_city`?/gi, lang === 'hi' ? 'हब शहर' : 'Hub City'],
+        [/`?supplier_tier`?/gi, lang === 'hi' ? 'सप्लायर टियर' : 'Supplier Tier'],
+        [/`?transit_days`?/gi, lang === 'hi' ? 'ट्रांज़िट दिन' : 'Transit Days'],
+        [/`?customer_segment`?/gi, lang === 'hi' ? 'ग्राहक प्रकार' : 'Customer Type'],
+        [/`?is_rto_or_cancelled`?/gi, lang === 'hi' ? 'रिटर्न / कैंसलेशन' : 'Returns & Cancellations'],
+        [/`?net_billed_amount_inr`?/gi, lang === 'hi' ? 'बिल राशि' : 'Billed Amount'],
+        [/\bCapEx\b/g, lang === 'hi' ? 'बजट खर्च' : 'Budget'],
+        [/\b0%\s*Cartesian\s*Drift\b/gi, lang === 'hi' ? '100% सटीक रिकॉर्ड मिलान' : '100% Exact Record Match'],
+        [/\bAdverse\s+Capital\s+Drag\b/gi, lang === 'hi' ? 'खतरे में पैसा' : 'Money at Risk'],
+        [/\bAdverse\s+Events\b/gi, lang === 'hi' ? 'समस्या के केस' : 'Problem Cases']
+      ];
+      colAliases.forEach(([rx, rep]) => { s = s.replace(rx, rep); });
+
       if (lang === 'hi') {
         s = s
           .replace(/(?:is_repeated_guest\s*में\s*'0'|'0'\s*in\s*Is Repeated Guest)/gi, 'पहली बार आए ग्राहक (New Guests)')
@@ -7586,10 +8946,11 @@
       ownerPlans.forEach((p, idx) => {
         const card = document.createElement('div');
         card.className = `pathway-card ${idx === 0 ? 'selected' : ''}`;
+        const cleanBadge = normalizeIndianRupeesInText(String(p.badge || '')).replace(/\s*\(₹[^)]+\)/g, '');
         card.innerHTML = `
           <div class="pathway-top">
             <span class="pathway-title">${escapeHtml(p.title)}</span>
-            <span class="pathway-roi">${escapeHtml(p.badge)}</span>
+            <span class="pathway-roi">${escapeHtml(cleanBadge)}</span>
           </div>
           <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.55;">
             ${escapeHtml(p.story)}
@@ -7667,15 +9028,19 @@
         const isResilient = statusStr.includes('Resilient') || statusStr.includes('🟢');
         const badgeCls = isHighRisk ? 'recovery' : (isResilient ? 'resolved' : 'preventive');
         const lang = appState.briefLanguage === 'hi' ? 'hi' : 'en';
+        const symC = (appState.executivePulse && appState.executivePulse.unit_symbol) || '$';
         const friendlyStatus = isHighRisk
-          ? (lang === 'hi' ? '🔴 Bada Nuksaan' : '🔴 High Loss')
-          : (isResilient ? (lang === 'hi' ? '🟢 Surakshit' : '🟢 Safe') : (lang === 'hi' ? '🟡 Nazar Rakhein' : '🟡 Watch'));
+          ? (lang === 'hi' ? '🔴 बड़ा नुकसान' : '🔴 High Loss')
+          : (isResilient ? (lang === 'hi' ? '🟢 सुरक्षित' : '🟢 Safe') : (lang === 'hi' ? '🟡 ध्यान दें' : '🟡 Watch'));
+        const cleanLiab = normalizeIndianRupeesInText(String(r.total_liability || '--')).replace(/\s*\(₹[^)]+\)/g, '');
+        const cleanVol = r.volume_num !== undefined ? formatNumberForCurrency(r.volume_num, symC) : String(r.volume || '0');
+        const cleanAdv = r.adverse_events_num !== undefined ? formatNumberForCurrency(r.adverse_events_num, symC) : String(r.adverse_events || '0');
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="font-weight:700;">${escapeHtml(r.segment)}</td>
-          <td class="tabular-nums">${escapeHtml(r.volume)}</td>
-          <td class="tabular-nums">${escapeHtml(r.adverse_events)}</td>
+          <td class="tabular-nums">${escapeHtml(cleanVol)}</td>
+          <td class="tabular-nums">${escapeHtml(cleanAdv)}</td>
           <td class="tabular-nums">
             <div class="cohort-bar-track">
               <div class="cohort-bar-fill" style="width:${barWidth.toFixed(1)}%;background:${barColor};"></div>
@@ -7683,11 +9048,11 @@
             <strong style="color:${barColor};">${rate.toFixed(2)}%</strong>
           </td>
           <td class="tabular-nums">${Number(r.share_of_failures_pct || 0).toFixed(1)}%</td>
-          <td class="tabular-nums" style="font-weight:600;">${escapeHtml(r.total_liability)}</td>
+          <td class="tabular-nums" style="font-weight:600;">${escapeHtml(cleanLiab)}</td>
           <td><span class="queue-badge ${badgeCls}">${escapeHtml(friendlyStatus)}</span></td>
           <td style="text-align:right;">
             <button type="button" class="btn btn-secondary btn-sm" data-seg="${escapeHtml(r.segment)}">
-              ${lang === 'hi' ? 'Wajah Dekhein ↗' : 'Explain Why ↗'}
+              ${lang === 'hi' ? 'वजह देखें ↗' : 'Explain Why ↗'}
             </button>
           </td>
         `;
@@ -7842,7 +9207,16 @@
         ? appState.hinglishSummaryMd
         : (appState.translatedSummaries[cacheKey] || appState.englishSummaryMd);
       document.getElementById('briefReaderBox').innerHTML = renderMarkdownHtml(md);
+      if (typeof populateCategoryDropdowns === 'function') populateCategoryDropdowns();
+      if (typeof renderCategoryIntelligencePanel === 'function') {
+        renderCategoryIntelligencePanel((appState.executivePulse && appState.executivePulse.category_intelligence) || null, lang);
+      }
+      if (typeof renderV7VoiceRadarAndImpact === 'function') {
+        renderV7VoiceRadarAndImpact(lang);
+      }
+      renderGrowthInventoryPanel((appState.executivePulse && appState.executivePulse.growth_inventory) || null, lang);
       renderOmniLeakPanel((appState.executivePulse && appState.executivePulse.omni_leak_report) || appState.omniLeakReport || null);
+      recalculateSimulator();
       renderRankedLeaksPanel();
       render200QuestionsPanel();
       if (Array.isArray(appState.worklistRows) && appState.worklistRows.length) {
@@ -7878,10 +9252,11 @@
     function recalculateSimulator() {
       const pulse = appState.executivePulse || {};
       const sym = pulse.unit_symbol || '$';
+      const isHi = appState.briefLanguage === 'hi';
       const reductionPct = Number(document.getElementById('simReductionSlider').value || 25);
       const spendCost = Number(document.getElementById('simCostSlider').value || 2500);
 
-      document.getElementById('simReductionLabel').textContent = `${reductionPct}% Reduction`;
+      document.getElementById('simReductionLabel').textContent = `${reductionPct}% ${tUi('simReductionWord', 'Reduction')}`;
       document.getElementById('simCostLabel').textContent = formatCurrencyValue(spendCost, sym);
 
       const isFinancial = Boolean(pulse.is_financial && Number(pulse.total_capital_drag) > 0);
@@ -7892,22 +9267,24 @@
       const netRecovered = isFinancial ? (grossRecovered - spendCost) : grossRecovered;
       const newRate = Math.max(0, baseRate * (1.0 - (reductionPct * 0.65) / 100.0));
 
+      const basePrefix = tUi('simBasedOnPrefix', 'BASED ON:');
+      const riskSuffix = tUi('simAtRiskSuffix', 'AT RISK');
       document.getElementById('simBasisLabel').textContent = isFinancial
-        ? `BASED ON: ${formatCurrencyValue(baseDrag, sym)} AT RISK`
-        : `BASED ON: ${baseDrag.toLocaleString('en-US')} PROBLEM CASES`;
+        ? `${basePrefix} ${formatCurrencyValue(baseDrag, sym)} ${riskSuffix}`
+        : `${basePrefix} ${formatNumberForCurrency(baseDrag, sym)} ${isHi ? 'समस्या के केस' : 'PROBLEM CASES'}`;
 
       document.getElementById('simGrossTitle').textContent = isFinancial
-        ? 'Money Saved'
-        : 'Cases Prevented';
+        ? tUi('simGrossLbl', 'Money Saved')
+        : (isHi ? 'बचाए गए केस' : 'Cases Prevented');
 
       document.getElementById('simGrossValue').textContent = isFinancial
         ? formatCurrencyValue(grossRecovered, sym)
-        : `${Math.round(grossRecovered).toLocaleString('en-US')} Cases`;
+        : `${formatNumberForCurrency(Math.round(grossRecovered), sym)} ${isHi ? 'केस' : 'Cases'}`;
 
       const netEl = document.getElementById('simNetValue');
       netEl.textContent = isFinancial
         ? formatCurrencyValue(netRecovered, sym)
-        : `${Math.round(grossRecovered).toLocaleString('en-US')} Saved`;
+        : `${formatNumberForCurrency(Math.round(grossRecovered), sym)} ${isHi ? 'बचे' : 'Saved'}`;
       netEl.style.color = netRecovered >= 0 ? 'var(--accent-sky)' : 'var(--accent-crimson)';
 
       document.getElementById('simNewRateValue').textContent = `${newRate.toFixed(2)}%`;
@@ -7947,6 +9324,7 @@
           return `${col.replace(/_/g, ' ')} below safe limit (${cleanNum})`;
         })
         .replace(/;\s*/g, ' • ');
+      s = humanizeBusinessText(s, lang);
       if (lang === 'hi') {
         s = s
           .replace(/Delivery Days/gi, 'डिलीवरी दिन')
@@ -8001,7 +9379,7 @@
       });
 
       document.getElementById('worklistCountBadge').textContent =
-        `(${filtered.length} of ${Number(appState.worklistMeta.total_flagged || appState.worklistRows.length).toLocaleString('en-US')} Items)`;
+        `(${formatNumberForCurrency(filtered.length, sym)} of ${formatNumberForCurrency(appState.worklistMeta.total_flagged || appState.worklistRows.length, sym)} Items)`;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:28px;">No action items match your search.</td></tr>`;
@@ -8029,16 +9407,18 @@
         const tr = document.createElement('tr');
         const badgeClass = isResolved ? 'resolved' : (isPreventive ? 'preventive' : 'recovery');
         const badgeText = isResolved ? (lang === 'hi' ? '✓ काम पूरा' : '✓ Action Taken') : friendlyQueue;
+        const lblWhy = lang === 'hi' ? 'खतरा क्यों है' : 'Why Risky';
+        const lblNext = lang === 'hi' ? 'अगला कदम' : 'Next Step';
 
         tr.innerHTML = `
-          <td class="tabular-nums" style="color:var(--text-muted);">#${escapeHtml(row.priority_rank || (idx + 1))}</td>
-          <td class="tabular-nums" style="font-weight:700;">${escapeHtml(entityId)}</td>
-          <td><span class="queue-badge ${badgeClass}">${escapeHtml(badgeText)}</span></td>
-          <td class="tabular-nums" style="font-weight:700;color:${riskPct >= 50 ? 'var(--accent-crimson)' : 'var(--accent-amber)'};">${riskPct.toFixed(0)}%</td>
-          <td class="tabular-nums" style="font-weight:600;">${escapeHtml(exposureText)}</td>
-          <td style="max-width:270px;color:var(--text-secondary);line-height:1.45;">${escapeHtml(cleanReason)}</td>
-          <td style="max-width:280px;color:var(--text-secondary);line-height:1.45;">${escapeHtml(cleanStep)}</td>
-          <td style="text-align:right;">
+          <td class="tabular-nums wl-rank" style="color:var(--text-muted);">#${escapeHtml(row.priority_rank || (idx + 1))}</td>
+          <td class="tabular-nums wl-id" style="font-weight:700;">${escapeHtml(entityId)}</td>
+          <td class="wl-urgency"><span class="queue-badge ${badgeClass}">${escapeHtml(badgeText)}</span></td>
+          <td class="tabular-nums wl-risk" style="font-weight:700;color:${riskPct >= 50 ? 'var(--accent-crimson)' : 'var(--accent-amber)'};">${riskPct.toFixed(0)}%</td>
+          <td class="tabular-nums wl-amount" style="font-weight:600;">${escapeHtml(exposureText)}</td>
+          <td class="wl-reason" data-label="${escapeHtml(lblWhy)}" style="max-width:270px;color:var(--text-secondary);line-height:1.45;">${escapeHtml(cleanReason)}</td>
+          <td class="wl-step" data-label="${escapeHtml(lblNext)}" style="max-width:280px;color:var(--text-secondary);line-height:1.45;">${escapeHtml(cleanStep)}</td>
+          <td class="wl-action" style="text-align:right;">
             <button type="button" class="btn ${isResolved ? 'btn-secondary' : 'btn-primary'} btn-sm" data-row-idx="${idx}">
               ${isResolved ? (lang === 'hi' ? 'बदलें' : 'Update') : (lang === 'hi' ? 'कॉल/एक्शन लें' : 'Take Action')}
             </button>
@@ -8144,13 +9524,19 @@
       submitCopilotQuestion();
     }
 
-    function resetCopilotChat() {
+    function resetCopilotChat(silent = false) {
       appState.copilotHistory = [];
       const bar = document.getElementById('copilotContextBar');
       if (bar) { bar.innerHTML = ''; bar.classList.add('hidden'); }
       const inp = document.getElementById('copilotQuestionInput');
       if (inp) inp.value = '';
-      showToast('Started fresh Q&A context.', 'info');
+      const resBox = document.getElementById('copilotResultContainer');
+      if (resBox) resBox.classList.add('hidden');
+      const ansMd = document.getElementById('copilotAnswerMarkdown');
+      if (ansMd) ansMd.innerHTML = '';
+      const tblWrap = document.getElementById('copilotTableWrapper');
+      if (tblWrap) tblWrap.innerHTML = '';
+      if (!silent) showToast('Started fresh Q&A context.', 'info');
     }
 
     async function submitCopilotQuestion() {
@@ -8232,16 +9618,49 @@
         const rows = data.data || [];
         if (cols.length > 0 && rows.length > 0) {
           const sym = (appState.executivePulse && appState.executivePulse.unit_symbol) || '';
-          const prettyCol = (c) => String(c).replace(/_pct$/i, ' (%)').replace(/_/g, ' ').replace(/\b\w/g, m => m.toUpperCase());
+          const isHiTbl = (apiLang === 'hi' || appState.briefLanguage === 'hi');
+          const numLoc = sym === '₹' ? 'en-IN' : 'en-US';
+          const colLabelMap = isHiTbl ? {
+            total_records: 'कुल रिकॉर्ड',
+            total_orders: 'कुल ऑर्डर',
+            adverse_events: 'समस्या के केस',
+            total_adverse_events: 'समस्या के केस',
+            adverse_rate_pct: 'समस्या दर (%)',
+            adverse_capital_drag: 'खतरे में पैसा',
+            total_adverse_drag: 'खतरे में पैसा',
+            total_portfolio_volume: 'कुल रकम',
+            courier_partner: 'डिलीवरी पार्टनर',
+            payment_gateway: 'पेमेंट तरीका',
+            payment_mode: 'पेमेंट तरीका',
+            customer_state: 'राज्य'
+          } : {
+            total_records: 'Total Records',
+            total_orders: 'Total Orders',
+            adverse_events: 'Problem Cases',
+            total_adverse_events: 'Problem Cases',
+            adverse_rate_pct: 'Problem Rate (%)',
+            adverse_capital_drag: 'Money at Risk',
+            total_adverse_drag: 'Money at Risk',
+            total_portfolio_volume: 'Total Value',
+            courier_partner: 'Delivery Partner',
+            payment_gateway: 'Payment Method',
+            payment_mode: 'Payment Method',
+            customer_state: 'Customer State'
+          };
+          const prettyCol = (c) => {
+            const key = String(c || '').trim().toLowerCase();
+            if (colLabelMap[key]) return colLabelMap[key];
+            return String(c).replace(/_pct$/i, ' (%)').replace(/_/g, ' ').replace(/\b\w/g, m => m.toUpperCase());
+          };
           const prettyCell = (c, v) => {
             if (v === null || v === undefined) return '—';
             if (typeof v === 'number' && Number.isFinite(v)) {
               const cl = String(c).toLowerCase();
               if (cl.includes('pct') || cl.includes('rate')) return `${v.toFixed(2)}%`;
-              if (sym && (cl.includes('drag') || cl.includes('margin') || cl.includes('profit') || cl.includes('discount') || cl.includes('aov') || cl.includes('volume') || cl.includes('amount'))) {
+              if (sym && (cl.includes('drag') || cl.includes('margin') || cl.includes('profit') || cl.includes('discount') || cl.includes('aov') || cl.includes('volume') || cl.includes('amount') || cl.includes('revenue') || cl.includes('loss'))) {
                 return formatCurrencyValue(v, sym);
               }
-              return Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+              return Number.isInteger(v) ? v.toLocaleString(numLoc) : v.toLocaleString(numLoc, { maximumFractionDigits: 2 });
             }
             return escapeHtml(v);
           };
@@ -8373,9 +9792,13 @@
         workspaceRunsCache.forEach((r, idx) => {
           const opt = document.createElement('option');
           opt.value = r.run_id;
-          const cleanName = String(r.dataset_name || '').replace(/^[⭐📁]\s*/, '');
+          const cleanName = String(r.dataset_name || '')
+            .replace(/^[⭐📁]\s*/, '')
+            .replace(/^Certified Benchmark\s*·\s*/i, '')
+            .trim() || humanizeRunTitle(r.run_id);
           const badge = r.is_benchmark ? '⭐' : '📁';
-          opt.textContent = `${badge} ${cleanName} (${r.total_records.toLocaleString()} rows)`;
+          const rowFmt = formatNumberForCurrency(r.total_records || 0, r.unit_symbol || '$');
+          opt.textContent = `${badge} ${cleanName} (${rowFmt} rows)`;
           if (r.run_id === appState.activeRunId) opt.selected = true;
           select.appendChild(opt);
 
@@ -8399,7 +9822,7 @@
         }
         const payload = await res.json();
         hydrateExecutiveConsole(payload);
-        showToast(`Switched to report: ${payload.run_id}`, 'success');
+        showToast(`Switched to: ${humanizeRunTitle(payload.run_id)}`, 'success');
       } catch (e) {
         showToast(`Could not load report: ${e.message}`, 'error');
       }
@@ -10146,35 +11569,6 @@
       showToast(appState.briefLanguage === 'hi' ? 'बोर्डरूम चर्चा साफ़ कर दी गई।' : 'Boardroom thread cleared.', 'info');
     }
 
-    function startBoardroomVoice() {
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRec) {
-        showToast('Voice dictation requires Chrome or Edge browser.', 'warn');
-        return;
-      }
-      const btn = document.getElementById('btnBoardroomMic');
-      const rec = new SpeechRec();
-      const lang = appState.briefLanguage || 'en';
-      rec.lang = lang === 'hi' ? 'hi-IN' : (lang === 'en' ? 'en-IN' : lang);
-      rec.interimResults = false;
-      rec.maxAlternatives = 1;
-      if (btn) btn.textContent = '🔴 Listening...';
-      rec.onresult = (evt) => {
-        const transcript = evt.results?.[0]?.[0]?.transcript || '';
-        const inp = document.getElementById('boardroomInput');
-        if (inp && transcript) {
-          inp.value = inp.value ? `${inp.value} ${transcript}` : transcript;
-        }
-      };
-      rec.onerror = () => {
-        showToast('Could not capture voice — please type or try again.', 'warn');
-      };
-      rec.onend = () => {
-        if (btn) btn.textContent = '🎙️ Speak';
-      };
-      try { rec.start(); } catch (e) { if (btn) btn.textContent = '🎙️ Speak'; }
-    }
-
     async function sendBoardroomDiscussion(overrideText) {
       const runId = appState.activeRunId;
       if (!runId) {
@@ -10374,9 +11768,32 @@
         }
       } catch (e) {}
 
+      // Keep expandable drawer labels strictly synchronized with open/closed state
+      const deepDrawer = document.getElementById('deepAuditDrawer');
+      const deepLbl = document.getElementById('deepAuditToggleLabel');
+      if (deepDrawer && deepLbl) {
+        deepDrawer.addEventListener('toggle', () => {
+          const isHi = appState.briefLanguage === 'hi';
+          deepLbl.textContent = deepDrawer.open
+            ? (isHi ? 'बंद करने के लिए क्लिक करें ▴' : 'Click to Collapse ▴')
+            : (isHi ? 'खोलने के लिए क्लिक करें ▾' : 'Click to Expand ▾');
+        });
+      }
+      const predBuilder = document.getElementById('predictCustomBuilder');
+      const predLbl = document.getElementById('predictCustomToggleLabel');
+      if (predBuilder && predLbl) {
+        predBuilder.addEventListener('toggle', () => {
+          const isHi = appState.briefLanguage === 'hi';
+          predLbl.textContent = predBuilder.open
+            ? (isHi ? 'बंद करें ▴' : 'Collapse ▴')
+            : (isHi ? 'खोलें ▾' : 'Expand ▾');
+        });
+      }
+
       updateAuthUIState();
       initGlobalLanguages();
-      loadCertifiedBenchmark('hotel_booking_cancellation', true);
+      if (typeof initBusinessCategories === 'function') initBusinessCategories();
+      loadCertifiedBenchmark('nexura_lifestyle_brand', true);
       refreshTimeMachineRuns();
     });
   </script>

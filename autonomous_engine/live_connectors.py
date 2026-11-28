@@ -1119,7 +1119,38 @@ def list_workspace_runs(workspace_root: Union[str, Path], tenant_id: str = "") -
     if safe_tenant in ("founder_workspace", "default", "default_tenant", "default_workspace"):
         search_dirs.append((ws / "runs" / "uploads", False, safe_tenant))
 
+    search_dirs.append((ws / "enterprise_showcase_data", True, "certified_benchmark"))
     search_dirs.append((ws / "kaggle_benchmarks", True, "certified_benchmark"))
+
+    def _pretty_run_name(raw_id: str, is_bench: bool, ts: float) -> str:
+        friendly_map = {
+            "nexura_lifestyle_brand": "Nexura 3-Year D2C Brand (₹ INR)",
+            "v2_indian_retail_mall": "Indian Retail Mall Operations (₹ INR)",
+            "reliance_retail_jiomart": "Omnichannel Retail Logistics (₹ INR)",
+            "hotel_booking_cancellation": "Hotel Bookings & Cancellations",
+            "supermarket_retail_operations": "Supermarket Store Sales & Ratings",
+            "credit_card_loan_default": "Credit & Loan Payment Defaults",
+            "airline_flight_delays_operations": "Airline Flight Delays",
+            "california_housing_real_estate": "Real Estate Property Prices",
+            "real_opensource_shopkeeper": "Wholesale Shopkeeper POS Ledger",
+        }
+        if raw_id in friendly_map:
+            return f"⭐ {friendly_map[raw_id]}" if is_bench else friendly_map[raw_id]
+        short_date = datetime.datetime.fromtimestamp(ts).strftime("%d %b")
+        m_conn = re.match(r"^conn_(.+?)_[a-f0-9]{6,16}$", raw_id, flags=re.IGNORECASE)
+        if m_conn:
+            label = m_conn.group(1).replace("_", " ").title()
+            return f"{label} ({short_date})"
+        m_job = re.match(r"^job_\d+_[a-f0-9]{6,16}$", raw_id, flags=re.IGNORECASE)
+        if m_job:
+            return f"Uploaded Business Data ({short_date})"
+        m_up = re.match(r"^upload_\d+_[a-f0-9]{6,16}$", raw_id, flags=re.IGNORECASE)
+        if m_up:
+            return f"Uploaded Spreadsheet ({short_date})"
+        cleaned = re.sub(r"_[a-f0-9]{8,16}$", "", raw_id, flags=re.IGNORECASE)
+        cleaned = re.sub(r"^(?:job|run)_\d+_", "", cleaned, flags=re.IGNORECASE)
+        pretty = cleaned.replace("_", " ").strip().title() or "Business Report"
+        return f"⭐ {pretty}" if is_bench else pretty
 
     for base_dir, is_benchmark, owner_tenant in search_dirs:
         if not base_dir.exists():
@@ -1142,12 +1173,9 @@ def list_workspace_runs(workspace_root: Union[str, Path], tenant_id: str = "") -
                 tout = manifest.get("target_outcome", {}) or {}
                 fexp = manifest.get("financial_exposure", {}) or {}
 
-                clean_name = r_id.replace("_", " ").title()
-                if is_benchmark:
-                    clean_name = f"⭐ Certified Benchmark · {clean_name}"
-
                 mtime = os.path.getmtime(manifest_path)
                 iso_time = datetime.datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M:%S")
+                clean_name = _pretty_run_name(r_id, is_benchmark, mtime)
 
                 runs_list.append({
                     "run_id": r_id,

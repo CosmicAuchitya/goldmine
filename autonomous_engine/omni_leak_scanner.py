@@ -45,6 +45,7 @@ try:
         is_synthetic_column,
         is_pseudo_numeric_identifier,
         is_deterministic_target_leakage,
+        is_temporal_column,
     )
     from .pii_scrubber import is_sensitive_column_name
 except ImportError:
@@ -55,6 +56,7 @@ except ImportError:
         is_synthetic_column,
         is_pseudo_numeric_identifier,
         is_deterministic_target_leakage,
+        is_temporal_column,
     )
     from pii_scrubber import is_sensitive_column_name
 
@@ -129,13 +131,15 @@ class OmniDimensionalLeakScanner:
         """Discovers all valid pre-event categorical/discrete business dimensions (up to 60 categories)."""
         dims: List[str] = []
         coord_cols = {"longitude", "latitude", "lat", "lon", "alt", "tz", "tzone"}
-        date_words = {"order_date", "date", "order_time", "time", "timestamp", "datetime", "created_at"}
+        date_words = {"order_date", "date", "order_time", "time", "timestamp", "datetime", "created_at", "date_received", "updated_at", "ship_date"}
 
         for c in self.df.columns:
             cl = c.lower().strip()
             if c in (self.target_col, self.cost_col, "_is_target_event"):
                 continue
             if cl in coord_cols or cl in date_words or cl in POST_EVENT_STATUS_COLS:
+                continue
+            if is_temporal_column(self.df[c], c):
                 continue
             if cl in ("order_year", "order_month", "year", "month"):
                 continue
@@ -151,7 +155,7 @@ class OmniDimensionalLeakScanner:
                 continue
 
             nunique = int(self.df[c].nunique(dropna=True))
-            if nunique < 2 or nunique > 80:
+            if nunique < 2 or nunique > 500:
                 continue
             if nunique > 30 and is_pseudo_numeric_identifier(c, self.df[c]):
                 continue
@@ -161,6 +165,17 @@ class OmniDimensionalLeakScanner:
                 or pd.api.types.is_string_dtype(self.df[c])
                 or isinstance(self.df[c].dtype, pd.CategoricalDtype)
             )
+            # Long-tail operational dimensions (81..500 unique values, e.g. SKUs, components, vehicle lines, vendors):
+            # permit ONLY true categorical labels (short text, concentrated top-15 share >= 35%, non-ID cardinality ratio <= 20%)
+            if nunique > 80:
+                if not is_cat or (nunique / max(self.total_records, 1)) > 0.20:
+                    continue
+                s_nn = self.df[c].dropna().astype(str)
+                if s_nn.empty or float(s_nn.head(200).str.len().mean()) > 60.0:
+                    continue
+                top15_cov = float(s_nn.value_counts().head(15).sum()) / max(len(s_nn), 1)
+                if top15_cov < 0.35:
+                    continue
             # Exclude continuous/count/SLA/monetary numeric metrics from categorical segment dimensions
             if not is_cat:
                 if any(
@@ -271,16 +286,45 @@ class OmniDimensionalLeakScanner:
                 except Exception:
                     chi2_p = 1.0
 
-            worst = valid.iloc[0]
+            # Pick the highest statistically significant excess-impact cohort across all valid segments
+            # (prevents small 1%-volume tail slices from eclipsing high-impact operational bottlenecks like SERVICE BRAKES / AIR BAGS)
             best = valid.iloc[-1]
-            k_w, n_w = int(worst["adverse_events"]), int(worst["volume"])
-            k_rest = max(0, self.total_events - k_w)
-            n_rest = max(1, self.total_records - n_w)
-            rate_w = round(k_w / max(n_w, 1) * 100.0, 2)
-            rate_rest = round(k_rest / n_rest * 100.0, 2)
-            z_stat, p_two = _two_prop_z_and_p(k_w, n_w, k_rest, n_rest)
-            lift = round(rate_w / max(rate_rest, 0.01), 2)
-            excess_events = round(max(0.0, k_w - n_w * (k_rest / float(n_rest))), 1)
+            best_sig_candidate = None
+            for _, cand_row in valid.iterrows():
+                ck_w, cn_w = int(cand_row["adverse_events"]), int(cand_row["volume"])
+                ck_rest = max(0, self.total_events - ck_w)
+                cn_rest = max(1, self.total_records - cn_w)
+                crate_w = round(ck_w / max(cn_w, 1) * 100.0, 2)
+                crate_rest = round(ck_rest / cn_rest * 100.0, 2)
+                cz, cp = _two_prop_z_and_p(ck_w, cn_w, ck_rest, cn_rest)
+                clift = round(crate_w / max(crate_rest, 0.01), 2)
+                cexcess = round(max(0.0, ck_w - cn_w * (ck_rest / float(cn_rest))), 1)
+                if cp < 0.05 and clift >= 1.15 and cexcess >= 5.0:
+                    if len(grp) <= 20:
+                        # Low-cardinality dimensions (e.g. 3 city tiers, 4 regions):
+                        # rank by true failure severity / lift so large mediocre cohorts never mask the worst rate.
+                        cand_tuple = (clift, cexcess, float(cand_row["adverse_cost"]), cand_row, ck_w, cn_w, ck_rest, cn_rest, crate_w, crate_rest, cz, cp)
+                    else:
+                        # High-cardinality / long-tail dimensions (e.g. 183 vehicle components):
+                        # rank by attributable excess impact so major systemic bottlenecks beat tiny tail noise.
+                        avg_unit_cost = (float(cand_row["adverse_cost"]) / max(ck_w, 1)) if (self.cost_col and total_adverse_cost > 0) else 1.0
+                        c_impact = cexcess * avg_unit_cost if (self.cost_col and total_adverse_cost > 0) else cexcess
+                        cand_tuple = (c_impact, cexcess, clift, cand_row, ck_w, cn_w, ck_rest, cn_rest, crate_w, crate_rest, cz, cp)
+                    if best_sig_candidate is None or cand_tuple[:3] > best_sig_candidate[:3]:
+                        best_sig_candidate = cand_tuple
+
+            if best_sig_candidate is not None:
+                _, excess_events, lift, worst, k_w, n_w, k_rest, n_rest, rate_w, rate_rest, z_stat, p_two = best_sig_candidate
+            else:
+                worst = valid.iloc[0]
+                k_w, n_w = int(worst["adverse_events"]), int(worst["volume"])
+                k_rest = max(0, self.total_events - k_w)
+                n_rest = max(1, self.total_records - n_w)
+                rate_w = round(k_w / max(n_w, 1) * 100.0, 2)
+                rate_rest = round(k_rest / n_rest * 100.0, 2)
+                z_stat, p_two = _two_prop_z_and_p(k_w, n_w, k_rest, n_rest)
+                lift = round(rate_w / max(rate_rest, 0.01), 2)
+                excess_events = round(max(0.0, k_w - n_w * (k_rest / float(n_rest))), 1)
 
             entry = {
                 "dimension": dim,
@@ -356,6 +400,15 @@ class OmniDimensionalLeakScanner:
                 rest_mask = self.df[dim].astype(str) != worst_seg
                 rest_val = float(s_disp[rest_mask].mean())
                 ratio = round(worst_val / max(rest_val, 0.01), 2)
+                dc_low = str(disp_col).lower()
+                if any(tok in dc_low for tok in ("hour", "_hr", "hrs")):
+                    unit_en, unit_hi = "hours", "घंटे"
+                elif any(tok in dc_low for tok in ("min", "minute")):
+                    unit_en, unit_hi = "minutes", "मिनट"
+                else:
+                    unit_en, unit_hi = "days", "दिन"
+                dim_nice = str(dim).replace("_", " ").title()
+                disp_nice = re.sub(r"_(hours?|hrs?|days?|mins?|minutes?)$", "", str(disp_col), flags=re.IGNORECASE).replace("_", " ").title()
                 if ratio >= 1.35 and (worst_val - rest_val) >= 0.5:
                     seg_mask = self.df[dim].astype(str) == worst_seg
                     findings.append({
@@ -364,12 +417,13 @@ class OmniDimensionalLeakScanner:
                         "segment": worst_seg,
                         "volume": int(seg_mask.sum()),
                         "metric_column": disp_col,
+                        "unit": unit_en,
                         "segment_mean": round(worst_val, 2),
                         "rest_mean": round(rest_val, 2),
                         "multiplier": ratio,
                         "target_rate_pct": round(float(self.s_bin[seg_mask].mean() * 100.0), 2),
-                        "headline_en": f"`{dim}` = **'{worst_seg}'** has **{worst_val:.2f} days** avg `{disp_col}` (**{ratio}x slower** than {rest_val:.2f} days across other nodes, driving {float(self.s_bin[seg_mask].mean()*100):.2f}% failure rate across {int(seg_mask.sum()):,} orders).",
-                        "headline_hi": f"`{dim}` = **'{worst_seg}'** में औसत `{disp_col}` **{worst_val:.2f} दिन** है (बाकी वेयरहाउस/नोड्स के **{rest_val:.2f} दिन से {ratio} गुना ज़्यादा सुस्त**, कुल {int(seg_mask.sum()):,} ऑर्डर, {float(self.s_bin[seg_mask].mean()*100):.2f}% RTO/फेलियर)।",
+                        "headline_en": f"{dim_nice} **'{worst_seg}'** averages **{worst_val:.2f} {unit_en}** for {disp_nice} (**{ratio}x slower** than {rest_val:.2f} {unit_en} elsewhere, driving {float(self.s_bin[seg_mask].mean()*100):.2f}% failure rate across {int(seg_mask.sum()):,} orders).",
+                        "headline_hi": f"{dim_nice} **'{worst_seg}'** में औसत {disp_nice} **{worst_val:.2f} {unit_hi}** है (बाकी के **{rest_val:.2f} {unit_hi} से {ratio} गुना धीमा**, कुल {int(seg_mask.sum()):,} ऑर्डर, {float(self.s_bin[seg_mask].mean()*100):.2f}% फेलियर/रिटर्न)।",
                     })
 
             # 2. Check SLA Breach Bottleneck
@@ -388,10 +442,12 @@ class OmniDimensionalLeakScanner:
                     trans_note_en = ""
                     trans_note_hi = ""
                     if trans_col and pd.api.types.is_numeric_dtype(self.df[trans_col]):
+                        tc_low = str(trans_col).lower()
+                        t_unit_en, t_unit_hi = ("hours", "घंटे") if any(tok in tc_low for tok in ("hour", "_hr", "hrs")) else ("days", "दिन")
                         t_w = float(pd.to_numeric(self.df.loc[seg_mask, trans_col], errors="coerce").mean())
                         t_b = float(pd.to_numeric(self.df.loc[self.df[dim].astype(str) == best_seg, trans_col], errors="coerce").mean())
-                        trans_note_en = f", avg transit **{t_w:.2f} days** vs {t_b:.2f} days on '{best_seg}'"
-                        trans_note_hi = f", औसत ट्रांज़िट **{t_w:.2f} दिन** vs '{best_seg}' में {t_b:.2f} दिन"
+                        trans_note_en = f", avg transit **{t_w:.2f} {t_unit_en}** vs {t_b:.2f} {t_unit_en} on '{best_seg}'"
+                        trans_note_hi = f", औसत ट्रांज़िट **{t_w:.2f} {t_unit_hi}** vs '{best_seg}' में {t_b:.2f} {t_unit_hi}"
                     csat_note_en = ""
                     csat_note_hi = ""
                     if csat_col and pd.api.types.is_numeric_dtype(self.df[csat_col]):
@@ -486,7 +542,7 @@ class OmniDimensionalLeakScanner:
                         best_driver_dim = d
                         best_driver_val = str(val)
 
-            if best_driver_dim and best_z >= 8.0:
+            if best_driver_dim and best_z >= 4.0:
                 driver_mask = self.df[best_driver_dim].astype(str) == best_driver_val
                 overall_driver_share = float(driver_mask.mean() * 100.0)
                 non_driver_baseline = float(self.s_bin[~driver_mask].mean() * 100.0)
@@ -498,8 +554,13 @@ class OmniDimensionalLeakScanner:
                         if len(sub) < max(50, min_cell):
                             continue
                         seg_idx = sub.index
-                        seg_rate = float(self.s_bin.loc[seg_idx].mean() * 100.0)
-                        if seg_rate < self.baseline_rate_pct * 1.45:
+                        seg_k = int(self.s_bin.loc[seg_idx].sum())
+                        seg_n = len(seg_idx)
+                        seg_rate = float(seg_k / max(seg_n, 1) * 100.0)
+                        rest_n = max(1, self.total_records - seg_n)
+                        rest_rate = float(max(0, self.total_events - seg_k) / rest_n * 100.0)
+                        # Compare against rest-of-system rate too so large 50%-share segments in 2-group Simpson's Paradox are caught
+                        if seg_rate < self.baseline_rate_pct * 1.20 or seg_rate < rest_rate * 1.35:
                             continue
                         seg_driver_share = float(driver_mask.loc[seg_idx].mean() * 100.0)
                         seg_with_driver = seg_idx[driver_mask.loc[seg_idx]]
@@ -507,8 +568,12 @@ class OmniDimensionalLeakScanner:
                         if len(seg_with_driver) >= 15 and len(seg_without_driver) >= 15:
                             rate_with = float(self.s_bin.loc[seg_with_driver].mean() * 100.0)
                             rate_without = float(self.s_bin.loc[seg_without_driver].mean() * 100.0)
+                            over_concentrated = (
+                                seg_driver_share >= overall_driver_share * 1.35
+                                or seg_driver_share >= overall_driver_share + 15.0
+                            )
                             # If removing the confounder brings the segment down to normal baseline!
-                            if seg_driver_share >= overall_driver_share * 1.5 and rate_without <= non_driver_baseline * 1.25:
+                            if over_concentrated and rate_without <= non_driver_baseline * 1.25:
                                 confounders.append({
                                     "apparent_dim": other_dim,
                                     "apparent_segment": str(seg_val),

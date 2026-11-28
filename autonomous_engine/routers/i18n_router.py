@@ -43,7 +43,9 @@ def build_i18n_router(
     def translate_portal_ui(req: TranslateUiRequest) -> Dict[str, Any]:
         from ..global_i18n_engine import get_language_meta, normalize_lang_code, translate_ui_dictionary
         code = normalize_lang_code(req.target_lang)
-        ui_tr, engine = translate_ui_dictionary(req.ui_dict, code, workspace_root)
+        # Strictly bound unauthenticated UI dictionary payload to prevent DoS & quota drain
+        safe_ui = {str(k)[:80]: str(v)[:300] for k, v in list((req.ui_dict or {}).items())[:250]}
+        ui_tr, engine = translate_ui_dictionary(safe_ui, code, workspace_root)
         return {
             "status": "success",
             "lang": get_language_meta(code),

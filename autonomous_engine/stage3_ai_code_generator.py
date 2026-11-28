@@ -135,7 +135,7 @@ Core Engineering Requirements for the script:
 """
 
     print("[*] [Stage 3 Code Generator] Invoking PacedGeminiClient for Dynamic ETL Synthesis...")
-    pacer = PacedGeminiClient(max_calls_per_minute=14)
+    pacer = PacedGeminiClient()
     response_text = pacer.generate_content(
         contents=prompt,
         system_instruction=system_instruction

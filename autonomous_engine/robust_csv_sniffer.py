@@ -34,10 +34,10 @@ _PLAIN_INT_RE = re.compile(
     r'^\s*[+-]?\s*(?:€|EUR)?\s*\d+\s*(?:€|EUR|%)?\s*$',
     re.IGNORECASE,
 )
-# Matches Indian Tally/Vyapar/Busy & US/UK formatted currency strings (e.g. '₹1,24,500/-', 'Rs. 45,000.50', '$1,250.00', '£890')
+# Matches Indian Tally/Vyapar/Busy & US/UK formatted currency strings (incl. parenthetical negatives & Cr/Dr)
 _INTL_CURRENCY_RE = re.compile(
-    r'^\s*[+-]?\s*(?:₹|â‚¹|\$|£|Rs\.?|INR|USD|GBP)\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|(?:\s*(?:INR|USD|GBP|Rs\.?)))?\s*$'
-    r'|^\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|\s*(?:₹|â‚¹|\$|£|INR|USD|GBP|Rs\.?))\s*$',
+    r'^\s*\(?\s*[+-]?\s*(?:₹|â‚¹|\$|£|Rs\.?|INR|USD|GBP)\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|(?:\s*(?:INR|USD|GBP|Rs\.?|Dr|Cr)))?\s*\)?\s*$'
+    r'|^\s*\(?\s*[+-]?\s*\d[\d,]*(?:\.\d{1,4})?\s*(?:/-|\s*(?:₹|â‚¹|\$|£|INR|USD|GBP|Rs\.?|Dr|Cr))\s*\)?\s*$',
     re.IGNORECASE,
 )
 _STD_NUM_COMMA_RE = re.compile(r'^\s*[+-]?\s*\d{1,3}(?:,\d{2,3})+(?:\.\d{1,4})?\s*$')
@@ -88,12 +88,18 @@ def normalize_european_decimal_columns(df: pd.DataFrame) -> pd.DataFrame:
         if has_non_eu_currency:
             curr_hits = sum(1 for v in sample if _INTL_CURRENCY_RE.match(v) or _STD_NUM_COMMA_RE.match(v) or _PLAIN_INT_RE.match(v))
             if curr_hits >= 1 and (curr_hits / len(sample)) >= 0.75:
+                s_raw = ser.astype(str).str.strip()
+                is_paren_neg = s_raw.str.startswith('(') & s_raw.str.endswith(')')
+                is_cr_neg = s_raw.str.contains(r'(?i)(?:\s|\d)cr\s*\)?$', regex=True, na=False)
                 cleaned = (
-                    ser.astype(str)
+                    s_raw
+                    .str.replace(r'^\(|\)$', '', regex=True)
                     .str.replace(r'(?i)(?:INR|USD|GBP|Rs\.?|â‚¹|[₹\$£,\s])', '', regex=True)
+                    .str.replace(r'(?i)(?:/-|dr|cr)$', '', regex=True)
                     .str.replace(r'/-$', '', regex=True)
                 )
                 parsed = pd.to_numeric(cleaned, errors='coerce')
+                parsed = parsed.where(~(is_paren_neg | is_cr_neg), -parsed.abs())
                 if parsed.notna().sum() >= max(1, int(len(non_null) * 0.75)):
                     # Preserve detected currency hint on DataFrame attrs for downstream resolvers
                     sample_joined = " ".join(sample.tolist())
@@ -128,6 +134,14 @@ def detect_encoding_and_delimiter(file_path: Path, sample_bytes: int = 65536) ->
 
     with open(file_path, 'rb') as f:
         raw_bytes = f.read(sample_bytes)
+
+    # Detect UTF-16LE / UTF-16BE BOM (e.g. Microsoft Excel 'Unicode Text' exports) before latin1 mis-decodes NUL bytes
+    if raw_bytes.startswith((b'\xff\xfe', b'\xfe\xff')):
+        try:
+            sample_text = raw_bytes.decode('utf-16')
+            return 'utf-16', _sniff_delimiter_from_text(sample_text, fallback=',')
+        except UnicodeDecodeError:
+            pass
 
     for enc in CANDIDATE_ENCODINGS:
         try:
@@ -180,14 +194,21 @@ def smart_read_csv_bytes(raw_bytes: bytes, fallback_sep: str = ',', **kwargs) ->
     sample = raw_bytes[:65536]
     valid_enc = 'utf-8'
     sample_text = ''
-    for enc in CANDIDATE_ENCODINGS:
+    if raw_bytes.startswith((b'\xff\xfe', b'\xfe\xff')):
         try:
-            sample_text = sample.decode(enc)
-            raw_bytes.decode(enc)
-            valid_enc = enc
-            break
+            sample_text = raw_bytes.decode('utf-16')
+            valid_enc = 'utf-16'
         except UnicodeDecodeError:
-            continue
+            sample_text = ''
+    if not sample_text:
+        for enc in CANDIDATE_ENCODINGS:
+            try:
+                sample_text = sample.decode(enc)
+                raw_bytes.decode(enc)
+                valid_enc = enc
+                break
+            except UnicodeDecodeError:
+                continue
     if not sample_text:
         sample_text = sample.decode('latin1', errors='replace')
         valid_enc = 'latin1'

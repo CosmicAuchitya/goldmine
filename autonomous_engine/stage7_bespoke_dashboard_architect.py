@@ -689,14 +689,45 @@ def judge_dashboard_architecture(
         }
         archetype_key = ont_map.get(best_ont_key, "swiss_institutional_terminal")
 
-    # 3. Data-Shape Diagnostics
-    is_temporal = bool(
+    has_temporal = bool(
         temporal_summary and
         temporal_summary.get("is_temporal_dataset") and
         len(temporal_summary.get("periods", [])) >= 2
     )
     has_monetary = bool(cost_col and cost_col in df_fact.columns)
     has_sec = bool(sec_dim and sec_dim in df_fact.columns and 2 <= df_fact[sec_dim].nunique() <= 15)
+
+    # Sub-domain specialization & non-monetary KPI sanitation (prevents Hospital Billing/Bed KPIs leaking onto MedTech Vigilance or non-$ safety datasets)
+    matched_ont = copy.deepcopy(matched_ont) if matched_ont else {}
+    _device_vigilance_signals = ("device", "mdr", "implant", "malfunction", "vigilance", "fda", "medtech", "recall")
+    _hospital_billing_signals = ("bed", "alos", "tpa", "insurance", "claim_rejection", "billed", "arpob", "discharge_date")
+    if best_ont_key == "healthcare_operations":
+        if any(k in combined_signals for k in _device_vigilance_signals) and not any(h in cols_text for h in _hospital_billing_signals):
+            matched_ont["domain_name"] = "Healthcare — Medical Device Vigilance & Clinical Safety"
+            matched_ont["key_metrics_kpis"] = [
+                "Adverse Patient Harm Rate % (Injury + Death)",
+                "Class-III / High-Risk Device Cohort Relative Risk",
+                "Operator-Role Severity Parity (Clinical vs Lay User)",
+                "Field Escalation & Mortality Sentinel Rate"
+            ]
+            matched_ont["loss_and_leakage_risks"] = [
+                "Unflagged Class-III Implanted Device Complications",
+                "Elderly & High-Risk Patient Cohort Harm Concentration",
+                "Regional Post-Market Safety Surveillance Lag",
+                "Emerging Product-Line Failure Spikes Prior to Recalls"
+            ]
+        elif not has_monetary:
+            matched_ont["key_metrics_kpis"] = [
+                k for k in matched_ont.get("key_metrics_kpis", [])
+                if not any(m in str(k).lower() for m in ("insurance", "claim denial", "arpob", "revenue", "billed"))
+            ] or ["Patient Adverse Event Rate %", "High-Risk Cohort Stratification Index"]
+            matched_ont["loss_and_leakage_risks"] = [
+                r for r in matched_ont.get("loss_and_leakage_risks", [])
+                if not any(m in str(r).lower() for m in ("tpa", "insurance", "claim"))
+            ] or ["Cohort Severity & Early-Warning Deterioration Spikes"]
+
+    # Update variable aliases used downstream cleanly
+    is_temporal = has_temporal
     
     cliffs_data = strat_engine.micro_engine.analyze_quantile_cliffs()
     interaction_data = strat_engine.micro_engine.analyze_bivariate_interactions()

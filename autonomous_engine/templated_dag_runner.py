@@ -71,6 +71,12 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
     suffix = file_path.suffix.lower()
     if suffix == '.parquet':
         df = pd.read_parquet(file_path)
+    elif suffix == '.pdf':
+        try:
+            from .tally_pdf_ingestion import extract_table_from_pdf
+        except ImportError:
+            from tally_pdf_ingestion import extract_table_from_pdf
+        df = extract_table_from_pdf(file_path)
     elif suffix in ['.xlsx', '.xls']:
         try:
             try:
@@ -110,19 +116,63 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
             except Exception:
                 pass
     else:
+        # Workstream 4: DuckDB out-of-core CSV -> ZSTD Parquet fast-path for large CSVs (>=15 MB)
+        _streamed_via_duckdb = False
         try:
+            from .duckdb_streaming_engine import (
+                LARGE_FILE_STREAM_THRESHOLD_BYTES,
+                stream_csv_to_parquet_duckdb,
+            )
+        except ImportError:
+            from duckdb_streaming_engine import (
+                LARGE_FILE_STREAM_THRESHOLD_BYTES,
+                stream_csv_to_parquet_duckdb,
+            )
+        if suffix in ('.csv', '.tsv', '.txt') and file_path.exists() and file_path.stat().st_size >= LARGE_FILE_STREAM_THRESHOLD_BYTES:
             try:
-                from .robust_csv_sniffer import smart_read_csv
-            except ImportError:
-                from robust_csv_sniffer import smart_read_csv
-            df = smart_read_csv(file_path)
-        except Exception:
+                try:
+                    from .robust_csv_sniffer import detect_encoding_and_delimiter
+                    from .robust_excel_scanner import detect_optimal_header_row
+                except ImportError:
+                    from robust_csv_sniffer import detect_encoding_and_delimiter
+                    from robust_excel_scanner import detect_optimal_header_row
+                enc_det, delim_det = detect_encoding_and_delimiter(file_path)
+                skip_h = int(detect_optimal_header_row(file_path) or 0)
+                if str(enc_det or "").lower().replace("-", "") in ("utf8", "utf8sig", "ascii"):
+                    pq_target = (cache_path / f"{stem}_stream.parquet") if cache_path else (file_path.parent / f".{stem}_stream.parquet")
+                    stream_csv_to_parquet_duckdb(file_path, pq_target, delimiter=delim_det, skip_rows=skip_h)
+                    df = pd.read_parquet(pq_target)
+                    _streamed_via_duckdb = True
+                    if not cache_path and pq_target.exists():
+                        try:
+                            pq_target.unlink()
+                        except Exception:
+                            pass
+            except Exception:
+                _streamed_via_duckdb = False
+
+        if not _streamed_via_duckdb:
             try:
-                df = pd.read_csv(file_path, low_memory=False)
-            except UnicodeDecodeError:
-                df = pd.read_csv(file_path, low_memory=False, encoding='latin-1')
+                try:
+                    from .robust_csv_sniffer import smart_read_csv
+                except ImportError:
+                    from robust_csv_sniffer import smart_read_csv
+                df = smart_read_csv(file_path)
+            except Exception:
+                try:
+                    df = pd.read_csv(file_path, low_memory=False)
+                except UnicodeDecodeError:
+                    df = pd.read_csv(file_path, low_memory=False, encoding='latin-1')
 
     df.columns = [str(c).strip() for c in df.columns]
+    try:
+        try:
+            from .tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        except ImportError:
+            from tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        df, _ = flatten_grouped_accounting_ledger(df)
+    except Exception:
+        pass
     try:
         from .robust_csv_sniffer import normalize_european_decimal_columns
     except ImportError:
@@ -135,29 +185,60 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
         from robust_excel_scanner import strip_accounting_summary_rows, clean_accounting_series
     df = strip_accounting_summary_rows(df)
 
+    _MONETARY_COL_HINTS = (
+        'price', 'cost', 'amount', 'amt', 'fee', 'charge', 'rev', 'revenue',
+        'sales', 'salary', 'wage', 'income', 'budget', 'spend', 'tax', 'margin',
+        'profit', 'loss', 'balance', 'credit', 'debit', 'payment', 'bill',
+        'invoice', 'total', 'discount', 'fare', 'rent', 'emi', 'mrp', 'value',
+    )
+    _ACCOUNTING_PATTERN = re.compile(
+        r'(?:[₹$€£¥]|/-\s*$|^\(\s*[₹$€£¥]?\s*\d[\d,\.]*\s*\)$|\b(?:rs\.?|cr|dr|inr|usd|eur|gbp)\b)',
+        re.IGNORECASE,
+    )
+
     for col in df.columns:
         if pd.api.types.is_object_dtype(df[col]) or pd.api.types.is_string_dtype(df[col]):
+            c_low = col.lower()
+            has_monetary_hint = any(m in c_low for m in _MONETARY_COL_HINTS)
+            is_id_or_code = (
+                c_low in ('id', 'udi')
+                or c_low.endswith(('_id', '_key', '_code'))
+                or any(k in c_low for k in ('zip', 'postal', 'phone', 'ssn'))
+                or (
+                    not has_monetary_hint
+                    and any(k in c_low for k in ('class', 'grade', 'tier', 'type'))
+                )
+            )
+            if is_id_or_code:
+                continue
+
+            sample_vals = df[col].dropna().astype(str).head(50)
+            has_explicit_accounting_fmt = (
+                not sample_vals.empty
+                and float(sample_vals.str.contains(_ACCOUNTING_PATTERN, na=False).mean()) >= 0.30
+            )
+            # Only skip low-cardinality bare-code strings; NEVER skip explicitly formatted currency/accounting columns!
+            if df[col].nunique(dropna=True) <= 10 and not has_explicit_accounting_fmt:
+                continue
+
             s_cleaned = clean_accounting_series(df[col])
             if pd.api.types.is_numeric_dtype(s_cleaned):
                 df[col] = s_cleaned
                 continue
             s_clean = s_cleaned.astype(str).str.replace(',', '').str.strip()
             s_num = pd.to_numeric(s_clean, errors='coerce')
-            c_low = col.lower()
-            is_id_or_code = c_low in ('id', 'udi') or c_low.endswith(('_id', '_key', '_code')) or any(
-                k in c_low for k in ('zip', 'postal', 'phone', 'ssn')
-            )
-            if not is_id_or_code and s_num.notna().mean() >= 0.85 and s_num.nunique() > 10:
+            if s_num.notna().mean() >= 0.85 and (s_num.nunique() > 10 or has_explicit_accounting_fmt):
                 df[col] = s_num.fillna(s_num.median())
             else:
                 df[col] = s_cleaned
 
-    # Universal Categorical and Date Sanitization
+    # Universal Categorical and Date Sanitization (Vectorized object+np.nan — zero '<NA>' pollution!)
     for col in df.columns:
         if pd.api.types.is_object_dtype(df[col]) or pd.api.types.is_string_dtype(df[col]):
-            df[col] = df[col].apply(
-                lambda x: np.nan if (pd.isna(x) or str(x).strip() == "" or str(x).strip().lower() in ("nan", "none", "null")) else str(x).strip()
-            )
+            orig_na = df[col].isna()
+            s_v = df[col].astype("string").str.strip()
+            bad_mask = orig_na | s_v.isna() | (s_v == "") | s_v.str.lower().isin(("nan", "none", "null", "<na>"))
+            df[col] = s_v.astype(object).where(~bad_mask, np.nan)
             s_str = df[col].dropna().astype(str)
             if s_str.empty:
                 continue
@@ -170,9 +251,29 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
                 non_iso_mask = s_str.str.match(r'^\d{1,2}[/-]\d{1,2}[/-](?:19|20)\d{2}', na=False)
                 if (iso_mask | non_iso_mask).mean() >= 0.80 and non_iso_mask.any():
                     s_non_iso = s_str.loc[non_iso_mask]
-                    dt_dmy = pd.to_datetime(s_non_iso, dayfirst=True, format='mixed', errors='coerce')
-                    dt_mdy = pd.to_datetime(s_non_iso, dayfirst=False, format='mixed', errors='coerce')
-                    s_dt = dt_dmy if dt_dmy.notna().mean() >= dt_mdy.notna().mean() else dt_mdy
+                    # Vectorized empirical DMY vs MDY proof: avoids format='mixed' silently accepting both and swapping day/month!
+                    parts = s_non_iso.str.extract(r'^(\d{1,2})[/-](\d{1,2})[/-]')
+                    p1 = pd.to_numeric(parts[0], errors='coerce')
+                    p2 = pd.to_numeric(parts[1], errors='coerce')
+                    dmy_proof = int(((p1 > 12) & (p2 <= 12)).sum())
+                    mdy_proof = int(((p2 > 12) & (p1 <= 12)).sum())
+                    if mdy_proof > dmy_proof:
+                        s_dt = pd.to_datetime(s_non_iso, dayfirst=False, format='mixed', errors='coerce')
+                    elif dmy_proof > mdy_proof:
+                        s_dt = pd.to_datetime(s_non_iso, dayfirst=True, format='mixed', errors='coerce')
+                    else:
+                        dt_dmy = pd.to_datetime(s_non_iso, dayfirst=True, format='mixed', errors='coerce')
+                        dt_mdy = pd.to_datetime(s_non_iso, dayfirst=False, format='mixed', errors='coerce')
+                        if dt_dmy.notna().mean() > dt_mdy.notna().mean():
+                            s_dt = dt_dmy
+                        elif dt_mdy.notna().mean() > dt_dmy.notna().mean():
+                            s_dt = dt_mdy
+                        elif dt_dmy.notna().any() and dt_mdy.notna().any():
+                            span_dmy = (dt_dmy.max() - dt_dmy.min()).days
+                            span_mdy = (dt_mdy.max() - dt_mdy.min()).days
+                            s_dt = dt_dmy if span_dmy <= span_mdy else dt_mdy
+                        else:
+                            s_dt = dt_dmy
                     if s_dt.notna().mean() >= 0.80:
                         has_time = ((s_dt.dt.hour != 0) | (s_dt.dt.minute != 0) | (s_dt.dt.second != 0)).any()
                         valid_dt = s_dt.dropna()
@@ -215,14 +316,22 @@ def load_entity_dataframe(file_path: Path, cache_path: Path = None) -> pd.DataFr
                         r'(?i)^madhya pradesh$': 'Madhya Pradesh'
                     }, regex=True)
 
-                # Standardize case-folds: unify casing so 'delivered' and 'Delivered' merge to modal casing
+                # Standardize case-folds: vectorized map (100x faster than row-wise apply on 500k+ rows)
                 lower_to_orig = {}
                 for val, cnt in s_mod.value_counts().items():
                     val_low = str(val).lower()
                     if val_low not in lower_to_orig:
                         lower_to_orig[val_low] = str(val)
-                s_mod = s_mod.apply(lambda x: lower_to_orig.get(str(x).lower(), x) if pd.notna(x) else x)
+                s_mod = s_mod.str.lower().map(lower_to_orig).fillna(s_mod)
                 df.loc[s_str.index, col] = s_mod
+    try:
+        try:
+            from .duckdb_streaming_engine import optimize_dataframe_memory
+        except ImportError:
+            from duckdb_streaming_engine import optimize_dataframe_memory
+        df, _ = optimize_dataframe_memory(df)
+    except Exception:
+        pass
     return df
 
 def execute_templated_pipeline(
@@ -496,13 +605,15 @@ def execute_templated_pipeline(
             dup_dim_keys = df_dim.duplicated(subset=[join_key]).sum()
             if dup_dim_keys > 0:
                 print(f"    [!] Cardinality Defense: Pre-aggregating '{tbl_stem}' on '{join_key}' ({dup_dim_keys:,} duplicates neutralized)...")
-                # Numeric aggregations (use max for binary/flag columns so duplicate logs never inflate 1+1=2!)
+                # Numeric aggregations (max for binary flags, mean for non-additive rates/scores/ratios, sum for additive quantities/amounts)
                 num_cols = [c for c in df_dim.select_dtypes(include=[np.number]).columns if c != join_key]
                 agg_dict = {}
                 for c in num_cols:
                     cl = c.lower()
                     if cl.startswith(("is_", "has_")) or any(k in cl for k in ("_flag", "breach", "rto", "cancel", "churn", "default", "fraud")):
                         agg_dict[c] = "max"
+                    elif any(k in cl for k in ("score", "rating", "rate", "pct", "ratio", "index", "avg_", "mean_", "_mean", "age", "bmi", "temp", "pressure", "mpg", "latitude", "longitude")):
+                        agg_dict[c] = "mean"
                     else:
                         agg_dict[c] = "sum"
                 # Non-numeric dominant values
@@ -615,6 +726,43 @@ def execute_templated_pipeline(
         f_val = pd.to_numeric(df_fact["freight_value"], errors='coerce').fillna(0)
         df_fact["freight_friction_ratio"] = np.where(p > 0, f_val / p, 0.0)
 
+    # Universal POS / ERP Line-Revenue Synthesis (when raw table has Quantity + UnitPrice without a pre-computed LineTotal/Sales column)
+    def _camel_to_snake_pos(col_name: str) -> str:
+        s_c = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(col_name).strip())
+        return re.sub(r'[\s\-]+', '_', s_c).lower()
+
+    _existing_line_rev = [
+        c for c in df_fact.columns
+        if any(k in _camel_to_snake_pos(c) for k in (
+            "sales", "revenue", "turnover", "line_total", "line_value", "order_value",
+            "order_amount", "order_total", "invoice_amount", "invoiced_amount",
+            "invoice_total", "bill_amount", "billing_amount", "grand_total",
+            "net_amount", "net_billed", "total_amount", "total_bill", "total_price",
+            "gross_billing", "amount", "bikri"
+        ))
+        and not any(bad in _camel_to_snake_pos(c) for bad in ("unit_price", "cost", "discount", "tax", "fee", "due", "outstanding", "credit_limit", "penalty", "loan_amount", "claim"))
+        and pd.api.types.is_numeric_dtype(df_fact[c])
+    ]
+    if not _existing_line_rev and "line_revenue" not in df_fact.columns:
+        _pos_qty_cols = [
+            c for c in df_fact.columns
+            if _camel_to_snake_pos(c) in ("quantity", "qty", "units", "units_sold", "sold_qty", "order_qty", "billed_qty")
+            and pd.api.types.is_numeric_dtype(df_fact[c])
+        ]
+        _pos_up_cols = [
+            c for c in df_fact.columns
+            if _camel_to_snake_pos(c) in ("unit_price", "selling_price", "sale_price", "item_price", "price", "rate", "mrp")
+            and pd.api.types.is_numeric_dtype(df_fact[c])
+        ]
+        if _pos_qty_cols and _pos_up_cols:
+            _q_s = pd.to_numeric(df_fact[_pos_qty_cols[0]], errors='coerce').fillna(0.0)
+            _p_s = pd.to_numeric(df_fact[_pos_up_cols[0]], errors='coerce').fillna(0.0)
+            df_fact["line_revenue"] = np.round(_q_s * _p_s, 2)
+            print(f"    [*] Synthesized physical POS `line_revenue` = `{_pos_qty_cols[0]}` * `{_pos_up_cols[0]}` (Net Total: {float(df_fact['line_revenue'].sum()):,.2f}).")
+            if (_q_s < 0).any():
+                df_fact["line_gross_value"] = np.round(_q_s.abs() * _p_s.abs(), 2)
+                print(f"    [*] Synthesized unsigned `line_gross_value` = ABS(`{_pos_qty_cols[0]}` * `{_pos_up_cols[0]}`) for credit-note return exposure auditing.")
+
     # Order/Shipment-Level P&L Net Contribution Margin Synthesis (Cross-Industry: Retail COGS + B2B/Logistics Direct Operating Costs & Penalties)
     existing_margin_cols = [
         c for c in df_fact.columns
@@ -721,14 +869,23 @@ def execute_templated_pipeline(
         if col.endswith('_id') or 'key' in col.lower() or col == primary_id_col:
             df_fact[col] = df_fact[col].astype(str)
 
-    # Sanitize all object/string-dtype columns to prevent PyArrow mixed-type conversion crashes
+    # Vectorized Arrow-safe string conversion preserving None nulls (never literal '<NA>')
     for col in df_fact.select_dtypes(include=['object', 'string']).columns:
-        df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
+        na_m = df_fact[col].isna()
+        df_fact[col] = df_fact[col].astype(str).astype(object).where(~na_m, None)
 
-    # Export Fact Parquet
+    # Export Fact Parquet with ZSTD compression for compact disk & fast DuckDB scans
     fact_parquet_path = out_path / "bi_ready_fact.parquet"
-    df_fact.to_parquet(fact_parquet_path, engine="pyarrow", index=False)
+    df_fact.to_parquet(fact_parquet_path, engine="pyarrow", compression="zstd", index=False)
     print(f"[+] Persisted Star Schema Parquet: {fact_parquet_path.name} ({len(df_fact):,} rows)")
+    try:
+        try:
+            from .duckdb_streaming_engine import release_memory
+        except ImportError:
+            from duckdb_streaming_engine import release_memory
+        release_memory()
+    except Exception:
+        pass
 
     total_time = round(time.time() - start_time, 2)
     summary = {

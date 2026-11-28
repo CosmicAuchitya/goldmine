@@ -195,11 +195,32 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         table = pq.read_table(filepath)
         total_rows = table.num_rows
         df_sample = table.slice(0, SAMPLE_ROWS).to_pandas()
+    elif ext == '.pdf':
+        try:
+            from .tally_pdf_ingestion import extract_table_from_pdf
+        except ImportError:
+            from tally_pdf_ingestion import extract_table_from_pdf
+        df_full_pdf = extract_table_from_pdf(filepath)
+        total_rows = len(df_full_pdf)
+        df_sample = df_full_pdf.head(SAMPLE_ROWS)
     else:
         return None, None
 
     # Clean whitespace in column names
     df_sample.columns = [str(c).strip() for c in df_sample.columns]
+    # Flatten hierarchical Tally/Marg grouped ledgers & strip mid-sheet subtotals
+    try:
+        try:
+            from .tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        except ImportError:
+            from tally_pdf_ingestion import flatten_grouped_accounting_ledger
+        pre_flat_len = len(df_sample)
+        df_sample, _flat_meta = flatten_grouped_accounting_ledger(df_sample)
+        dropped_flat = pre_flat_len - len(df_sample)
+        if dropped_flat > 0:
+            total_rows = max(0, total_rows - dropped_flat)
+    except Exception:
+        pass
     # Strip summary footer rows (e.g. Tally / Grand Total rows) and reconcile total row count
     cleaned_sample = strip_accounting_summary_rows(df_sample)
     dropped_summary_count = len(df_sample) - len(cleaned_sample)
@@ -239,6 +260,7 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
         
     strictly_unique_primary_keys = []
     if potential_keys:
+        con = None
         try:
             import duckdb
             con = duckdb.connect()
@@ -258,6 +280,12 @@ def inspect_file(filepath: Path) -> Tuple[Dict[str, Any], pd.DataFrame]:
                         strictly_unique_primary_keys.append(pk_cand)
         except Exception:
             pass
+        finally:
+            if con is not None:
+                try:
+                    con.close()
+                except Exception:
+                    pass
 
     recommended_pk = "fact_surrogate_id"
     if strictly_unique_primary_keys:
@@ -294,7 +322,7 @@ def profile_raw_directory(dir_path: str, output_json: str = None) -> dict:
     DOC_KEYWORDS = ['dictionary', 'datadictionary', 'codebook', 'metadata', 'data_description', 'field_description', 'description', 'readme', 'sample_submission', 'sample_sub']
     all_files = [
         f for f in folder.iterdir() 
-        if f.suffix.lower() in ['.xlsx', '.xls', '.csv', '.parquet', '.tsv', '.txt'] 
+        if f.suffix.lower() in ['.xlsx', '.xls', '.csv', '.parquet', '.tsv', '.txt', '.pdf'] 
         and f.resolve() not in unpacked_xlsx
         and not f.name.startswith('~')
         and not any(k in f.stem.lower() for k in DOC_KEYWORDS)

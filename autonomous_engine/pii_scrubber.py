@@ -61,6 +61,7 @@ NON_PERSON_NAME_QUALIFIERS: Set[str] = {
     'airline', 'airport', 'city', 'state', 'country', 'region', 'table', 'file',
     'column', 'metric', 'model', 'plan', 'segment', 'channel', 'campaign', 'event',
     'course', 'drug', 'medication', 'test', 'device', 'machine', 'app', 'service',
+    'generic', 'equipment', 'procedure', 'diagnosis', 'manufacturer', 'operator', 'system', 'class',
     # Global B2B Commercial Entities, Logistics Nodes & Operational Reps
     'distributor', 'dealer', 'partner', 'merchant', 'party', 'account', 'client', 'agency',
     'warehouse', 'hub', 'depot', 'factory', 'plant', 'zone', 'territory', 'market',

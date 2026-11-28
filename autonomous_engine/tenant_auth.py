@@ -73,13 +73,28 @@ def sanitize_tenant_id(raw: str) -> str:
     return cleaned[:64] if cleaned else "default_tenant"
 
 
+_JWT_MULTIPOD_WARNED = False
+_LOGIN_LOCK = threading.Lock()
+_FAILED_LOGINS: Dict[str, List[float]] = {}
+_LOGIN_LOCKOUT_MAX_ATTEMPTS = 5
+_LOGIN_LOCKOUT_WINDOW_SEC = 300.0
+_LOGIN_LOCKOUT_DURATION_SEC = 60.0
+_DUMMY_PBKDF2_SALT = "0" * 32
+_DUMMY_PBKDF2_HASH = "0" * 64
+
+
 def _get_signing_secret(state_dir: Path) -> bytes:
+    global _JWT_MULTIPOD_WARNED
     env_secret = os.environ.get("DATAXRAY_JWT_SECRET", "").strip()
     if env_secret:
         return env_secret.encode("utf-8")
     env_api_key = os.environ.get("DATAXRAY_API_KEY", "").strip()
     if env_api_key:
         return hashlib.sha256(f"dx-jwt::{env_api_key}".encode("utf-8")).digest()
+
+    if not _JWT_MULTIPOD_WARNED and (os.environ.get("DATABASE_URL", "").strip() or os.environ.get("REDIS_URL", "").strip()):
+        _JWT_MULTIPOD_WARNED = True
+        print("[!] [Security Warning] Multi-pod cloud mode detected without DATAXRAY_JWT_SECRET! Set a shared DATAXRAY_JWT_SECRET across all replicas.")
 
     state_dir.mkdir(parents=True, exist_ok=True)
     secret_file = state_dir / ".jwt_secret"
@@ -253,6 +268,16 @@ class TenantAuthManager:
         if not norm_email or not password:
             return None
 
+        now_ts = time.time()
+        with _LOGIN_LOCK:
+            recent_fails = [t for t in _FAILED_LOGINS.get(norm_email, []) if (now_ts - t) <= _LOGIN_LOCKOUT_WINDOW_SEC]
+            if recent_fails:
+                _FAILED_LOGINS[norm_email] = recent_fails
+            else:
+                _FAILED_LOGINS.pop(norm_email, None)
+            if len(recent_fails) >= _LOGIN_LOCKOUT_MAX_ATTEMPTS and (now_ts - recent_fails[-1]) < _LOGIN_LOCKOUT_DURATION_SEC:
+                return None
+
         with self._lock, self._connect() as conn:
             row = conn.execute(
                 "SELECT user_id, email, password_hash, salt, tenant_id, workspace_name, role, created_at FROM users WHERE email = ?",
@@ -260,9 +285,22 @@ class TenantAuthManager:
             ).fetchone()
 
         if not row:
+            # Constant-time PBKDF2 work prevents email enumeration timing oracle
+            verify_password(password, _DUMMY_PBKDF2_HASH, _DUMMY_PBKDF2_SALT)
+            with _LOGIN_LOCK:
+                if len(_FAILED_LOGINS) > 2048:
+                    _FAILED_LOGINS.clear()
+                _FAILED_LOGINS.setdefault(norm_email, []).append(now_ts)
             return None
         if not verify_password(password, row["password_hash"], row["salt"]):
+            with _LOGIN_LOCK:
+                if len(_FAILED_LOGINS) > 2048:
+                    _FAILED_LOGINS.clear()
+                _FAILED_LOGINS.setdefault(norm_email, []).append(now_ts)
             return None
+
+        with _LOGIN_LOCK:
+            _FAILED_LOGINS.pop(norm_email, None)
 
         user_dict = {
             "user_id": row["user_id"],

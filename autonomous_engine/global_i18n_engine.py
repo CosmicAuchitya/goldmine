@@ -473,6 +473,8 @@ def translate_string_map(
                 out_b[orig] = restored
                 if restored != orig:
                     with _MEM_CACHE_LOCK:
+                        if len(_MEM_STRING_CACHE) > 12000:
+                            _MEM_STRING_CACHE.clear()
                         _MEM_STRING_CACHE[(code, orig)] = restored
             else:
                 out_b[orig] = _translate_single_string(orig, code)

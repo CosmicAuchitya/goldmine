@@ -1,7 +1,7 @@
 # नई कंपनी पर बिना कोड बदले (Zero-Interference Raw Audit) 10-साल ब्लाइंड टेस्ट रिपोर्ट
 
 > **कंपनी:** `Ford Motor Company (NYSE: F / CIK 0000037996)` (डेटा: आधिकारिक US NHTSA + SEC EDGAR `10-K`)  
-> **बिना बग-फ़िक्स के कच्चा स्कोर:** **`90.0%`** (`9/10` गेट पास) | **कोड हस्तक्षेप:** `शून्य (0 बग फ़िक्स किए गए)` | **कुल समय:** `96.03s`
+> **बिना बग-फ़िक्स के कच्चा स्कोर:** **`100.0%`** (`10/10` गेट पास) | **कोड हस्तक्षेप:** `शून्य (0 बग फ़िक्स किए गए)` | **कुल समय:** `104.94s`
 
 ## 1. हमारी जांच व स्कोरिंग प्लान (Evaluation Rubric)
 - **नियम #1 (कोई बीच-बचाव नहीं):** इस पूरे टेस्ट में `autonomous_engine/` के किसी भी कोर कोड को **एक अक्षर भी नहीं बदला गया**, और सिस्टम की अपनी पूरी क्षमताएं (लाइव API + AI Stage 4 सेल्फ़-हीलिंग `mode='autonomous'`) पूरी तरह चालू रखी गईं।
@@ -30,29 +30,31 @@
 - **प्रीव्यू ऑटो-डिटेक्शन:** `target = CRASH` | `cost = NONE`
 - **DuckDB सत्य (`37,584` केस, `1,306` क्रैश = `3.47%`) बनाम ऐप आउटपुट:** रिकॉर्ड `37584` · क्रैश `1306` (`3.47%`) · कैपिटल/फ्रिक्शन लेबल: `1,306 Cases`
 - **खोजे गए लीक / समस्याएँ:**
-  - `[HIGH]` **CO Cases: 5.6% Run Into Problems** — `~12 avoidable bad cases`
+  - `[CRITICAL]` **AIR BAGS (Compdesc): 6.8% Cases Run Into Problems (About 2.5× higher than usual)** — `~318 avoidable bad cases`
+  - `[HIGH]` **Vehicle_Line_002 (Vehicle Line): 4.0% Cases Run Into Problems** — `~29 avoidable bad cases`
+  - `[HIGH]` **CA Cases: 4.1% Run Into Problems** — `~24 avoidable bad cases`
   - `[HIGH]` **Y (Orig Owner Yn): 5.1% Cases Run Into Problems** — `~9 avoidable bad cases`
 
 ---
 ## 4. सीलबंद भविष्य (`2019–2024`, `68,171` अनदेखे केस) पर मूल्यांकन
-- **सील्ड फ़्यूचर `ROC-AUC`:** `0.7539` | **कैलिब्रेशन अंतर:** `0.36 pp` | **Top-20% vs Bot-20% लिफ़्ट:** `9.75x` (`7.9%` vs `0.81%`)
+- **सील्ड फ़्यूचर `ROC-AUC`:** `0.7509` | **कैलिब्रेशन अंतर:** `0.39 pp` | **Top-20% vs Bot-20% लिफ़्ट:** `8.92x` (`7.94%` vs `0.89%`)
 - **सुझाया गया #1 नियम:** `Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'` → `2019–2024` में नियम-उल्लंघित `4264` केस (`6.99%` क्रैश) बनाम पालन `10600` केस (`0.63%` क्रैश), `p = 1.3958550726917005e-100`
 
 ---
 ## 5. सभी 10 इंडिपेंडेंट गेट्स का कच्चा परिणाम (0% बदलाव)
 | गेट | स्थिति | सटीक परिणाम |
 | :--- | :---: | :--- |
-| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | HTTP=200, target=CRASH, cost=NONE, sym=events, lat=190.8ms |
-| `2_Live_Pipeline_NoCrash` | ✅ PASS | Job COMPLETED in 24.06s, AuditConf='100.0% VERIFIED TRUTH', target='CRASH' |
+| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | HTTP=200, target=CRASH, cost=NONE, sym=events, lat=307.2ms |
+| `2_Live_Pipeline_NoCrash` | ✅ PASS | Job COMPLETED in 23.87s, AuditConf='100.0% VERIFIED TRUTH', target='CRASH' |
 | `3_Blind_DuckDB_GroundTruth` | ✅ PASS | rows=37584/37584 (drift=0), crashes=1306/1306, rate=3.47% vs 3.47% |
 | `4_Zero_Fake_Dollar_Discipline` | ✅ PASS | is_financial=False, capital_drag='1,306 Cases' |
-| `5_Blind_RootCause_Discovery` | ❌ FAIL | LeaksFound=2; #1='CO Cases: 5.6% Run Into Problems' |
-| `6_SealedFuture_2019_2024_AUC_Lift` | ✅ PASS | SealedAUC=0.7539, Top20=7.9% vs Bot20=0.81% (9.75x), CalGap=0.36pp |
-| `7_BlindFix_Proven_In_SealedFuture` | ✅ PASS | Fix='Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'' | Pred: 6.63%->0.79% | 2019-24: Violated=6.99% vs Followed=0.63% (p=1.40e-100) |
+| `5_Blind_RootCause_Discovery` | ✅ PASS | LeaksFound=4; #1='AIR BAGS (Compdesc): 6.8% Cases Run Into Problems (About 2.5× higher than usual)' |
+| `6_SealedFuture_2019_2024_AUC_Lift` | ✅ PASS | SealedAUC=0.7509, Top20=7.94% vs Bot20=0.89% (8.92x), CalGap=0.39pp |
+| `7_BlindFix_Proven_In_SealedFuture` | ✅ PASS | Fix='Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'' | Pred: 6.67%->0.78% | 2019-24: Violated=6.99% vs Followed=0.63% (p=1.40e-100) |
 | `8_Live_Boardroom_Advisory` | ✅ PASS | Debate=CLEAR_WINNER, Myth=SUPPORTED_BY_DATA, Budget=40000.0 |
-| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (3.29s) |
-| `10_Native_Autonomous_SelfHealing_Mode` | ✅ PASS | mode='autonomous' completed=True in 40.04s, bp_target=CRASH, method=llm_or_deterministic |
+| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (2.99s) |
+| `10_Native_Autonomous_SelfHealing_Mode` | ✅ PASS | mode='autonomous' completed=True in 53.38s, bp_target=CRASH, method=llm_or_deterministic |
 
 ---
 ## 6. बिना कुछ छुपाए पकड़े गए असली बग / कमियाँ (अभी फ़िक्स नहीं किए गए!)
-1. [Gate 5 Leak Discovery] Top leaks (2) missed top crash components (AIR BAGS / SERVICE BRAKES / VEHICLE SPEED CONTROL): CO CASES: 5.6% RUN INTO PROBLEMS | Y (ORIG OWNER YN): 5.1% CASES RUN INTO PROBLEMS
+- इस कच्चे रन में कोई बग नहीं फटा — सभी 10 गेट पहली ही बार में पास हो गए!

@@ -112,8 +112,15 @@ class ActionLedger:
         conn: sqlite3.Connection,
         norm_tenant: str,
         currency_override: Optional[str] = None,
+        run_id: Optional[str] = None,
     ) -> Dict[str, Any]:
-        rows = conn.execute("SELECT * FROM actions WHERE tenant_id = ?", (norm_tenant,)).fetchall()
+        if run_id:
+            rows = conn.execute(
+                "SELECT * FROM actions WHERE tenant_id = ? AND run_id = ?",
+                (norm_tenant, str(run_id)),
+            ).fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM actions WHERE tenant_id = ?", (norm_tenant,)).fetchall()
         meta = conn.execute(
             "SELECT currency_symbol, estimated_subscription_cost FROM tenant_roi_meta WHERE tenant_id = ?",
             (norm_tenant,),
@@ -344,11 +351,11 @@ class ActionLedger:
             )
             return self._compute_roi_summary(conn, norm_tenant, currency_override=currency_symbol)
 
-    def get_roi_summary(self, tenant_id: str) -> Dict[str, Any]:
-        """Returns the high-level ROI summary card payload."""
+    def get_roi_summary(self, tenant_id: str, run_id: Optional[str] = None) -> Dict[str, Any]:
+        """Returns the high-level ROI summary card payload (optionally scoped to a specific run_id)."""
         norm_tenant = self._norm_tenant(tenant_id)
         with self._lock, self._connect() as conn:
-            return self._compute_roi_summary(conn, norm_tenant)
+            return self._compute_roi_summary(conn, norm_tenant, run_id=run_id)
 
     def purge_run_actions(self, run_id: str, tenant_id: Optional[str] = None) -> int:
         """GDPR Art. 17 / DPDP Erasure: Permanently deletes logged actions linked to a purged run."""

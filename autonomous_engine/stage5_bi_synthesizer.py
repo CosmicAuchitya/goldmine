@@ -12,6 +12,7 @@ Features & Defenses:
 """
 
 import os
+import re
 import sys
 import json
 from pathlib import Path
@@ -84,8 +85,21 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
     secondary_dim = None
 
     cols = list(df.columns)
-    business_entity_keywords = ['airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer', 'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing', 'job', 'type', 'distributor', 'dealer', 'salesman', 'partner', 'fleet', 'channel', 'compdesc', 'component', 'system', 'vehicle', 'model', 'line', 'module', 'part']
-    location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'zone', 'branch', 'location', 'airport', 'warehouse']
+    business_entity_keywords = [
+        'airline', 'carrier', 'vendor', 'merchant', 'brand', 'category', 'segment', 'customer',
+        'department', 'product', 'company', 'purpose', 'account', 'checking_account', 'housing',
+        'job', 'type', 'distributor', 'dealer', 'salesman', 'partner', 'fleet', 'channel',
+        'compdesc', 'component', 'system', 'vehicle', 'model', 'line', 'module', 'part',
+        'operator', 'generic', 'device', 'equipment', 'facility', 'specialty', 'treatment', 'procedure', 'manufacturer', 'supplier'
+    ]
+    location_node_keywords = ['airportfrom', 'origin', 'hub', 'from', 'store', 'city', 'station', 'region', 'zone', 'branch', 'location', 'airport', 'warehouse', 'country', 'state']
+
+    def _is_temporal_date_column(col_name: str, series: pd.Series) -> bool:
+        try:
+            from .target_resolver import is_temporal_column
+        except ImportError:
+            from target_resolver import is_temporal_column
+        return is_temporal_column(series, col_name)
 
     coord_cols = {'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff'}
     cat_cols = []
@@ -93,6 +107,8 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
         if c in [target_col, cost_col] or is_index_artifact(c, df[c]) or is_pseudo_numeric_identifier(c, df[c]):
             continue
         if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
+            continue
+        if _is_temporal_date_column(c, df[c]):
             continue
         if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
             continue
@@ -127,7 +143,7 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
                 continue
             if c.lower().strip() in coord_cols or any(k in c.lower() for k in ['longitude', 'latitude']):
                 continue
-            if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
+            if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c) or _is_temporal_date_column(c, df[c]):
                 continue
             if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
                 continue
@@ -142,7 +158,7 @@ def detect_key_columns(df: pd.DataFrame, blueprint: Optional[dict] = None) -> Tu
                 continue
             if c.lower().strip() in coord_cols or any(k in c.lower() for k in ['longitude', 'latitude']):
                 continue
-            if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c):
+            if is_synthetic_column(c, blueprint) or is_sensitive_column_name(c) or _is_temporal_date_column(c, df[c]):
                 continue
             if is_deterministic_target_leakage(c, df[c], bin_target, target_col):
                 continue
@@ -290,7 +306,8 @@ def synthesize_deliverables(output_dir: str):
     # Save enriched view separately to preserve certified Stage 4 fact table immutability
     try:
         for col in df_fact.select_dtypes(include=['object', 'string']).columns:
-            df_fact[col] = df_fact[col].apply(lambda x: str(x) if pd.notna(x) else None)
+            na_m = df_fact[col].isna()
+            df_fact[col] = df_fact[col].astype(str).astype(object).where(~na_m, None)
         enriched_fact_path = out / "bi_enriched_fact.parquet"
         df_fact.to_parquet(enriched_fact_path, index=False)
     except Exception:
@@ -804,6 +821,90 @@ System Reliability Rate % =
             prim_dim_info=prim_info, temporal_summary=temp_sum, worklist_path=wl_path,
             strat_dossier=strat_dossier, cliffs=cliffs_data, omni_report=omni_report
         )
+
+        # Workstream 1: Pure Sales, Profit, Demand Forecasting & Stock Reorder Engine
+        try:
+            try:
+                from .growth_inventory_engine import (
+                    analyze_growth_and_inventory,
+                    render_growth_markdown_section,
+                )
+            except ImportError:
+                from growth_inventory_engine import (
+                    analyze_growth_and_inventory,
+                    render_growth_markdown_section,
+                )
+            gi_report = analyze_growth_and_inventory(df_fact, out_dir=out, blueprint=blueprint)
+            if gi_report.get("is_applicable"):
+                gi_md = render_growth_markdown_section(gi_report)
+                plain_md_p = out / "PLAIN_BUSINESS_SUMMARY.md"
+                if gi_md and plain_md_p.exists():
+                    plain_md_p.write_text(
+                        plain_md_p.read_text(encoding="utf-8") + "\n" + gi_md,
+                        encoding="utf-8",
+                    )
+                print(
+                    f"[+] Growth & Inventory Engine generated: {gi_report['kpis']['total_revenue_fmt']} revenue, "
+                    f"{len(gi_report.get('reorder_alerts', []))} reorder alerts, "
+                    f"forecast={gi_report.get('demand_forecast', {}).get('forecast_available', False)}."
+                )
+        except Exception as gie:
+            print(f"[-] Growth & Inventory Engine warning: {gie}")
+
+        # V6.0 Category-Aware Economics & Statistics Intelligence Engine (Sandboxed & Column-Gated)
+        try:
+            try:
+                from .category_intelligence_engine import run_category_intelligence_engine
+            except ImportError:
+                from category_intelligence_engine import run_category_intelligence_engine
+            _cat_id = (blueprint or {}).get("business_category", "auto") if isinstance(blueprint, dict) else "auto"
+            _sub_id = (blueprint or {}).get("business_sub_category") if isinstance(blueprint, dict) else None
+            _cb_active = bool(not is_prim_significant) if prim_dim else False
+            cat_report = run_category_intelligence_engine(
+                df_fact,
+                output_dir=out,
+                business_category=_cat_id,
+                business_sub_category=_sub_id,
+                canonical_target=canon,
+                currency_symbol=unit_symbol,
+                is_financial=bool(is_financial),
+                overall_adverse_rate_pct=float(target_rate_pct),
+                circuit_breaker_active=_cb_active,
+                filename=(blueprint or {}).get("project_title") if isinstance(blueprint, dict) else None,
+            )
+            print(
+                f"[+] V6.0 Category Intelligence generated: {cat_report.get('category_id')} "
+                f"({cat_report.get('selection_mode')}), {len(cat_report.get('computed_kpis', []))} verified KPIs "
+                f"in {cat_report.get('compute_time_ms', 0)}ms."
+            )
+        except Exception as cie:
+            print(f"[-] Category Intelligence Engine warning: {cie}")
+
+        # V7.0 Proactive Early-Warning Anomaly & Cohort Acceleration Radar (Sandboxed)
+        try:
+            try:
+                from .proactive_anomaly_radar import run_proactive_anomaly_radar
+            except ImportError:
+                from proactive_anomaly_radar import run_proactive_anomaly_radar
+            _cat_id_v7 = (blueprint or {}).get("business_category", "auto") if isinstance(blueprint, dict) else "auto"
+            _cb_v7 = bool(not is_prim_significant) if prim_dim else False
+            radar_report = run_proactive_anomaly_radar(
+                df_fact,
+                output_dir=out,
+                canonical_target=canon,
+                currency_symbol=unit_symbol,
+                is_financial=bool(is_financial),
+                circuit_breaker_active=_cb_v7,
+                business_category=_cat_id_v7,
+            )
+            print(
+                f"[+] V7.0 Proactive Anomaly Radar generated: level={radar_report.get('overall_alert_level')}, "
+                f"periods={radar_report.get('periods_analyzed', 0)}, "
+                f"accelerating_cohorts={len(radar_report.get('accelerating_cohorts', []))} "
+                f"in {radar_report.get('runtime_ms', 0)}ms."
+            )
+        except Exception as rad_err:
+            print(f"[-] Proactive Anomaly Radar warning: {rad_err}")
     except Exception as bpe:
         print(f"[-] Business action exporter warning: {bpe}")
 

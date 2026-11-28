@@ -1,7 +1,7 @@
 # 10+ साल की असली कंपनी पर Zero-Cheating 'बीच का डेटा' ब्लाइंड ऑडिट रिपोर्ट
 
 > **असली कंपनी:** `Wells Fargo Bank, N.A. (FDIC #03511 / NYSE: WFC)` (ऑडिट डेटा: आधिकारिक US SBA 7(a) + CFPB + SEC EDGAR 10-K)  
-> **ब्लाइंड टेस्ट स्कोर:** **`88.9%`** (`8/9` गेट पास) | **सील्ड फ़्यूचर ROC-AUC:** `0.6395` | **टॉप-20% रिस्क लिफ़्ट:** `3.94x` | **समय:** `39.42s`
+> **ब्लाइंड टेस्ट स्कोर:** **`88.9%`** (`8/9` गेट पास) | **सील्ड फ़्यूचर ROC-AUC:** `0.6412` | **टॉप-20% रिस्क लिफ़्ट:** `3.82x` | **समय:** `48.02s`
 
 ## 1. टेस्ट की बनावट (100% Zero-Cheating नियम)
 - **ऐप को क्या बताया गया?** **कुछ भी नहीं!** DataX-Ray को सिर्फ़ `blind_sample_data.csv` नाम की एक अनाम फ़ाइल (`FY2013–FY2015` के `11,921` परिपक्व लोन) दी गई।
@@ -35,44 +35,45 @@
 ---
 ## 3. DataX-Ray ने 'बीच के डेटा' (`FY2013–FY2015`) पर बिना कुछ जाने क्या पकड़ा?
 - **स्वतंत्र DuckDB सत्य बनाम DataX-Ray:** कुल रिकॉर्ड `11,921` (असली `11,921`) · डिफ़ॉल्ट `1,079` (असली `1,079`) · दर `9.05%` (असली `9.05%`) · खतरे में राशि `$168.74M`
-- **बिना हिंट ऑटो-डिटेक्टेड टारगेट व कॉस्ट:** टारगेट = `LoanStatus` | कॉस्ट = `GrossApproval` | स्पीड: Intent `58.7 ms`, पाइपलाइन `12.1 s`, हिंदी अनुवाद `0.71 s`
+- **बिना हिंट ऑटो-डिटेक्टेड टारगेट व कॉस्ट:** टारगेट = `LoanStatus` | कॉस्ट = `GrossApproval` | स्पीड: Intent `100.0 ms`, पाइपलाइन `13.89 s`, हिंदी अनुवाद `3.63 s`
 - **प्रमुख खोजे गए लीक / समस्याएँ (Blind Middle Window):**
-  - `[CRITICAL]` **V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)** — असर: `$33.12M at risk (~437 loan accounts)`
-  - `[HIGH]` **Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default** — असर: `$20.40M at risk (~94 loan accounts)`
-  - `[HIGH]` **Startup, Loan Funds will Open Business (Businessage): 1 in 10 Loan Accounts Fall Into Default** — असर: `$15.92M at risk (~37 loan accounts)`
-  - `[HIGH]` **N (Collateralind): 1 in 10 Loan Accounts Fall Into Default** — असर: `$15.16M at risk (~292 loan accounts)`
-  - `[HIGH]` **SBA Express Program (Processingmethod): 1 in 10 Loan Accounts Fall Into Default** — असर: `$8.87M at risk (~282 loan accounts)`
-  - `[HIGH]` **INDIVIDUAL (Businesstype): 1 in 10 Loan Accounts Fall Into Default** — असर: `$7.56M at risk (~84 loan accounts)`
+  - `[CRITICAL]` **V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Over 48232000× higher than usual)** — असर: `$33.12M at risk (~437 loan accounts)`
+  - `[CRITICAL]` **New, Less than 1 Year old (Businessage): 1 in 10 Loan Accounts Fall Into Default (Over 46384200× higher than usual)** — असर: `$32.31M at risk (~186 loan accounts)`
+  - `[CRITICAL]` **Approvalfy 2015: 1 in 10 Loan Accounts Fall Into Default (Over 57662000× higher than usual)** — असर: `$20.40M at risk (~94 loan accounts)`
+  - `[CRITICAL]` **N (Collateralind): 1 in 10 Loan Accounts Fall Into Default (Over 24455900× higher than usual)** — असर: `$15.16M at risk (~292 loan accounts)`
+  - `[CRITICAL]` **SBA Express Program (Processingmethod): 1 in 10 Loan Accounts Fall Into Default (Over 14519500× higher than usual)** — असर: `$8.87M at risk (~282 loan accounts)`
+  - `[CRITICAL]` **True Root Cause: 'INDIVIDUAL' Is Safe at 2.0% Without 'V' — 2×2 Combo Spikes to 14.9%** — असर: `14.9% vs 2.0% safe (0 fails)`
 
 ---
 ## 4. असली इम्तिहान: DataX-Ray की सलाह vs कंपनी के फ़ैसले (`FY2016–FY2021` सीलबंद भविष्य)
-- **DataX-Ray की #1 ब्लाइंड सलाह:** `Cap InitialInterestRate at ≤ 6.25` (अनुमान: `11.74%` → `7.35%`, अनुमानित लाभ: `$4,507,271.03`)
+- **DataX-Ray की #1 ब्लाइंड सलाह:** `Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years'` (अनुमान: `10.26%` → `6.4%`, अनुमानित लाभ: `$15,819,468.82`)
 - **सीलबंद `FY2016–FY2021` (`17,623` लोन, `1,829` डिफ़ॉल्ट, कुल असली चार्ज-ऑफ़ नुक़सान `$126.8M`):**
-  - जिन लॉन्स ने DataX-Ray के इस नियम का **उल्लंघन किया** (`13,715` लोन): असल डिफ़ॉल्ट दर **`11.64%`** रही, असली नुक़सान **`$71.38M`** (`$748.35M` में से `9.54%`)।
-  - जिन लॉन्स ने इस नियम का **पालन किया** (`3,908` लोन): असल डिफ़ॉल्ट दर घटकर **`5.96%`** रही, असली नुक़सान **`$55.42M`** (`$2672.55M` में से `2.07%`)।
-  - **सांख्यिकीय प्रमाण (Fisher Exact):** `p = 2.51e-27` | यदि उल्लंघित लोन्स पर भी यही नियम लागू होता तो अनुमानित **`~778` डिफ़ॉल्ट** और लगभग **`~$34.8M` असली चार्ज-ऑफ़ नुक़सान** बच सकता था!
-- **प्रायोरिटी कॉल लिस्ट सटीकता (`FY2016–FY2021`):** `ROC-AUC = 0.6395` · Top-20% हाई-रिस्क में डिफ़ॉल्ट **`18.22%`** (`$18.31M` लॉस) बनाम Bot-20% में **`4.62%`** (`$39.21M` लॉस) → **`3.94x` लिफ़्ट**!
+  - जिन लॉन्स ने DataX-Ray के इस नियम का **उल्लंघन किया** (`1,080` लोन): असल डिफ़ॉल्ट दर **`14.17%`** रही, असली नुक़सान **`$37.91M`** (`$551.4M` में से `6.88%`)।
+  - जिन लॉन्स ने इस नियम का **पालन किया** (`2,357` लोन): असल डिफ़ॉल्ट दर घटकर **`5.81%`** रही, असली नुक़सान **`$26.28M`** (`$1317.84M` में से `1.99%`)।
+  - **सांख्यिकीय प्रमाण (Fisher Exact):** `p = 3.56e-15` | यदि उल्लंघित लोन्स पर भी यही नियम लागू होता तो अनुमानित **`~90` डिफ़ॉल्ट** और लगभग **`~$22.3M` असली चार्ज-ऑफ़ नुक़सान** बच सकता था!
+- **प्रायोरिटी कॉल लिस्ट सटीकता (`FY2016–FY2021`):** `ROC-AUC = 0.6412` · Top-20% हाई-रिस्क में डिफ़ॉल्ट **`18.44%`** (`$18.53M` लॉस) बनाम Bot-20% में **`4.82%`** (`$39.04M` लॉस) → **`3.82x` लिफ़्ट**!
 
 ### सीलबंद सालों (`FY2016–FY2021`) में कंपनी ने नियम का कितना उल्लंघन किया (साल-दर-साल तुलना):
 | साल (FY) | परिपक्व लोन | नियम-उल्लंघित लोन (%) | उल्लंघित डिफ़ॉल्ट % | नियम-पालक डिफ़ॉल्ट % | उल्लंघित खंड का नुक़सान (`$M`) | कुल वार्षिक चार्ज-ऑफ़ (`$M`) |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `2016` | 6,668 | 4,841 (`72.6%`) | `10.0%` | `6.19%` | **`$16.2M`** | `$41.83M` |
-| `2017` | 4,197 | 3,017 (`71.9%`) | `10.21%` | `6.53%` | **`$21.74M`** | `$38.86M` |
-| `2018` | 2,869 | 2,388 (`83.2%`) | `11.89%` | `4.37%` | **`$16.55M`** | `$24.22M` |
-| `2019` | 2,066 | 1,915 (`92.7%`) | `14.41%` | `1.32%` | **`$13.79M`** | `$13.89M` |
-| `2020` | 1,032 | 861 (`83.4%`) | `13.47%` | `9.36%` | **`$2.02M`** | `$6.07M` |
-| `2021` | 791 | 693 (`87.6%`) | `18.47%` | `4.08%` | **`$1.08M`** | `$1.93M` |
+| `2016` | 6,668 | 439 (`6.6%`) | `10.93%` | `6.01%` | **`$11.9M`** | `$41.83M` |
+| `2017` | 4,197 | 290 (`6.9%`) | `15.86%` | `5.9%` | **`$12.14M`** | `$38.86M` |
+| `2018` | 2,869 | 173 (`6.0%`) | `16.76%` | `3.47%` | **`$6.55M`** | `$24.22M` |
+| `2019` | 2,066 | 99 (`4.8%`) | `19.19%` | `None%` | **`$4.57M`** | `$13.89M` |
+| `2020` | 1,032 | 58 (`5.6%`) | `17.24%` | `None%` | **`$2.73M`** | `$6.07M` |
+| `2021` | 791 | 21 (`2.7%`) | `4.76%` | `None%` | **`$0.01M`** | `$1.93M` |
 
 ### अन्य टॉप सिमुलेशन नियमों का भी सीलबंद भविष्य में ईमानदार परीक्षण:
 | सुझाया गया नियम | नियम टाइप | उल्लंघित (डिफ़ॉल्ट %) | नियम-पालक (डिफ़ॉल्ट %) | `Fisher p` | उल्लंघित नुक़सान (`$M`) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| Switch RevolverStatus from 'Y' → 'N' | `replace_category` | 13,262 (`10.99%`) | 4,361 (`8.51%`) | `2.28e-06` | `$18.05M` |
+| Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years' | `replace_category` | 1,080 (`14.17%`) | 2,357 (`5.81%`) | `3.56e-15` | `$37.91M` |
+| Switch FixedorVariableInterestInd from 'V' → 'F' | `replace_category` | 13,876 (`11.23%`) | 3,747 (`7.23%`) | `1.89e-13` | `$38.92M` |
 | Cap InitialInterestRate at ≤ 6.25 | `cap_numeric` | 13,715 (`11.64%`) | 3,908 (`5.96%`) | `2.51e-27` | `$71.38M` |
 | Pause / Stop 'Y' in RevolverStatus | `pause_segment` | 13,262 (`10.99%`) | 4,361 (`8.51%`) | `2.28e-06` | `$18.05M` |
 
 ---
 ## 5. AI बोर्डरूम, Ask AI और हिंदी अनुवाद जाँच
-- **बोर्डरूम डिबेट:** `BOTH_MATTER` — _Both Processingmethod (0%) and Collateralind (0%) drive real risk. Run a combined low-cost 14-day pilot addressing both instead of picking only one side._
+- **बोर्डरूम डिबेट:** `BOTH_MATTER` — _Both Collateralind (0%) and Processingmethod (0%) drive real risk. Run a combined low-cost 14-day pilot addressing both instead of picking only one side._
 - **मिथक जाँच:** `REFUTED_BY_DATA` — _Your data shows Jobssupported is statistically flat (random noise, not a true root cause). Save your money — focus instead on your real #1 driver (Initialinterestrate)._
 - **बजट व ब्लाइंड-स्पॉट:** पार्स्ड बजट `40000.0` | डेटा से बाहर चेतावनियाँ `1`
 
@@ -80,15 +81,15 @@
 ## 6. सभी 9 इंडिपेंडेंट ब्लाइंड टेस्ट गेट्स (100% पारदर्शी स्कोरकार्ड)
 | टेस्ट गेट | स्थिति | सटीक परिणाम व माप |
 | :--- | :---: | :--- |
-| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | target=LoanStatus, cost=GrossApproval, sym=$, latency=58.7ms |
-| `2_Blind_DuckDB_GroundTruth` | ✅ PASS | rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=12.1s |
-| `3_SealedFuture_2016_2021_AUC_Lift` | ❌ FAIL | SealedAUC=0.6395, Top20=18.22% vs Bot20=4.62% (3.94x lift), CalGap=3.25pp, LossTop20=$18.31M vs Bot20=$39.21M |
-| `4_Blind_RootCause_Discovery` | ✅ PASS | LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Nearly double the usual rate)'; Exposure=$33.12M |
-| `5_BlindSolution_Proven_In_SealedFuture` | ✅ PASS | Fix='Cap InitialInterestRate at ≤ 6.25' | Pred: 11.74%->7.35% | Sealed 2016-21: Violated=11.64% ($71.38M lost) vs Followed=5.96% ($55.42M lost), p=2.51e-27, Avoidable≈$34.8M |
+| `1_Blind_ZeroHint_AutoDetect` | ✅ PASS | target=LoanStatus, cost=GrossApproval, sym=$, latency=100.0ms |
+| `2_Blind_DuckDB_GroundTruth` | ✅ PASS | rows=11921/11921 (drift=0), defaults=1079/1079, rate=9.05% vs 9.05%, time=13.89s |
+| `3_SealedFuture_2016_2021_AUC_Lift` | ❌ FAIL | SealedAUC=0.6412, Top20=18.44% vs Bot20=4.82% (3.82x lift), CalGap=3.07pp, LossTop20=$18.53M vs Bot20=$39.04M |
+| `4_Blind_RootCause_Discovery` | ✅ PASS | LeaksFound=8; #1='V (Fixedorvariableinterestind): 1 in 10 Loan Accounts Fall Into Default (Over 48232000× higher than usual)'; Exposure=$33.12M |
+| `5_BlindSolution_Proven_In_SealedFuture` | ✅ PASS | Fix='Switch BusinessAge from 'Startup, Loan Funds will Open Business' → 'Existing, 5 or more years'' | Pred: 10.26%->6.4% | Sealed 2016-21: Violated=14.17% ($37.91M lost) vs Followed=5.81% ($26.28M lost), p=3.56e-15, Avoidable≈$22.3M |
 | `6_Boardroom_Debate` | ✅ PASS | Verdict=BOTH_MATTER |
 | `7_Boardroom_MythCheck` | ✅ PASS | Verdict=REFUTED_BY_DATA |
 | `8_Boardroom_BudgetBlindSpot` | ✅ PASS | BudgetParsed=40000.0, BlindSpots=1 |
-| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (0.71s) |
+| `9_AskAI_And_Hindi_Live` | ✅ PASS | AskSQL=deterministic_engine, HindiEngine=gtx_verified (3.63s) |
 
 ---
 ## 7. ऑडिट के दौरान क्या-क्या हुआ (पकड़े गए असली बग + साइंटिफ़िक चीटिंग-रोक जाँच)

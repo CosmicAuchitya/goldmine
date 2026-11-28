@@ -150,7 +150,7 @@ def infer_domain_vocab(
             "safe_en": "deliver smoothly",
             "safe_hi": "बिना दिक्कत डिलीवर हो रहे हैं",
             "leak_label_en": "money leak",
-            "leak_label_hi": "पैसे का नुकसान",
+            "leak_label_hi": "आर्थिक नुकसान",
             "action_owner_en": "operations & dispatch team",
             "action_owner_hi": "ऑपरेशंस और डिस्पैच टीम",
         }

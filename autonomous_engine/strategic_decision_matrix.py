@@ -294,7 +294,11 @@ class MicroLevelForensicInquiryEngine:
                 is_significant = bool(float(p_val) < 0.05 and spread >= 0.02)
                 # A discrete cliff requires sharp step ratio (>= 1.5x) OR an acute absolute jump (>= 15 percentage points)
                 is_cliff = bool(((step_ratio >= 1.5) or (max_delta >= 0.15)) and is_significant and max_delta >= 0.08)
-                corr = float(self.df[col].corr(self.target_series))
+                if float(self.df[col].std() or 0.0) > 1e-12 and float(self.target_series.std() or 0.0) > 1e-12:
+                    _c_raw = float(self.df[col].corr(self.target_series))
+                    corr = _c_raw if np.isfinite(_c_raw) else 0.0
+                else:
+                    corr = 0.0
                 
                 results.append({
                     "column": col,
@@ -442,7 +446,14 @@ class MicroLevelForensicInquiryEngine:
         tail_df = self.df[tail_mask]
         tail_count = len(tail_df)
         
-        corrs = {c: float(self.df[c].corr(self.target_series)) for c in self.numeric_features if not np.isnan(self.df[c].corr(self.target_series))}
+        corrs = {}
+        t_std_ok = float(self.target_series.std() or 0.0) > 1e-12
+        if t_std_ok:
+            for c in self.numeric_features:
+                if float(self.df[c].std() or 0.0) > 1e-12:
+                    _r = float(self.df[c].corr(self.target_series))
+                    if np.isfinite(_r):
+                        corrs[c] = _r
         sorted_pos = sorted([c for c, r in corrs.items() if r > 0], key=lambda c: corrs[c], reverse=True)
         sorted_neg = sorted([c for c, r in corrs.items() if r < 0], key=lambda c: corrs[c])
         
@@ -631,6 +642,8 @@ class MicroLevelForensicInquiryEngine:
         for i in range(len(self.numeric_features)):
             for j in range(i + 1, len(self.numeric_features)):
                 c1, c2 = self.numeric_features[i], self.numeric_features[j]
+                if self.df[c1].nunique(dropna=True) < 2 or self.df[c2].nunique(dropna=True) < 2:
+                    continue
                 r = float(self.df[c1].corr(self.df[c2]))
                 if not np.isnan(r) and 0.40 <= abs(r) <= 0.92:
                     if abs(r) > abs(max_r):
@@ -650,13 +663,16 @@ class MicroLevelForensicInquiryEngine:
             else:
                 sub_r = 0.0
             strata_corrs.append((str(b_name), round(float(sub_r), 3) if not np.isnan(sub_r) else 0.0))
-            
+
+        t_has_var = self.target_series.nunique(dropna=True) > 1
+        unadj_1 = float(self.df[c1].corr(self.target_series)) if (t_has_var and self.df[c1].nunique(dropna=True) > 1) else 0.0
+        unadj_2 = float(self.df[c2].corr(self.target_series)) if (t_has_var and self.df[c2].nunique(dropna=True) > 1) else 0.0
         return {
             "feature_1": c1,
             "feature_2": c2,
             "pair_correlation": round(max_r, 3),
-            "unadjusted_corr_1": round(float(self.df[c1].corr(self.target_series)), 3),
-            "unadjusted_corr_2": round(float(self.df[c2].corr(self.target_series)), 3),
+            "unadjusted_corr_1": round(unadj_1, 3) if not np.isnan(unadj_1) else 0.0,
+            "unadjusted_corr_2": round(unadj_2, 3) if not np.isnan(unadj_2) else 0.0,
             "strata_correlations": strata_corrs
         }
 
@@ -679,10 +695,18 @@ class MicroLevelForensicInquiryEngine:
             min_r = min(b['rate_pct'] for b in b_list)
             max_r = max(b['rate_pct'] for b in b_list)
             if not top_cliff.get("is_significant", False):
+                if float(top_cliff["p_value"]) < 0.05:
+                    reason_1 = (
+                        f"Although Chi-Square p {p_val_str} reflects the large sample size, the practical rate spread is only "
+                        f"{top_cliff.get('spread', top_cliff['max_delta'])*100:.2f} percentage points (< 2.0 pp material effect threshold); "
+                        f"therefore '{col}' does not trigger an actionable threshold cliff."
+                    )
+                else:
+                    reason_1 = f"Because p >= 0.05, this variation is statistically indistinguishable from random sampling noise; '{col}' does not trigger a physical threshold cliff."
                 ans1 = (
-                    f"Physical quantile profiling across '{col}' reveals that adverse event rates remain statistically flat across all 4 quartiles, "
+                    f"Physical quantile profiling across '{col}' reveals that adverse event rates remain practically flat across all 4 quartiles, "
                     f"fluctuating narrowly between {min_r}% and {max_r}% (Q1: {q1_r}% vs Q4: {q4_r}%, Max Delta: {top_cliff['max_delta']*100:.2f} percentage points, Chi-Square p {p_val_str}). "
-                    f"Because p >= 0.05, this variation is statistically indistinguishable from random sampling noise; '{col}' does not trigger a physical threshold cliff."
+                    f"{reason_1}"
                 )
             else:
                 direction_desc = f"escalate from {q1_r}% in Q1 ({b_list[0]['range']}) to {q4_r}% in Q4 ({b_list[-1]['range']})" if q4_r >= q1_r else f"drop from {q1_r}% in Q1 ({b_list[0]['range']}) down to {q4_r}% in Q4 ({b_list[-1]['range']})"
@@ -706,11 +730,19 @@ class MicroLevelForensicInquiryEngine:
             fav_q = "Q1" if q1_r2 < q4_r2 else "Q4"
             risk_q = "Q4" if q1_r2 < q4_r2 else "Q1"
             if not sec_cliff.get("is_significant", False):
-                ans2 = (
-                    f"Empirical distribution across secondary feature '{col2}' shows no statistically significant threshold boundary "
-                    f"(Chi-Square p = {sec_cliff['p_value']:.4f}). Event rates between Q1 ({q1_r2}%) and Q4 ({q4_r2}%) differ by only "
-                    f"{abs(q4_r2 - q1_r2):.2f} percentage points, confirming that '{col2}' does not independently alter adverse event probability."
-                )
+                p2_str = "< 0.0001" if float(sec_cliff["p_value"]) < 0.0001 else f"= {sec_cliff['p_value']:.4f}"
+                if float(sec_cliff["p_value"]) < 0.05:
+                    ans2 = (
+                        f"Empirical distribution across secondary feature '{col2}' shows no practically material threshold boundary "
+                        f"(Chi-Square p {p2_str}, but total spread < 2.0 percentage points). Event rates between Q1 ({q1_r2}%) and Q4 ({q4_r2}%) differ by only "
+                        f"{abs(q4_r2 - q1_r2):.2f} percentage points, confirming that '{col2}' does not materially alter adverse event probability."
+                    )
+                else:
+                    ans2 = (
+                        f"Empirical distribution across secondary feature '{col2}' shows no statistically significant threshold boundary "
+                        f"(Chi-Square p {p2_str}). Event rates between Q1 ({q1_r2}%) and Q4 ({q4_r2}%) differ by only "
+                        f"{abs(q4_r2 - q1_r2):.2f} percentage points, confirming that '{col2}' does not independently alter adverse event probability."
+                    )
             else:
                 ans2 = (
                     f"Empirical distribution establishes a critical boundary at '{col2}' quartile threshold (Chi-Square p = {sec_cliff['p_value']:.4e}). "
@@ -744,11 +776,16 @@ class MicroLevelForensicInquiryEngine:
                 min_q, max_q = (min(q_rates), max(q_rates)) if q_rates else (0.0, 0.0)
                 q3_disp = f"{q3_r}%" if q3_cnt > 0 else "Empty Stratum"
                 q4_disp = f"{q4_r}%" if q4_cnt > 0 else "Empty Stratum"
+                p3_val = float(interactions["p_value"])
+                p3_str = "< 0.0001" if p3_val < 0.0001 else f"= {p3_val:.4f}"
+                if p3_val < 0.05:
+                    r3_tail = f"Although 2x2 Chi-Square p {p3_str} reflects large sample power, the total quadrant spread is only {max_q - min_q:.2f} percentage points (< 2.0 pp practical threshold), so neither feature exerts a material interaction effect on '{self.target_col}'."
+                else:
+                    r3_tail = f"Because p >= 0.05, neither feature exerts a statistically significant buffering or compounding interaction effect on '{self.target_col}'."
                 ans3 = (
                     f"Two-way quadrant partitioning between '{pos}' and '{neg}' yields event rates tightly bounded between "
                     f"{min_q:.2f}% and {max_q:.2f}% across populated strata (Q1: {q1_r}%, Q2: {q2_r}%, Q3: {q3_disp}, Q4: {q4_disp}; "
-                    f"2x2 Chi-Square p = {interactions['p_value']:.4f}). Because p >= 0.05, neither feature exerts a statistically significant "
-                    f"buffering or compounding interaction effect on '{self.target_col}'."
+                    f"2x2 Chi-Square p {p3_str}). {r3_tail}"
                 )
             elif q3_cnt == 0:
                 ans3 = (
@@ -794,11 +831,18 @@ class MicroLevelForensicInquiryEngine:
             q4_r3 = b_list3[-1]['rate_pct']
             
             if not third_cliff.get("is_significant", False):
+                p4_val = float(third_cliff["p_value"])
+                p4_str = "< 0.0001" if p4_val < 0.0001 else f"= {p4_val:.4f}"
                 q_text4 = f"Does third-order metric '{col3}' exhibit a statistically significant protective buffer or operational threshold?"
+                r4_tail = (
+                    f"Although Chi-Square p {p4_str} reflects large sample power, the practical spread is < 2.0 percentage points, so '{col3}' does not act as a material operational buffer or risk driver."
+                    if p4_val < 0.05
+                    else f"Because p >= 0.05, '{col3}' does not act as a statistically significant operational buffer or risk driver."
+                )
                 ans4 = (
-                    f"Quartile breakdown of third-order metric '{col3}' shows statistically uniform event rates from Q1 ({q1_r3}%) through Q4 ({q4_r3}%) "
-                    f"(Max Delta: {third_cliff['max_delta']*100:.2f} percentage points, Chi-Square p = {third_cliff['p_value']:.4f}). "
-                    f"Because p >= 0.05, '{col3}' does not act as a statistically significant operational buffer or risk driver."
+                    f"Quartile breakdown of third-order metric '{col3}' shows practically uniform event rates from Q1 ({q1_r3}%) through Q4 ({q4_r3}%) "
+                    f"(Max Delta: {third_cliff['max_delta']*100:.2f} percentage points, Chi-Square p {p4_str}). "
+                    f"{r4_tail}"
                 )
             elif q4_r3 >= q1_r3:
                 delta_3 = round(q4_r3 - q1_r3, 2)
@@ -941,7 +985,12 @@ class MicroLevelForensicInquiryEngine:
 
 """
         for c in cliffs[:3]:
-            sig_tag = "Statistically Significant" if c.get("is_significant") else "Uniform Noise — Not Significant"
+            if c.get("is_significant"):
+                sig_tag = "Statistically Significant"
+            elif float(c.get("p_value", 1.0)) < 0.05:
+                sig_tag = "Negligible Practical Spread (< 2.0 pp)"
+            else:
+                sig_tag = "Uniform Noise — Not Significant"
             md += f"#### 📊 Feature: `{c['column']}` (Max Inflection Delta: {c['max_delta']*100:.2f}%, Chi-Square p: {c['p_value']:.4e} — {sig_tag})\n"
             md += "| Quantile / Stratum | Physical Range | Monitored Volume | Target Adverse Events | Failure Rate % | Inflection Status |\n"
             md += "| :--- | :--- | :--- | :--- | :--- | :--- |\n"
@@ -950,7 +999,7 @@ class MicroLevelForensicInquiryEngine:
             min_b_rate = min(b_rates) if b_rates else 0.0
             for idx, b in enumerate(c["bins"], 1):
                 if not c.get("is_significant", False):
-                    status = "Statistical Noise (p >= 0.05)"
+                    status = "Negligible Spread (< 2 pp)" if float(c.get("p_value", 1.0)) < 0.05 else "Statistical Noise (p >= 0.05)"
                 elif b["rate_pct"] == max_b_rate:
                     status = "**Structural Cliff Breach**" if c.get("is_cliff") else "**Peak Vulnerability Stratum**"
                 elif b["rate_pct"] == min_b_rate:
@@ -965,10 +1014,11 @@ class MicroLevelForensicInquiryEngine:
             neg = interactions["neg_driver"]
             quads = interactions["quadrants"]
             is_sig_inter = interactions.get("is_significant", False)
-            q1_imp = "**Optimal Performance Buffer**" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
-            q2_imp = "Baseline Operating Profile" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
-            q3_imp = "Partially Buffered Risk (Elevated Drag)" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
-            q4_imp = "**Compound Maximum Risk Exposure**" if is_sig_inter else "Uniform Noise Stratum (p >= 0.05)"
+            non_sig_lbl = "Negligible Spread (< 2 pp)" if float(interactions.get("p_value", 1.0)) < 0.05 else "Uniform Noise Stratum (p >= 0.05)"
+            q1_imp = "**Optimal Performance Buffer**" if is_sig_inter else non_sig_lbl
+            q2_imp = "Baseline Operating Profile" if is_sig_inter else non_sig_lbl
+            q3_imp = "Partially Buffered Risk (Elevated Drag)" if is_sig_inter else non_sig_lbl
+            q4_imp = "**Compound Maximum Risk Exposure**" if is_sig_inter else non_sig_lbl
 
             def _fmt_quad_cells(q_obj: Dict[str, Any], default_imp: str) -> Tuple[str, str]:
                 if int(q_obj.get("count", 0)) == 0:
@@ -1394,11 +1444,18 @@ class StrategicDecisionEngine:
 
         def is_invalid_feature(c: str) -> bool:
             cl = c.lower()
+            c_norm = re.sub(r'[.\-\s]+', '_', cl)
             if cl == self.target_col.lower():
                 return True
             if self.cost_metric and cl == self.cost_metric.lower():
                 return True
             if cl in ['id', 'fact_surrogate_id', '_is_target_event', 'longitude', 'latitude', 'lat', 'lon', 'alt', 'tz', 'tzone', 'pickup', 'dropoff']:
+                return True
+            try:
+                from .target_resolver import is_temporal_column as _is_temp_col
+            except ImportError:
+                from target_resolver import is_temporal_column as _is_temp_col
+            if _is_temp_col(self.df[c], c):
                 return True
             if cl in synth_bp or is_synthetic_column(c, self.blueprint):
                 return True
@@ -1437,7 +1494,11 @@ class StrategicDecisionEngine:
         )
 
         candidates = []
-        min_cohort_size = max(5, int(self.total_records * 0.03))
+        # Adaptive cohort floor: 3% on small/medium datasets, capped smoothly on large datasets (>10k) so real 2k-15k risk pockets aren't masked by a 90% dominant market!
+        if self.total_records <= 10000:
+            min_cohort_size = max(5, int(self.total_records * 0.03))
+        else:
+            min_cohort_size = min(2000, max(30, int(self.total_records * 0.005)))
         for col in self.columns:
             if not _is_valid_discrete_dim(col):
                 continue
@@ -1478,6 +1539,7 @@ class StrategicDecisionEngine:
                         "is_quantile": False,
                         "is_demo": is_demo,
                         "is_sig": is_sig_cand,
+                        "above_rest": bool(r_pct > r0_pct),
                         "omnibus_p": col_omnibus_p if nunq >= 3 else max(p_cand, col_omnibus_p),
                         "volume": cnt_v,
                         "events": sum_v,
@@ -1509,6 +1571,7 @@ class StrategicDecisionEngine:
                     "is_quantile": True,
                     "is_demo": False,
                     "is_sig": is_sig_cand,
+                    "above_rest": bool(r_pct > r0_pct),
                     "omnibus_p": max(p_cand, c_chi2_p),
                     "volume": cnt_v,
                     "events": sum_v,
@@ -1519,10 +1582,11 @@ class StrategicDecisionEngine:
 
         high_risk_mask = pd.Series(False, index=self.df.index)
         if candidates:
-            # Priority: 1. Statistically significant (p < 0.05 & lift > 1.10x), 2. Non-demographic, 3. Discrete over quantile (if both sig), 4. Highest rate_pct
+            # Priority: 1. Statistically significant (p < 0.05 & lift > 1.10x), 2. Above rest-of-pop baseline, 3. Non-demographic, 4. Discrete over quantile (if both sig), 5. Highest rate_pct
             candidates.sort(
                 key=lambda x: (
                     1 if x["is_sig"] else 0,
+                    1 if x.get("above_rest", False) else 0,
                     0 if x["is_demo"] else 1,
                     0 if x["is_quantile"] else 1,
                     x["rate_pct"]

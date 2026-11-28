@@ -16,9 +16,11 @@ Provides grounded, two-way conversational inquiry for non-coder business leaders
 =============================================================================
 """
 
+import os
 import re
 import html
 import json
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Set
 
@@ -145,12 +147,25 @@ def validate_readonly_duckdb_sql(sql: str) -> List[str]:
     if re.search(ext_pattern, no_trailing, re.IGNORECASE):
         violations.append("External file path references are strictly forbidden in read-only sandbox.")
 
+    # 8b. Block Cartesian & Recursive DoS bombs (CROSS JOIN, NATURAL JOIN, implicit FROM a, b, WITH RECURSIVE)
+    if re.search(r'\b(?:CROSS|NATURAL)\s+JOIN\b', no_trailing, re.IGNORECASE):
+        violations.append("Cartesian/Natural joins (CROSS JOIN / NATURAL JOIN) are blocked to prevent CPU/memory exhaustion.")
+    if re.search(r'\bWITH\s+RECURSIVE\b', no_trailing, re.IGNORECASE):
+        violations.append("Recursive CTEs (WITH RECURSIVE) are blocked in read-only sandbox to prevent infinite-loop DoS.")
+
     # 9. Verify table references: only 'fact' and declared CTEs are allowed
     cte_matches = re.findall(r'(?:WITH|,)\s*([a-zA-Z0-9_]+)\s+AS\s*\(', no_trailing, re.IGNORECASE)
     allowed_tables = {"fact"} | {c.lower() for c in cte_matches}
 
     # Mask EXTRACT(... FROM ...) so it does not trigger table check
     masked_query = re.sub(r'EXTRACT\s*\([^)]*\bFROM\s+[^)]+\)', ' ', no_trailing, flags=re.IGNORECASE)
+
+    if re.search(
+        r'\bFROM\s+[a-zA-Z0-9_"]+(?:\s+(?:AS\s+)?[a-zA-Z0-9_"]+)?\s*,\s*[a-zA-Z0-9_"]+',
+        masked_query,
+        re.IGNORECASE,
+    ):
+        violations.append("Implicit comma-separated Cartesian joins in FROM clause are blocked by read-only sandbox.")
 
     table_refs = re.finditer(r'\b(?:FROM|JOIN)\s+([a-zA-Z0-9_"]+)', masked_query, re.IGNORECASE)
     for tm in table_refs:
@@ -178,6 +193,28 @@ def enforce_sql_row_limit(sql: str, max_rows: int = 200) -> str:
     return f"SELECT * FROM ({cleaned}) AS _capped_q LIMIT {max_rows}"
 
 
+import copy
+from collections import OrderedDict
+
+_QA_CACHE_LOCK = threading.Lock()
+_QA_RESPONSE_CACHE: "OrderedDict[Tuple[str, ...], Dict[str, Any]]" = OrderedDict()
+_QA_CACHE_MAX_SIZE = 256
+
+
+def clear_qa_response_cache() -> None:
+    with _QA_CACHE_LOCK:
+        _QA_RESPONSE_CACHE.clear()
+
+
+def get_qa_cache_stats() -> Dict[str, int]:
+    with _QA_CACHE_LOCK:
+        return {"entries": len(_QA_RESPONSE_CACHE), "max_entries": _QA_CACHE_MAX_SIZE}
+
+
+def _normalize_qa_question_key(question: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[?!.,।]+", " ", str(question or "").strip().lower())).strip()
+
+
 def detect_language_preference(question: str, explicit_lang: str = "auto") -> str:
     """Detects whether question requires English or Simple Business Roman Hinglish response."""
     el = str(explicit_lang or "auto").strip().lower()
@@ -196,7 +233,9 @@ def detect_language_preference(question: str, explicit_lang: str = "auto") -> st
         'kyun', 'kaha', 'kahan', 'mein', 'aur', 'hain', 'hai', 'batao', 'bataiye', 'dikhao',
         'nuksan', 'fayda', 'kharcha', 'grahak', 'paise', 'paisa', 'rokna', 'bache', 'wali',
         'wala', 'wale', 'konsa', 'konse', 'konsi', 'chahiye', 'karo', 'mujhe', 'humara',
-        'hamara', 'aaj', 'dekho', 'kisme', 'kisko', 'sirf', 'usme', 'isme', 'munafa', 'kiraya', 'bijli'
+        'hamara', 'aaj', 'dekho', 'kisme', 'kisko', 'sirf', 'usme', 'isme', 'munafa', 'kiraya', 'bijli',
+        'bikri', 'bikne', 'udhaar', 'udhari', 'bakaya', 'maal', 'dukaan', 'mangwaye', 'mangwana',
+        'ghata', 'mahina', 'mahine', 'khata', 'bada', 'badi', 'chhota', 'becha', 'kharid',
     }
     words = set(re.findall(r'\b[a-z]+\b', q_lower))
     if len(words & hinglish_markers) >= 1:
@@ -218,6 +257,7 @@ class ConversationalBusinessQAEngine:
         self.manifest = self._load_json("semantic_metrics_manifest.json")
         self.temporal_summary = self._load_json("temporal_trend_summary.json")
         self.questions_200 = self._load_json("universal_200_questions_report.json")
+        self.growth_inventory = self._load_json("growth_inventory_report.json")
 
         # Load Parquet fact table and initialize canonical targets
         self.df_fact = pd.read_parquet(self.fact_parquet)
@@ -740,29 +780,171 @@ class ConversationalBusinessQAEngine:
 
         where_sql = f"WHERE {' AND '.join(active_filters.values())}" if active_filters else ""
 
-        # Detect intent qualifiers & requested metrics
-        is_count_query = any(w in q_clean for w in ['count', 'total', 'kitne', 'kitna', 'how many', 'how much', 'number of', 'volume'])
-        is_adverse_query = any(w in q_clean for w in ['churn', 'default', 'risk', 'fail', 'defect', 'loss', 'losing', 'nuksan', 'bad', 'adverse', 'problem', 'rto', 'cancel', 'return', 'spoil', 'kharab', 'wapas', 'chuna'])
-        is_margin_query = any(w in q_clean for w in ['margin', 'profit', 'profitability', 'munafa', 'kamai', 'net profit', 'losing money', 'losing the most', 'cogs'])
-        is_losing_money = any(w in q_clean for w in ['losing', 'loss', 'bleed', 'ghata', 'nuksan'])
+        # Detect intent qualifiers & requested metrics (EN + Roman Hinglish + Devanagari Hindi)
+        is_count_query = any(w in q_clean for w in ['count', 'total', 'kitne', 'kitna', 'how many', 'how much', 'number of', 'volume', 'कुल', 'कितने', 'कितना'])
+        is_adverse_query = any(w in q_clean for w in ['churn', 'default', 'risk', 'fail', 'defect', 'loss', 'losing', 'nuksan', 'bad', 'adverse', 'problem', 'rto', 'cancel', 'return', 'spoil', 'kharab', 'wapas', 'chuna', 'नुकसान', 'खराब', 'घाटा'])
+        is_margin_query = any(w in q_clean for w in ['margin', 'profit', 'profitability', 'munafa', 'kamai', 'net profit', 'losing money', 'losing the most', 'cogs', 'मुनाफा', 'मुनाफ़ा', 'लाभ', 'मार्जिन'])
+        is_losing_money = any(w in q_clean for w in ['losing', 'loss', 'bleed', 'ghata', 'nuksan', 'घाटा', 'नुकसान'])
         is_ad_roas_query = any(w in q_clean for w in ['ad spend', 'roas', 'poas', 'marketing spend', 'campaign cost', 'ad cost'])
-        is_revenue_query = bool(re.search(r'\b(?:revenue|sales|sale|turnover|gmv|bikri|selling price|invoice_amount|invoiced_amount|invoice amount|billing)\b', q_clean))
+        is_revenue_query = bool(re.search(r'(?:\b(?:revenue|sales|sale|turnover|gmv|bikri|bikne|selling price|invoice_amount|invoiced_amount|invoice amount|billing)\b|बिक्री|बिकने|सेल|टर्नओवर)', q_clean))
         is_op_cost_query = any(w in q_clean for w in ['fuel', 'toll', 'operating cost', 'direct cost', 'freight cost', 'fuel_and_toll_cost'])
         is_penalty_query = any(w in q_clean for w in ['penalty', 'sla penalty', 'sla_penalty', 'chargeback', 'demurrage', 'late fee'])
-        is_ar_due_query = any(w in q_clean for w in ['outstanding', 'unpaid', 'udhari', 'receivable', 'overdue', 'balance due', 'paisa nahi', 'fasa hua', 'fasa hai', 'due'])
+        is_ar_due_query = any(w in q_clean for w in ['outstanding', 'unpaid', 'udhari', 'udhaar', 'bakaya', 'receivable', 'overdue', 'balance due', 'paisa nahi', 'fasa hua', 'fasa hai', 'due', 'बकाया', 'उधार'])
         is_dso_query = any(w in q_clean for w in ['days_to_pay', 'days to pay', 'dso', 'payment days', 'overdue days', 'kitne din mein paisa'])
         is_avg_disc_query = any(w in q_clean for w in ['average discount', 'avg discount', 'discount pct', 'discount %', 'ausat discount'])
         is_duplicate_query = any(w in q_clean for w in ['duplicate', 'double billing', 'double bill', 'double entry', 'dobara chadh', 'do baar'])
         is_ratio_pct_query = bool(re.search(r'(?:as\s+a\s+percentage\s+of|%\s+of\s+(?:total\s+)?(?:revenue|sales|billing|invoice)|percentage\s+of\s+(?:total\s+)?(?:revenue|sales))', q_clean))
         is_repeat_cust_query = any(w in q_clean for w in ['repeat customer', 'repeat buyer', 'returning customer', 'unique customer', 'repeat client', 'kitne repeat'])
-        is_discount_query = any(w in q_clean for w in ['discount', 'chhoot', 'coupon'])
+        is_discount_query = any(w in q_clean for w in ['discount', 'chhoot', 'coupon', 'छूट'])
         is_csat_query = any(w in q_clean for w in ['csat', 'rating', 'satisfaction', 'review'])
-        is_delay_query = any(w in q_clean for w in ['delay', 'transit', 'late', 'deri', 'delivery days']) and not is_penalty_query
+        is_delay_query = any(w in q_clean for w in ['delay', 'transit', 'late', 'deri', 'delivery days', 'देरी']) and not is_penalty_query
         is_aov_query = any(w in q_clean for w in ['aov', 'average order value', 'avg order value', 'average bill', 'ticket size', 'ausat order'])
-        is_top_query = any(w in q_clean for w in ['top', 'sabse zyada', 'highest', 'max', 'most', 'worst', 'sabse kharab'])
-        is_bottom_query = any(w in q_clean for w in ['lowest', 'sabse kam', 'least', 'min', 'best', 'safest', 'bottom'])
+        is_top_query = any(w in q_clean for w in ['top', 'sabse zyada', 'sabse jyada', 'sabse bada', 'highest', 'max', 'most', 'worst', 'sabse kharab', 'सबसे ज्यादा', 'सबसे ज़्यादा', 'सबसे बड़ा', 'बेस्ट'])
+        is_bottom_query = any(w in q_clean for w in ['lowest', 'sabse kam', 'least', 'min', 'best', 'safest', 'bottom', 'सबसे कम'])
+        is_stock_query = any(w in q_clean for w in ['stock', 'inventory', 'maal', 'reorder', 'stockout', 'स्टॉक', 'माल', 'इन्वेंटरी'])
         is_row_level_query = any(w in q_clean for w in ['customer', 'customers', 'client', 'clients', 'user', 'users', 'account', 'accounts', 'loan', 'loans', 'ticket', 'tickets', 'row', 'rows', 'record', 'records', 'shipment', 'shipments', 'intervene'])
         is_explicit_dispatch_top_n = bool(is_row_level_query and re.search(r'\b(?:top|give me|list|show me)\s+\d+\b', q_clean) and any(w in q_clean for w in ['intervene', 'shipments', 'orders', 'accounts', 'tickets', 'records', 'in transit']))
+
+        # Fast-path -1: Colloquial Indian Shopkeeper / SME 0-RPM DuckDB SQL Handlers
+        # (Stock levels, Top-selling items, Top Udhaar/Bakaya parties, Top VIP buyers)
+        def _cn(col_name: str) -> str:
+            return re.sub(r'[\s\-]+', '_', re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(col_name).strip())).lower()
+
+        stock_c = next(
+            (c for c in cols if any(k in _cn(c) for k in ("stock_on_hand", "closing_stock", "current_stock", "available_stock", "inventory", "स्टॉक")) and pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        ) or next(
+            (c for c in cols if _cn(c) == "stock" and pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        )
+        qty_c = next(
+            (c for c in cols if any(k in _cn(c) for k in ("qty", "quantity", "units", "units_sold", "मात्रा")) and c != stock_c and pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        )
+        due_c = next(
+            (c for c in cols if any(k in _cn(c) for k in ("balance_due", "pending_amount", "due", "outstanding", "udhaar", "receivable", "बकाया", "उधार")) and pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        )
+        rev_c = (
+            next((c for c in cols if _cn(c) == "line_revenue" and pd.api.types.is_numeric_dtype(self.df_fact[c])), None)
+            or next(
+                (c for c in cols if any(k in _cn(c) for k in ("sales_amount", "total_sales", "net_sales", "net_revenue", "sales", "revenue", "bill_amount", "invoice_amount", "order_value", "line_total", "amount", "bikri")) and c != due_c and _cn(c) != "line_gross_value" and pd.api.types.is_numeric_dtype(self.df_fact[c])),
+                self.cost_col,
+            )
+        )
+        item_c = next(
+            (c for c in cols if any(k in _cn(c) for k in ("item_name", "item", "product_name", "product", "sku", "category", "material", "medicine", "उत्पाद", "आइटम")) and not pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        )
+        if not item_c and (qty_c or rev_c):
+            item_c = next(
+                (c for c in cols if _cn(c) in ("description", "item_desc", "item_description", "product_desc", "product_description", "particulars") and not pd.api.types.is_numeric_dtype(self.df_fact[c])),
+                None,
+            ) or next(
+                (c for c in cols if _cn(c) in ("stock_code", "product_code") and not pd.api.types.is_numeric_dtype(self.df_fact[c])),
+                None,
+            )
+        party_c = next(
+            (c for c in cols if any(k in _cn(c) for k in ("ledger_party", "party_name", "party", "customer_name", "customer", "client_name", "client", "buyer", "dealer", "retailer", "ग्राहक", "पार्टी")) and not pd.api.types.is_numeric_dtype(self.df_fact[c])),
+            None,
+        ) or next(
+            (c for c in cols if _cn(c) in ("customer_id", "party_id", "client_id", "buyer_id", "account_id")),
+            None,
+        )
+
+        if is_stock_query and stock_c and item_c:
+            order_dir = "DESC" if (is_top_query and not is_bottom_query and "kam" not in q_clean and "low" not in q_clean and "कम" not in q_clean) else "ASC"
+            qty_sel = f", ROUND(SUM(TRY_CAST({quote_sql_ident(qty_c)} AS DOUBLE)), 1) AS total_units_sold" if qty_c else ""
+            sql = (
+                f"SELECT {quote_sql_ident(item_c)} AS item, "
+                f"ROUND(MIN(TRY_CAST({quote_sql_ident(stock_c)} AS DOUBLE)), 1) AS current_stock"
+                f"{qty_sel}, COUNT(*) AS bills "
+                f"FROM fact {where_sql} "
+                f"GROUP BY {quote_sql_ident(item_c)} "
+                f"ORDER BY current_stock {order_dir} LIMIT 15;"
+            )
+            self._last_group_col = item_c
+            return sql, f"Audited current stock levels by `{item_c}` ({order_dir}).", active_filters
+
+        if is_ar_due_query and due_c and party_c:
+            sql = (
+                f"SELECT {quote_sql_ident(party_c)} AS party, "
+                f"ROUND(SUM(TRY_CAST({quote_sql_ident(due_c)} AS DOUBLE)), 2) AS total_pending_due, "
+                f"COUNT(*) AS bills "
+                f"FROM fact {where_sql} "
+                f"GROUP BY {quote_sql_ident(party_c)} "
+                f"HAVING SUM(TRY_CAST({quote_sql_ident(due_c)} AS DOUBLE)) > 0 "
+                f"ORDER BY total_pending_due DESC LIMIT 15;"
+            )
+            self._last_group_col = party_c
+            return sql, f"Ranked top pending receivables / udhaar by `{party_c}`.", active_filters
+
+        if (
+            (is_revenue_query or any(w in q_clean for w in ("bikne", "best selling", "top selling", "बिकने")))
+            and not (is_adverse_query or is_margin_query or is_delay_query or is_ar_due_query)
+            and item_c and rev_c
+            and any(w in q_clean for w in ("item", "product", "sku", "maal", "bikne", "आइटम", "उत्पाद", "बिकने", "सामान"))
+        ):
+            order_dir = "ASC" if is_bottom_query else "DESC"
+            qty_sel = f", ROUND(SUM(TRY_CAST({quote_sql_ident(qty_c)} AS DOUBLE)), 1) AS total_units" if qty_c else ""
+            not_null_clause = f"{quote_sql_ident(item_c)} IS NOT NULL AND TRIM(CAST({quote_sql_ident(item_c)} AS VARCHAR)) <> ''"
+            item_where = f"{where_sql} AND {not_null_clause}" if where_sql else f"WHERE {not_null_clause}"
+            sql = (
+                f"SELECT {quote_sql_ident(item_c)} AS item, "
+                f"ROUND(SUM(TRY_CAST({quote_sql_ident(rev_c)} AS DOUBLE)), 2) AS total_sales"
+                f"{qty_sel}, COUNT(*) AS bills "
+                f"FROM fact {item_where} "
+                f"GROUP BY {quote_sql_ident(item_c)} "
+                f"ORDER BY total_sales {order_dir} LIMIT 15;"
+            )
+            self._last_group_col = item_c
+            return sql, f"Ranked `{item_c}` by total sales ({order_dir}).", active_filters
+
+        is_pareto_or_pct_ask = bool(
+            is_ratio_pct_query
+            or re.search(r'\btop\s+\d{1,2}\s*%', q_clean)
+            or any(w in q_clean for w in ("80/20", "80-20", "pareto", "concentration", "percentage"))
+        )
+
+        if (
+            party_c and rev_c
+            and not is_pareto_or_pct_ask
+            and not (is_adverse_query or is_margin_query or is_delay_query or is_ar_due_query)
+            and any(w in q_clean for w in ("party", "grahak", "customer", "buyer", "पार्टी", "ग्राहक"))
+            and (is_top_query or is_revenue_query)
+        ):
+            order_dir = "ASC" if is_bottom_query else "DESC"
+            p_nn = f"{quote_sql_ident(party_c)} IS NOT NULL AND TRIM(CAST({quote_sql_ident(party_c)} AS VARCHAR)) <> ''"
+            party_where = f"{where_sql} AND {p_nn}" if where_sql else f"WHERE {p_nn}"
+            sql = (
+                f"SELECT {quote_sql_ident(party_c)} AS party, "
+                f"ROUND(SUM(TRY_CAST({quote_sql_ident(rev_c)} AS DOUBLE)), 2) AS total_sales, "
+                f"COUNT(*) AS bills "
+                f"FROM fact {party_where} "
+                f"GROUP BY {quote_sql_ident(party_c)} "
+                f"ORDER BY total_sales {order_dir} LIMIT 15;"
+            )
+            self._last_group_col = party_c
+            return sql, f"Ranked `{party_c}` by total sales ({order_dir}).", active_filters
+
+        # Generic pure-sales breakdown by explicit matched categorical dimension (e.g. "total sales by Region", "sabse zyada bikri kis region mein hui?")
+        if is_revenue_query and rev_c and not (is_adverse_query or is_margin_query or is_delay_query or is_ar_due_query):
+            dim_matched = next(
+                (c for c in matched_cols if not pd.api.types.is_numeric_dtype(self.df_fact[c]) and c not in active_filters),
+                None,
+            )
+            if dim_matched:
+                order_dir = "ASC" if is_bottom_query else "DESC"
+                sql = (
+                    f"SELECT {quote_sql_ident(dim_matched)} AS segment, "
+                    f"ROUND(SUM(TRY_CAST({quote_sql_ident(rev_c)} AS DOUBLE)), 2) AS total_sales, "
+                    f"COUNT(*) AS bills "
+                    f"FROM fact {where_sql} "
+                    f"GROUP BY {quote_sql_ident(dim_matched)} "
+                    f"ORDER BY total_sales {order_dir} LIMIT 15;"
+                )
+                self._last_group_col = dim_matched
+                return sql, f"Ranked `{dim_matched}` by total sales ({order_dir}).", active_filters
 
         # Fast-path 0: Universal Composite Duplicate / Ghost Double-Billing Audit
         if is_duplicate_query and self.cost_col:
@@ -1344,6 +1526,103 @@ Respond with ONLY JSON."""
         """
         resolved_lang = detect_language_preference(question, explicit_lang=language)
 
+        # 0. Per-Run Normalized Response Cache (0 Gemini RPM, <1ms on repeat queries)
+        _fact_mtime = ""
+        try:
+            _fact_mtime = str(int(self.fact_parquet.stat().st_mtime))
+        except Exception:
+            pass
+        _hist_sig = str(len(history or [])) + ":" + (str(history[-1].get("active_filters", "")) if history else "")
+        _cache_key = (
+            str(self.output_dir),
+            _fact_mtime,
+            resolved_lang,
+            _normalize_qa_question_key(question),
+            _hist_sig,
+        )
+        with _QA_CACHE_LOCK:
+            cached = _QA_RESPONSE_CACHE.get(_cache_key)
+            if cached is not None:
+                _QA_RESPONSE_CACHE.move_to_end(_cache_key)
+                out_c = copy.deepcopy(cached)
+                out_c["cache_hit"] = True
+                return out_c
+
+        def _store_cache(payload: Dict[str, Any]) -> Dict[str, Any]:
+            if payload.get("status") == "success":
+                with _QA_CACHE_LOCK:
+                    _QA_RESPONSE_CACHE[_cache_key] = copy.deepcopy(payload)
+                    _QA_RESPONSE_CACHE.move_to_end(_cache_key)
+                    while len(_QA_RESPONSE_CACHE) > _QA_CACHE_MAX_SIZE:
+                        _QA_RESPONSE_CACHE.popitem(last=False)
+            payload.setdefault("cache_hit", False)
+            return payload
+
+        # 0.5 Zero-RPM Growth Forecast & Reorder Fast-Path (when growth_inventory_report.json exists)
+        q_low_gi = str(question or "").lower()
+        is_forecast_ask = any(
+            w in q_low_gi
+            for w in (
+                "forecast", "next month", "next 30", "agle mahine", "agla mahina",
+                "अगले महीने", "अगला महीना", "अनुमान", "भविष्यवाणी", "kitni bikri hogi",
+                "kitna maal mangwaye", "reorder", "dead stock", "फँसा हुआ माल", "फंसा हुआ माल",
+            )
+        )
+        if is_forecast_ask and isinstance(self.growth_inventory, dict) and self.growth_inventory.get("is_applicable"):
+            gi = self.growth_inventory
+            fc = gi.get("demand_forecast") or {}
+            ra = gi.get("reorder_alerts") or []
+            ds = gi.get("dead_stock_items") or []
+            if resolved_lang == "english":
+                lines_gi = ["### 📈 30-Day Sales Forecast & Stock Reorder Plan (Grounded)"]
+                if fc.get("forecast_available"):
+                    lines_gi.append(
+                        f"- **Next 30-Day Projected Sales:** **{fc['next_30d_revenue_fmt']}** "
+                        f"(95% range: `{fc['next_30d_revenue_low95_fmt']}` – `{fc['next_30d_revenue_high95_fmt']}`, "
+                        f"~`{fc['next_30d_units']:,}` units, backtest WAPE `{fc['backtest_wape_pct']}%`)."
+                    )
+                if ra:
+                    lines_gi.append("\n**Priority Reorder Alerts:**")
+                    for item in ra[:5]:
+                        lines_gi.append(
+                            f"- `{item['item']}`: Stock `{item['current_stock']}` ({item['days_of_cover']}d cover) → **Order ~`{item['recommended_30d_order_qty']}` units**"
+                        )
+                if ds:
+                    lines_gi.append(f"\n**Slow / Dead Stock Watch:** `{ds[0]['item']}` ({ds[0]['current_stock']} units, {ds[0]['days_of_cover']}d cover).")
+            else:
+                lines_gi = ["### 📈 अगले 30 दिन की बिक्री का अनुमान और स्टॉक री-ऑर्डर योजना"]
+                if fc.get("forecast_available"):
+                    lines_gi.append(
+                        f"- **अगले 30 दिन की अनुमानित बिक्री:** **{fc['next_30d_revenue_fmt']}** "
+                        f"(रेंज: `{fc['next_30d_revenue_low95_fmt']}` – `{fc['next_30d_revenue_high95_fmt']}`, "
+                        f"लगभग `{fc['next_30d_units']:,}` यूनिट; बैकटेस्ट त्रुटि `{fc['backtest_wape_pct']}%`)।"
+                    )
+                if ra:
+                    lines_gi.append("\n**तुरंत मँगवाने वाला माल (Reorder List):**")
+                    for item in ra[:5]:
+                        lines_gi.append(
+                            f"- `{item['item']}`: बचा स्टॉक `{item['current_stock']}` ({item['days_of_cover']} दिन का स्टॉक) → **लगभग `{item['recommended_30d_order_qty']}` यूनिट मँगवाएँ**"
+                        )
+                if ds:
+                    lines_gi.append(f"\n**धीमा / फँसा हुआ माल (Dead Stock):** `{ds[0]['item']}` ({ds[0]['current_stock']} यूनिट, {ds[0]['days_of_cover']} दिन से ज़्यादा स्टॉक)।")
+            md_gi = "\n".join(lines_gi)
+            return _store_cache({
+                "status": "success",
+                "question": question,
+                "language": resolved_lang,
+                "sql_executed": "-- Zero-RPM Growth & Inventory Forecast Artifact Lookup",
+                "sql_generation_mode": "growth_inventory_fastpath",
+                "active_filters": {},
+                "row_count_returned": len(ra) if ra else 1,
+                "columns": ["item", "current_stock", "days_of_cover", "recommended_30d_order_qty"],
+                "data": ra[:10],
+                "answer_markdown": md_gi,
+                "plain_summary": md_gi,
+                "answer": md_gi,
+                "vega_lite_spec": None,
+                "grounding_verified": True,
+            })
+
         # 1. Honest Missing-Column Guard (never dump a misleading fallback summary for absent sheets!)
         missing_info = self._detect_missing_domain_concept(question)
         if missing_info is not None:
@@ -1529,9 +1808,24 @@ Respond with ONLY JSON."""
                         prior_filters = dict(turn["active_filters"])
                         break
 
-        # 4. Synthesize Read-Only DuckDB SQL (LLM with fallback to upgraded Multi-Filter Deterministic Compiler)
+        # 4. Synthesize Read-Only DuckDB SQL (0-RPM Shopkeeper Fast-Path -> LLM -> Multi-Filter Deterministic Compiler)
         active_filters: Dict[str, str] = {}
-        if use_llm and _get_shared_llm_client() is not None:
+        q_low_fast = str(question or "").lower()
+        has_adverse_or_margin_cue = any(
+            w in q_low_fast
+            for w in ("return", "churn", "default", "cancel", "delay", "defect", "fail", "margin", "profit", "मुनाफा", "मुनाफ़ा", "नुकसान", "रिटर्न")
+        )
+        is_shopkeeper_fast_sql = (not has_adverse_or_margin_cue) and any(
+            w in q_low_fast
+            for w in (
+                "स्टॉक", "बकाया", "उधार", "बिकने",
+                "udhaar", "udhari", "bakaya", "bikne", "stock kam", "low stock",
+            )
+        )
+        if is_shopkeeper_fast_sql:
+            sql, explanation, active_filters = self._synthesize_deterministic_sql_with_context(question, prior_filters=prior_filters)
+            mode = "deterministic_shopkeeper_fastpath"
+        elif use_llm and _get_shared_llm_client() is not None:
             ctx_q = question
             if prior_filters:
                 ctx_q = f"{question} (Follow-up context filters if applicable: {'; '.join(prior_filters.values())})"
@@ -1567,18 +1861,44 @@ Respond with ONLY JSON."""
                 "error": sec_msg,
             }
 
-        # Execute on DuckDB
+        # Execute on DuckDB with bounded wall-clock interrupt guard (prevents CPU hang DoS)
         try:
-            rel = self.con.execute(sql)
-            res_df = rel.fetchdf()
+            try:
+                timeout_sec = max(0.05, float(os.getenv("DATAXRAY_DUCKDB_QUERY_TIMEOUT_SEC", "15.0")))
+            except ValueError:
+                timeout_sec = 15.0
+            timed_out = [False]
+
+            def _interrupt_query() -> None:
+                timed_out[0] = True
+                try:
+                    self.con.interrupt()
+                except Exception:
+                    pass
+
+            timer = threading.Timer(timeout_sec, _interrupt_query)
+            timer.daemon = True
+            timer.start()
+            try:
+                rel = self.con.execute(sql)
+                res_df = rel.fetchdf()
+            finally:
+                timer.cancel()
+            if timed_out[0]:
+                raise TimeoutError(f"DuckDB query exceeded {timeout_sec:.1f}s safety timeout and was interrupted.")
         except Exception as e:
+            is_timeout = isinstance(e, TimeoutError) or "interrupt" in str(e).lower()
             err_msg = (
+                f"**Query Timeout**: Query exceeded safety execution limit ({timeout_sec:.1f}s) and was safely aborted."
+                if (is_timeout and resolved_lang == "english") else
+                f"**Query Timeout**: Yeh sawaal {timeout_sec:.1f}s ki safety limit cross kar gaya, isliye server hang hone se bachane ke liye roka gaya."
+                if is_timeout else
                 f"**Execution Error**: SQL query failed on DuckDB: `{e}`"
                 if resolved_lang == "english" else
                 f"**Query Error**: DuckDB SQL execution mein issue aaya: `{e}`"
             )
             return {
-                "status": "error",
+                "status": "timeout" if is_timeout else "error",
                 "question": question,
                 "language": resolved_lang,
                 "sql_executed": sql,
@@ -1642,7 +1962,7 @@ Respond with ONLY JSON."""
         answer_md = self._format_grounded_answer(question, res_df_clean, resolved_lang, active_filters=active_filters)
         vega_spec = self._generate_vega_spec(res_df_clean, question)
 
-        return {
+        return _store_cache({
             "status": "success",
             "question": question,
             "language": resolved_lang,
@@ -1657,7 +1977,27 @@ Respond with ONLY JSON."""
             "answer": answer_md,
             "vega_lite_spec": vega_spec,
             "grounding_verified": True
-        }
+        })
+
+    @staticmethod
+    def _format_indian_number(val: float, decimals: int = 0) -> str:
+        """Formats numeric values with authentic Indian 2,2,3 comma grouping (e.g. 17,49,280)."""
+        av = abs(float(val or 0.0))
+        fixed = f"{av:.{decimals}f}"
+        int_part, _, dec_part = fixed.partition(".")
+        if len(int_part) > 3:
+            last3 = int_part[-3:]
+            head = int_part[:-3]
+            groups = []
+            while len(head) > 2:
+                groups.append(head[-2:])
+                head = head[:-2]
+            if head:
+                groups.append(head)
+            int_fmt = ",".join(reversed(groups)) + "," + last3
+        else:
+            int_fmt = int_part
+        return f"{int_fmt}.{dec_part}" if dec_part else int_fmt
 
     def _format_money_val(self, val: float, sym_override: Optional[str] = None, numbering_override: Optional[str] = None) -> str:
         """Formats monetary figures strictly using dataset or row-native currency symbol (zero fake $ on non-monetary or INR data)."""
@@ -1668,10 +2008,12 @@ Respond with ONLY JSON."""
         sign = "-" if val < 0 else ""
         av = abs(val)
         if num_sys == "indian" or sym == "₹":
+            ind_exact = self._format_indian_number(av, 0 if av >= 1000 else 2)
             if av >= 1e7:
-                return f"**{sign}{sym}{av / 1e7:.2f} Cr ({sign}{sym}{av:,.2f})**"
+                return f"**{sign}{sym}{av / 1e7:.2f} Cr ({sign}{sym}{ind_exact})**"
             if av >= 1e5:
-                return f"**{sign}{sym}{av / 1e5:.2f} L ({sign}{sym}{av:,.2f})**"
+                return f"**{sign}{sym}{av / 1e5:.2f} L ({sign}{sym}{ind_exact})**"
+            return f"**{sign}{sym}{ind_exact}**"
         return f"**{sign}{sym}{av:,.2f}**"
 
     def _humanize_filter_text(self, pred: str) -> str:

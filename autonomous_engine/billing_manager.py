@@ -210,10 +210,16 @@ class TenantBillingManager:
                     provider TEXT NOT NULL DEFAULT 'none',
                     external_customer_id TEXT,
                     external_subscription_id TEXT,
+                    current_period_end REAL,
                     updated_at REAL NOT NULL
                 )
                 """
             )
+            # Idempotent schema upgrade for existing DBs created before current_period_end
+            try:
+                conn.execute("ALTER TABLE tenant_subscriptions ADD COLUMN current_period_end REAL")
+            except Exception:
+                pass
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS tenant_monthly_usage (
@@ -250,33 +256,37 @@ class TenantBillingManager:
         external_customer_id: Optional[str] = None,
         external_subscription_id: Optional[str] = None,
         status: str = "active",
+        current_period_end: Optional[float] = None,
     ) -> Dict[str, Any]:
         norm_tid = sanitize_tenant_id(tenant_id)
         norm_plan = str(plan_id or "free").strip().lower()
         if norm_plan not in BILLING_PLANS:
             norm_plan = "free"
         now = time.time()
+        eff_period_end = None if norm_plan == "free" else (float(current_period_end) if current_period_end is not None else None)
         with self._lock, self._connect() as conn:
             conn.execute(
                 """
                 INSERT INTO tenant_subscriptions (
-                    tenant_id, plan_id, status, provider, external_customer_id, external_subscription_id, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    tenant_id, plan_id, status, provider, external_customer_id, external_subscription_id, current_period_end, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(tenant_id) DO UPDATE SET
                     plan_id=excluded.plan_id,
                     status=excluded.status,
                     provider=excluded.provider,
                     external_customer_id=COALESCE(excluded.external_customer_id, tenant_subscriptions.external_customer_id),
                     external_subscription_id=COALESCE(excluded.external_subscription_id, tenant_subscriptions.external_subscription_id),
+                    current_period_end=excluded.current_period_end,
                     updated_at=excluded.updated_at
                 """,
-                (norm_tid, norm_plan, status, provider, external_customer_id, external_subscription_id, now),
+                (norm_tid, norm_plan, status, provider, external_customer_id, external_subscription_id, eff_period_end, now),
             )
         return self.get_tenant_billing_status(norm_tid)
 
     def get_tenant_billing_status(self, tenant_id: str) -> Dict[str, Any]:
         norm_tid = sanitize_tenant_id(tenant_id)
         mkey = _current_month_key()
+        now = time.time()
         with self._lock, self._connect() as conn:
             sub = conn.execute(
                 "SELECT * FROM tenant_subscriptions WHERE tenant_id = ?",
@@ -287,9 +297,31 @@ class TenantBillingManager:
                 (norm_tid, mkey),
             ).fetchone()
 
-        plan_id = str(sub["plan_id"]) if sub else "free"
-        sub_status = str(sub["status"]) if sub else "active"
-        provider = str(sub["provider"]) if sub else "none"
+            plan_id = str(sub["plan_id"]) if sub else "free"
+            sub_status = str(sub["status"]) if sub else "active"
+            provider = str(sub["provider"]) if sub else "none"
+            period_end_raw = None
+            if sub is not None:
+                try:
+                    period_end_raw = sub["current_period_end"]
+                except Exception:
+                    period_end_raw = None
+            current_period_end = float(period_end_raw) if period_end_raw is not None else None
+
+            # Auto-expire lapsed time-bounded subscriptions (e.g., Razorpay one-time 30-day payment links)
+            if (
+                plan_id != "free"
+                and sub_status in ("active", "trialing")
+                and current_period_end is not None
+                and current_period_end < now
+            ):
+                plan_id = "free"
+                sub_status = "expired"
+                conn.execute(
+                    "UPDATE tenant_subscriptions SET plan_id = 'free', status = 'expired', updated_at = ? WHERE tenant_id = ?",
+                    (now, norm_tid),
+                )
+
         if sub_status not in ("active", "trialing"):
             plan_id = "free"
         plan_cfg = BILLING_PLANS.get(plan_id, BILLING_PLANS["free"])
@@ -304,6 +336,7 @@ class TenantBillingManager:
             "plan_name": plan_cfg["name"],
             "subscription_status": sub_status,
             "provider": provider,
+            "current_period_end": current_period_end,
             "billing_period": mkey,
             "quota_enforcement_active": is_billing_quota_enforced(),
             "usage": {
@@ -330,6 +363,35 @@ class TenantBillingManager:
             return (
                 False,
                 f"Monthly run limit reached ({st['usage']['runs_used']}/{st['usage']['runs_limit']} on {st['plan_name']}). Upgrade via /api/v1/billing/checkout to unlock higher limits.",
+                st,
+            )
+        return True, "ok", st
+
+    def check_row_limit(self, tenant_id: str, row_count: int, is_admin: bool = False) -> Tuple[bool, str, Dict[str, Any]]:
+        """Enforces per-run dataset row ceiling (`max_rows_per_run`) when billing quotas are active."""
+        st = self.get_tenant_billing_status(tenant_id)
+        if is_admin or not is_billing_quota_enforced():
+            return True, "ok", st
+        max_rows = int(st["usage"].get("max_rows_per_run") or 0)
+        if max_rows > 0 and int(row_count or 0) > max_rows:
+            return (
+                False,
+                f"Dataset row count ({int(row_count):,}) exceeds your {st['plan_name']} limit of {max_rows:,} rows/run. Upgrade via /api/v1/billing/checkout to analyze larger datasets.",
+                st,
+            )
+        return True, "ok", st
+
+    def check_feature_access(self, tenant_id: str, feature_key: str, is_admin: bool = False) -> Tuple[bool, str, Dict[str, Any]]:
+        """Enforces plan feature entitlements (`live_connectors`, `scheduled_digests`) when billing quotas are active."""
+        st = self.get_tenant_billing_status(tenant_id)
+        if is_admin or not is_billing_quota_enforced():
+            return True, "ok", st
+        ent = st.get("entitlements") or {}
+        if not bool(ent.get(feature_key, False)):
+            nice = str(feature_key).replace("_", " ").title()
+            return (
+                False,
+                f"Feature '{nice}' is not included in your {st['plan_name']}. Upgrade via /api/v1/billing/checkout to enable {nice}.",
                 st,
             )
         return True, "ok", st
@@ -480,6 +542,24 @@ class TenantBillingManager:
         updated_status = None
         if tenant_id:
             if event_type in ("subscription.activated", "subscription.charged", "payment_link.paid", "payment.captured"):
+                now = time.time()
+                # Prevent one-time payment links from granting permanent lifetime paid access:
+                # always attach an explicit expiration timestamp (current_end from Razorpay subscription or 30-day cycle).
+                period_end: float
+                if sub_ent.get("current_end"):
+                    try:
+                        # Add 24h webhook-delivery grace window after Razorpay's current_end
+                        period_end = float(sub_ent["current_end"]) + 86400.0
+                    except Exception:
+                        period_end = now + 31.0 * 86400.0
+                else:
+                    try:
+                        days = int(notes.get("billing_period_days") or 30)
+                    except Exception:
+                        days = 30
+                    days = max(1, min(days, 366))
+                    period_end = now + float(days) * 86400.0
+
                 updated_status = self.set_tenant_plan(
                     tenant_id=str(tenant_id),
                     plan_id=plan_id,
@@ -487,6 +567,7 @@ class TenantBillingManager:
                     external_customer_id=str(cust_id) if cust_id else None,
                     external_subscription_id=str(sub_id) if sub_id else None,
                     status="active",
+                    current_period_end=period_end,
                 )
             elif event_type in ("subscription.cancelled", "subscription.halted", "subscription.expired"):
                 updated_status = self.set_tenant_plan(
@@ -494,6 +575,7 @@ class TenantBillingManager:
                     plan_id="free",
                     provider="razorpay",
                     status="canceled",
+                    current_period_end=None,
                 )
 
         self._mark_event_processed(event_id, "razorpay", event_type, str(tenant_id) if tenant_id else None)
@@ -588,13 +670,45 @@ class TenantBillingManager:
                     "required_env_vars": ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET", "RAZORPAY_WEBHOOK_SECRET"],
                 }
             auth_b64 = base64.b64encode(f"{key_id}:{key_secret}".encode("utf-8")).decode("ascii")
+            rzp_plan_env = f"RAZORPAY_PLAN_{norm_plan.upper()}"
+            rzp_plan_id = os.environ.get(rzp_plan_env, "").strip()
+            if rzp_plan_id:
+                # True recurring monthly subscription when RAZORPAY_PLAN_<TIER> is configured
+                sub_body: Dict[str, Any] = {
+                    "plan_id": rzp_plan_id,
+                    "total_count": 12,
+                    "quantity": 1,
+                    "customer_notify": 1,
+                    "notes": {"tenant_id": norm_tid, "plan_id": norm_plan, "billing_period_days": "30"},
+                }
+                req = urllib.request.Request(
+                    "https://api.razorpay.com/v1/subscriptions",
+                    data=json.dumps(sub_body).encode("utf-8"),
+                    headers={
+                        "Authorization": f"Basic {auth_b64}",
+                        "Content-Type": "application/json",
+                    },
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                return {
+                    "status": "checkout_created",
+                    "provider": "razorpay",
+                    "billing_mode": "recurring_subscription",
+                    "checkout_url": data.get("short_url"),
+                    "subscription_id": data.get("id"),
+                    "plan": plan_cfg,
+                }
+
+            # Fallback: 30-day time-bounded payment link (auto-expires via current_period_end after 30 days)
             body_obj: Dict[str, Any] = {
                 "amount": int(plan_cfg["price_inr_monthly"]) * 100,
                 "currency": "INR",
-                "description": f"DataX-Ray {plan_cfg['name']} Monthly Plan",
+                "description": f"DataX-Ray {plan_cfg['name']} (30-Day Monthly Pass)",
                 "callback_url": success_url,
                 "callback_method": "get",
-                "notes": {"tenant_id": norm_tid, "plan_id": norm_plan},
+                "notes": {"tenant_id": norm_tid, "plan_id": norm_plan, "billing_period_days": "30"},
             }
             if customer_email:
                 body_obj["customer"] = {"email": customer_email}
@@ -612,6 +726,7 @@ class TenantBillingManager:
             return {
                 "status": "checkout_created",
                 "provider": "razorpay",
+                "billing_mode": "time_bounded_30d_pass",
                 "checkout_url": data.get("short_url"),
                 "payment_link_id": data.get("id"),
                 "plan": plan_cfg,

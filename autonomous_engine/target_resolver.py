@@ -57,8 +57,8 @@ def is_synthetic_column(col_name: str, blueprint: Optional[Dict[str, Any]] = Non
 def is_demographic_attribute(col_name: str) -> bool:
     """
     Detects protected/demographic attributes across English, Portuguese, Spanish, French, and German
-    (e.g., Sex, Gender, Genero, Race, Ethnicity, Marital Status, Religion, Nationality)
-    so operational business dimensions are prioritized over protected personal attributes.
+    (e.g., Sex, Gender, Genero, Race, Ethnicity, Marital Status, Religion, Nationality, Patient/Person Age)
+    so operational business dimensions and outcomes are prioritized over personal attributes.
     """
     c = str(col_name).strip().lower()
     c_norm = re.sub(r'[\s\-]+', '_', c)
@@ -66,11 +66,16 @@ def is_demographic_attribute(col_name: str) -> bool:
         'sex', 'gender', 'genero', 'género', 'gênero', 'sexe', 'geschlecht', 'sesso',
         'race', 'ethnicity', 'marital_status', 'maritalstatus', 'estado_civil', 'estadocivil',
         'casado', 'married', 'partner', 'dependentes', 'dependents',
-        'religion', 'nationality', 'age_group', 'seniorcitizen', 'aposentado'
+        'religion', 'nationality', 'age_group', 'seniorcitizen', 'aposentado',
+        'age', 'patient_age', 'patient_age_yrs', 'patient_age_years', 'customer_age',
+        'client_age', 'user_age', 'employee_age', 'driver_age', 'rider_age', 'age_yrs', 'age_years',
+        'birth_year', 'dob'
     }
     if c in exact_demo or c_norm in exact_demo:
         return True
     if re.search(r'\b(?:sex|gender|genero|género|gênero|race|ethnicity|marital_status|estado_civil|religion|nationality)\b', c_norm):
+        return True
+    if re.search(r'\b(?:patient|customer|client|user|employee|driver|rider)_?age\b', c_norm):
         return True
     return False
 
@@ -83,13 +88,14 @@ def is_pseudo_numeric_identifier(col_name: str, series: Optional[pd.Series] = No
     """
     if is_index_artifact(col_name, series):
         return True
-    c = str(col_name).strip().lower()
-    # Explicit nominal number patterns
+    c_camel = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(col_name).strip()).lower()
+    c = re.sub(r'[\s\-]+', '_', c_camel)
+    # Explicit nominal number patterns (handles both snake_case and CamelCase like StockCode, InvoiceNo)
     nominal_patterns = (
         r'(?:\broom[\s_]*(?:number|num|no|id)\b|'
         r'\b(?:zip|postal)[\s_]*(?:code)?\b|'
-        r'\b(?:phone|mobile|tel|ssn|sin|pin|fips|serial|routing|iban)[\s_]*(?:number|num|no|code|id)?\b|'
-        r'\b(?:account|card|flight|ticket|invoice|order|customer|patient|doctor|hospital|employee|store|branch|emp|dept|merchant|vendor|product|item|station|ward|bed)[\s_]*(?:number|num|no|id|code|key)\b)'
+        r'\b(?:phone|mobile|tel|ssn|sin|pin|fips|serial|routing|iban|barcode|upc|ean|asin|isbn)[\s_]*(?:number|num|no|code|id)?\b|'
+        r'\b(?:account|card|flight|ticket|invoice|voucher|order|customer|patient|doctor|hospital|employee|store|branch|emp|dept|merchant|vendor|product|item|stock|sku|part|batch|lot|station|ward|bed)[\s_]*(?:number|num|no|id|code|key)\b)'
     )
     if re.search(nominal_patterns, c):
         return True
@@ -113,6 +119,44 @@ def is_categorical_or_string_series(series: pd.Series) -> bool:
     if pd.api.types.is_object_dtype(series) or pd.api.types.is_string_dtype(series):
         return True
     return False
+
+
+_TEMPORAL_NAME_TOKENS = (
+    "_date", "date_", "timestamp", "datetime", "created_at", "updated_at",
+    "received_dt", "dob", "fecha", "tarih", "datum", "data_pedido", "order_time",
+    "ship_date", "date_received", "event_date", "invoice_date", "bill_date",
+)
+_TEMPORAL_EXACT_NAMES = {
+    "date", "time", "datetime", "timestamp", "fecha", "tarih", "datum", "created",
+}
+_TEMPORAL_VALUE_REGEX = re.compile(
+    r"^(?:\d{4}[-/]\d{1,2}[-/]\d{1,2}(?:[T\s]\d{1,2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?|\d{1,2}[-/]\d{1,2}[-/]\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)?)$",
+    re.IGNORECASE,
+)
+
+
+def is_temporal_column(series: Optional[pd.Series], col_name: str = "") -> bool:
+    """
+    Canonical single source of truth for detecting date/timestamp columns
+    (English + multilingual headers, CamelCase headers, datetime64 dtypes, and ISO/DMY/MDY date strings).
+    """
+    c_camel = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", str(col_name or "").strip()).lower()
+    c_norm = re.sub(r"[.\-\s]+", "_", c_camel)
+    if c_norm in _TEMPORAL_EXACT_NAMES or any(tok in c_norm for tok in _TEMPORAL_NAME_TOKENS):
+        return True
+    if series is None:
+        return False
+    try:
+        if pd.api.types.is_datetime64_any_dtype(series):
+            return True
+        if pd.api.types.is_numeric_dtype(series) or pd.api.types.is_bool_dtype(series):
+            return False
+        sample = series.dropna().astype(str).str.strip().head(40)
+        if len(sample) < 5:
+            return False
+        return float(sample.str.match(_TEMPORAL_VALUE_REGEX, na=False).mean()) >= 0.80
+    except Exception:
+        return False
 
 
 def is_deterministic_target_leakage(
@@ -444,8 +488,21 @@ def format_currency_value(
             return f"{sign}{sym}{abs_val:,.2f}"
 
 
+import threading
+
+_TARGET_CACHE_LOCK = threading.Lock()
 _CANONICAL_TARGET_CACHE: Dict[Tuple[Any, ...], Dict[str, Any]] = {}
 _SHARED_TELEMETRY_STORE: Dict[Tuple[Any, ...], Dict[str, Any]] = {}
+
+
+def _dataframe_content_fingerprint(df: pd.DataFrame) -> Tuple[Any, ...]:
+    """Fast O(1) structural + boundary value fingerprint preventing Python id(df) reuse collisions."""
+    if df.empty:
+        return (0, 0)
+    sample_cols = list(df.columns[:6])
+    head_vals = tuple(str(x) for x in df[sample_cols].head(2).values.ravel().tolist())
+    tail_vals = tuple(str(x) for x in df[sample_cols].tail(2).values.ravel().tolist())
+    return (df.shape, head_vals, tail_vals)
 
 
 def get_shared_telemetry(df: pd.DataFrame) -> Dict[str, Any]:
@@ -456,12 +513,13 @@ def get_shared_telemetry(df: pd.DataFrame) -> Dict[str, Any]:
     """
     if not isinstance(df, pd.DataFrame) or df.empty:
         return {"rows": 0, "chi2_map": {}, "num_series": {}}
-    key = (id(df), len(df), tuple(df.columns))
-    if key not in _SHARED_TELEMETRY_STORE:
-        if len(_SHARED_TELEMETRY_STORE) > 8:
-            _SHARED_TELEMETRY_STORE.clear()
-        _SHARED_TELEMETRY_STORE[key] = {"rows": len(df), "chi2_map": {}, "num_series": {}}
-    return _SHARED_TELEMETRY_STORE[key]
+    key = (id(df), len(df), tuple(df.columns), _dataframe_content_fingerprint(df))
+    with _TARGET_CACHE_LOCK:
+        if key not in _SHARED_TELEMETRY_STORE:
+            if len(_SHARED_TELEMETRY_STORE) > 8:
+                _SHARED_TELEMETRY_STORE.clear()
+            _SHARED_TELEMETRY_STORE[key] = {"rows": len(df), "chi2_map": {}, "num_series": {}}
+        return _SHARED_TELEMETRY_STORE[key]
 
 
 def resolve_canonical_target_and_cost(
@@ -474,20 +532,23 @@ def resolve_canonical_target_and_cost(
     Single Canonical Ground-Truth Resolver for Target Outcome and Financial Exposure.
     Guarantees that Stage 5, Decision Matrix, and Micro-Forensic Engine share
     the exact same binary classification target and physical monetary column.
-    Uses unified telemetry caching across Stage 5 engines to eliminate redundant scans.
+    Uses thread-safe content-fingerprinted caching across Stage 5 engines.
     """
     cols = list(df.columns)
     cache_key = (
         id(df),
         len(df),
         tuple(cols),
+        _dataframe_content_fingerprint(df),
         str(blueprint.get("target_override")) if isinstance(blueprint, dict) else None,
         str(blueprint.get("cost_override")) if isinstance(blueprint, dict) else None,
         str(blueprint.get("target_variable_candidate")) if isinstance(blueprint, dict) else None,
         str(region_profile or (blueprint.get("region_profile") if isinstance(blueprint, dict) else None)),
+        str(blueprint.get("business_category") if isinstance(blueprint, dict) else None),
         tuple(sorted(raw_source_cols)) if raw_source_cols else None,
     )
-    cached = _CANONICAL_TARGET_CACHE.get(cache_key)
+    with _TARGET_CACHE_LOCK:
+        cached = _CANONICAL_TARGET_CACHE.get(cache_key)
     if isinstance(cached, dict) and len(cached.get("binary_target", [])) == len(df):
         return cached
 
@@ -501,21 +562,38 @@ def resolve_canonical_target_and_cost(
     target_keywords = [
         'not_fully_paid', 'not.fully.paid', 'unpaid', 'charged_off', 'charge_off', 'delinquent', 'writeoff', 'write_off',
         'is_rto', 'rto_flag', 'rto_status',
-        'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury', 'satisfaction', 'dissatisfied', 'exited', 'stroke',
-        'readmit', 'attrition', 'churn', 'fraud', 'default', 'failure', 'fail', 'defect', 'fault', 'incident', 'hazard', 'reach', 'ontime',
+        'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury',
+        'event_type', 'adverse_event', 'severity', 'complication', 'harm', 'malfunction', 'churn', 'fraud', 'default', 'stroke',
+        'readmit', 'attrition', 'satisfaction', 'dissatisfied', 'exited', 'failure', 'fail', 'defect', 'fault', 'incident', 'hazard', 'reach', 'ontime',
         'on_time', 'time_y', 'y_n', 'cancel', 'is_returned', 'returned', 'refund', 'chargeback', 'error', 'late', 'delay', 'smoker', 'survived', 'survival', 'cut',
-        'risk', 'outcome', 'status', 'target', 'label', 'class', 'quality',
+        'risk', 'outcome', 'status', 'event', 'target', 'label', 'class', 'quality',
         'grade', 'rating', 'score', 'test results', 'test_results', 'test result',
         'admission type', 'admission_type', 'diagnosis', 'abnormal', 'emergency',
         'estado', 'statut', 'stato', 'ergebnis', '状態', '状态', 'الحالة', '상태',
         'स्थिति', 'स्टेटस', 'परिणाम', 'नतीजा'
     ]
+    # Safe Category Tie-Breaker Boost (only when explicit non-auto business_category is set)
+    _bp_cat = str(blueprint.get("business_category") or "").strip().lower() if isinstance(blueprint, dict) else ""
+    if _bp_cat and _bp_cat != "auto":
+        try:
+            try:
+                from .business_category_registry import get_category_spec
+            except ImportError:
+                from business_category_registry import get_category_spec
+            _cat_prio = [str(k).lower() for k in get_category_spec(_bp_cat).get("target_priority_keywords", [])]
+            if _cat_prio:
+                target_keywords = _cat_prio + [k for k in target_keywords if k not in _cat_prio]
+        except Exception:
+            pass
 
     # 1.0 Explicit User Override Gate (from 1-Second Intent Handshake)
+    _is_explicit_override = False
+    _from_blueprint_hint = False
     if blueprint and blueprint.get("target_override") in cols:
         target_col = blueprint.get("target_override")
+        _is_explicit_override = True
 
-    # 1.1 Check Blueprint hint first (excluding artifacts, URLs, free text, or pure monetary ledgers when discrete target exists)
+    # 1.1 Check Blueprint hint first (excluding artifacts, URLs, free text, dates, demographics, or pure monetary ledgers when discrete target exists)
     if not target_col and blueprint and blueprint.get("target_metric") in cols:
         bp_cand = blueprint.get("target_metric")
         c_low = bp_cand.lower()
@@ -523,10 +601,12 @@ def resolve_canonical_target_and_cost(
             'link', 'url', 'poster', 'image', 'photo', 'overview', 'description', 'desc', 'summary',
             'path', 'href', 'title', 'longitude', 'latitude', 'pickup', 'dropoff', 'datetime', 'timestamp',
             'आईडी', 'क्रमांक'
-        ]) or c_low in ['lon', 'lat'] or c_low.endswith(('_id', '_key', '_code')) or (
-            any(t in c_low for t in ('year', 'month', 'weeknum', 'week_num', 'quarter', 'qtr'))
-            and not any(ok in c_low for ok in ('delay', 'tenure', 'age', 'maturity'))
+        ]) or c_low in ['lon', 'lat', 'sku', 'upc', 'ean', 'asin', 'isbn', 'imei', 'vin', 'tailnum'] or c_low.endswith(('_id', '_key', '_code', '_sku')) or any(
+            tok in c_low.split('_') for tok in ('sku', 'upc', 'ean', 'asin', 'isbn')
         ) or (
+            any(t in c_low for t in ('year', 'month', 'weeknum', 'week_num', 'quarter', 'qtr', 'date_'))
+            and not any(ok in c_low for ok in ('delay', 'tenure', 'age', 'maturity'))
+        ) or ('_date' in c_low or c_low == 'date') or (
             not pd.api.types.is_numeric_dtype(df[bp_cand]) and len(df) >= 10 and (df[bp_cand].nunique() / max(len(df), 1)) >= 0.90
         )
         is_artifact = is_index_artifact(bp_cand)
@@ -534,12 +614,18 @@ def resolve_canonical_target_and_cost(
         is_monetary = any(k in c_low for k in ['amount', 'price', 'cost', 'revenue', 'sales', 'billing', 'charge', 'balance', 'salary', 'income', 'fare', 'value']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 50
         is_continuous_delay_driver = any(k in c_low for k in ['delay_days', 'transit_days', 'delivery_days', 'dispatch_delay', 'lead_time_days', 'sla_days']) and pd.api.types.is_numeric_dtype(df[bp_cand]) and df[bp_cand].nunique() > 10
         is_demographic = is_demographic_attribute(bp_cand)
+        is_high_card_non_outcome = (
+            (not pd.api.types.is_numeric_dtype(df[bp_cand]))
+            and df[bp_cand].nunique() > 12
+            and not any(k in c_low for k in target_keywords)
+        )
         has_discrete_targets = any(
             any(k in c.lower() for k in target_keywords) and (df[c].nunique() <= 10) and not c.lower().endswith(('_id', '_key', '_code', '_num')) and not is_index_artifact(c)
             for c in cols
         )
-        if not is_bad_bp and not is_artifact and not is_spatial and not (is_monetary and has_discrete_targets) and not (is_continuous_delay_driver and has_discrete_targets) and not (is_demographic and has_discrete_targets):
+        if not is_bad_bp and not is_artifact and not is_spatial and not (is_monetary and has_discrete_targets) and not (is_continuous_delay_driver and has_discrete_targets) and not (is_demographic and has_discrete_targets) and not (is_high_card_non_outcome and has_discrete_targets):
             target_col = bp_cand
+            _from_blueprint_hint = True
     if not target_col:
         has_spatial = 'x' in [col.lower() for col in cols] and 'y' in [col.lower() for col in cols]
         if has_spatial:
@@ -587,31 +673,36 @@ def resolve_canonical_target_and_cost(
         
         priority_targets = [
             'not_fully_paid', 'unpaid', 'charged_off', 'charge_off', 'chgoff', 'delinquent', 'is_rto',
-            'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury', 'churn', 'fraud', 'default', 'stroke', 'attrition',
+            'loan_status', 'loanstatus', 'claim_status', 'claim', 'death', 'mortality', 'fatal', 'fatality', 'crash', 'collision', 'fire', 'injured', 'injury',
+            'adverse_event', 'event_type', 'severity', 'complication', 'harm', 'malfunction',
+            'churn', 'fraud', 'default', 'stroke', 'attrition',
             'readmit', 'satisfaction', 'exited', 'cancel', 'order_status', 'delivery_status', 'fulfillment_status', 'payment_status',
-            'smoker', 'survived', 'survival', 'cut', 'outcome', 'incident', 'hazard', 'fail', 'status', 'delay',
+            'smoker', 'survived', 'survival', 'cut', 'outcome', 'incident', 'hazard', 'fail', 'status', 'event', 'delay',
             'late', 'risk', 'quality', 'grade', 'rating', 'test results', 'test_results', 'test result', 'abnormal', 'emergency'
         ]
         _generic_idx = priority_targets.index('outcome')
         _adv_val_re = re.compile(
             r'\b(?:bad|default|defaulted|charged off|charge off|chgoff|delinquent|fraud|churn|attrition|'
-            r'defect|fail|failed|failure|cancel|cancelled|canceled|delayed|delay|late|returned|rto|rejected|overdue|writeoff|write off)\b'
+            r'defect|fail|failed|failure|cancel|cancelled|canceled|delayed|delay|late|returned|rto|rejected|overdue|writeoff|write off|'
+            r'injury|injured|injuries|harm|dead|death|deceased|fatal|fatality|hospitalized|hospitalization|complication|malfunction|recall|critical|severe)\b'
         )
         _flag_status_cols = {'revolver_status', 'revolverstatus', 'marital_status', 'maritalstatus', 'employment_status', 'tax_status'}
 
         def _cand_sort_key(col: str) -> Tuple[int, int, int]:
             c_l = col.lower()
             c_n = re.sub(r'[.\-\s]+', '_', c_l)
-            kw_rank = next((i for i, pt in enumerate(priority_targets) if pt in c_l or pt in c_n), 999)
-            if kw_rank < _generic_idx:
-                return (0, kw_rank, 0)
             has_adv_val = 1
             if not pd.api.types.is_numeric_dtype(df[col]):
                 s_samp = df[col].dropna().astype(str).head(250).str.lower().str.replace(r'[_\-/]+', ' ', regex=True)
                 if s_samp.str.contains(_adv_val_re, regex=True).any():
                     has_adv_val = 0
+            # Structural class/tier codes (e.g. device_class '1','2','3') without adverse value tokens rank strictly below genuine event columns
+            is_structural_class = 1 if ('class' in c_l and has_adv_val == 1) else 0
+            kw_rank = next((i for i, pt in enumerate(priority_targets) if pt in c_l or pt in c_n), 999)
+            if kw_rank < _generic_idx and is_structural_class == 0:
+                return (0, kw_rank, 0)
             is_flag = 1 if (c_l in _flag_status_cols or c_n in _flag_status_cols) else 0
-            return (1, is_flag * 10 + has_adv_val, kw_rank)
+            return (1, is_structural_class * 20 + is_flag * 10 + has_adv_val, kw_rank)
 
         target_candidates.sort(key=_cand_sort_key)
         if target_candidates:
@@ -645,25 +736,50 @@ def resolve_canonical_target_and_cost(
     # 1.4 Raw ERP Invoice Credit-Note / Negative-Quantity Return Auto-Detector (Tally/SAP/Shopify/UK Retail)
     erp_credit_note_target: Optional[pd.Series] = None
     erp_credit_note_desc: Optional[str] = None
-    if not target_col:
+    _bp_picked_qty = bool(
+        not _is_explicit_override
+        and _from_blueprint_hint
+        and target_col
+        and re.sub(r'[\s\-]+', '_', re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(target_col).strip())).lower()
+        in ('quantity', 'qty', 'units', 'order_qty', 'billed_qty', 'sold_qty')
+    )
+    if (not target_col) or _bp_picked_qty:
         inv_col = next(
-            (c for c in cols if any(k in c.lower() for k in ('invoiceno', 'invoice_no', 'invoice_id', 'voucherno', 'orderno', 'order_no', 'bill_no')) and not pd.api.types.is_numeric_dtype(df[c])),
+            (
+                c for c in cols
+                if any(k in re.sub(r'[\s\-]+', '_', re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(c).strip())).lower()
+                       for k in ('invoice_no', 'invoiceno', 'invoice_id', 'voucher_no', 'voucherno', 'order_no', 'orderno', 'bill_no', 'billno'))
+                and not pd.api.types.is_numeric_dtype(df[c])
+            ),
             None,
         )
         qty_col = next(
-            (c for c in cols if c.lower().strip() in ('quantity', 'qty', 'units', 'order_qty', 'billed_qty') and pd.api.types.is_numeric_dtype(df[c])),
+            (
+                c for c in cols
+                if re.sub(r'[\s\-]+', '_', re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(c).strip())).lower()
+                in ('quantity', 'qty', 'units', 'order_qty', 'billed_qty', 'sold_qty')
+                and pd.api.types.is_numeric_dtype(df[c])
+            ),
             None,
         )
         if qty_col is not None:
             q_num = pd.to_numeric(df[qty_col], errors='coerce').fillna(0)
             neg_q = q_num < 0
+            neg_cnt = int(neg_q.sum())
+            neg_rate = float(neg_q.mean()) if len(df) else 0.0
             inv_c = df[inv_col].astype(str).str.strip().str.upper().str.match(r'^(?:C\d|CN[-_\s]?\d|CR[-_\s]?\d)') if inv_col else pd.Series(False, index=df.index)
-            comb_ret = neg_q | inv_c
-            ret_rate = float(comb_ret.mean()) if len(df) else 0.0
-            if int(comb_ret.sum()) >= 5 and 0.002 <= ret_rate <= 0.45:
+            if neg_cnt >= 5 and 0.002 <= neg_rate <= 0.45:
+                # Single-column separable on qty_col < 0 so SQL & DAX predicates match 100.00% exactly
                 target_col = qty_col
-                erp_credit_note_target = comb_ret.astype(int)
-                erp_credit_note_desc = f"ERP Return / Credit Note ({qty_col} < 0" + (f" or {inv_col} 'C' prefix)" if inv_col and inv_c.any() else ")")
+                erp_credit_note_target = neg_q.astype(int)
+                erp_credit_note_desc = f"ERP Return / Credit Note ({qty_col} < 0)"
+            elif inv_col is not None:
+                inv_cnt = int(inv_c.sum())
+                inv_rate = float(inv_c.mean()) if len(df) else 0.0
+                if inv_cnt >= 5 and 0.002 <= inv_rate <= 0.45:
+                    target_col = inv_col
+                    erp_credit_note_target = inv_c.astype(int)
+                    erp_credit_note_desc = f"ERP Credit Note ({inv_col} 'C'/CN/CR prefix)"
 
     # 1.5 Raw P&L Profit-Loss Auto-Detector (Negative Profit / Loss-Making Orders when no binary status column exists)
     pnl_loss_target: Optional[pd.Series] = None
@@ -714,7 +830,9 @@ def resolve_canonical_target_and_cost(
         r'\b(?:bad|default|defaulted|charged off|chgoff|delinquent|fraud|fraudulent|'
         r'churn|churned|attrition|attrited|defect|defective|fail|failed|failure|'
         r'cancel|cancelled|canceled|delayed|delay|late|anomaly|substandard|poor|'
-        r'low quality|malignant|dead|death|deceased|fatal|disease|stroke|diabetic|'
+        r'low quality|malignant|dead|death|deceased|fatal|fatality|injury|injured|injuries|'
+        r'harm|hospitalized|hospitalization|disability|life threatening|complication|malpractice|'
+        r'disease|stroke|diabetic|'
         r'return|returned|rto|undelivered|rejected|lost|disputed|'
         r'damaged|damage|spoiled|spoilage|corrupt|corrupted|broken|shortage|missing|stolen|'
         r'breach|breached|excursion|overdue|expired|contaminated|chargeback|writeoff|write off|'
@@ -731,6 +849,7 @@ def resolve_canonical_target_and_cost(
     col_denotes_adverse = any(k in target_col.lower() for k in [
         'risk', 'default', 'churn', 'fraud', 'defect', 'fail', 'bad', 'loss', 'delay',
         'late', 'cancel', 'disease', 'stroke', 'death', 'mortality', 'complication',
+        'severity', 'adverse_event', 'event_type', 'harm',
         'attrition', 'anomaly', 'claim', 'target', 'label', 'class', 'outcome', 'status',
         'estado', 'statut', 'stato', 'ergebnis', '状態', '状态', 'الحالة',
         'test results', 'test_results', 'admission'
@@ -762,6 +881,23 @@ def resolve_canonical_target_and_cost(
         known_missing = {'unknown', 'none', 'null', 'nan', '', 'na', 'n/a'}
         clean_mask = s_raw.notna() & ~s_str.isin(known_missing)
         clean_unique = [str(v).lower().strip() for v in s_raw.dropna().unique() if str(v).lower().strip() not in known_missing]
+
+        # Tier-2 equipment malfunction/recall fallback when no Tier-1 harm/failure tokens matched
+        if int((is_adv & clean_mask).sum()) == 0:
+            t2_adv = s_str_norm.str.contains(r'\b(?:malfunction|recall|warning|incident)\b', regex=True) & clean_mask
+            n_clean = max(int(clean_mask.sum()), 1)
+            if 0 < int(t2_adv.sum()) < int(0.95 * n_clean):
+                is_adv = t2_adv
+
+        # Anti-saturation safeguard: if broad adverse tokens match >= 98% of records (multi-tier log), isolate severe tier
+        n_clean_tot = max(int(clean_mask.sum()), 1)
+        if int((is_adv & clean_mask).sum()) >= int(0.98 * n_clean_tot):
+            t1_severe = s_str_norm.str.contains(
+                r'\b(?:dead|death|deceased|fatal|fatality|injury|injured|injuries|hospitalized|hospitalization|critical|severe|life threatening)\b',
+                regex=True,
+            ) & clean_mask
+            if 5 <= int(t1_severe.sum()) <= int(0.85 * n_clean_tot):
+                is_adv = t1_severe
 
         if target_col.lower() == 'cut' and any(k in s_str.unique() for k in ['ideal', 'premium', 'fair']):
             is_cut_sub = s_str.isin(['fair', 'good'])
@@ -890,7 +1026,7 @@ def resolve_canonical_target_and_cost(
         'loss', 'claim', 'charge', 'charges', 'billing_amount', 'billing', 'salary', 'income', 'expense', 'payment', 'fee',
         'valormensal', 'totalgasto', 'valor', 'gasto', 'fatura', 'adr', 'daily_rate', 'fare', 'house_value', 'property_value', 'asset_value',
         'total_bill', 'total_amount', 'total_sales', 'total_price', 'total_cost', 'total_revenue', 'gross income', 'gross_income',
-        'order_value', 'contract_value', 'deal_value', 'invoice_value', 'line_value', 'line_total', 'order_bill', 'bill_inr', 'bill_usd',
+        'order_value', 'contract_value', 'deal_value', 'invoice_value', 'line_gross_value', 'line_revenue', 'line_value', 'line_total', 'order_bill', 'bill_inr', 'bill_usd',
         'premium', 'retainer', 'monthly_rent', 'annual_rent', 'rent_inr', 'rent_usd', 'freight', 'tariff', 'principal', 'tuition', 'commission',
         'importe', 'monto', 'montant', 'betrag', 'umsatz', 'preis', 'kosten', 'precio', 'prix', 'prezzo', '金額', '売上', '金额', 'المبلغ',
         'रकम', 'राशि', 'रुपये', 'रुपए', 'कीमत', 'मूल्य', 'बिल', 'बिक्री', 'खर्च', 'लागत', 'किराया', 'आय', 'वेतन', 'भुगतान'
@@ -938,16 +1074,36 @@ def resolve_canonical_target_and_cost(
         # Exclude pure date/time/tenure columns that end with time units unless they contain explicit money words
         if any(c_low == t or c_low.endswith(t) for t in time_units) and not (any(m in c_low for m in money_words) or has_anchored_arr or has_currency_suffix):
             continue
-        if (any(k in c_low for k in cost_keywords) or has_anchored_arr or has_currency_suffix or is_exact_total) and pd.api.types.is_numeric_dtype(df[c]):
+        if any(k in c_low for k in cost_keywords) or has_anchored_arr or has_currency_suffix or is_exact_total:
+            if pd.api.types.is_numeric_dtype(df[c]):
+                s_raw_cost = pd.to_numeric(df[c], errors='coerce')
+            else:
+                s_cleaned_cost = df[c].dropna().astype(str).str.replace(r'[₹$€£¥,\s]', '', regex=True)
+                s_parsed_cost = pd.to_numeric(s_cleaned_cost, errors='coerce')
+                if len(s_parsed_cost) == 0 or s_parsed_cost.notna().mean() < 0.80:
+                    continue
+                s_raw_cost = pd.to_numeric(df[c].astype(str).str.replace(r'[₹$€£¥,\s]', '', regex=True), errors='coerce')
             # If raw_source_cols provided, ensure it was an authentic raw column or a clean numeric parse of one
+            # Also permit physically synthesized POS line totals (line_revenue / line_gross_value) when raw qty + unit_price exist
             if raw_source_cols:
                 raw_low = {r.lower() for r in raw_source_cols}
+                raw_snk = {re.sub(r'[\s\-]+', '_', re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', str(r).strip())).lower() for r in raw_source_cols}
                 base_c = c_low.replace('_num', '').replace('_clean', '').replace('_parsed', '').replace('_val', '')
-                if c not in raw_source_cols and base_c not in raw_low:
+                is_phys_pos_line = c_low in ('line_revenue', 'line_gross_value') and (
+                    any(k in raw_snk for k in ('quantity', 'qty', 'units', 'order_qty', 'billed_qty', 'sold_qty'))
+                    and any(k in raw_snk for k in ('unit_price', 'selling_price', 'sale_price', 'item_price', 'price', 'rate', 'mrp'))
+                )
+                if c not in raw_source_cols and base_c not in raw_low and not is_phys_pos_line:
                     continue
-            s_raw = pd.to_numeric(df[c], errors='coerce')
-            s_nonnull = s_raw.dropna()
+            s_nonnull = s_raw_cost.dropna()
             if len(s_nonnull) >= max(1, int(len(df) * 0.50)) and (s_nonnull > 0).mean() > 0.85 and float(s_nonnull.sum()) > 0:
+                # On credit-note return ledgers, avoid signed negative line_revenue as adverse exposure column when unsigned line_gross_value exists
+                if c_low == 'line_revenue' and 'line_gross_value' in cols:
+                    try:
+                        if float(s_raw_cost.loc[binary_target == 1].sum()) < 0:
+                            continue
+                    except Exception:
+                        pass
                 candidate_cost_cols.append(c)
 
     if blueprint and str(blueprint.get("cost_override", "")).upper() in ("__NONE__", "NONE"):
@@ -957,7 +1113,7 @@ def resolve_canonical_target_and_cost(
     elif candidate_cost_cols:
         priority_cost = [
             'loan_amount', 'loanamount', 'gross_approval', 'grossapproval', 'loan_approval', 'disbursed_amount', 'funded_amount', 'sanctioned_amount', 'guaranteed_approval', 'guaranteedapproval', 'loan', 'credit_amount', 'installment', 'instalment', 'emi', 'house_value', 'median_house_value', 'property_value',
-            'invoiced_amount', 'net_billed', 'net_bill', 'net_revenue', 'net_sales', 'net_sale', 'selling_price', 'net_amount', 'bill_amount', 'bill_value',
+            'invoiced_amount', 'net_billed', 'net_bill', 'net_revenue', 'net_sales', 'net_sale', 'line_gross_value', 'line_revenue', 'selling_price', 'net_amount', 'bill_amount', 'bill_value',
             'revenue', 'mrr', 'arr', 'sales', 'gross_sale', 'total_sale', 'sale_amount', 'sale_value', 'total_bill', 'order_bill', 'order_total', 'invoice_total', 'line_value', 'line_total', 'total_amount', 'total_sales', 'exact_total',
             'order_value', 'contract_value', 'deal_value', 'invoice_value', 'invoice_amount', 'premium', 'retainer', 'monthly_rent', 'rent',
             'gross income', 'gross_income', 'billing_amount', 'gross_billing', 'billing',
@@ -995,7 +1151,8 @@ def resolve_canonical_target_and_cost(
         "detected_currencies": curr_meta.get("detected_currencies", []),
         "currency_breakdown": curr_meta.get("currency_breakdown", {}),
     }
-    if len(_CANONICAL_TARGET_CACHE) > 16:
-        _CANONICAL_TARGET_CACHE.clear()
-    _CANONICAL_TARGET_CACHE[cache_key] = result
+    with _TARGET_CACHE_LOCK:
+        if len(_CANONICAL_TARGET_CACHE) > 16:
+            _CANONICAL_TARGET_CACHE.clear()
+        _CANONICAL_TARGET_CACHE[cache_key] = result
     return result

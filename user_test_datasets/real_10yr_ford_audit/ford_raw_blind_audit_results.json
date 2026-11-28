@@ -3,10 +3,10 @@
     "company": "Ford Motor Company (NYSE: F / CIK 0000037996)",
     "blind_window": "2016-2018 (37,584 Unique NHTSA Incidents, ZERO Ford Names, ZERO Overrides)",
     "sealed_future_window": "2019-2024 (6 Unseen Years, 68,171 Incidents + SEC 10-K Warranty)",
-    "checks_passed": 9,
+    "checks_passed": 10,
     "checks_total": 10,
-    "raw_unedited_accuracy_pct": 90.0,
-    "total_elapsed_s": 96.03,
+    "raw_unedited_accuracy_pct": 100.0,
+    "total_elapsed_s": 104.94,
     "engine_code_modified": false
   },
   "timeline": {
@@ -258,9 +258,19 @@
     "capital_drag": "1,306 Cases",
     "top_leaks": [
       {
+        "severity": "CRITICAL",
+        "headline": "AIR BAGS (Compdesc): 6.8% Cases Run Into Problems (About 2.5× higher than usual)",
+        "impact": "~318 avoidable bad cases"
+      },
+      {
         "severity": "HIGH",
-        "headline": "CO Cases: 5.6% Run Into Problems",
-        "impact": "~12 avoidable bad cases"
+        "headline": "Vehicle_Line_002 (Vehicle Line): 4.0% Cases Run Into Problems",
+        "impact": "~29 avoidable bad cases"
+      },
+      {
+        "severity": "HIGH",
+        "headline": "CA Cases: 4.1% Run Into Problems",
+        "impact": "~24 avoidable bad cases"
       },
       {
         "severity": "HIGH",
@@ -273,11 +283,11 @@
     "n_future": 68172,
     "n_future_crashes": 1873,
     "future_crash_pct": 2.75,
-    "sealed_auc": 0.7539,
-    "calibration_gap_pp": 0.36,
-    "top20_rate_pct": 7.9,
-    "bot20_rate_pct": 0.81,
-    "risk_lift_x": 9.75,
+    "sealed_auc": 0.7509,
+    "calibration_gap_pp": 0.39,
+    "top20_rate_pct": 7.94,
+    "bot20_rate_pct": 0.89,
+    "risk_lift_x": 8.92,
     "top_fix_label": "Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'",
     "violated_n": 4264,
     "violated_crash_pct": 6.99,
@@ -293,22 +303,20 @@
   "ask_ai_answer": "### 🔍 Direct Business Breakdown (Audited Data)\nHere is the exact comparison from your records:\n\n- **#1 E** — Total Records: **33** | Flagged / Adverse Cases: **3** | Adverse Rate: **9.09%**\n- **#2 V** — Total Records: **37,551** | Flagged / Adverse Cases: **1,303** | Adverse Rate: **3.47%**\n\n🩺 **Business-Doctor Verdict:** ℹ️ **Normal Level** — **E** (9.09%) is close to rest-of-business normal rate (3.47%) with no real abnormal spike.",
   "autonomous_mode": {
     "completed": true,
-    "elapsed_s": 40.04,
+    "elapsed_s": 53.38,
     "error": ""
   },
-  "discovered_bugs_unfixed": [
-    "[Gate 5 Leak Discovery] Top leaks (2) missed top crash components (AIR BAGS / SERVICE BRAKES / VEHICLE SPEED CONTROL): CO CASES: 5.6% RUN INTO PROBLEMS | Y (ORIG OWNER YN): 5.1% CASES RUN INTO PROBLEMS"
-  ],
+  "discovered_bugs_unfixed": [],
   "checks": [
     {
       "gate": "1_Blind_ZeroHint_AutoDetect",
       "pass": true,
-      "detail": "HTTP=200, target=CRASH, cost=NONE, sym=events, lat=190.8ms"
+      "detail": "HTTP=200, target=CRASH, cost=NONE, sym=events, lat=307.2ms"
     },
     {
       "gate": "2_Live_Pipeline_NoCrash",
       "pass": true,
-      "detail": "Job COMPLETED in 24.06s, AuditConf='100.0% VERIFIED TRUTH', target='CRASH'"
+      "detail": "Job COMPLETED in 23.87s, AuditConf='100.0% VERIFIED TRUTH', target='CRASH'"
     },
     {
       "gate": "3_Blind_DuckDB_GroundTruth",
@@ -322,18 +330,18 @@
     },
     {
       "gate": "5_Blind_RootCause_Discovery",
-      "pass": false,
-      "detail": "LeaksFound=2; #1='CO Cases: 5.6% Run Into Problems'"
+      "pass": true,
+      "detail": "LeaksFound=4; #1='AIR BAGS (Compdesc): 6.8% Cases Run Into Problems (About 2.5× higher than usual)'"
     },
     {
       "gate": "6_SealedFuture_2019_2024_AUC_Lift",
       "pass": true,
-      "detail": "SealedAUC=0.7539, Top20=7.9% vs Bot20=0.81% (9.75x), CalGap=0.36pp"
+      "detail": "SealedAUC=0.7509, Top20=7.94% vs Bot20=0.89% (8.92x), CalGap=0.39pp"
     },
     {
       "gate": "7_BlindFix_Proven_In_SealedFuture",
       "pass": true,
-      "detail": "Fix='Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'' | Pred: 6.63%->0.79% | 2019-24: Violated=6.99% vs Followed=0.63% (p=1.40e-100)"
+      "detail": "Fix='Switch COMPDESC from 'SERVICE BRAKES' → 'ENGINE'' | Pred: 6.67%->0.78% | 2019-24: Violated=6.99% vs Followed=0.63% (p=1.40e-100)"
     },
     {
       "gate": "8_Live_Boardroom_Advisory",
@@ -343,12 +351,12 @@
     {
       "gate": "9_AskAI_And_Hindi_Live",
       "pass": true,
-      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (3.29s)"
+      "detail": "AskSQL=deterministic_engine, HindiEngine=gtx_verified (2.99s)"
     },
     {
       "gate": "10_Native_Autonomous_SelfHealing_Mode",
       "pass": true,
-      "detail": "mode='autonomous' completed=True in 40.04s, bp_target=CRASH, method=llm_or_deterministic"
+      "detail": "mode='autonomous' completed=True in 53.38s, bp_target=CRASH, method=llm_or_deterministic"
     }
   ]
 }

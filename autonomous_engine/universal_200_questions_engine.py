@@ -692,10 +692,31 @@ class Universal200QuestionsEngine:
                     c["q_margin_first"] = float(q_agg["margin"].iloc[0] / max(q_agg["val"].iloc[0], 1e-9) * 100.0)
                     c["q_margin_last"] = float(q_agg["margin"].iloc[-1] / max(q_agg["val"].iloc[-1], 1e-9) * 100.0)
             if len(y_agg) >= 2:
-                y_last, y_prev = float(y_agg["val"].iloc[-1] if net_s is not None else y_agg["orders"].iloc[-1]), float(y_agg["val"].iloc[-2] if net_s is not None else y_agg["orders"].iloc[-2])
-                c["yoy_pct"] = ((y_last - y_prev) / y_prev * 100.0) if y_prev > 0 else 0.0
-                c["yoy_labels"] = (str(y_agg.index[-2]), str(y_agg.index[-1]))
-                c["yoy_vals"] = (y_prev, y_last)
+                # Partial-Year Apples-to-Apples YoY Guard: never compare a 1-month year (e.g. Dec 2010) against a 12-month year (2011) as raw '+1101% YoY'!
+                yr_prev_lbl = int(y_agg.index[-2])
+                yr_last_lbl = int(y_agg.index[-1])
+                tdf_yr = tdf["dt"].dt.year
+                tdf_mo = tdf["dt"].dt.month
+                prev_months = set(tdf_mo[tdf_yr == yr_prev_lbl].unique().tolist())
+                last_months = set(tdf_mo[tdf_yr == yr_last_lbl].unique().tolist())
+                common_months = sorted(prev_months & last_months)
+                if len(prev_months) >= 10 and len(last_months) >= 10:
+                    y_last = float(y_agg["val"].iloc[-1] if net_s is not None else y_agg["orders"].iloc[-1])
+                    y_prev = float(y_agg["val"].iloc[-2] if net_s is not None else y_agg["orders"].iloc[-2])
+                    c["yoy_pct"] = ((y_last - y_prev) / y_prev * 100.0) if y_prev > 0 else 0.0
+                    c["yoy_labels"] = (str(yr_prev_lbl), str(yr_last_lbl))
+                    c["yoy_vals"] = (y_prev, y_last)
+                elif len(common_months) >= 2:
+                    # Compare strictly matching calendar months across both years (e.g., Jan-Jun 2024 vs Jan-Jun 2025)
+                    col_k = "val" if net_s is not None else "orders"
+                    prev_m_mask = (tdf_yr == yr_prev_lbl) & (tdf_mo.isin(common_months))
+                    last_m_mask = (tdf_yr == yr_last_lbl) & (tdf_mo.isin(common_months))
+                    y_prev = float(tdf.loc[prev_m_mask, "val"].sum()) if net_s is not None else float(prev_m_mask.sum())
+                    y_last = float(tdf.loc[last_m_mask, "val"].sum()) if net_s is not None else float(last_m_mask.sum())
+                    if y_prev > 0:
+                        c["yoy_pct"] = ((y_last - y_prev) / y_prev * 100.0)
+                        c["yoy_labels"] = (f"{yr_prev_lbl} ({len(common_months)}m)", f"{yr_last_lbl} ({len(common_months)}m)")
+                        c["yoy_vals"] = (y_prev, y_last)
 
             # Period H1 vs H2 Decomposition (require >= 2 distinct months so H2 is never empty!)
             if len(m_agg) >= 2:
@@ -2287,14 +2308,18 @@ class Universal200QuestionsEngine:
             out.append(self._missing("Q101", pid, pname, "Worst vendor defect/late rate?", "कौन सा सप्लायर खराब माल भेजता है?", "vendor_id / supplier_name"))
 
         if self.cols.get("dispatch_delay") and dt_s_ok(c):
-            dd_df = pd.DataFrame({"dd": self._num_series(self.cols["dispatch_delay"]), "q": c["dt_series"].dt.quarter})
+            dd_col_name = str(self.cols["dispatch_delay"])
+            dd_low = dd_col_name.lower()
+            is_hrs = any(tok in dd_low for tok in ("hour", "_hr", "hrs"))
+            u_en, u_hi, u_short = ("hours", "घंटे", "h") if is_hrs else ("days", "दिन", "d")
+            dd_df = pd.DataFrame({"dd": self._num_series(dd_col_name), "q": c["dt_series"].dt.quarter})
             q4 = dd_df[dd_df["q"] == 4]["dd"]
             non_q4 = dd_df[dd_df["q"] != 4]["dd"]
             if len(q4) >= 5 and len(non_q4) >= 5:
                 out.append(self._entry("Q102", pid, pname, "How do warehouse dispatch delays spike during peak Q4 vs normal quarters?", "फेस्टिव सीज़न (Q4) में गोदाम की रफ्तार कितनी गिरती है?",
-                    f"Q4 festive avg dispatch delay: {q4.mean():.2f} days vs {non_q4.mean():.2f} days in Q1–Q3 ({((q4.mean()-non_q4.mean())/max(non_q4.mean(),1e-9)*100):+.1f}% spike).",
-                    f"Q4 त्योहारी तिमाही में औसत डिस्पैच देरी {q4.mean():.2f} दिन (सामान्य Q1–Q3 में {non_q4.mean():.2f} दिन) रहती है।",
-                    f"Q4 {q4.mean():.2f}d vs {non_q4.mean():.2f}d", STATUS_DIRECT))
+                    f"Q4 festive avg dispatch delay: {q4.mean():.2f} {u_en} vs {non_q4.mean():.2f} {u_en} in Q1–Q3 ({((q4.mean()-non_q4.mean())/max(non_q4.mean(),1e-9)*100):+.1f}% spike).",
+                    f"Q4 त्योहारी तिमाही में औसत डिस्पैच देरी {q4.mean():.2f} {u_hi} (सामान्य Q1–Q3 में {non_q4.mean():.2f} {u_hi}) रहती है।",
+                    f"Q4 {q4.mean():.2f}{u_short} vs {non_q4.mean():.2f}{u_short}", STATUS_DIRECT))
             else:
                 out.append(self._missing("Q102", pid, pname, "Q4 warehouse dispatch spike?", "Q4 में गोदाम देरी?", "dispatch_delay + Q1-Q4 dates"))
         else:

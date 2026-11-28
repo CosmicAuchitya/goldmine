@@ -13,8 +13,8 @@ def build_system_router(
 
     @router.get("/api/v1/system/db-health")
     def get_database_fortress_health(request: Request) -> Dict[str, Any]:
-        """Owner/Admin-only live PRAGMA integrity_check & foreign-key audit across workspace SQLite DBs."""
-        require_role(request, "owner")
+        """Admin-only live PRAGMA integrity_check & foreign-key audit across workspace SQLite DBs."""
+        require_role(request, "admin")
         from ..db_adapter import DatabaseAdapter
 
         runs_dir = Path(workspace_root).resolve() / "runs"
@@ -43,8 +43,8 @@ def build_system_router(
 
     @router.post("/api/v1/system/db-backup")
     def trigger_atomic_db_backup(request: Request) -> Dict[str, Any]:
-        """Owner/Admin-only atomic WAL-safe online snapshot of all workspace SQLite databases."""
-        require_role(request, "owner")
+        """Admin-only atomic WAL-safe online snapshot of all workspace SQLite databases."""
+        require_role(request, "admin")
         from ..db_adapter import backup_all_workspace_databases
         return backup_all_workspace_databases(workspace_root, keep_last=10)
 

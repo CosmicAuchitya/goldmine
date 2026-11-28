@@ -22,6 +22,7 @@ FORBIDDEN_ETL_IMPORTS: Set[str] = {
     "msvcrt", "pty", "tty", "termios", "webbrowser", "pickle", "_pickle",
     "cPickle", "marshal", "shelve", "dill", "cloudpickle", "importlib",
     "builtins", "code", "codeop", "runpy", "dotenv", "paramiko", "fabric",
+    "shutil", "posix", "nt",
 }
 
 FORBIDDEN_BUILTIN_CALLS: Set[str] = {
@@ -35,6 +36,17 @@ FORBIDDEN_OS_METHODS: Set[str] = {
     "spawnl", "spawnle", "spawnlp", "spawnlpe", "spawnv", "spawnve",
     "spawnvp", "spawnvpe", "execl", "execle", "execlp", "execlpe",
     "execv", "execve", "execvp", "execvpe", "startfile",
+}
+
+FORBIDDEN_UNCONDITIONAL_OS_ATTRS: Set[str] = {
+    "system", "popen", "startfile", "fork", "forkpty", "chroot",
+    "spawnl", "spawnle", "spawnlp", "spawnlpe", "spawnv", "spawnve",
+    "spawnvp", "spawnvpe", "execl", "execle", "execlp", "execlpe",
+    "execv", "execve", "execvp", "execvpe",
+}
+
+FORBIDDEN_PANDAS_METHODS: Set[str] = {
+    "read_pickle", "to_pickle",
 }
 
 FORBIDDEN_DESTRUCTIVE_METHODS: Set[str] = {
@@ -68,7 +80,7 @@ def validate_etl_ast_security(code: str) -> List[str]:
     """
     Static AST Security Gate executed BEFORE running any LLM-generated ETL code.
     Blocks network access, subprocess spawning, dynamic eval/exec, destructive
-    filesystem deletions, and .env credential reads.
+    filesystem deletions, aliased OS/pickle bypasses, and .env credential reads.
     Returns a list of violation descriptions (empty list == safe to execute).
     """
     violations: List[str] = []
@@ -77,15 +89,25 @@ def validate_etl_ast_security(code: str) -> List[str]:
     except SyntaxError as se:
         return [f"SyntaxError during AST security scan: {se}"]
 
+    # Pass 1: Track module aliases and direct symbol imports to defeat alias bypasses
+    # (e.g. `import os as o; o.system(...)`, `from os import system`, `import pandas as p; p.read_pickle(...)`)
+    os_aliases: Set[str] = {"os"}
+    pandas_aliases: Set[str] = {"pd", "pandas"}
+    direct_forbidden_symbols: Dict[str, str] = {}
+
     for node in ast.walk(tree):
-        # 1. Check import statements
         if isinstance(node, ast.Import):
             for alias in node.names:
                 root_mod = alias.name.split(".")[0]
+                bound_name = alias.asname or root_mod
                 if root_mod in FORBIDDEN_ETL_IMPORTS:
                     violations.append(
                         f"Line {node.lineno}: Forbidden module import '{alias.name}' blocked by AST Security Gate."
                     )
+                elif root_mod == "os":
+                    os_aliases.add(bound_name)
+                elif root_mod == "pandas":
+                    pandas_aliases.add(bound_name)
         elif isinstance(node, ast.ImportFrom):
             if node.module:
                 root_mod = node.module.split(".")[0]
@@ -93,14 +115,39 @@ def validate_etl_ast_security(code: str) -> List[str]:
                     violations.append(
                         f"Line {node.lineno}: Forbidden from-import '{node.module}' blocked by AST Security Gate."
                     )
+                elif root_mod == "os":
+                    for alias in node.names:
+                        if alias.name == "*":
+                            violations.append(
+                                f"Line {node.lineno}: Wildcard 'from os import *' blocked by AST Security Gate."
+                            )
+                        elif alias.name in FORBIDDEN_OS_METHODS:
+                            bound_name = alias.asname or alias.name
+                            direct_forbidden_symbols[bound_name] = f"os.{alias.name}"
+                            violations.append(
+                                f"Line {node.lineno}: Forbidden OS symbol import 'from os import {alias.name}' blocked by AST Security Gate."
+                            )
+                elif root_mod == "pandas":
+                    for alias in node.names:
+                        if alias.name in FORBIDDEN_PANDAS_METHODS:
+                            bound_name = alias.asname or alias.name
+                            direct_forbidden_symbols[bound_name] = f"pandas.{alias.name}"
+                            violations.append(
+                                f"Line {node.lineno}: Forbidden unsafe deserialization import 'from pandas import {alias.name}' blocked by AST Security Gate."
+                            )
 
-        # 2. Check dangerous function & method calls
-        elif isinstance(node, ast.Call):
+    # Pass 2: Audit calls, attributes, runtime symbols, and .env paths
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
             func = node.func
             if isinstance(func, ast.Name):
                 if func.id in FORBIDDEN_BUILTIN_CALLS:
                     violations.append(
                         f"Line {node.lineno}: Forbidden builtin call '{func.id}()' blocked by AST Security Gate."
+                    )
+                elif func.id in direct_forbidden_symbols:
+                    violations.append(
+                        f"Line {node.lineno}: Forbidden imported call '{func.id}()' ({direct_forbidden_symbols[func.id]}) blocked by AST Security Gate."
                     )
             elif isinstance(func, ast.Attribute):
                 attr = func.attr
@@ -108,13 +155,21 @@ def validate_etl_ast_security(code: str) -> List[str]:
                     violations.append(
                         f"Line {node.lineno}: Destructive filesystem call '.{attr}()' blocked by AST Security Gate."
                     )
-                elif isinstance(func.value, ast.Name) and func.value.id == "os" and attr in FORBIDDEN_OS_METHODS:
+                elif attr in FORBIDDEN_PANDAS_METHODS:
                     violations.append(
-                        f"Line {node.lineno}: Forbidden OS call 'os.{attr}()' blocked by AST Security Gate."
+                        f"Line {node.lineno}: Unsafe pickle call '.{attr}()' blocked by AST Security Gate."
                     )
-                elif isinstance(func.value, ast.Name) and func.value.id == "pd" and attr == "read_pickle":
+                elif attr in FORBIDDEN_UNCONDITIONAL_OS_ATTRS:
                     violations.append(
-                        f"Line {node.lineno}: Unsafe deserialization 'pd.read_pickle()' blocked by AST Security Gate."
+                        f"Line {node.lineno}: Forbidden OS execution call '.{attr}()' blocked by AST Security Gate."
+                    )
+                elif isinstance(func.value, ast.Name) and func.value.id in os_aliases and attr in FORBIDDEN_OS_METHODS:
+                    violations.append(
+                        f"Line {node.lineno}: Forbidden OS call '{func.value.id}.{attr}()' blocked by AST Security Gate."
+                    )
+                elif isinstance(func.value, ast.Name) and func.value.id in pandas_aliases and attr in FORBIDDEN_PANDAS_METHODS:
+                    violations.append(
+                        f"Line {node.lineno}: Unsafe deserialization '{func.value.id}.{attr}()' blocked by AST Security Gate."
                     )
 
         # 3. Block dunder sandbox-escape attributes & __builtins__ introspection
